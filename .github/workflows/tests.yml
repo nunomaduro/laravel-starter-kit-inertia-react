@@ -3,11 +3,9 @@ name: tests
 on:
   push:
     branches:
-      - develop
       - main
   pull_request:
     branches:
-      - develop
       - main
 
 jobs:
@@ -29,19 +27,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
       - name: Install Node Dependencies
-        run: npm ci
-
-      - name: Install Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+        run: npm install
 
       - name: Build Assets
         run: npm run build
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+
+      - name: Install Dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Copy Environment File
         run: cp .env.example .env
