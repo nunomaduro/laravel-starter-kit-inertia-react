@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="https://youtu.be/VhzP0XWGTC4" target="_blank">
-        <img src="/art/banner.png" alt="Overview Laravel Starter Kit" style="width:70%;">
+        <img src="https://github.com/nunomaduro/laravel-starter-kit/blob/main/art/banner.png" alt="Overview Laravel Starter Kit" style="width:70%;">
     </a>
 </p>
 
