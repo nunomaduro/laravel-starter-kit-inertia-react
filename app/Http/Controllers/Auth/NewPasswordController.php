@@ -50,7 +50,7 @@ final class NewPasswordController extends Controller
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user) use ($request): void {
                 $user->forceFill([
-                    'password' => Hash::make($request->password),
+                    'password' => Hash::make($request->string('password')->value()),
                     'remember_token' => Str::random(60),
                 ])->save();
 
@@ -66,7 +66,7 @@ final class NewPasswordController extends Controller
         }
 
         throw ValidationException::withMessages([
-            'email' => [__($status)],
+            'email' => [__(is_string($status) ? $status : '')],
         ]);
     }
 }
