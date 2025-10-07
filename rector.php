@@ -36,7 +36,7 @@ return RectorConfig::configure()
         __DIR__.'/routes',
     ])
     ->withSkip([
-        // AddOverrideAttributeToOverriddenMethodsRector::class,
+        AddOverrideAttributeToOverriddenMethodsRector::class,
     ])
     ->withPreparedSets(
         deadCode: true,
