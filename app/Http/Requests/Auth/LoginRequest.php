@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Auth;
 
 use App\Models\User;
@@ -9,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
-class LoginRequest extends FormRequest
+final class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,7 +37,7 @@ class LoginRequest extends FormRequest
     /**
      * Validate the request's credentials and return the user without logging them in.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function validateCredentials(): User
     {
@@ -60,7 +62,7 @@ class LoginRequest extends FormRequest
     /**
      * Ensure the login request is not rate limited.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function ensureIsNotRateLimited(): void
     {

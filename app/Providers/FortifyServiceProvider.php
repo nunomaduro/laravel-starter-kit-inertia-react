@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
@@ -9,7 +11,7 @@ use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use Laravel\Fortify\Fortify;
 
-class FortifyServiceProvider extends ServiceProvider
+final class FortifyServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -27,8 +29,6 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/two-factor-challenge'));
         Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
 
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        });
+        RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
     }
 }
