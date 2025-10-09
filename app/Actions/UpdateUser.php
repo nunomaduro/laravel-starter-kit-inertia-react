@@ -9,7 +9,7 @@ use App\Models\User;
 final readonly class UpdateUser
 {
     /**
-     * @param  array<string, string>  $attributes
+     * @param  array<string, mixed>  $attributes
      */
     public function handle(User $user, array $attributes): void
     {
