@@ -130,3 +130,58 @@ it('redirects authenticated users away from login', function () {
 
     $response->assertRedirectToRoute('dashboard');
 });
+
+it('throttles login attempts after too many failures', function () {
+    $user = User::factory()->create([
+        'email' => 'test@example.com',
+        'password' => Hash::make('password'),
+    ]);
+
+    // Make 5 failed login attempts to trigger rate limiting
+    for ($i = 0; $i < 5; $i++) {
+        $this->fromRoute('login')
+            ->post(route('login.store'), [
+                'email' => 'test@example.com',
+                'password' => 'wrong-password',
+            ]);
+    }
+
+    // The 6th attempt should be throttled
+    $response = $this->fromRoute('login')
+        ->post(route('login.store'), [
+            'email' => 'test@example.com',
+            'password' => 'wrong-password',
+        ]);
+
+    $response->assertRedirectToRoute('login')
+        ->assertSessionHasErrors('email');
+
+    $errors = session('errors');
+    expect($errors->get('email')[0])->toContain('Too many login attempts');
+});
+
+it('clears rate limit after successful login', function () {
+    $user = User::factory()->withoutTwoFactor()->create([
+        'email' => 'test@example.com',
+        'password' => Hash::make('password'),
+    ]);
+
+    // Make a few failed attempts
+    for ($i = 0; $i < 3; $i++) {
+        $this->fromRoute('login')
+            ->post(route('login.store'), [
+                'email' => 'test@example.com',
+                'password' => 'wrong-password',
+            ]);
+    }
+
+    // Successful login should clear the rate limit
+    $response = $this->fromRoute('login')
+        ->post(route('login.store'), [
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
+    $response->assertRedirectToRoute('dashboard');
+    $this->assertAuthenticatedAs($user);
+});
