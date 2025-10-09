@@ -1,4 +1,4 @@
-import UserController from '@/actions/App/Http/Controllers/UserController';
+import UserProfileController from '@/actions/App/Http/Controllers/UserProfileController';
 import { send } from '@/routes/verification';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
@@ -12,12 +12,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import { edit } from '@/routes/user';
+import userProfile from '@/routes/user-profile';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Profile settings',
-        href: edit().url,
+        href: userProfile.edit().url,
     },
 ];
 
@@ -36,7 +36,7 @@ export default function Edit({ status }: { status?: string }) {
                     />
 
                     <Form
-                        {...UserController.update.form()}
+                        {...UserProfileController.update.form()}
                         options={{
                             preserveScroll: true,
                         }}

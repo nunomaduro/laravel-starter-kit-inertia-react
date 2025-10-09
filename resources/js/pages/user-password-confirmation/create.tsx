@@ -7,7 +7,7 @@ import { store } from '@/routes/password/confirm';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
-export default function ConfirmPassword() {
+export default function Create() {
     return (
         <AuthLayout
             title="Confirm your password"

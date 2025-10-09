@@ -9,7 +9,7 @@ test('profile page is displayed', function () {
 
     $response = $this
         ->actingAs($user)
-        ->get(route('user.profile.edit'));
+        ->get(route('user-profile.edit'));
 
     $response->assertOk();
 });
@@ -19,14 +19,14 @@ test('profile information can be updated', function () {
 
     $response = $this
         ->actingAs($user)
-        ->patch(route('user.profile.update'), [
+        ->patch(route('user-profile.update'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect(route('user.profile.edit'));
+        ->assertRedirect(route('user-profile.edit'));
 
     $user->refresh();
 
@@ -40,14 +40,14 @@ test('email verification status is unchanged when the email address is unchanged
 
     $response = $this
         ->actingAs($user)
-        ->patch(route('user.profile.update'), [
+        ->patch(route('user-profile.update'), [
             'name' => 'Test User',
             'email' => $user->email,
         ]);
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect(route('user.profile.edit'));
+        ->assertRedirect(route('user-profile.edit'));
 
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
@@ -74,14 +74,14 @@ test('correct password must be provided to delete account', function () {
 
     $response = $this
         ->actingAs($user)
-        ->from(route('user.profile.edit'))
+        ->from(route('user-profile.edit'))
         ->delete(route('user.destroy'), [
             'password' => 'wrong-password',
         ]);
 
     $response
         ->assertSessionHasErrors('password')
-        ->assertRedirect(route('user.profile.edit'));
+        ->assertRedirect(route('user-profile.edit'));
 
     expect($user->fresh())->not->toBeNull();
 });

@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
 import { show } from '@/routes/two-factor';
-import { edit } from '@/routes/user';
+import { edit } from '@/routes/user-profile';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';

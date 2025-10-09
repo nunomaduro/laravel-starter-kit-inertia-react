@@ -26,6 +26,6 @@ final readonly class UserProfileController
     {
         $action->handle($user, $request->validated());
 
-        return to_route('user.profile.edit');
+        return to_route('user-profile.edit');
     }
 }

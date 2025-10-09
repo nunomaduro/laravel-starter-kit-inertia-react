@@ -25,8 +25,8 @@ Route::middleware('auth')->group(function (): void {
 
     // User Profile...
     Route::redirect('settings', '/settings/profile');
-    Route::get('settings/profile', [UserProfileController::class, 'edit'])->name('user.profile.edit');
-    Route::patch('settings/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
+    Route::get('settings/profile', [UserProfileController::class, 'edit'])->name('user-profile.edit');
+    Route::patch('settings/profile', [UserProfileController::class, 'update'])->name('user-profile.update');
 
     // User Password...
     Route::get('settings/password', [UserPasswordController::class, 'edit'])->name('password.edit');
@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function (): void {
         ->name('password.update');
 
     // Appearance...
-    Route::get('settings/appearance', fn () => Inertia::render('settings/appearance'))->name('appearance.edit');
+    Route::get('settings/appearance', fn () => Inertia::render('appearance/update'))->name('appearance.edit');
 
     // User Two-Factor Authentication...
     Route::get('settings/two-factor', [UserTwoFactorAuthenticationController::class, 'show'])
