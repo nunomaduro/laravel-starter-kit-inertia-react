@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
-it('may create a new user password', function () {
+it('may create a new user password', function (): void {
     Event::fake([PasswordReset::class]);
 
     $user = User::factory()->create([
@@ -33,7 +33,7 @@ it('may create a new user password', function () {
     Event::assertDispatched(PasswordReset::class);
 });
 
-it('returns invalid token status for incorrect token', function () {
+it('returns invalid token status for incorrect token', function (): void {
     $user = User::factory()->create([
         'email' => 'test@example.com',
     ]);
@@ -50,7 +50,7 @@ it('returns invalid token status for incorrect token', function () {
     expect($status)->toBe(Password::INVALID_TOKEN);
 });
 
-it('returns invalid user status for non-existent email', function () {
+it('returns invalid user status for non-existent email', function (): void {
     $action = app(CreateUserPassword::class);
 
     $status = $action->handle([
@@ -63,7 +63,7 @@ it('returns invalid user status for non-existent email', function () {
     expect($status)->toBe(Password::INVALID_USER);
 });
 
-it('updates remember token when resetting password', function () {
+it('updates remember token when resetting password', function (): void {
     $user = User::factory()->create([
         'email' => 'test@example.com',
         'remember_token' => 'old-token',

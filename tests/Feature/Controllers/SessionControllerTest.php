@@ -7,7 +7,7 @@ use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
-it('renders login page', function () {
+it('renders login page', function (): void {
     $response = $this->fromRoute('home')
         ->get(route('login'));
 
@@ -18,7 +18,7 @@ it('renders login page', function () {
             ->has('status'));
 });
 
-it('may create a session', function () {
+it('may create a session', function (): void {
     $user = User::factory()->withoutTwoFactor()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
@@ -35,7 +35,7 @@ it('may create a session', function () {
     $this->assertAuthenticatedAs($user);
 });
 
-it('may create a session with remember me', function () {
+it('may create a session with remember me', function (): void {
     $user = User::factory()->withoutTwoFactor()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
@@ -53,7 +53,7 @@ it('may create a session with remember me', function () {
     $this->assertAuthenticatedAs($user);
 });
 
-it('redirects to two-factor challenge when enabled', function () {
+it('redirects to two-factor challenge when enabled', function (): void {
     $user = User::factory()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
@@ -73,7 +73,7 @@ it('redirects to two-factor challenge when enabled', function () {
     $this->assertGuest();
 });
 
-it('fails with invalid credentials', function () {
+it('fails with invalid credentials', function (): void {
     User::factory()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
@@ -91,7 +91,7 @@ it('fails with invalid credentials', function () {
     $this->assertGuest();
 });
 
-it('requires email', function () {
+it('requires email', function (): void {
     $response = $this->fromRoute('login')
         ->post(route('login.store'), [
             'password' => 'password',
@@ -101,7 +101,7 @@ it('requires email', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('requires password', function () {
+it('requires password', function (): void {
     $response = $this->fromRoute('login')
         ->post(route('login.store'), [
             'email' => 'test@example.com',
@@ -111,7 +111,7 @@ it('requires password', function () {
         ->assertSessionHasErrors('password');
 });
 
-it('may destroy a session', function () {
+it('may destroy a session', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -123,7 +123,7 @@ it('may destroy a session', function () {
     $this->assertGuest();
 });
 
-it('redirects authenticated users away from login', function () {
+it('redirects authenticated users away from login', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -133,7 +133,7 @@ it('redirects authenticated users away from login', function () {
     $response->assertRedirectToRoute('dashboard');
 });
 
-it('throttles login attempts after too many failures', function () {
+it('throttles login attempts after too many failures', function (): void {
     $user = User::factory()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
@@ -162,7 +162,7 @@ it('throttles login attempts after too many failures', function () {
     expect($errors->get('email')[0])->toContain('Too many login attempts');
 });
 
-it('clears rate limit after successful login', function () {
+it('clears rate limit after successful login', function (): void {
     $user = User::factory()->withoutTwoFactor()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
@@ -188,7 +188,7 @@ it('clears rate limit after successful login', function () {
     $this->assertAuthenticatedAs($user);
 });
 
-it('dispatches lockout event when rate limit is reached', function () {
+it('dispatches lockout event when rate limit is reached', function (): void {
     Event::fake([Lockout::class]);
 
     $user = User::factory()->create([

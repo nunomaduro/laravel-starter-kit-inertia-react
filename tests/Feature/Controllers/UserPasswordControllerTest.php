@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
-it('renders reset password page', function () {
+it('renders reset password page', function (): void {
     $response = $this->fromRoute('home')
         ->get(route('password.reset', ['token' => 'fake-token']));
 
@@ -19,7 +19,7 @@ it('renders reset password page', function () {
             ->has('token'));
 });
 
-it('may reset password', function () {
+it('may reset password', function (): void {
     Event::fake([PasswordReset::class]);
 
     $user = User::factory()->create([
@@ -44,7 +44,7 @@ it('may reset password', function () {
     Event::assertDispatched(PasswordReset::class);
 });
 
-it('fails with invalid token', function () {
+it('fails with invalid token', function (): void {
     $user = User::factory()->create([
         'email' => 'test@example.com',
     ]);
@@ -61,7 +61,7 @@ it('fails with invalid token', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('fails with non-existent email', function () {
+it('fails with non-existent email', function (): void {
     $response = $this->fromRoute('password.reset', ['token' => 'fake-token'])
         ->post(route('password.store'), [
             'email' => 'nonexistent@example.com',
@@ -74,7 +74,7 @@ it('fails with non-existent email', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('requires email', function () {
+it('requires email', function (): void {
     $response = $this->fromRoute('password.reset', ['token' => 'fake-token'])
         ->post(route('password.store'), [
             'password' => 'new-password',
@@ -86,7 +86,7 @@ it('requires email', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('requires password', function () {
+it('requires password', function (): void {
     $response = $this->fromRoute('password.reset', ['token' => 'fake-token'])
         ->post(route('password.store'), [
             'email' => 'test@example.com',
@@ -97,7 +97,7 @@ it('requires password', function () {
         ->assertSessionHasErrors('password');
 });
 
-it('requires password confirmation', function () {
+it('requires password confirmation', function (): void {
     $response = $this->fromRoute('password.reset', ['token' => 'fake-token'])
         ->post(route('password.store'), [
             'email' => 'test@example.com',
@@ -109,7 +109,7 @@ it('requires password confirmation', function () {
         ->assertSessionHasErrors('password');
 });
 
-it('requires matching password confirmation', function () {
+it('requires matching password confirmation', function (): void {
     $response = $this->fromRoute('password.reset', ['token' => 'fake-token'])
         ->post(route('password.store'), [
             'email' => 'test@example.com',
@@ -122,7 +122,7 @@ it('requires matching password confirmation', function () {
         ->assertSessionHasErrors('password');
 });
 
-it('renders edit password page', function () {
+it('renders edit password page', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -133,7 +133,7 @@ it('renders edit password page', function () {
         ->assertInertia(fn ($page) => $page->component('user-password/edit'));
 });
 
-it('may update password', function () {
+it('may update password', function (): void {
     $user = User::factory()->create([
         'password' => Hash::make('old-password'),
     ]);
@@ -151,7 +151,7 @@ it('may update password', function () {
     expect(Hash::check('new-password', $user->refresh()->password))->toBeTrue();
 });
 
-it('requires current password to update', function () {
+it('requires current password to update', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -165,7 +165,7 @@ it('requires current password to update', function () {
         ->assertSessionHasErrors('current_password');
 });
 
-it('requires correct current password to update', function () {
+it('requires correct current password to update', function (): void {
     $user = User::factory()->create([
         'password' => Hash::make('old-password'),
     ]);
@@ -182,7 +182,7 @@ it('requires correct current password to update', function () {
         ->assertSessionHasErrors('current_password');
 });
 
-it('requires new password to update', function () {
+it('requires new password to update', function (): void {
     $user = User::factory()->create([
         'password' => Hash::make('old-password'),
     ]);
@@ -197,7 +197,7 @@ it('requires new password to update', function () {
         ->assertSessionHasErrors('password');
 });
 
-it('redirects authenticated users away from reset password', function () {
+it('redirects authenticated users away from reset password', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)

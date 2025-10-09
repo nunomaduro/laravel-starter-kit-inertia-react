@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 
-it('may create a user', function () {
+it('may create a user', function (): void {
     Event::fake([Registered::class]);
 
     $action = app(CreateUser::class);

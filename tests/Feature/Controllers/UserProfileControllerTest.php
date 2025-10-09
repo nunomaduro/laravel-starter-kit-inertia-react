@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Models\User;
 
-it('renders profile edit page', function () {
+it('renders profile edit page', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -17,7 +17,7 @@ it('renders profile edit page', function () {
             ->has('status'));
 });
 
-it('may update profile information', function () {
+it('may update profile information', function (): void {
     $user = User::factory()->create([
         'name' => 'Old Name',
         'email' => 'old@example.com',
@@ -36,7 +36,7 @@ it('may update profile information', function () {
         ->and($user->email)->toBe('new@example.com');
 });
 
-it('resets email verification when email changes', function () {
+it('resets email verification when email changes', function (): void {
     $user = User::factory()->create([
         'email' => 'old@example.com',
         'email_verified_at' => now(),
@@ -54,7 +54,7 @@ it('resets email verification when email changes', function () {
     expect($user->refresh()->email_verified_at)->toBeNull();
 });
 
-it('keeps email verification when email stays the same', function () {
+it('keeps email verification when email stays the same', function (): void {
     $verifiedAt = now();
 
     $user = User::factory()->create([
@@ -74,7 +74,7 @@ it('keeps email verification when email stays the same', function () {
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
 
-it('requires name', function () {
+it('requires name', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -87,7 +87,7 @@ it('requires name', function () {
         ->assertSessionHasErrors('name');
 });
 
-it('requires email', function () {
+it('requires email', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -100,7 +100,7 @@ it('requires email', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('requires valid email', function () {
+it('requires valid email', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
@@ -114,7 +114,7 @@ it('requires valid email', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('requires unique email except own', function () {
+it('requires unique email except own', function (): void {
     $existingUser = User::factory()->create(['email' => 'existing@example.com']);
     $user = User::factory()->create(['email' => 'test@example.com']);
 
@@ -129,7 +129,7 @@ it('requires unique email except own', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('allows keeping same email', function () {
+it('allows keeping same email', function (): void {
     $user = User::factory()->create([
         'name' => 'Test User',
         'email' => 'test@example.com',

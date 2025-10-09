@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 use App\Rules\ValidEmail;
 
-it('works with valid email', function (string $email) {
+it('works with valid email', function (string $email): void {
     $rule = new ValidEmail;
 
     $failed = false;
 
-    $rule->validate('email', $email, function () use (&$failed) {
+    $rule->validate('email', $email, function () use (&$failed): void {
         $failed = true;
     });
 
@@ -66,12 +66,12 @@ it('works with valid email', function (string $email) {
     'team@startup.tech',
 ]);
 
-it('fails with invalid email', function (string $email) {
+it('fails with invalid email', function (string $email): void {
     $rule = new ValidEmail;
 
     $failed = false;
 
-    $rule->validate('email', $email, function () use (&$failed) {
+    $rule->validate('email', $email, function () use (&$failed): void {
         $failed = true;
     });
 

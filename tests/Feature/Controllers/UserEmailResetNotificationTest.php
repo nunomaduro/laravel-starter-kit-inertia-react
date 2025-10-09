@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Notification;
 
-it('renders forgot password page', function () {
+it('renders forgot password page', function (): void {
     $response = $this->fromRoute('home')
         ->get(route('password.request'));
 
@@ -16,7 +16,7 @@ it('renders forgot password page', function () {
             ->has('status'));
 });
 
-it('may send password reset notification', function () {
+it('may send password reset notification', function (): void {
     Notification::fake();
 
     $user = User::factory()->create([
@@ -34,7 +34,7 @@ it('may send password reset notification', function () {
     Notification::assertSentTo($user, ResetPassword::class);
 });
 
-it('returns generic message for non-existent email', function () {
+it('returns generic message for non-existent email', function (): void {
     Notification::fake();
 
     $response = $this->fromRoute('password.request')
@@ -48,7 +48,7 @@ it('returns generic message for non-existent email', function () {
     Notification::assertNothingSent();
 });
 
-it('requires email', function () {
+it('requires email', function (): void {
     $response = $this->fromRoute('password.request')
         ->post(route('password.email'), []);
 
@@ -56,7 +56,7 @@ it('requires email', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('requires valid email format', function () {
+it('requires valid email format', function (): void {
     $response = $this->fromRoute('password.request')
         ->post(route('password.email'), [
             'email' => 'not-an-email',
@@ -66,7 +66,7 @@ it('requires valid email format', function () {
         ->assertSessionHasErrors('email');
 });
 
-it('redirects authenticated users away from forgot password', function () {
+it('redirects authenticated users away from forgot password', function (): void {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)

@@ -6,7 +6,7 @@ use App\Actions\UpdateUserPassword;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-it('may update a user password', function () {
+it('may update a user password', function (): void {
     $user = User::factory()->create([
         'password' => Hash::make('old-password'),
     ]);

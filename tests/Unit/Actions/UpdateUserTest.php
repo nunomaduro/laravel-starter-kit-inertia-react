@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Actions\UpdateUser;
 use App\Models\User;
 
-it('may update a user', function () {
+it('may update a user', function (): void {
     $user = User::factory()->create([
         'name' => 'Old Name',
         'email' => 'old@email.com',
@@ -21,7 +21,7 @@ it('may update a user', function () {
         ->and($user->email)->toBe('old@email.com');
 });
 
-it('resets email verification when email changes', function () {
+it('resets email verification when email changes', function (): void {
     $user = User::factory()->create([
         'email' => 'old@email.com',
         'email_verified_at' => now(),
@@ -39,7 +39,7 @@ it('resets email verification when email changes', function () {
         ->and($user->email_verified_at)->toBeNull();
 });
 
-it('keeps email verification when email stays the same', function () {
+it('keeps email verification when email stays the same', function (): void {
     $verifiedAt = now();
 
     $user = User::factory()->create([

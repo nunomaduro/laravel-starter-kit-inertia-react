@@ -8,7 +8,7 @@ use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 
-it('may send password reset notification', function () {
+it('may send password reset notification', function (): void {
     Notification::fake();
 
     $user = User::factory()->create([
@@ -24,7 +24,7 @@ it('may send password reset notification', function () {
     Notification::assertSentTo($user, ResetPassword::class);
 });
 
-it('returns throttled status when too many attempts', function () {
+it('returns throttled status when too many attempts', function (): void {
     $user = User::factory()->create([
         'email' => 'test@example.com',
     ]);
@@ -38,7 +38,7 @@ it('returns throttled status when too many attempts', function () {
     expect($status)->toBe(Password::RESET_THROTTLED);
 });
 
-it('returns invalid user status for non-existent email', function () {
+it('returns invalid user status for non-existent email', function (): void {
     $action = app(CreateUserEmailResetNotification::class);
 
     $status = $action->handle(['email' => 'nonexistent@example.com']);

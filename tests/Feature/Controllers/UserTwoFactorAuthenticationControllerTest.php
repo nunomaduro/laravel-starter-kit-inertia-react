@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Models\User;
 
-it('renders two factor authentication page', function () {
+it('renders two factor authentication page', function (): void {
     $user = User::factory()->create();
 
     $this->actingAs($user)->session(['auth.password_confirmed_at' => time()]);
@@ -18,7 +18,7 @@ it('renders two factor authentication page', function () {
             ->has('twoFactorEnabled'));
 });
 
-it('shows two factor disabled when not enabled', function () {
+it('shows two factor disabled when not enabled', function (): void {
     $user = User::factory()->withoutTwoFactor()->create();
 
     $this->actingAs($user)->session(['auth.password_confirmed_at' => time()]);
@@ -32,7 +32,7 @@ it('shows two factor disabled when not enabled', function () {
             ->where('twoFactorEnabled', false));
 });
 
-it('shows two factor enabled when enabled', function () {
+it('shows two factor enabled when enabled', function (): void {
     $user = User::factory()->create([
         'two_factor_secret' => encrypt('secret'),
         'two_factor_recovery_codes' => encrypt(json_encode(['code1', 'code2'])),

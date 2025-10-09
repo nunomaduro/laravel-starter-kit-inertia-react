@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Notification;
 
-it('may send email verification notification', function () {
+it('may send email verification notification', function (): void {
     Notification::fake();
 
     $user = User::factory()->create([

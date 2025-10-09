@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use Illuminate\Support\Facades\URL;
 
-it('may verify email', function () {
+it('may verify email', function (): void {
     $user = User::factory()->create([
         'email_verified_at' => null,
     ]);
@@ -25,7 +25,7 @@ it('may verify email', function () {
     $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
 });
 
-it('redirects to dashboard if already verified', function () {
+it('redirects to dashboard if already verified', function (): void {
     $user = User::factory()->create([
         'email_verified_at' => now(),
     ]);
@@ -43,7 +43,7 @@ it('redirects to dashboard if already verified', function () {
     $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
 });
 
-it('requires valid signature', function () {
+it('requires valid signature', function (): void {
     $user = User::factory()->create([
         'email_verified_at' => null,
     ]);

@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Notification;
 
-it('renders verify email page', function () {
+it('renders verify email page', function (): void {
     $user = User::factory()->create([
         'email_verified_at' => null,
     ]);
@@ -21,7 +21,7 @@ it('renders verify email page', function () {
             ->has('status'));
 });
 
-it('redirects verified users to dashboard', function () {
+it('redirects verified users to dashboard', function (): void {
     $user = User::factory()->create([
         'email_verified_at' => now(),
     ]);
@@ -33,7 +33,7 @@ it('redirects verified users to dashboard', function () {
     $response->assertRedirectToRoute('dashboard');
 });
 
-it('may send verification notification', function () {
+it('may send verification notification', function (): void {
     Notification::fake();
 
     $user = User::factory()->create([
@@ -50,7 +50,7 @@ it('may send verification notification', function () {
     Notification::assertSentTo($user, VerifyEmail::class);
 });
 
-it('redirects verified users when sending notification', function () {
+it('redirects verified users when sending notification', function (): void {
     Notification::fake();
 
     $user = User::factory()->create([

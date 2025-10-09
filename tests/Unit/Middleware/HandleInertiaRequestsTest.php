@@ -6,7 +6,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-it('shares app name from config', function () {
+it('shares app name from config', function (): void {
     $middleware = new HandleInertiaRequests();
 
     $request = Request::create('/', 'GET');
@@ -17,7 +17,7 @@ it('shares app name from config', function () {
         ->and($shared['name'])->toBe(config('app.name'));
 });
 
-it('shares inspiring quote with message and author', function () {
+it('shares inspiring quote with message and author', function (): void {
     $middleware = new HandleInertiaRequests();
 
     $request = Request::create('/', 'GET');
@@ -30,7 +30,7 @@ it('shares inspiring quote with message and author', function () {
         ->and($shared['quote']['author'])->toBeString()->not->toBeEmpty();
 });
 
-it('shares null user when guest', function () {
+it('shares null user when guest', function (): void {
     $middleware = new HandleInertiaRequests();
 
     $request = Request::create('/', 'GET');
@@ -42,7 +42,7 @@ it('shares null user when guest', function () {
         ->and($shared['auth']['user'])->toBeNull();
 });
 
-it('shares authenticated user data', function () {
+it('shares authenticated user data', function (): void {
     $user = User::factory()->create([
         'name' => 'Test User',
         'email' => 'test@example.com',
@@ -61,7 +61,7 @@ it('shares authenticated user data', function () {
         ->and($shared['auth']['user']->email)->toBe('test@example.com');
 });
 
-it('defaults sidebarOpen to true when no cookie', function () {
+it('defaults sidebarOpen to true when no cookie', function (): void {
     $middleware = new HandleInertiaRequests();
 
     $request = Request::create('/', 'GET');
@@ -72,7 +72,7 @@ it('defaults sidebarOpen to true when no cookie', function () {
         ->and($shared['sidebarOpen'])->toBeTrue();
 });
 
-it('sets sidebarOpen to true when cookie is true', function () {
+it('sets sidebarOpen to true when cookie is true', function (): void {
     $middleware = new HandleInertiaRequests();
 
     $request = Request::create('/', 'GET');
@@ -83,7 +83,7 @@ it('sets sidebarOpen to true when cookie is true', function () {
     expect($shared['sidebarOpen'])->toBeTrue();
 });
 
-it('sets sidebarOpen to false when cookie is false', function () {
+it('sets sidebarOpen to false when cookie is false', function (): void {
     $middleware = new HandleInertiaRequests();
 
     $request = Request::create('/', 'GET');
@@ -94,7 +94,7 @@ it('sets sidebarOpen to false when cookie is false', function () {
     expect($shared['sidebarOpen'])->toBeFalse();
 });
 
-it('includes parent shared data', function () {
+it('includes parent shared data', function (): void {
     $middleware = new HandleInertiaRequests();
 
     $request = Request::create('/', 'GET');
