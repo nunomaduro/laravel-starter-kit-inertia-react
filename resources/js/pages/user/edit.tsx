@@ -21,7 +21,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Profile({ status }: { status?: string }) {
+export default function Edit({ status }: { status?: string }) {
     const { auth } = usePage<SharedData>().props;
 
     return (
