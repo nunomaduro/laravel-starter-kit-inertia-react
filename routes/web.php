@@ -9,9 +9,9 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPasswordController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -28,9 +28,9 @@ Route::middleware('auth')->group(function (): void {
     Route::patch('settings/profile', [UserController::class, 'update'])->name('user.update');
     Route::delete('settings/profile', [UserController::class, 'destroy'])->name('user.destroy');
 
-    Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
+    Route::get('settings/password', [UserPasswordController::class, 'edit'])->name('password.edit');
 
-    Route::put('settings/password', [PasswordController::class, 'update'])
+    Route::put('settings/password', [UserPasswordController::class, 'update'])
         ->middleware('throttle:6,1')
         ->name('password.update');
 
