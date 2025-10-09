@@ -7,7 +7,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
-final class ResetPasswordRequest extends FormRequest
+final class CreateUserPasswordRequest extends FormRequest
 {
     /**
      * @return array<string, array<mixed>|string>

@@ -26,8 +26,8 @@ final class FortifyServiceProvider extends ServiceProvider
 
     private function bootFortifyDefaults(): void
     {
-        Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/two-factor-challenge'));
-        Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
+        Fortify::twoFactorChallengeView(fn () => Inertia::render('session/two-factor-challenge'));
+        Fortify::confirmPasswordView(fn () => Inertia::render('session/confirm-password'));
     }
 
     private function bootRateLimitingDefaults(): void

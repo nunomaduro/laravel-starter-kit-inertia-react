@@ -12,7 +12,6 @@ use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,12 +19,9 @@ final readonly class UserController
 {
     public function create(): Response
     {
-        return Inertia::render('auth/register');
+        return Inertia::render('user/create');
     }
 
-    /**
-     * @throws ValidationException
-     */
     public function store(CreateUserRequest $request, CreateUser $action): RedirectResponse
     {
         /** @var array<string, mixed> $attributes */

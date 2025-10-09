@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use SensitiveParameter;
 
-final readonly class ResetPassword
+final readonly class CreateUserPassword
 {
     /**
      * @param  array<string, mixed>  $credentials
