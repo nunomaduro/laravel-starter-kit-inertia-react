@@ -2,19 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 
-final readonly class VerifyEmailController
+final readonly class UserEmailVerification
 {
-    public function __invoke(EmailVerificationRequest $request): RedirectResponse
+    public function update(EmailVerificationRequest $request, #[CurrentUser] User $user): RedirectResponse
     {
-        $user = $request->user();
-        assert($user instanceof User);
-
         if ($user->hasVerifiedEmail()) {
             return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
         }

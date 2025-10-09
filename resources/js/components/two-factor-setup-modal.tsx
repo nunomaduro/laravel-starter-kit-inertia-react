@@ -275,7 +275,7 @@ export default function TwoFactorSetupModal({
 
     const handleModalNextStep = useCallback(() => {
         setShowVerificationStep(true);
-    }, [clearSetupData, onClose]);
+    }, []);
 
     const resetModalState = useCallback(() => {
         setShowVerificationStep(false);

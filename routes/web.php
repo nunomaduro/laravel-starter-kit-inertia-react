@@ -2,14 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Auth\SessionController;
-use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserEmailVerification;
+use App\Http\Controllers\UserEmailVerificationNotificationController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserTwoFactorAuthenticationController;
 use Illuminate\Support\Facades\Route;
@@ -41,10 +37,10 @@ Route::middleware('auth')->group(function (): void {
 });
 
 Route::middleware('guest')->group(function (): void {
-    Route::get('register', [RegisteredUserController::class, 'create'])
+    Route::get('register', [UserController::class, 'create'])
         ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store'])
+    Route::post('register', [UserController::class, 'store'])
         ->name('register.store');
 
     Route::get('login', [SessionController::class, 'create'])
@@ -53,28 +49,28 @@ Route::middleware('guest')->group(function (): void {
     Route::post('login', [SessionController::class, 'store'])
         ->name('login.store');
 
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+    Route::get('forgot-password', [UserPasswordController::class, 'forgot'])
         ->name('password.request');
 
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+    Route::post('forgot-password', [UserPasswordController::class, 'email'])
         ->name('password.email');
 
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+    Route::get('reset-password/{token}', [UserPasswordController::class, 'create'])
         ->name('password.reset');
 
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
+    Route::post('reset-password', [UserPasswordController::class, 'store'])
         ->name('password.store');
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('verify-email', EmailVerificationPromptController::class)
+    Route::get('verify-email', [UserEmailVerificationNotificationController::class, 'create'])
         ->name('verification.notice');
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+    Route::get('verify-email/{id}/{hash}', [UserEmailVerification::class, 'update'])
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
-    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+    Route::post('email/verification-notification', [UserEmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
 

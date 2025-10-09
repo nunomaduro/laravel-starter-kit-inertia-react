@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateUser;
 use App\Actions\DeleteUser;
 use App\Actions\UpdateUser;
+use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
@@ -13,11 +15,37 @@ use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
 final readonly class UserController
 {
+    public function create(): Response
+    {
+        return Inertia::render('auth/register');
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function store(CreateUserRequest $request, CreateUser $action): RedirectResponse
+    {
+        /** @var array<string, mixed> $attributes */
+        $attributes = $request->safe()->except('password');
+
+        $user = $action->handle(
+            $attributes,
+            $request->string('password')->value(),
+        );
+
+        Auth::login($user);
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
+
     public function edit(Request $request): Response
     {
         return Inertia::render('user/edit', [
