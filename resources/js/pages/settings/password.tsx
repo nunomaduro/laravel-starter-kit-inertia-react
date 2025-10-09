@@ -1,4 +1,4 @@
-import PasswordController from '@/actions/App/Http/Controllers/Settings/PasswordController';
+import UserPasswordController from '@/actions/App/Http/Controllers/UserPasswordController';
 import InputError from '@/components/input-error';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
@@ -36,7 +36,7 @@ export default function Password() {
                     />
 
                     <Form
-                        {...PasswordController.update.form()}
+                        {...UserPasswordController.update.form()}
                         options={{
                             preserveScroll: true,
                         }}

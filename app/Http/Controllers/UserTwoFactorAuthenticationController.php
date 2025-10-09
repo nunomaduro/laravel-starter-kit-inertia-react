@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\ShowUserTwoFactorAuthenticationRequest;
+use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Inertia\Inertia;
+use Inertia\Response;
+
+final readonly class UserTwoFactorAuthenticationController implements HasMiddleware
+{
+    public static function middleware(): array
+    {
+        return [new Middleware('password.confirm', only: ['show'])];
+    }
+
+    public function show(ShowUserTwoFactorAuthenticationRequest $request, #[CurrentUser] User $user): Response
+    {
+        $request->ensureStateIsValid();
+
+        return Inertia::render('settings/two-factor', [
+            'twoFactorEnabled' => $user->hasEnabledTwoFactorAuthentication(),
+        ]);
+    }
+}

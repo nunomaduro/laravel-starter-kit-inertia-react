@@ -13,7 +13,6 @@ import { ShieldBan, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 
 interface TwoFactorProps {
-    requiresConfirmation?: boolean;
     twoFactorEnabled?: boolean;
 }
 
@@ -25,7 +24,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function TwoFactor({
-    requiresConfirmation = false,
     twoFactorEnabled = false,
 }: TwoFactorProps) {
     const {
@@ -122,7 +120,6 @@ export default function TwoFactor({
                     <TwoFactorSetupModal
                         isOpen={showSetupModal}
                         onClose={() => setShowSetupModal(false)}
-                        requiresConfirmation={requiresConfirmation}
                         twoFactorEnabled={twoFactorEnabled}
                         qrCodeSvg={qrCodeSvg}
                         manualSetupKey={manualSetupKey}

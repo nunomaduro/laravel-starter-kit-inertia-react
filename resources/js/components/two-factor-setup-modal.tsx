@@ -221,7 +221,6 @@ function TwoFactorVerificationStep({
 interface TwoFactorSetupModalProps {
     isOpen: boolean;
     onClose: () => void;
-    requiresConfirmation: boolean;
     twoFactorEnabled: boolean;
     qrCodeSvg: string | null;
     manualSetupKey: string | null;
@@ -233,7 +232,6 @@ interface TwoFactorSetupModalProps {
 export default function TwoFactorSetupModal({
     isOpen,
     onClose,
-    requiresConfirmation,
     twoFactorEnabled,
     qrCodeSvg,
     manualSetupKey,
@@ -276,15 +274,8 @@ export default function TwoFactorSetupModal({
     }, [twoFactorEnabled, showVerificationStep]);
 
     const handleModalNextStep = useCallback(() => {
-        if (requiresConfirmation) {
-            setShowVerificationStep(true);
-
-            return;
-        }
-
-        clearSetupData();
-        onClose();
-    }, [requiresConfirmation, clearSetupData, onClose]);
+        setShowVerificationStep(true);
+    }, [clearSetupData, onClose]);
 
     const resetModalState = useCallback(() => {
         setShowVerificationStep(false);

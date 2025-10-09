@@ -9,9 +9,9 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\Settings\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPasswordController;
+use App\Http\Controllers\UserTwoFactorAuthenticationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('settings/appearance', fn () => Inertia::render('settings/appearance'))->name('appearance.edit');
 
-    Route::get('settings/two-factor', [TwoFactorAuthenticationController::class, 'show'])
+    Route::get('settings/two-factor', [UserTwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
 });
 

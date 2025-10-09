@@ -66,10 +66,6 @@ test('two factor settings page does not requires password confirmation when disa
 });
 
 test('two factor settings page returns forbidden response when two factor is disabled', function () {
-    if (! Features::canManageTwoFactorAuthentication()) {
-        $this->markTestSkipped('Two-factor authentication is not enabled.');
-    }
-
     config(['fortify.features' => []]);
 
     $user = User::factory()->create();
