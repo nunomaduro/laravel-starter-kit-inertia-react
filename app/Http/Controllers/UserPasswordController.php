@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\ResetPassword;
-use App\Actions\SendPasswordResetLink;
 use App\Actions\UpdateUserPassword;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Http\Requests\SendPasswordResetLinkRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -21,20 +19,6 @@ use Inertia\Response;
 
 final readonly class UserPasswordController
 {
-    public function forgot(Request $request): Response
-    {
-        return Inertia::render('auth/forgot-password', [
-            'status' => $request->session()->get('status'),
-        ]);
-    }
-
-    public function email(SendPasswordResetLinkRequest $request, SendPasswordResetLink $action): RedirectResponse
-    {
-        $action->handle(['email' => $request->string('email')->value()]);
-
-        return back()->with('status', __('A reset link will be sent if the account exists.'));
-    }
-
     public function create(Request $request): Response
     {
         return Inertia::render('auth/reset-password', [
@@ -43,9 +27,6 @@ final readonly class UserPasswordController
         ]);
     }
 
-    /**
-     * @throws ValidationException
-     */
     public function store(ResetPasswordRequest $request, ResetPassword $action): RedirectResponse
     {
         /** @var array<string, mixed> $credentials */

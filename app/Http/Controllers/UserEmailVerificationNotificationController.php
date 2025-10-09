@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateUserEmailVerificationNotification;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
@@ -20,13 +21,13 @@ final readonly class UserEmailVerificationNotificationController
             : Inertia::render('auth/verify-email', ['status' => $request->session()->get('status')]);
     }
 
-    public function store(#[CurrentUser] User $user): RedirectResponse
+    public function store(#[CurrentUser] User $user, CreateUserEmailVerificationNotification $action): RedirectResponse
     {
         if ($user->hasVerifiedEmail()) {
             return redirect()->intended(route('dashboard', absolute: false));
         }
 
-        $user->sendEmailVerificationNotification();
+        $action->handle($user);
 
         return back()->with('status', 'verification-link-sent');
     }

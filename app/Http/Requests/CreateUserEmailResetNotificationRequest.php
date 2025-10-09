@@ -6,15 +6,15 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-final class SendPasswordResetLinkRequest extends FormRequest
+final class CreateUserEmailResetNotificationRequest extends FormRequest
 {
     /**
-     * @return array<string, string>
+     * @return array<string, array<int, string>>
      */
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
+            'email' => ['required', 'email'],
         ];
     }
 }

@@ -64,4 +64,3 @@ test('two factor settings page does not requires password confirmation when disa
             ->component('settings/two-factor')
         );
 });
-

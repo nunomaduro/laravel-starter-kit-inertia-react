@@ -21,10 +21,10 @@ final readonly class ResetPassword
         return Password::reset(
             $credentials,
             function (User $user) use ($password): void {
-                $user->forceFill([
+                $user->update([
                     'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
-                ])->save();
+                ]);
 
                 event(new PasswordReset($user));
             }
