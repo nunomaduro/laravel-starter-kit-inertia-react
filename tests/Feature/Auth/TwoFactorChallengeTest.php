@@ -42,6 +42,6 @@ test('two factor challenge can be rendered', function () {
     $this->get(route('two-factor.login'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
-            ->component('session/two-factor-challenge')
+            ->component('user-two-factor-authentication-challenge/show')
         );
 });
