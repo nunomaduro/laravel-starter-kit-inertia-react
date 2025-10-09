@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\Response;
 
-final class HandleAppearance
+final readonly class HandleAppearance
 {
     /**
      * @param  Closure(Request): (Response)  $next

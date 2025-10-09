@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-final class EmailVerificationNotificationController extends Controller
+final readonly class EmailVerificationNotificationController
 {
     public function store(Request $request): RedirectResponse
     {

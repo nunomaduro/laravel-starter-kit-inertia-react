@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 
-final class VerifyEmailController extends Controller
+final readonly class VerifyEmailController
 {
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Settings;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\TwoFactorAuthenticationRequest;
 use App\Models\User;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -13,7 +12,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Fortify\Features;
 
-final class TwoFactorAuthenticationController extends Controller implements HasMiddleware
+final readonly class TwoFactorAuthenticationController implements HasMiddleware
 {
     public static function middleware(): array
     {

@@ -20,9 +20,18 @@ final class FortifyServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->bootFortifyDefaults();
+        $this->bootRateLimitingDefaults();
+    }
+
+    private function bootFortifyDefaults(): void
+    {
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/two-factor-challenge'));
         Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
+    }
 
-        RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
+    private function bootRateLimitingDefaults(): void
+    {
+        RateLimiter::for('login', fn (Request $request) => Limit::perMinute(5)->by($request->input('email').$request->ip()));
     }
 }
