@@ -30,7 +30,8 @@
         "pestphp/pest-plugin-browser": "^4.1.1",
         "pestphp/pest-plugin-laravel": "^4.0.0",
         "pestphp/pest-plugin-type-coverage": "^4.0.2",
-        "rector/rector": "^2.2.2"
+        "rector/rector": "^2.2.2",
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {
