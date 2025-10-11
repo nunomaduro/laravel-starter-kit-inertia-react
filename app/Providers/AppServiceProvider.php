@@ -23,7 +23,7 @@ final class AppServiceProvider extends ServiceProvider
 
     private function bootModelsDefaults(): void
     {
-        Model::unguard();
+        // Model::unguard();
     }
 
     private function bootPasswordDefaults(): void
