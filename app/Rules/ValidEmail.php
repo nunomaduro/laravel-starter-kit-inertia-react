@@ -22,7 +22,7 @@ final readonly class ValidEmail implements ValidationRule
         assert(is_string($value));
 
         if (in_array(preg_match(self::REGEX, $value), [0, false], true)) {
-            $fail('The :attribute must be a valid email address.');
+            $fail(__('The :attribute must be a valid email address.'));
         }
     }
 }
