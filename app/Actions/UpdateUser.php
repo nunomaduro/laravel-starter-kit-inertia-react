@@ -19,5 +19,9 @@ final readonly class UpdateUser
             ...$attributes,
             ...$user->email === $email ? [] : ['email_verified_at' => null],
         ]);
+
+        if (! $user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+        }
     }
 }
