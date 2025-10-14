@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\CreateUserPassword;
+use App\DTOs\AuthData;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Event;
@@ -20,12 +21,16 @@ it('may create a new user password', function (): void {
 
     $action = app(CreateUserPassword::class);
 
-    $status = $action->handle([
-        'email' => $user->email,
-        'token' => $token,
-        'password' => 'new-password',
-        'password_confirmation' => 'new-password',
-    ], 'new-password');
+    $status = $action->handle(
+        AuthData::from(
+            [
+                'email' => $user->email,
+                'token' => $token,
+                'password' => 'new-password',
+                'password_confirmation' => 'new-password',
+            ]
+        )
+    );
 
     expect($status)->toBe(Password::PASSWORD_RESET)
         ->and(Hash::check('new-password', $user->refresh()->password))->toBeTrue();
@@ -40,12 +45,14 @@ it('returns invalid token status for incorrect token', function (): void {
 
     $action = app(CreateUserPassword::class);
 
-    $status = $action->handle([
-        'email' => $user->email,
-        'token' => 'invalid-token',
-        'password' => 'new-password',
-        'password_confirmation' => 'new-password',
-    ], 'new-password');
+    $status = $action->handle(AuthData::from(
+        [
+            'email' => $user->email,
+            'token' => 'invalid-token',
+            'password' => 'new-password',
+            'password_confirmation' => 'new-password',
+        ]
+    ));
 
     expect($status)->toBe(Password::INVALID_TOKEN);
 });
@@ -53,12 +60,14 @@ it('returns invalid token status for incorrect token', function (): void {
 it('returns invalid user status for non-existent email', function (): void {
     $action = app(CreateUserPassword::class);
 
-    $status = $action->handle([
-        'email' => 'nonexistent@example.com',
-        'token' => 'some-token',
-        'password' => 'new-password',
-        'password_confirmation' => 'new-password',
-    ], 'new-password');
+    $status = $action->handle(AuthData::from(
+        [
+            'email' => 'nonexistent@example.com',
+            'token' => 'some-token',
+            'password' => 'new-password',
+            'password_confirmation' => 'new-password',
+        ]
+    ));
 
     expect($status)->toBe(Password::INVALID_USER);
 });
@@ -73,12 +82,14 @@ it('updates remember token when resetting password', function (): void {
 
     $action = app(CreateUserPassword::class);
 
-    $action->handle([
-        'email' => $user->email,
-        'token' => $token,
-        'password' => 'new-password',
-        'password_confirmation' => 'new-password',
-    ], 'new-password');
+    $action->handle(AuthData::from(
+        [
+            'email' => $user->email,
+            'token' => $token,
+            'password' => 'new-password',
+            'password_confirmation' => 'new-password',
+        ]
+    ));
 
     expect($user->refresh()->remember_token)->not->toBe('old-token')
         ->and($user->remember_token)->not->toBeNull();

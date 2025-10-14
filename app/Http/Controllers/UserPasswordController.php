@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateUserPassword;
 use App\Actions\UpdateUserPassword;
+use App\DTOs\AuthData;
 use App\Http\Requests\CreateUserPasswordRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Models\User;
@@ -29,13 +30,9 @@ final readonly class UserPasswordController
 
     public function store(CreateUserPasswordRequest $request, CreateUserPassword $action): RedirectResponse
     {
-        /** @var array<string, mixed> $credentials */
-        $credentials = $request->only('email', 'password', 'password_confirmation', 'token');
+        $credentials = AuthData::from($request->validated());
 
-        $status = $action->handle(
-            $credentials,
-            $request->string('password')->value()
-        );
+        $status = $action->handle($credentials);
 
         throw_if($status !== Password::PASSWORD_RESET, ValidationException::withMessages([
             'email' => [__(is_string($status) ? $status : '')],
@@ -51,7 +48,9 @@ final readonly class UserPasswordController
 
     public function update(UpdateUserPasswordRequest $request, #[CurrentUser] User $user, UpdateUserPassword $action): RedirectResponse
     {
-        $action->handle($user, $request->string('password')->value());
+        $data = AuthData::from($request->validated());
+
+        $action->handle($user, $data);
 
         return back();
     }

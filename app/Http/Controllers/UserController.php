@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateUser;
 use App\Actions\DeleteUser;
+use App\DTOs\UserData;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\DeleteUserRequest;
 use App\Models\User;
@@ -24,13 +25,9 @@ final readonly class UserController
 
     public function store(CreateUserRequest $request, CreateUser $action): RedirectResponse
     {
-        /** @var array<string, mixed> $attributes */
-        $attributes = $request->safe()->except('password');
+        $data = UserData::from($request->validated());
 
-        $user = $action->handle(
-            $attributes,
-            $request->string('password')->value(),
-        );
+        $user = $action->handle($data);
 
         Auth::login($user);
 

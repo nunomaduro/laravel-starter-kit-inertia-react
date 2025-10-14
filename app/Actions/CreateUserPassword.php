@@ -4,25 +4,21 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\DTOs\AuthData;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use SensitiveParameter;
 
 final readonly class CreateUserPassword
 {
-    /**
-     * @param  array<string, mixed>  $credentials
-     */
-    public function handle(array $credentials, #[SensitiveParameter] string $password): mixed
+    public function handle(AuthData $credentials): mixed
     {
         return Password::reset(
-            $credentials,
-            function (User $user) use ($password): void {
+            $credentials->toArray(),
+            function (User $user) use ($credentials): void {
                 $user->update([
-                    'password' => Hash::make($password),
+                    'password' => $credentials->password,
                     'remember_token' => Str::random(60),
                 ]);
 
