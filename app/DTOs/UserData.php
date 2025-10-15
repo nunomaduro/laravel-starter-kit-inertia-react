@@ -9,28 +9,21 @@ use SensitiveParameter;
 final readonly class UserData
 {
     public function __construct(
-        public ?string $name,
-        public ?string $email,
-        #[SensitiveParameter] public ?string $password = null,
+        public ?string $name = null,
+        public ?string $email = null,
+        #[SensitiveParameter]
+        public ?string $password = null,
     ) {}
 
     /**
-     * @param  array<string, mixed>  $data
+     * @param  array<string, string|null>  $data
      */
     public static function from(array $data): self
     {
-        $name = $data['name'] ?? null;
-        $email = $data['email'] ?? null;
-        $password = $data['password'] ?? null;
-
-        assert($name === null || is_string($name));
-        assert($email === null || is_string($email));
-        assert($password === null || is_string($password));
-
         return new self(
-            name: $name,
-            email: $email,
-            password: $password,
+            name: $data['name'] ?? null,
+            email: $data['email'] ?? null,
+            password: $data['password'] ?? null,
         );
     }
 
@@ -39,16 +32,9 @@ final readonly class UserData
      */
     public function toArray(): array
     {
-        $data = [];
-
-        if ($this->name !== null) {
-            $data['name'] = $this->name;
-        }
-
-        if ($this->email !== null) {
-            $data['email'] = $this->email;
-        }
-
-        return $data;
+        return array_filter([
+            'name' => $this->name,
+            'email' => $this->email,
+        ], fn (?string $v): bool => $v !== null);
     }
 }

@@ -26,6 +26,7 @@
         "laravel/pint": "^1.25.1",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
+        "nunomaduro/phpinsights": "^2.13",
         "pestphp/pest": "^4.1.2",
         "pestphp/pest-plugin-browser": "^4.1.1",
         "pestphp/pest-plugin-laravel": "^4.0.0",
@@ -112,6 +113,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }

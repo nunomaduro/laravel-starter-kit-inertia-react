@@ -9,10 +9,12 @@ use SensitiveParameter;
 final readonly class AuthData
 {
     public function __construct(
-        #[SensitiveParameter] public string $password,
+        #[SensitiveParameter]
+        public string $password,
         public ?string $email = null,
         public ?string $token = null,
-        #[SensitiveParameter] public ?string $currentPassword = null,
+        #[SensitiveParameter]
+        public ?string $currentPassword = null,
     ) {}
 
     /**
