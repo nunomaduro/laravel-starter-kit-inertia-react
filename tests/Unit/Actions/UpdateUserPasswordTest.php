@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\UpdateUserPassword;
-use App\DTOs\AuthData;
+use App\Data\AuthData;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 

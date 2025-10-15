@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\UpdateUser;
-use App\DTOs\UserData;
+use App\Data\UserData;
 use App\Models\User;
 
 it('may update a user', function (): void {

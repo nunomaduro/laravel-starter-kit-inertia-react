@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\DTOs\UserData;
+use App\Data\UserData;
 use App\Models\User;
 
 final readonly class UpdateUser
 {
     public function handle(User $user, UserData $data): void
     {
-        $updates = $data->toArray();
+        $updates = array_filter($data->toArray(), fn ($value) => $value !== null);
 
-        // Only reset email verification if email is being updated
-        if ($data->email !== null && $user->email !== $data->email) {
+        if (! empty($updates['email']) && $updates['email'] !== $user->email) {
             $updates['email_verified_at'] = null;
         }
 
-        $user->update($updates);
+        if (! empty($updates)) {
+            $user->update($updates);
+        }
     }
 }

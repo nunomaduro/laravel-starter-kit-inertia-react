@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\CreateUser;
-use App\DTOs\UserData;
+use App\Data\UserData;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;

@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateUserPassword;
 use App\Actions\UpdateUserPassword;
-use App\DTOs\AuthData;
+use App\Data\AuthData;
 use App\Http\Requests\CreateUserPasswordRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
 use App\Models\User;

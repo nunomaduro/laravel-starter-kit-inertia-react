@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateUser;
 use App\Actions\DeleteUser;
-use App\DTOs\UserData;
+use App\Data\UserData;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\DeleteUserRequest;
 use App\Models\User;

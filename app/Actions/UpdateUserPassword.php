@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\DTOs\AuthData;
+use App\Data\AuthData;
 use App\Models\User;
 
 final readonly class UpdateUserPassword
