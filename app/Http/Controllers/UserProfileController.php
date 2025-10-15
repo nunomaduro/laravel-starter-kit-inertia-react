@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\UpdateUser;
+use App\Data\UserData;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -24,7 +25,9 @@ final readonly class UserProfileController
 
     public function update(UpdateUserRequest $request, #[CurrentUser] User $user, UpdateUser $action): RedirectResponse
     {
-        $action->handle($user, $request->validated());
+        $data = UserData::from($request->validated());
+
+        $action->handle($user, $data);
 
         return to_route('user-profile.edit');
     }

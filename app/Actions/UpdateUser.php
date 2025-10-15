@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Data\UserData;
 use App\Models\User;
 
 final readonly class UpdateUser
 {
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
-    public function handle(User $user, array $attributes): void
+    public function handle(User $user, UserData $data): void
     {
-        $email = $attributes['email'] ?? null;
+        $updates = array_filter($data->toArray(), fn ($value) => $value !== null);
 
-        $user->update([
-            ...$attributes,
-            ...$user->email === $email ? [] : ['email_verified_at' => null],
-        ]);
+        if (! empty($updates['email']) && $updates['email'] !== $user->email) {
+            $updates['email_verified_at'] = null;
+        }
+
+        if (! empty($updates)) {
+            $user->update($updates);
+        }
     }
 }
