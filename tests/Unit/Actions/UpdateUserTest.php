@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\UpdateUser;
+use App\Data\UserData;
 use App\Models\User;
 
 it('may update a user', function (): void {
@@ -13,9 +14,11 @@ it('may update a user', function (): void {
 
     $action = app(UpdateUser::class);
 
-    $action->handle($user, [
-        'name' => 'New Name',
-    ]);
+    $action->handle($user, UserData::from(
+        [
+            'name' => 'New Name',
+        ]
+    ));
 
     expect($user->refresh()->name)->toBe('New Name')
         ->and($user->email)->toBe('old@email.com');
@@ -31,9 +34,11 @@ it('resets email verification when email changes', function (): void {
 
     $action = app(UpdateUser::class);
 
-    $action->handle($user, [
-        'email' => 'new@email.com',
-    ]);
+    $action->handle($user, UserData::from(
+        [
+            'email' => 'new@email.com',
+        ]
+    ));
 
     expect($user->refresh()->email)->toBe('new@email.com')
         ->and($user->email_verified_at)->toBeNull();
@@ -49,10 +54,10 @@ it('keeps email verification when email stays the same', function (): void {
 
     $action = app(UpdateUser::class);
 
-    $action->handle($user, [
+    $action->handle($user, UserData::from([
         'email' => 'same@email.com',
         'name' => 'Updated Name',
-    ]);
+    ]));
 
     expect($user->refresh()->email_verified_at)->not->toBeNull()
         ->and($user->name)->toBe('Updated Name');
