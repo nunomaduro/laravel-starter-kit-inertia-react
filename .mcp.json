@@ -13,7 +13,7 @@
                 "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
             ],
             "env": {
-                "SITE_PATH": "/Users/m0shiur/work/nunostarter"
+                "SITE_PATH": "${SITE_PATH}"
             }
         }
     }
