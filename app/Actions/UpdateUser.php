@@ -13,11 +13,12 @@ final readonly class UpdateUser
      */
     public function handle(User $user, array $attributes): void
     {
-        $email = $attributes['email'] ?? null;
+        $emailChanged = array_key_exists('email', $attributes) && $user->email !== $attributes['email'];
 
-        $user->update([
-            ...$attributes,
-            ...$user->email === $email ? [] : ['email_verified_at' => null],
-        ]);
+        $user->update([...$attributes, ...($emailChanged ? ['email_verified_at' => null] : [])]);
+
+        if (! $user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+        }
     }
 }
