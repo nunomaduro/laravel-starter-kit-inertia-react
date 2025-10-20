@@ -6,7 +6,6 @@ namespace App\Actions;
 
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use SensitiveParameter;
@@ -22,7 +21,7 @@ final readonly class CreateUserPassword
             $credentials,
             function (User $user) use ($password): void {
                 $user->update([
-                    'password' => Hash::make($password),
+                    'password' => $password,
                     'remember_token' => Str::random(60),
                 ]);
 
