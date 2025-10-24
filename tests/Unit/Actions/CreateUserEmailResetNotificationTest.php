@@ -33,6 +33,7 @@ it('returns throttled status when too many attempts', function (): void {
 
     // Send multiple reset requests to trigger throttling
     $action->handle(['email' => $user->email]);
+
     $status = $action->handle(['email' => $user->email]);
 
     expect($status)->toBe(Password::RESET_THROTTLED);
