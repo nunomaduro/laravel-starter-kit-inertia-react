@@ -9,16 +9,16 @@ use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 
-final readonly class UserEmailVerification
+final readonly class UserEmailVerificationController
 {
     public function update(EmailVerificationRequest $request, #[CurrentUser] User $user): RedirectResponse
     {
         if ($user->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+            return redirect()->intended(route('dashboard', absolute: false) . '?verified=1');
         }
 
         $request->fulfill();
 
-        return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+        return redirect()->intended(route('dashboard', absolute: false) . '?verified=1');
     }
 }
