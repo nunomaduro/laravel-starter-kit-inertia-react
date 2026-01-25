@@ -8,7 +8,7 @@ use App\Models\User;
 it('may delete a user', function (): void {
     $user = User::factory()->create();
 
-    $action = app(DeleteUser::class);
+    $action = resolve(DeleteUser::class);
 
     $action->handle($user);
 

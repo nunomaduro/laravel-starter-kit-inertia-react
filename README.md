@@ -1,4 +1,5 @@
 - Inertia & React (this project) version: **[github.com/nunomaduro/laravel-starter-kit-inertia-react](https://github.com/nunomaduro/laravel-starter-kit-inertia-react)**
+- Inertia & Vue version: **[github.com/nunomaduro/laravel-starter-kit-inertia-vue](https://github.com/nunomaduro/laravel-starter-kit-inertia-vue)**
 - Blade version: **[github.com/nunomaduro/laravel-starter-kit](https://github.com/nunomaduro/laravel-starter-kit)**
 
 <p align="center">
@@ -35,7 +36,7 @@ This isn't just another Laravel boilerplate—it's a statement that PHP applicat
 
 ## Getting Started
 
-> **Requires [PHP 8.4+](https://php.net/releases/) and a code coverage driver like [xdebug](https://xdebug.org/docs/install)**.
+> **Requires [PHP 8.4+](https://php.net/releases/), [Bun](https://bun.sh) and a code coverage driver like [xdebug](https://xdebug.org/docs/install)**.
 
 Create your type-safe Laravel application using [Composer](https://getcomposer.org):
 
@@ -62,8 +63,8 @@ composer dev
 If you plan to use Pest's browser testing capabilities:
 
 ```bash
-npm install playwright
-npx playwright install
+bun add playwright
+bunx playwright install
 ```
 
 ### Verify Installation

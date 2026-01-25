@@ -15,7 +15,7 @@ it('may send password reset notification', function (): void {
         'email' => 'test@example.com',
     ]);
 
-    $action = app(CreateUserEmailResetNotification::class);
+    $action = resolve(CreateUserEmailResetNotification::class);
 
     $status = $action->handle(['email' => $user->email]);
 
@@ -29,7 +29,7 @@ it('returns throttled status when too many attempts', function (): void {
         'email' => 'test@example.com',
     ]);
 
-    $action = app(CreateUserEmailResetNotification::class);
+    $action = resolve(CreateUserEmailResetNotification::class);
 
     // Send multiple reset requests to trigger throttling
     $action->handle(['email' => $user->email]);
@@ -39,7 +39,7 @@ it('returns throttled status when too many attempts', function (): void {
 });
 
 it('returns invalid user status for non-existent email', function (): void {
-    $action = app(CreateUserEmailResetNotification::class);
+    $action = resolve(CreateUserEmailResetNotification::class);
 
     $status = $action->handle(['email' => 'nonexistent@example.com']);
 
