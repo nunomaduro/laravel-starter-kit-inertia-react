@@ -8,7 +8,7 @@ When working with **typed DTOs**, **slugs**, **sort order**, **model flags**, **
 
 - **spatie/laravel-data**: DTOs in `app/Data`; use for API/resources, validation, transforms. Config: `config/data.php`.
 - **spatie/laravel-sluggable**: Add `HasSlug` and slug config to models when human-readable URLs are needed.
-- **spatie/eloquent-sortable**: Add `Sortable` and `order_column` for ordered lists. Config: `config/eloquent-sortable.php`.
+- **spatie/eloquent-sortable** (v5): Add `Sortable` and `order_column` for ordered lists. Config: `config/eloquent-sortable.php`.
 - **spatie/laravel-model-flags**: Add `HasFlags`; flags in `model_flags` table. Config: `config/model-flags.php`, model `App\Models\ModelFlag`.
 - **spatie/laravel-model-states**: State machines on models; use when an entity has distinct states and transitions.
 - **spatie/laravel-schemaless-attributes**: JSON columns (e.g. `extra_attributes`) with cast and accessors.

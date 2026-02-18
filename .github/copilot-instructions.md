@@ -301,7 +301,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - spatie/laravel-medialibrary (MEDIALIBRARY) - v11
 - a909m/filament-statefusion (STATEFUSION) - v2
 - askedio/laravel-soft-cascade (SOFTCASCADE) - v12
-- spatie/eloquent-sortable (SORTABLE) - v4
+- spatie/eloquent-sortable (SORTABLE) - v5
 - spatie/laravel-data (LARAVELDATA) - v4
 - spatie/laravel-model-flags (MODELFLAGS) - v1
 - spatie/laravel-model-states (MODELSTATES) - v2

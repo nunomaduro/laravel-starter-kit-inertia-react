@@ -8,7 +8,7 @@ This document covers the Search & Data packages available in this starter kit, a
 |---------|----------|---------|
 | **spatie/laravel-data** | Must have | Type-safe DTOs for API/internal contracts |
 | **spatie/laravel-sluggable** | Must have | URL-friendly slugs; SEO and route model binding |
-| **spatie/eloquent-sortable** | Good to have | Ordering for lists; Filament `reorderable()` |
+| **spatie/eloquent-sortable** (v5) | Good to have | Ordering for lists; Filament `reorderable()` |
 | **spatie/laravel-model-flags** | Good to have | Per-instance booleans (featured, pinned) |
 | **spatie/laravel-schemaless-attributes** | Good to have | Flexible JSON on models |
 | **spatie/laravel-model-states** | Good to have | State machines (draft → published, etc.) |

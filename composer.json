@@ -55,7 +55,7 @@
         "saloonphp/saloon": "^3.14.2",
         "sentry/sentry-laravel": "^4.20.1",
         "spatie/browsershot": "^5.2.2",
-        "spatie/eloquent-sortable": "^4.5.2",
+        "spatie/eloquent-sortable": "5.0.0 as 4.99.0",
         "spatie/laravel-activitylog": "^4.11",
         "spatie/laravel-analytics": "^5.6.1",
         "spatie/laravel-backup": "^10.0",
