@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserEmailResetNotification;
-use App\Http\Controllers\UserEmailVerification;
+use App\Http\Controllers\UserEmailResetNotificationController;
+use App\Http\Controllers\UserEmailVerificationController;
 use App\Http\Controllers\UserEmailVerificationNotificationController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserProfileController;
@@ -56,9 +56,9 @@ Route::middleware('guest')->group(function (): void {
         ->name('password.store');
 
     // User Email Reset Notification...
-    Route::get('forgot-password', [UserEmailResetNotification::class, 'create'])
+    Route::get('forgot-password', [UserEmailResetNotificationController::class, 'create'])
         ->name('password.request');
-    Route::post('forgot-password', [UserEmailResetNotification::class, 'store'])
+    Route::post('forgot-password', [UserEmailResetNotificationController::class, 'store'])
         ->name('password.email');
 
     // Session...
@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function (): void {
         ->name('verification.send');
 
     // User Email Verification...
-    Route::get('verify-email/{id}/{hash}', [UserEmailVerification::class, 'update'])
+    Route::get('verify-email/{id}/{hash}', [UserEmailVerificationController::class, 'update'])
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 

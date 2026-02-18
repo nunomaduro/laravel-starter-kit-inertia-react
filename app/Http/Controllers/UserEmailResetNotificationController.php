@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-final readonly class UserEmailResetNotification
+final readonly class UserEmailResetNotificationController
 {
     public function create(Request $request): Response
     {

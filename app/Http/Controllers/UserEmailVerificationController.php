@@ -9,7 +9,7 @@ use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 
-final readonly class UserEmailVerification
+final readonly class UserEmailVerificationController
 {
     public function update(EmailVerificationRequest $request, #[CurrentUser] User $user): RedirectResponse
     {
