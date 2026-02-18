@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c190483a243af46f2f7cb7d51dd63efa",
+    "content-hash": "cffb1826c99c479446a89820b033e581",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -6725,6 +6725,73 @@
                 }
             ],
             "time": "2025-08-26T09:13:16+00:00"
+        },
+        {
+            "name": "machour/laravel-data-table",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/coding-sunshine/laravel-data-table.git",
+                "reference": "ae51b5ad660d0347a7c780a5a488e4c4ccfdb3a2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/coding-sunshine/laravel-data-table/zipball/ae51b5ad660d0347a7c780a5a488e4c4ccfdb3a2",
+                "reference": "ae51b5ad660d0347a7c780a5a488e4c4ccfdb3a2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^11.0 || ^12.0",
+                "illuminate/http": "^11.0 || ^12.0",
+                "illuminate/support": "^11.0 || ^12.0",
+                "php": "^8.2",
+                "spatie/laravel-data": "^4.14",
+                "spatie/laravel-query-builder": "^6.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^9.0 || ^10.0",
+                "pestphp/pest": "^3.0 || ^4.0"
+            },
+            "suggest": {
+                "maatwebsite/excel": "Required for XLSX/CSV export functionality (^3.1)",
+                "spatie/laravel-typescript-transformer": "Generate TypeScript types from the PHP DTOs (^2.5)"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Machour\\DataTable\\DataTableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Machour\\DataTable\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Machour\\DataTable\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "A reusable, server-side DataTable system for Laravel + Inertia.js + React (TanStack Table). Define your table in a single PHP class — get sorting, filtering, pagination, exports, quick views, and a full-featured React UI out of the box.",
+            "keywords": [
+                "datatable",
+                "inertia",
+                "laravel",
+                "react",
+                "spatie",
+                "tanstack-table"
+            ],
+            "support": {
+                "source": "https://github.com/coding-sunshine/laravel-data-table/tree/main"
+            },
+            "time": "2026-02-16T11:02:25+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -23954,6 +24021,7 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "machour/laravel-data-table": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,

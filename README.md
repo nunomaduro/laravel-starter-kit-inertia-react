@@ -32,6 +32,7 @@ Modern PHP has evolved into a mature, type-safe language, yet many Laravel proje
 - **AI Guidelines**: Integrated AI Guidelines to assist in maintaining code quality and consistency
 - **AI Integration**: Prism PHP (OpenRouter, `ai()` helper) for text, structured output, and MCP/Relay; Laravel AI SDK for agents, embeddings, images, and provider tools. See `docs/developer/backend/prism.md` and `docs/developer/backend/ai-sdk.md`.
 - **Optional: PostgreSQL + pgvector**: Vector embeddings for semantic search and RAG when using PostgreSQL
+- **Server-side DataTables**: [machour/laravel-data-table](https://github.com/coding-sunshine/laravel-data-table) (project fork) — one PHP class per model for sorting, filtering, pagination, quick views, and a full React UI (TanStack Table); see `docs/developer/backend/data-table.md`
 - **Full Testing Suite**: More than 150 tests with 100% code coverage using Pest
 - **Automated Seeder System**: Comprehensive seeder automation with category-based organization, JSON support, and relationship-aware generation
 - **Activity Logging**: [Spatie Laravel Activity Log](https://spatie.be/docs/laravel-activitylog/v4/introduction) and [Filament Activity Log](https://filamentphp.com/plugins/alizharb-activity-log) for user and model changes, including 2FA and role/permission changes, with IP and user agent; new models from `make:model:full` get activity logging by default

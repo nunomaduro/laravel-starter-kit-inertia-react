@@ -10,6 +10,10 @@
             "name": "filament",
             "type": "composer",
             "url": "https://packages.filamentphp.com/composer"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/coding-sunshine/laravel-data-table"
         }
     ],
     "require": {
@@ -80,7 +84,8 @@
         "stephenjude/filament-feature-flags": "^5.0.1",
         "stripe/stripe-php": "^19.3",
         "typesense/typesense-php": "^6.0",
-        "wildside/userstamps": "^3.1.1"
+        "wildside/userstamps": "^3.1.1",
+        "machour/laravel-data-table": "dev-main"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.1.9",
