@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Users\Tables;
 
 use App\Features\ImpersonationFeature;
+use App\Support\FeatureHelper;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -12,7 +13,6 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Laravel\Pennant\Feature;
 use Maatwebsite\Excel\Excel;
 use pxlrbt\FilamentExcel\Actions\ExportAction;
 use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
@@ -79,7 +79,7 @@ final class UsersTable
                 EditAction::make(),
                 Impersonate::make()
                     ->visible(fn (): bool => auth()->user()?->hasRole('super-admin') === true
-                        && Feature::for(auth()->user())->active(ImpersonationFeature::class)),
+                        && FeatureHelper::isActiveForClass(ImpersonationFeature::class, auth()->user())),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

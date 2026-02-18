@@ -6,9 +6,9 @@ namespace App\Http\Middleware;
 
 use App\Features\RegistrationFeature;
 use App\Settings\AuthSettings;
+use App\Support\FeatureHelper;
 use Closure;
 use Illuminate\Http\Request;
-use Laravel\Pennant\Feature;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * Checks both the Pennant RegistrationFeature flag and the AuthSettings toggle.
  * Both must be enabled for registration to be accessible.
+ * Respects globally disabled modules.
  */
 final class EnsureRegistrationEnabled
 {
@@ -24,7 +25,7 @@ final class EnsureRegistrationEnabled
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $pennantActive = Feature::active(RegistrationFeature::class);
+        $pennantActive = FeatureHelper::isActiveForClass(RegistrationFeature::class, $request->user());
         $settingsEnabled = resolve(AuthSettings::class)->registration_enabled;
 
         if ($pennantActive && $settingsEnabled) {

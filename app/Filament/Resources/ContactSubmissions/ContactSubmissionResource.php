@@ -12,12 +12,12 @@ use App\Filament\Resources\ContactSubmissions\Schemas\ContactSubmissionForm;
 use App\Filament\Resources\ContactSubmissions\Schemas\ContactSubmissionInfolist;
 use App\Filament\Resources\ContactSubmissions\Tables\ContactSubmissionsTable;
 use App\Models\ContactSubmission;
+use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Laravel\Pennant\Feature;
 use UnitEnum;
 
 final class ContactSubmissionResource extends Resource
@@ -56,7 +56,7 @@ final class ContactSubmissionResource extends Resource
     {
         $user = auth()->user();
 
-        return $user && Feature::for($user)->active(ContactFeature::class) && parent::canAccess();
+        return $user && FeatureHelper::isActiveForClass(ContactFeature::class, $user) && parent::canAccess();
     }
 
     public static function getPages(): array

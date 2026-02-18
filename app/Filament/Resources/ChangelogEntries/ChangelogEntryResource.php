@@ -13,6 +13,7 @@ use App\Filament\Resources\ChangelogEntries\Schemas\ChangelogEntryForm;
 use App\Filament\Resources\ChangelogEntries\Schemas\ChangelogEntryInfolist;
 use App\Filament\Resources\ChangelogEntries\Tables\ChangelogEntriesTable;
 use App\Models\ChangelogEntry;
+use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -20,7 +21,6 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Laravel\Pennant\Feature;
 use UnitEnum;
 
 final class ChangelogEntryResource extends Resource
@@ -59,7 +59,7 @@ final class ChangelogEntryResource extends Resource
     {
         $user = auth()->user();
 
-        return $user && Feature::for($user)->active(ChangelogFeature::class) && parent::canAccess();
+        return $user && FeatureHelper::isActiveForClass(ChangelogFeature::class, $user) && parent::canAccess();
     }
 
     public static function getPages(): array

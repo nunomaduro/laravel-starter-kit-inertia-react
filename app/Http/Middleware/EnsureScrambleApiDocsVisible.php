@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Features\ScrambleApiDocsFeature;
+use App\Support\FeatureHelper;
 use Closure;
 use Illuminate\Http\Request;
-use Laravel\Pennant\Feature;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * For requests to /docs/api or /docs/api.json, abort with 404 when
  * ScrambleApiDocsFeature is inactive for the authenticated user.
  * Guests are allowed through.
+ * Respects globally disabled modules.
  */
 final class EnsureScrambleApiDocsVisible
 {
@@ -32,7 +33,7 @@ final class EnsureScrambleApiDocsVisible
             return $next($request);
         }
 
-        abort_unless(Feature::for($user)->active(ScrambleApiDocsFeature::class), 404);
+        abort_unless(FeatureHelper::isActiveForClass(ScrambleApiDocsFeature::class, $user), 404);
 
         return $next($request);
     }

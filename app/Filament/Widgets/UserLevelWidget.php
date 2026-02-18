@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\Widgets;
 
 use App\Features\GamificationFeature;
+use App\Support\FeatureHelper;
 use Filament\Widgets\StatsOverviewWidget as BaseStatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Laravel\Pennant\Feature;
 
 final class UserLevelWidget extends BaseStatsOverviewWidget
 {
@@ -22,7 +22,7 @@ final class UserLevelWidget extends BaseStatsOverviewWidget
         if (! $user instanceof \App\Models\User) {
             return [];
         }
-        if (! Feature::for($user)->active(GamificationFeature::class)) {
+        if (! FeatureHelper::isActiveForClass(GamificationFeature::class, $user)) {
             return [];
         }
 

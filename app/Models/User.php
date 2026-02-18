@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Features\ImpersonationFeature;
 use App\Models\Concerns\Categorizable;
 use App\Models\Concerns\HasOrganizationPermissions;
+use App\Support\FeatureHelper;
 use App\Traits\Billing\HasAffiliate;
 use BeyondCode\Vouchers\Traits\CanRedeemVouchers;
 use Carbon\CarbonInterface;
@@ -23,7 +24,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Jijunair\LaravelReferral\Traits\Referrable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Pennant\Feature;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\NewAccessToken;
 use Laravel\Scout\Searchable;
@@ -170,7 +170,7 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     public function canImpersonate(): bool
     {
         return $this->hasRole('super-admin')
-            && Feature::for($this)->active(ImpersonationFeature::class);
+            && FeatureHelper::isActiveForClass(ImpersonationFeature::class, $this);
     }
 
     /**

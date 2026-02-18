@@ -13,6 +13,7 @@ use App\Filament\Resources\Posts\Schemas\PostForm;
 use App\Filament\Resources\Posts\Schemas\PostInfolist;
 use App\Filament\Resources\Posts\Tables\PostsTable;
 use App\Models\Post;
+use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -20,7 +21,6 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Laravel\Pennant\Feature;
 use UnitEnum;
 
 final class PostResource extends Resource
@@ -69,7 +69,7 @@ final class PostResource extends Resource
     {
         $user = auth()->user();
 
-        return $user && Feature::for($user)->active(BlogFeature::class) && parent::canAccess();
+        return $user && FeatureHelper::isActiveForClass(BlogFeature::class, $user) && parent::canAccess();
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

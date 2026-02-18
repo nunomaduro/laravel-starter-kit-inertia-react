@@ -71,11 +71,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
         return sidebarNavItems.filter((item) => {
             if (!item.feature) return true;
             const value = f[item.feature];
-            // Gamification: show when true, 1, or undefined (fail open so it appears after features:reset-to-defaults or fresh deploy)
-            if (item.feature === 'gamification') {
-                return value === true || value === 1 || value === undefined;
-            }
-            return Boolean(value);
+            // Fail closed: only show when feature is explicitly active (true or 1)
+            return value === true || value === 1;
         });
     }, [features]);
 

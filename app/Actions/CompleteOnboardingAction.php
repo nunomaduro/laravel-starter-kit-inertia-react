@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Features\GamificationFeature;
 use App\Models\User;
-use Laravel\Pennant\Feature;
+use App\Support\FeatureHelper;
 use LevelUp\Experience\Models\Achievement;
 use Throwable;
 
@@ -16,7 +16,7 @@ final readonly class CompleteOnboardingAction
     {
         $user->update(['onboarding_completed' => true]);
 
-        if (! Feature::for($user)->active(GamificationFeature::class)) {
+        if (! FeatureHelper::isActiveForClass(GamificationFeature::class, $user)) {
             return;
         }
 

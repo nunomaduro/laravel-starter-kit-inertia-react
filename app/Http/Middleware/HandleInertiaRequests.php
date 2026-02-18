@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Settings\SeoSettings;
+use App\Support\FeatureHelper;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use Laravel\Pennant\Feature;
 use Spatie\Honeypot\Honeypot;
 use Throwable;
 
@@ -47,9 +47,7 @@ final class HandleInertiaRequests extends Middleware
 
         $features = [];
         foreach (config('feature-flags.inertia_features', []) as $name => $featureClass) {
-            $features[$name] = $user
-                ? Feature::for($user)->active($featureClass)
-                : (new $featureClass)->defaultValue;
+            $features[$name] = FeatureHelper::isActiveForKey($name, $user);
         }
 
         $tenancyEnabled = config('tenancy.enabled', true);

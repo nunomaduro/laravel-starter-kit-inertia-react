@@ -7,11 +7,11 @@ namespace App\Filament\Resources\Users\Pages;
 use App\Features\ImpersonationFeature;
 use App\Filament\Resources\Users\UserResource;
 use App\Services\ActivityLogRbac;
+use App\Support\FeatureHelper;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Validation\ValidationException;
-use Laravel\Pennant\Feature;
 use Spatie\Permission\Models\Role;
 use STS\FilamentImpersonate\Actions\Impersonate;
 
@@ -47,7 +47,7 @@ final class EditUser extends EditRecord
             Impersonate::make()
                 ->record($this->getRecord())
                 ->visible(fn (): bool => auth()->user()?->hasRole('super-admin') === true
-                    && Feature::for(auth()->user())->active(ImpersonationFeature::class)),
+                    && FeatureHelper::isActiveForClass(ImpersonationFeature::class, auth()->user())),
             DeleteAction::make(),
         ];
     }

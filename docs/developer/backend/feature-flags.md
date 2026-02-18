@@ -27,6 +27,7 @@ final class ExampleFeature
 
 ## Config: feature-flags.php
 
+- **`globally_disabled`**: List of feature keys that are always off for everyone (including super-admins). Sourced from env `GLOBALLY_DISABLED_MODULES` (comma-separated, e.g. `blog,changelog,gamification`). Checked before Pennant; when a feature is globally disabled, Pennant is not consulted.
 - **`inertia_features`**: `'key' => FeatureClass` — each key is exposed to the frontend as `features.key` (boolean). Used by `HandleInertiaRequests` for shared props.
 - **`route_feature_map`**: `'key' => FeatureClass` — keys are used by the `feature` route middleware (e.g. `feature:blog`). Only keys listed here can be used in middleware.
 
@@ -68,17 +69,31 @@ This purges Pennant’s stored feature values and clears all feature segments. F
 
 Applied in `routes/web.php` and `routes/api.php` (e.g. `feature:blog` on blog group, `feature:api_access` on API sanctum group). Scramble docs are gated by `EnsureScrambleApiDocsVisible` in the web middleware stack (path `docs/api`).
 
+## Global module disable
+
+To turn off a feature for everyone (including super-admins) at the system level, add it to `GLOBALLY_DISABLED_MODULES` in `.env` (comma-separated keys, e.g. `blog,changelog,gamification`). The `FeatureHelper` checks this list before Pennant; globally disabled features are always off. Use for deployments where certain modules should not be available in a given environment.
+
+## FeatureHelper
+
+`App\Support\FeatureHelper` centralizes feature checks with global-disable support:
+
+- `FeatureHelper::isActiveForKey(string $key, ?User $user = null): bool` — check by feature key (e.g. `blog`).
+- `FeatureHelper::isActiveForClass(string $featureClass, ?User $user = null): bool` — check by feature class (e.g. `BlogFeature::class`).
+- `FeatureHelper::isGloballyDisabled(string $key): bool` — check if a feature key is in the global disable list.
+
+Use these instead of `Feature::for($user)->active($featureClass)` when you need global-disable behavior.
+
 ## Filament resource gating
 
-PostResource, ChangelogEntryResource, HelpArticleResource, and ContactSubmissionResource override `canAccess()` to require the corresponding feature (Blog, Changelog, Help, Contact) to be active for the current user. When the feature is off, the resource and its nav item are hidden and access returns 403.
+PostResource, ChangelogEntryResource, HelpArticleResource, and ContactSubmissionResource override `canAccess()` to require the corresponding feature (Blog, Changelog, Help, Contact) to be active for the current user. When the feature is off (including when globally disabled), the resource and its nav item are hidden and access returns 403.
 
 ## Impersonation
 
-`User::canImpersonate()` returns true only when the user has the `super-admin` role **and** `Feature::for($this)->active(ImpersonationFeature::class)`.
+`User::canImpersonate()` returns true only when the user has the `super-admin` role **and** the Impersonation feature is active for that user. Globally disabled impersonation turns this off for everyone.
 
 ## Exposing to Inertia
 
-- **Middleware**: `HandleInertiaRequests` builds a `features` array from `config('feature-flags.inertia_features')`. For each entry it sets `features[$name] = $user ? Feature::for($user)->active($featureClass) : (new $featureClass)->defaultValue`.
+- **Middleware**: `HandleInertiaRequests` builds a `features` array from `config('feature-flags.inertia_features')`. For each entry it uses `FeatureHelper::isActiveForKey()` so globally disabled features are always `false`.
 - **Guests**: Each feature uses the class’s `$defaultValue` (not an empty object).
 
 Frontend usage:

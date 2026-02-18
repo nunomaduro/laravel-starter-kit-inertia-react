@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Filament\Pages;
 
 use App\Features\ScrambleApiDocsFeature;
+use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Html;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
-use Laravel\Pennant\Feature;
 use UnitEnum;
 
 final class ApiDocs extends Page
@@ -31,7 +31,7 @@ final class ApiDocs extends Page
             return false;
         }
 
-        return Feature::for($user)->active(ScrambleApiDocsFeature::class);
+        return FeatureHelper::isActiveForClass(ScrambleApiDocsFeature::class, $user);
     }
 
     public function content(Schema $schema): Schema

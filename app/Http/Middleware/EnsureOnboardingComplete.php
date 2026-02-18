@@ -6,9 +6,9 @@ namespace App\Http\Middleware;
 
 use App\Features\OnboardingFeature;
 use App\Models\User;
+use App\Support\FeatureHelper;
 use Closure;
 use Illuminate\Http\Request;
-use Laravel\Pennant\Feature;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -45,7 +45,7 @@ final class EnsureOnboardingComplete
         /** @var User $user */
         $user = $request->user();
 
-        if (! Feature::for($user)->active(OnboardingFeature::class)) {
+        if (! FeatureHelper::isActiveForClass(OnboardingFeature::class, $user)) {
             return $next($request);
         }
 

@@ -13,6 +13,7 @@ use App\Filament\Resources\HelpArticles\Schemas\HelpArticleForm;
 use App\Filament\Resources\HelpArticles\Schemas\HelpArticleInfolist;
 use App\Filament\Resources\HelpArticles\Tables\HelpArticlesTable;
 use App\Models\HelpArticle;
+use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -20,7 +21,6 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Laravel\Pennant\Feature;
 use UnitEnum;
 
 final class HelpArticleResource extends Resource
@@ -59,7 +59,7 @@ final class HelpArticleResource extends Resource
     {
         $user = auth()->user();
 
-        return $user && Feature::for($user)->active(HelpFeature::class) && parent::canAccess();
+        return $user && FeatureHelper::isActiveForClass(HelpFeature::class, $user) && parent::canAccess();
     }
 
     public static function getPages(): array

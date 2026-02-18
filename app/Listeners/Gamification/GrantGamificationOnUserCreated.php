@@ -6,7 +6,7 @@ namespace App\Listeners\Gamification;
 
 use App\Events\User\UserCreated;
 use App\Features\GamificationFeature;
-use Laravel\Pennant\Feature;
+use App\Support\FeatureHelper;
 use Throwable;
 
 final class GrantGamificationOnUserCreated
@@ -15,7 +15,7 @@ final class GrantGamificationOnUserCreated
     {
         $user = $event->user;
 
-        if (! Feature::for($user)->active(GamificationFeature::class)) {
+        if (! FeatureHelper::isActiveForClass(GamificationFeature::class, $user)) {
             return;
         }
 

@@ -20,7 +20,7 @@ Gamification is implemented with [cjmellor/level-up](https://github.com/cjmellor
 ## Config and feature flag
 
 - Package config: `config/level-up.php` (published from the package).
-- Feature: `config/feature-flags.php` (`gamification` in `inertia_features` and `route_feature_map`).
+- Feature: `config/feature-flags.php` (`gamification` in `inertia_features` and `route_feature_map`). Add `gamification` to `GLOBALLY_DISABLED_MODULES` to turn it off for everyone.
 
 ## Deferred
 

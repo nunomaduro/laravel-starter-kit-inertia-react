@@ -20,6 +20,15 @@ use App\Features\TwoFactorAuthFeature;
 
 return [
     /*
+     * Comma-separated feature keys that are globally disabled for all users (including super-admins).
+     * Keys must match those in inertia_features/route_feature_map (e.g. blog, changelog, gamification).
+     * When disabled, Pennant is not consulted; the feature is always off.
+     */
+    'globally_disabled' => array_filter(
+        array_map('trim', explode(',', env('GLOBALLY_DISABLED_MODULES', '')))
+    ),
+
+    /*
      * Feature classes to resolve and expose to the Inertia frontend as shared props.
      * Keys become the feature name in the `features` object (e.g. BlogFeature -> blog).
      */
