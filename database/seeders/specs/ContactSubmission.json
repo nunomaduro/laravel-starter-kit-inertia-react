@@ -3,7 +3,7 @@
     "table": "contact_submissions",
     "fields": {
         "id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -33,27 +33,27 @@
             "default": null
         },
         "created_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "created_by": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "updated_by": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         }

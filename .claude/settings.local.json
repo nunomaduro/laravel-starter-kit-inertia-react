@@ -9,7 +9,9 @@
       "Bash(xargs:*)",
       "mcp__firecrawl__firecrawl_scrape",
       "mcp__firecrawl__firecrawl_search",
-      "mcp__firecrawl__firecrawl_map"
+      "mcp__firecrawl__firecrawl_map",
+      "mcp__kreuzberg__extract_document",
+      "Bash(/tmp/reports_comparison.md:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

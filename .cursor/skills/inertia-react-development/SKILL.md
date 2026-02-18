@@ -44,6 +44,10 @@ export default function UsersIndex({ users }) {
 }
 ```
 
+### Layout for app pages
+
+**Authenticated app pages (dashboard, modules, settings, billing, etc.) must use the same layout.** Use `AppLayout` from `@/layouts/app-layout` with a `breadcrumbs` array and the standard content wrapper (`flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4`). See `docs/developer/frontend/pages/README.md` (Layout conventions) and existing pages (e.g. `dashboard.tsx`, `blog/index.tsx`, `changelog/index.tsx`).
+
 ## Client-Side Navigation
 
 ### Basic Link Component

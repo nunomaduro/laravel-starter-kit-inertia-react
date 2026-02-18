@@ -3,12 +3,12 @@
     "table": "organization_invitations",
     "fields": {
         "id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -33,27 +33,27 @@
             "default": null
         },
         "invited_by": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "expires_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "accepted_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         }

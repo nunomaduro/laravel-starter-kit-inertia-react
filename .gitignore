@@ -27,3 +27,5 @@ yarn-error.log
 /.vscode
 /.zed
 /tmp/
+/.kreuzberg
+/prd

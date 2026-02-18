@@ -2,6 +2,19 @@
 
 Inertia pages are React components that receive data from Laravel controllers. They live in `resources/js/pages/`.
 
+## Layout conventions
+
+**Authenticated app pages (dashboard, modules, settings, billing, organizations, etc.) must use the same layout** so the UI is consistent:
+
+- Use **`AppLayout`** from `@/layouts/app-layout` for any page that should show the sidebar, top bar, and breadcrumbs.
+- Pass **`breadcrumbs`**: an array of `{ title: string, href: string }` (e.g. Dashboard → Module → optional current page).
+- Wrap page content in the same content wrapper used elsewhere:  
+  `<div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">`.
+
+**Do not** use a custom full-page layout (e.g. standalone header + “Back to home”) for app modules. Reserve that for unauthenticated or one-off flows (e.g. welcome, login, legal pages).
+
+Examples: dashboard, blog (index/show), changelog, help (index/show), billing, organizations, settings — all use `AppLayout`.
+
 ## Available Pages
 
 | Page | Route | Documented |

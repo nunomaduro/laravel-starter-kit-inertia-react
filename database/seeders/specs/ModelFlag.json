@@ -3,7 +3,7 @@
     "table": "model_flags",
     "fields": {
         "id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -18,17 +18,17 @@
             "default": null
         },
         "flaggable_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         }

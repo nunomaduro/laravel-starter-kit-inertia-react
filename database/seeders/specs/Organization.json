@@ -3,7 +3,7 @@
     "table": "organizations",
     "fields": {
         "id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -18,42 +18,42 @@
             "default": null
         },
         "settings": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "owner_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "created_by": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "updated_by": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "deleted_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "deleted_by": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -68,7 +68,7 @@
             "default": null
         },
         "billing_address": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },

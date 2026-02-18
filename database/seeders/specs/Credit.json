@@ -3,12 +3,12 @@
     "table": "credits",
     "fields": {
         "id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -18,17 +18,17 @@
             "default": null
         },
         "creditable_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "amount": {
-            "type": "int4",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "running_balance": {
-            "type": "int4",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -43,22 +43,22 @@
             "default": null
         },
         "metadata": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "expires_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         }

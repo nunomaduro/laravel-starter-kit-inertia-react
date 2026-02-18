@@ -8,9 +8,9 @@ import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     BarChart3,
-    Envelope,
     FileText,
     LifeBuoy,
+    Mail,
     Settings,
     UserPen,
 } from 'lucide-react';
@@ -66,7 +66,7 @@ export default function Dashboard() {
         {
             label: 'Email templates',
             href: '/admin/mail-templates',
-            icon: Envelope,
+            icon: Mail,
             show: isSuperAdmin,
             external: true,
             dataPan: 'dashboard-quick-email-templates',

@@ -3,12 +3,12 @@
     "table": "invoices",
     "fields": {
         "id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -18,7 +18,7 @@
             "default": null
         },
         "billable_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -38,22 +38,22 @@
             "default": null
         },
         "subtotal": {
-            "type": "int4",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "tax": {
-            "type": "int4",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "total": {
-            "type": "int4",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "paid_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
@@ -63,17 +63,17 @@
             "default": null
         },
         "line_items": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "billing_address": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "payment_gateway_id": {
-            "type": "int8",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -83,12 +83,12 @@
             "default": null
         },
         "created_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "timestamp",
+            "type": "datetime",
             "nullable": true,
             "default": null
         }
