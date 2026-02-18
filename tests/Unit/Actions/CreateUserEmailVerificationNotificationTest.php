@@ -14,7 +14,7 @@ it('may send email verification notification', function (): void {
         'email_verified_at' => null,
     ]);
 
-    $action = app(CreateUserEmailVerificationNotification::class);
+    $action = resolve(CreateUserEmailVerificationNotification::class);
 
     $action->handle($user);
 

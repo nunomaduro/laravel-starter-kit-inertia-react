@@ -5,7 +5,3 @@
 *.html diff=html
 *.md diff=markdown
 *.php diff=php
-
-CHANGELOG.md export-ignore
-README.md export-ignore
-.github/workflows/browser-tests.yml export-ignore
