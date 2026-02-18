@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`spatie/laravel-responsecache` caches full HTTP responses for **guest** GET requests to improve performance. Authenticated users, admin, and auth-related routes are never cached.
+`spatie/laravel-responsecache` (v8) caches full HTTP responses for **guest** GET requests to improve performance. Authenticated users, admin, and auth-related routes are never cached.
 
 ## Configuration
 

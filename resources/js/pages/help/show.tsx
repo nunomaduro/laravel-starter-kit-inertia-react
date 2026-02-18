@@ -76,8 +76,7 @@ export default function HelpShow({ article, related }: Props) {
                         <div className="flex flex-wrap items-center gap-3">
                             <Form
                                 action={
-                                    helpRate({ helpArticle: article.slug })
-                                        .url
+                                    helpRate({ helpArticle: article.slug }).url
                                 }
                                 method="post"
                                 className="inline-block"
@@ -96,8 +95,7 @@ export default function HelpShow({ article, related }: Props) {
                             </Form>
                             <Form
                                 action={
-                                    helpRate({ helpArticle: article.slug })
-                                        .url
+                                    helpRate({ helpArticle: article.slug }).url
                                 }
                                 method="post"
                                 className="inline-block"

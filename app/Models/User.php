@@ -22,7 +22,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Jijunair\LaravelReferral\Traits\Referrable;
-use Lab404\Impersonate\Models\Impersonate as ImpersonateTrait;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Pennant\Feature;
 use Laravel\Sanctum\HasApiTokens;
@@ -63,7 +62,7 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     /**
      * @use HasFactory<UserFactory>
      */
-    use CanRedeemVouchers, Categorizable, GiveExperience, HasAchievements, HasAffiliate, HasApiTokens, HasFactory, HasOrganizationPermissions, HasRoles, HasTags, ImpersonateTrait, InteractsWithMedia, LogsActivity, Notifiable, Referrable, Searchable, TwoFactorAuthenticatable;
+    use CanRedeemVouchers, Categorizable, GiveExperience, HasAchievements, HasAffiliate, HasApiTokens, HasFactory, HasOrganizationPermissions, HasRoles, HasTags, InteractsWithMedia, LogsActivity, Notifiable, Referrable, Searchable, TwoFactorAuthenticatable;
 
     /**
      * @var list<string>

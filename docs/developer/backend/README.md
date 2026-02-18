@@ -28,6 +28,7 @@ Backend components, services, and patterns for developers.
 - [Permissions and RBAC](./permissions.md) - Route-based permissions, permission categories, role hierarchy
 - [Prism AI Integration](./prism.md) - AI integration with Prism and OpenRouter
 - [Laravel AI SDK](./ai-sdk.md) - Agents, embeddings, images, and when to use vs Prism
+- [Laravel AI Memory](./ai-memory.md) - Semantic memory for agents (eznix86/laravel-ai-memory; store/recall, WithMemory)
 - [PostgreSQL + pgvector](./pgvector.md) - Vector embeddings with pgvector (optional)
 - [Response Cache](./response-cache.md) - Guest GET response caching (exclude auth/admin)
 - [Scout + Typesense](./scout-typesense.md) - Full-text search with Laravel Scout and Typesense (Herd)
@@ -59,6 +60,7 @@ Backend components, services, and patterns for developers.
 - [Seeder System](./database/seeders.md) - Automated seeder system
 - [Prism AI Integration](./prism.md) - AI-powered features with Prism (OpenRouter, commands)
 - [Laravel AI SDK](./ai-sdk.md) - Agents, embeddings, media; use with Prism as needed
+- [Laravel AI Memory](./ai-memory.md) - Semantic memory for agents (store/recall, WithMemory)
 - [PostgreSQL + pgvector](./pgvector.md) - Vector embeddings (optional)
 - [Scramble OpenAPI Docs](./scramble.md) - API documentation at `/docs/api`
 - [Pan (product analytics)](./pan.md) - `data-pan` tracking; `php artisan pan`; whitelist in AppServiceProvider

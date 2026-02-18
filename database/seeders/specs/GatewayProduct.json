@@ -18,22 +18,22 @@
             "default": null
         },
         "gateway_product_id": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "gateway_price_id": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

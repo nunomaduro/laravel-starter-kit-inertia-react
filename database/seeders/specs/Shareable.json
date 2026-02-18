@@ -8,7 +8,7 @@
             "default": null
         },
         "shareable_type": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -18,7 +18,7 @@
             "default": null
         },
         "target_type": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -28,7 +28,7 @@
             "default": null
         },
         "permission": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -38,17 +38,17 @@
             "default": null
         },
         "expires_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

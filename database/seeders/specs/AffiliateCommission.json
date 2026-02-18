@@ -28,12 +28,12 @@
             "default": null
         },
         "currency": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "status": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -43,22 +43,22 @@
             "default": null
         },
         "approved_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "paid_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

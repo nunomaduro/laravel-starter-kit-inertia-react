@@ -18,12 +18,12 @@
             "default": null
         },
         "accepted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "ip": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -33,12 +33,12 @@
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

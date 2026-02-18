@@ -8,12 +8,12 @@
             "default": null
         },
         "title": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "slug": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -28,7 +28,7 @@
             "default": null
         },
         "category": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -53,12 +53,12 @@
             "default": null
         },
         "is_published": {
-            "type": "tinyint",
+            "type": "boolean",
             "nullable": true,
             "default": null
         },
         "is_featured": {
-            "type": "tinyint",
+            "type": "boolean",
             "nullable": true,
             "default": null
         },
@@ -73,17 +73,17 @@
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "deleted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },

@@ -46,10 +46,20 @@ $response = (new SalesCoach)->forUser($user)->prompt('Hello!');
 // Or with conversation: ->continue($conversationId, as: $user)->prompt('Follow-up');
 ```
 
+## Agent memory (semantic store/recall)
+
+For agents that should **remember** facts across conversations (user preferences, prior decisions, context), use [Laravel AI Memory](./ai-memory.md) (eznix86/laravel-ai-memory). It provides:
+
+- **AgentMemory** facade: `store()`, `recall()`, `forget()`, `forgetAll()`
+- **StoreMemory / RecallMemory** tools so the agent can save and look up facts
+- **WithMemory** middleware to inject relevant memories into each prompt
+
+The app includes `App\Ai\Agents\AssistantAgent` as an example agent with memory. Requires PostgreSQL + pgvector and `config/ai.php` embeddings/reranking (e.g. OpenAI, Cohere).
+
 ## Embeddings and Vectors
 
 - **Generate embeddings:** Laravel AI `Embeddings::for([...])->generate()` or `Str::of('...')->toEmbeddings()`.
-- **Store and query:** Use existing [pgvector](./pgvector.md) setup (pgvector package + `embedding_demos` or your own tables). Laravel 12’s `whereVectorSimilarTo` can be used if you adopt the framework’s vector column support; the project currently uses the `pgvector/pgvector` package and `HasNeighbors` for queries.
+- **Store and query:** Use existing [pgvector](./pgvector.md) setup (pgvector package + `embedding_demos` or your own tables). Laravel 12’s `whereVectorSimilarTo` can be used if you adopt the framework’s vector column support; the project currently uses the `pgvector/pgvector` package and `HasNeighbors` for queries. The **memories** table (from [laravel-ai-memory](./ai-memory.md)) also uses pgvector for agent memory.
 
 For RAG in an agent, use the SDK’s `SimilaritySearch` tool with a model that has an `embedding` column.
 

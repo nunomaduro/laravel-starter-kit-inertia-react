@@ -13,22 +13,22 @@
             "default": null
         },
         "email": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "role": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "status": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "token": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -38,22 +38,22 @@
             "default": null
         },
         "expires_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "accepted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

@@ -6,6 +6,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use STS\FilamentImpersonate\Facades\Impersonation;
 
 final class UserPolicy
 {
@@ -13,7 +14,7 @@ final class UserPolicy
 
     public function viewAny(User $user): bool
     {
-        if (resolve('impersonate')->isImpersonating()) {
+        if (Impersonation::isImpersonating()) {
             return true;
         }
 

@@ -7,12 +7,12 @@ namespace App\Listeners;
 use App\Enums\ActivityType;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Lab404\Impersonate\Events\LeaveImpersonation;
-use Lab404\Impersonate\Events\TakeImpersonation;
+use STS\FilamentImpersonate\Events\EnterImpersonation;
+use STS\FilamentImpersonate\Events\LeaveImpersonation;
 
 final class LogImpersonationEvents
 {
-    public function handleTakeImpersonation(TakeImpersonation $event): void
+    public function handleEnterImpersonation(EnterImpersonation $event): void
     {
         $this->log(
             $event->impersonator,
@@ -29,6 +29,10 @@ final class LogImpersonationEvents
 
     public function handleLeaveImpersonation(LeaveImpersonation $event): void
     {
+        if ($event->impersonated === null) {
+            return;
+        }
+
         $this->log(
             $event->impersonator,
             $event->impersonated,
@@ -60,10 +64,17 @@ final class LogImpersonationEvents
 
     private function userName(Authenticatable $user): string
     {
-        return match (true) {
-            property_exists($user, 'name') && $user->name !== null => (string) $user->name,
-            property_exists($user, 'email') && $user->email !== null => (string) $user->email,
-            default => (string) $user->getAuthIdentifier(),
-        };
+        if ($user instanceof Model) {
+            $name = $user->getAttribute('name');
+            if ($name !== null && $name !== '') {
+                return (string) $name;
+            }
+            $email = $user->getAttribute('email');
+            if ($email !== null && $email !== '') {
+                return (string) $email;
+            }
+        }
+
+        return (string) $user->getAuthIdentifier();
     }
 }

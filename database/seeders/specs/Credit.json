@@ -13,7 +13,7 @@
             "default": null
         },
         "creditable_type": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -33,12 +33,12 @@
             "default": null
         },
         "type": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "description": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -48,17 +48,17 @@
             "default": null
         },
         "expires_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

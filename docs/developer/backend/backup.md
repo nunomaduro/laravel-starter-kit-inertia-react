@@ -1,6 +1,6 @@
 # Backup & Restore
 
-Application and database backups are handled by **spatie/laravel-backup**.
+Application and database backups are handled by **spatie/laravel-backup** (v10).
 
 ## Configuration
 

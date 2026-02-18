@@ -44,13 +44,14 @@ export default function BlogShow({ post }: Props) {
                     </h1>
                     <p className="mb-6 text-sm text-muted-foreground">
                         {post.published_at
-                            ? new Date(
-                                  post.published_at,
-                              ).toLocaleDateString('en-CA', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                              })
+                            ? new Date(post.published_at).toLocaleDateString(
+                                  'en-CA',
+                                  {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                  },
+                              )
                             : null}
                         {post.author ? ` · ${post.author.name}` : null}
                     </p>

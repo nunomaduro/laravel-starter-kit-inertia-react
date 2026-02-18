@@ -145,7 +145,8 @@ export function AppSidebar() {
     const visibleFooterNavItems = useMemo(() => {
         const f = features ?? {};
         return footerNavItems.filter(
-            (item) => !item.feature || Boolean(f[item.feature as keyof typeof f]),
+            (item) =>
+                !item.feature || Boolean(f[item.feature as keyof typeof f]),
         );
     }, [features]);
 

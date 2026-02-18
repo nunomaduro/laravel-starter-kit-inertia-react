@@ -168,7 +168,7 @@ final class SeedSpecGenerator
             }
 
             $fields[$column] = [
-                'type' => $type,
+                'type' => $this->normalizeColumnType($type),
                 'nullable' => $nullable,
                 'default' => $default,
             ];
@@ -183,6 +183,27 @@ final class SeedSpecGenerator
         }
 
         return $fields;
+    }
+
+    /**
+     * Normalize driver-specific column types to canonical names so spec JSON
+     * does not flip between e.g. datetime/timestamp or integer/int8 when
+     * running in different environments or after migrations.
+     */
+    private function normalizeColumnType(string $type): string
+    {
+        return match (mb_strtolower($type)) {
+            'datetime', 'timestamp', 'timestamps' => 'timestamp',
+            'int8', 'bigint' => 'bigint',
+            'int', 'int4', 'integer' => 'integer',
+            'bool', 'boolean' => 'boolean',
+            'tinyint' => 'boolean',
+            'float', 'double', 'real' => 'float',
+            'text', 'mediumtext', 'longtext' => 'text',
+            'varchar', 'char', 'string' => 'string',
+            'json', 'jsonb' => 'json',
+            default => $type,
+        };
     }
 
     /**

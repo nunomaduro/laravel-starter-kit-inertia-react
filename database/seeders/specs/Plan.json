@@ -13,7 +13,7 @@
             "default": null
         },
         "slug": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -23,7 +23,7 @@
             "default": null
         },
         "is_active": {
-            "type": "tinyint",
+            "type": "boolean",
             "nullable": true,
             "default": null
         },
@@ -38,7 +38,7 @@
             "default": null
         },
         "currency": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -48,7 +48,7 @@
             "default": null
         },
         "trial_interval": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -58,7 +58,7 @@
             "default": null
         },
         "invoice_interval": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -68,7 +68,7 @@
             "default": null
         },
         "grace_interval": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -98,22 +98,22 @@
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "deleted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "is_per_seat": {
-            "type": "tinyint",
+            "type": "boolean",
             "nullable": true,
             "default": null
         },

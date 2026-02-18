@@ -8,12 +8,12 @@
             "default": null
         },
         "name": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "slug": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -28,12 +28,12 @@
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
@@ -48,7 +48,7 @@
             "default": null
         },
         "deleted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
@@ -58,12 +58,12 @@
             "default": null
         },
         "billing_email": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "tax_id": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -73,12 +73,12 @@
             "default": null
         },
         "stripe_customer_id": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "paddle_customer_id": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         }

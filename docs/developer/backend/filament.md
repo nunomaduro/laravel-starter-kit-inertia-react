@@ -50,15 +50,15 @@ Use **policies** and **permissions** for authorization. Prefer `$user->can(...)`
 
 ## User impersonation
 
-**Package**: `stechstudio/filament-impersonate` (uses `lab404/laravel-impersonate`).
+**Package**: `stechstudio/filament-impersonate` (v5+, native implementation; no longer uses `lab404/laravel-impersonate`).
 
 - **Who can impersonate**: Only users with the **super-admin** role (`User::canImpersonate()`).
 - **Who can be impersonated**: Any user except **super-admin** (`User::canBeImpersonated()`).
 - **Where**: Impersonate action is on the Users table (row action) and on the Edit User page (header action). After impersonating, the admin is redirected to `/dashboard` as that user.
 - **Banner**: When impersonating, a banner is shown (Filament panel and main app via `<x-impersonate::banner />` in `resources/views/app.blade.php`) with a “Leave” link that returns to the admin panel.
-- **Activity log**: Start and end of impersonation are logged with causer = impersonator (super-admin), subject = impersonated user, and properties `impersonator_name`, `impersonated_name`, `impersonator_id`, `impersonated_id` (see `App\Enums\ActivityType::ImpersonationStarted`, `ImpersonationEnded` and `App\Listeners\LogImpersonationEvents`).
-- **Policy**: `UserPolicy::viewAny()` returns `true` when `app('impersonate')->isImpersonating()` to avoid 403s on the users list during impersonation.
-- **Routes**: `Route::impersonate()` in `routes/web.php` (auth) registers `impersonate` (take) and `impersonate.leave`; the package also registers `filament-impersonate.leave` for the banner.
+- **Activity log**: Start and end of impersonation are logged with causer = impersonator (super-admin), subject = impersonated user, and properties `impersonator_name`, `impersonated_name`, `impersonator_id`, `impersonated_id` (see `App\Enums\ActivityType::ImpersonationStarted`, `ImpersonationEnded` and `App\Listeners\LogImpersonationEvents`). Events: `STS\FilamentImpersonate\Events\EnterImpersonation`, `LeaveImpersonation`.
+- **Policy**: `UserPolicy::viewAny()` returns `true` when `Impersonation::isImpersonating()` (via `STS\FilamentImpersonate\Facades\Impersonation`) to avoid 403s on the users list during impersonation.
+- **Routes**: The package registers `filament-impersonate.leave` for the banner. Impersonation is started only via the Filament Impersonate action (no standalone take route).
 
 ## Settings (database-backed)
 

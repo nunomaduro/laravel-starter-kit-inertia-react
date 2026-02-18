@@ -13,42 +13,42 @@
             "default": null
         },
         "domain": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "type": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "is_verified": {
-            "type": "tinyint",
+            "type": "boolean",
             "nullable": true,
             "default": null
         },
         "verification_token": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "is_primary": {
-            "type": "tinyint",
+            "type": "boolean",
             "nullable": true,
             "default": null
         },
         "verified_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

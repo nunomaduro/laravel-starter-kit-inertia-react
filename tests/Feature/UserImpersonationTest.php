@@ -6,9 +6,9 @@ use App\Enums\ActivityType;
 use App\Features\ImpersonationFeature;
 use App\Models\User;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
-use Lab404\Impersonate\Services\ImpersonateManager;
 use Laravel\Pennant\Feature;
 use Spatie\Activitylog\Models\Activity;
+use STS\FilamentImpersonate\Facades\Impersonation;
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
@@ -57,7 +57,7 @@ test('taking impersonation logs activity with impersonator as causer', function 
 
     $this->actingAs($superAdmin);
 
-    resolve(ImpersonateManager::class)->take($superAdmin, $target, 'web');
+    Impersonation::enter($superAdmin, $target, 'web');
 
     $activity = Activity::query()
         ->where('description', ActivityType::ImpersonationStarted->value)
@@ -81,10 +81,10 @@ test('leaving impersonation logs activity with impersonator as causer', function
     $target->assignRole('user');
 
     $this->actingAs($superAdmin);
-    resolve(ImpersonateManager::class)->take($superAdmin, $target, 'web');
+    Impersonation::enter($superAdmin, $target, 'web');
 
     $this->actingAs($target);
-    resolve(ImpersonateManager::class)->leave();
+    Impersonation::leave();
 
     $activity = Activity::query()
         ->where('description', ActivityType::ImpersonationEnded->value)

@@ -160,7 +160,6 @@ Route::middleware(['auth', 'feature:onboarding'])->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::impersonate();
     Route::personalDataExports('personal-data-exports');
 });
 

@@ -8,17 +8,17 @@
             "default": null
         },
         "name": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "slug": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "type": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -38,12 +38,12 @@
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },

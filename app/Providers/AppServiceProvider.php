@@ -34,13 +34,13 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Lab404\Impersonate\Events\LeaveImpersonation;
-use Lab404\Impersonate\Events\TakeImpersonation;
 use LemonSqueezy\Laravel\Events\OrderCreated;
 use Pan\PanConfiguration;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use STS\FilamentImpersonate\Events\EnterImpersonation;
+use STS\FilamentImpersonate\Events\LeaveImpersonation;
 use Throwable;
 
 final class AppServiceProvider extends ServiceProvider
@@ -83,7 +83,7 @@ final class AppServiceProvider extends ServiceProvider
             Event::listen(MigrationsEnded::class, MigrationListener::class);
         }
 
-        Event::listen(TakeImpersonation::class, [LogImpersonationEvents::class, 'handleTakeImpersonation']);
+        Event::listen(EnterImpersonation::class, [LogImpersonationEvents::class, 'handleEnterImpersonation']);
         Event::listen(LeaveImpersonation::class, [LogImpersonationEvents::class, 'handleLeaveImpersonation']);
         Event::listen(JobFailed::class, SendSlackAlertOnJobFailed::class);
         Event::listen(UserCreated::class, GrantGamificationOnUserCreated::class);

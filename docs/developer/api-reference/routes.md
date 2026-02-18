@@ -640,43 +640,15 @@ This document lists all available routes in the application.
 - `action`: `App\Actions\DeleteUser`
 
 
-## ImpersonateController
+## Impersonation (filament-impersonate)
 
-**Controller**: `\Lab404\Impersonate\Controllers\ImpersonateController`
+Impersonation is started from the Filament admin (Users table or Edit User page) via the package action. The package registers:
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
-| GET | `impersonate/take/{id}/{guardName?}` | impersonate | web, auth, auth:web |
-| GET | `impersonate/leave` | impersonate.leave | web, auth |
+| GET | `filament-impersonate/leave` | filament-impersonate.leave | web |
 
-### take
-
-**Route**: `impersonate`
-
-**URI**: `impersonate/take/{id}/{guardName?}`
-
-**Methods**: GET
-
-**Parameters**:
-- `id`
-
-**Middleware**: web, auth, auth:web
-
-**Method Parameters**:
-- `request`: `Illuminate\Http\Request`
-- `id`: `mixed`
-- `guardName`: `mixed`
-
-### leave
-
-**Route**: `impersonate.leave`
-
-**URI**: `impersonate/leave`
-
-**Methods**: GET
-
-**Middleware**: web, auth
-
+See [Filament > User impersonation](../backend/filament.md#user-impersonation).
 
 ## UserController
 

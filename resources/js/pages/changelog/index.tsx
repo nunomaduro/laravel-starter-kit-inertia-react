@@ -114,8 +114,7 @@ export default function ChangelogIndex({ entries }: Props) {
                             </Link>
                         ) : null}
                         <span className="text-sm text-muted-foreground">
-                            Page {entries.current_page} of{' '}
-                            {entries.last_page}
+                            Page {entries.current_page} of {entries.last_page}
                         </span>
                         {entries.next_page_url ? (
                             <Link

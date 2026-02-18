@@ -8,17 +8,17 @@
             "default": null
         },
         "name": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "email": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "subject": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
@@ -28,17 +28,17 @@
             "default": null
         },
         "status": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
