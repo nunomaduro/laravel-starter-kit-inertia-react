@@ -3,7 +3,7 @@
     "table": "help_articles",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -33,62 +33,62 @@
             "default": null
         },
         "views": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "helpful_count": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "not_helpful_count": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "order": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "is_published": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
         "is_featured": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
         "created_by": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "updated_by": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "deleted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         }

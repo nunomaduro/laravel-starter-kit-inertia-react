@@ -3,7 +3,7 @@
     "table": "enterprise_inquiries",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -38,12 +38,12 @@
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

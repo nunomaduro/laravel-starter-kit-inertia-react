@@ -3,7 +3,7 @@
     "table": "webhook_logs",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -18,12 +18,12 @@
             "default": null
         },
         "payload": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "processed": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
@@ -33,17 +33,17 @@
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         }

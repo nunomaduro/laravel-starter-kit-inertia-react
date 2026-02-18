@@ -2,7 +2,8 @@
     "preset": "laravel",
     "notPath": [
         "tests/TestCase.php",
-        "tmp"
+        "tmp",
+        "app/Http/Middleware/CacheProfiles/PublicContentCacheProfile.php"
     ],
     "rules": {
         "array_push": true,

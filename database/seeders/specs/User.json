@@ -3,7 +3,7 @@
     "table": "users",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -18,7 +18,7 @@
             "default": null
         },
         "email_verified_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
@@ -38,7 +38,7 @@
             "default": null
         },
         "two_factor_confirmed_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
@@ -48,22 +48,22 @@
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "onboarding_completed": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
         "onboarding_steps_completed": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },

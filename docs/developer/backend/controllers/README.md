@@ -38,6 +38,6 @@ All Controllers:
 | [OrganizationSwitchController](./organizationswitchcontroller.md) | N/A | ✅ |
 | [TermsAcceptController](./TermsAcceptController.md) | N/A | ✅ |
 | [EnterpriseInquiryController](./EnterpriseInquiryController.md) | N/A | ✅ |
-| [Controller](./controller.md) | Base controller (abstract) | ✅ |
+| [Controller](./controller.md) | N/A | ✅ |
 
 

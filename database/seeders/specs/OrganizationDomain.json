@@ -3,12 +3,12 @@
     "table": "organization_domains",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -23,7 +23,7 @@
             "default": null
         },
         "is_verified": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
@@ -33,22 +33,22 @@
             "default": null
         },
         "is_primary": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
         "verified_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

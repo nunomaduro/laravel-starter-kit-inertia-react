@@ -3,7 +3,7 @@
     "table": "payment_gateways",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -23,37 +23,37 @@
             "default": null
         },
         "is_active": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
         "is_default": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
         "supported_currencies": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "supported_payment_methods": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "sort_order": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

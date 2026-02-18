@@ -3,7 +3,7 @@
     "table": "subscriptions",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -13,17 +13,17 @@
             "default": null
         },
         "subscriber_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "plan_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "name": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
@@ -33,7 +33,7 @@
             "default": null
         },
         "description": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
@@ -43,37 +43,37 @@
             "default": null
         },
         "trial_ends_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "starts_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "ends_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "canceled_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "deleted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
@@ -83,7 +83,7 @@
             "default": null
         },
         "quantity": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         }

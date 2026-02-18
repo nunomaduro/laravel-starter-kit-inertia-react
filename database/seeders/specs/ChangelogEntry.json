@@ -3,7 +3,7 @@
     "table": "changelog_entries",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -28,42 +28,42 @@
             "default": null
         },
         "is_published": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
         "released_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_by": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "updated_by": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "deleted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         }

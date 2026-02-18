@@ -3,12 +3,12 @@
     "table": "billing_metrics",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -18,42 +18,42 @@
             "default": null
         },
         "mrr": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "arr": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "new_subscriptions": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "churned": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "credits_purchased": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "credits_used": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

@@ -3,12 +3,12 @@
     "table": "failed_payment_attempts",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -23,32 +23,32 @@
             "default": null
         },
         "attempt_number": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
         "dunning_emails_sent": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
         "failed_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "last_dunning_sent_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

@@ -3,7 +3,7 @@
     "table": "categories",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -23,32 +23,32 @@
             "default": null
         },
         "_lft": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "_rgt": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "parent_id": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         }

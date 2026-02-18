@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware\CacheProfiles;
 
-use DateTimeImmutable;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
@@ -45,7 +45,7 @@ final class PublicContentCacheProfile extends BaseCacheProfile
         return 'guest';
     }
 
-    public function cacheRequestUntil(Request $request): DateTimeImmutable
+    public function cacheRequestUntil(Request $request): DateTime
     {
         $lifetime = config('responsecache.cache_lifetime_in_seconds', 60 * 60 * 24 * 7);
 

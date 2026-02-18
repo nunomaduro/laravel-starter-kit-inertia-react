@@ -3,22 +3,22 @@
     "table": "refund_requests",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "invoice_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "amount": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
@@ -33,22 +33,22 @@
             "default": null
         },
         "processed_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "processed_by": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }

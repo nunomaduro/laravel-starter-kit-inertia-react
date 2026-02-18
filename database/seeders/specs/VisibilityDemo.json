@@ -3,22 +3,22 @@
     "table": "visibility_demos",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -28,7 +28,7 @@
             "default": null
         },
         "cloned_from": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },

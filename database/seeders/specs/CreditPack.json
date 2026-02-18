@@ -3,7 +3,7 @@
     "table": "credit_packs",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "int8",
             "nullable": true,
             "default": null
         },
@@ -23,17 +23,17 @@
             "default": null
         },
         "credits": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "bonus_credits": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "price": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
@@ -43,32 +43,32 @@
             "default": null
         },
         "validity_days": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "is_active": {
-            "type": "tinyint",
+            "type": "bool",
             "nullable": true,
             "default": null
         },
         "sort_order": {
-            "type": "integer",
+            "type": "int4",
             "nullable": true,
             "default": null
         },
         "created_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "updated_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         },
         "deleted_at": {
-            "type": "datetime",
+            "type": "timestamp",
             "nullable": true,
             "default": null
         }
