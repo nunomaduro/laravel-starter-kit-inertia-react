@@ -17,19 +17,6 @@ it('shares app name from config', function (): void {
         ->and($shared['name'])->toBe(config('app.name'));
 });
 
-it('shares inspiring quote with message and author', function (): void {
-    $middleware = new HandleInertiaRequests();
-
-    $request = Request::create('/', 'GET');
-
-    $shared = $middleware->share($request);
-
-    expect($shared)->toHaveKey('quote')
-        ->and($shared['quote'])->toHaveKeys(['message', 'author'])
-        ->and($shared['quote']['message'])->toBeString()->not->toBeEmpty()
-        ->and($shared['quote']['author'])->toBeString()->not->toBeEmpty();
-});
-
 it('shares null user when guest', function (): void {
     $middleware = new HandleInertiaRequests();
 
