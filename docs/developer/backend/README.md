@@ -10,6 +10,7 @@ Backend components, services, and patterns for developers.
 - [Activity Log](./activity-log.md) - Spatie and Filament activity logging
 - [Backup & Restore](./backup.md) - spatie/laravel-backup (v10), schedule, restore
 - [Billing & Multi-Tenancy](./billing-and-tenancy.md) - Seat-based billing, domain/subdomain tenant resolution, ScopesToCurrentTenant
+- [Single-Tenant Mode](./single-tenant-mode.md) - Switch to internal (non-SaaS) mode with `MULTI_ORGANIZATION_ENABLED=false`
 - [Lemon Squeezy](./lemon-squeezy.md) - One-time products payment gateway (credits checkout)
 - [Horizon](./horizon.md) - Queue monitoring and Redis workers (dashboard at `/horizon`)
 - [Reverb](./reverb.md) - WebSockets (Laravel Echo + Reverb)
@@ -47,6 +48,7 @@ Backend components, services, and patterns for developers.
 - [API versioning & list endpoints](../api-reference/README.md) - Public API at `/api/v1/`, filter/sort/include
 - [Backup & Restore](./backup.md) - spatie/laravel-backup (v10); schedule, commands, restore
 - [Billing & Multi-Tenancy](./billing-and-tenancy.md) - Seat billing, domain tenant resolution, Filament tenant scoping
+- [Single-Tenant Mode](./single-tenant-mode.md) - Internal app mode; hides org UI
 - [Lemon Squeezy](./lemon-squeezy.md) - One-time products (credits) via Lemon Squeezy
 - [Horizon](./horizon.md) - Queue dashboard and Redis workers; `/horizon` (admin only)
 - [Reverb](./reverb.md) - WebSockets; Echo + `reverb:start`; channels in `routes/channels.php`

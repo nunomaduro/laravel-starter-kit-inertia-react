@@ -15,9 +15,11 @@ export interface Auth {
     roles: string[];
     /** True when user has bypass-permissions (e.g. super-admin). useCan() treats as allowed for any permission. */
     can_bypass: boolean;
-    /** Current tenant organization (when tenancy enabled). */
+    /** Whether multi-organization (tenant) mode is enabled. When false, org switcher and org management UI are hidden. */
+    tenancy_enabled?: boolean;
+    /** Current tenant organization (set when user has org context). */
     current_organization?: OrganizationSummary | null;
-    /** Organizations the user belongs to (when tenancy enabled). */
+    /** Organizations the user belongs to (when tenancy enabled; empty when single-tenant). */
     organizations?: OrganizationSummary[];
 }
 
@@ -40,6 +42,8 @@ export interface NavItem {
     permission?: string | string[];
     /** Feature flag key (e.g. 'blog'). Item is hidden when this feature is inactive. */
     feature?: string;
+    /** When true, item is hidden in single-tenant mode (MULTI_ORGANIZATION_ENABLED=false). */
+    tenancyRequired?: boolean;
     /** Pan product analytics name (letters, numbers, dashes, underscores). Must be whitelisted in AppServiceProvider. */
     dataPan?: string;
 }

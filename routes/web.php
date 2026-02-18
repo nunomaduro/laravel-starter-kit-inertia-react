@@ -125,16 +125,18 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
 
-    // Organizations (multi-tenancy)
-    Route::post('organizations/switch', OrganizationSwitchController::class)->name('organizations.switch');
-    Route::resource('organizations', OrganizationController::class)->except(['edit']);
-    Route::get('organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
-    Route::get('organizations/{organization}/members', [OrganizationMemberController::class, 'index'])->name('organizations.members.index');
-    Route::put('organizations/{organization}/members/{member}', [OrganizationMemberController::class, 'update'])->name('organizations.members.update')->scopeBindings();
-    Route::delete('organizations/{organization}/members/{member}', [OrganizationMemberController::class, 'destroy'])->name('organizations.members.destroy')->scopeBindings();
-    Route::post('organizations/{organization}/invitations', [OrganizationInvitationController::class, 'store'])->name('organizations.invitations.store');
-    Route::delete('organizations/{organization}/invitations/{invitation}', [OrganizationInvitationController::class, 'destroy'])->name('organizations.invitations.destroy')->scopeBindings();
-    Route::put('organizations/{organization}/invitations/{invitation}/resend', [OrganizationInvitationController::class, 'update'])->name('organizations.invitations.resend')->scopeBindings();
+    // Organizations (multi-tenancy; routes redirect to dashboard when tenancy disabled)
+    Route::middleware('tenancy.enabled')->group(function (): void {
+        Route::post('organizations/switch', OrganizationSwitchController::class)->name('organizations.switch');
+        Route::resource('organizations', OrganizationController::class)->except(['edit']);
+        Route::get('organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
+        Route::get('organizations/{organization}/members', [OrganizationMemberController::class, 'index'])->name('organizations.members.index');
+        Route::put('organizations/{organization}/members/{member}', [OrganizationMemberController::class, 'update'])->name('organizations.members.update')->scopeBindings();
+        Route::delete('organizations/{organization}/members/{member}', [OrganizationMemberController::class, 'destroy'])->name('organizations.members.destroy')->scopeBindings();
+        Route::post('organizations/{organization}/invitations', [OrganizationInvitationController::class, 'store'])->name('organizations.invitations.store');
+        Route::delete('organizations/{organization}/invitations/{invitation}', [OrganizationInvitationController::class, 'destroy'])->name('organizations.invitations.destroy')->scopeBindings();
+        Route::put('organizations/{organization}/invitations/{invitation}/resend', [OrganizationInvitationController::class, 'update'])->name('organizations.invitations.resend')->scopeBindings();
+    });
 
     // Billing (org-scoped; tenant middleware ensures current org)
     Route::middleware('tenant')->group(function (): void {

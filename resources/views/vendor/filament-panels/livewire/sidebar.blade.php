@@ -87,7 +87,7 @@
             </header>
         </div>
 
-        @if (filament()->hasTenancy() && filament()->hasTenantMenu())
+        @if (config('tenancy.enabled', true) && filament()->hasTenancy() && filament()->hasTenantMenu())
             <x-filament-panels::tenant-menu />
         @endif
 

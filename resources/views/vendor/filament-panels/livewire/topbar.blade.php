@@ -5,7 +5,7 @@
         $isSidebarFullyCollapsibleOnDesktop = filament()->isSidebarFullyCollapsibleOnDesktop();
         $hasTopNavigation = filament()->hasTopNavigation();
         $hasNavigation = filament()->hasNavigation();
-        $hasTenancy = filament()->hasTenancy();
+        $hasTenancy = config('tenancy.enabled', true) && filament()->hasTenancy();
     @endphp
 
     <nav class="fi-topbar">

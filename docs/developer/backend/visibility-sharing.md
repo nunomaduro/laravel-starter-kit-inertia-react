@@ -2,6 +2,17 @@
 
 Models can support **visibility levels** and **cross-organization sharing** using the `HasVisibility` trait. This provides global / org / shared data with optional copy-on-write cloning.
 
+## When to Use Which Trait
+
+| Use Case | Trait | Notes |
+|----------|-------|-------|
+| Org-owned data only; no sharing | `BelongsToOrganization` | Simple org scoping; used by Post, Category, HelpArticle, Billing models |
+| Global data (admin-created, visible to all orgs) | `HasVisibility` | Super-admin creates with `visibility=Global`, `organization_id=null` |
+| Org data with optional sharing | `HasVisibility` | Default `visibility=Organization`; upgrade to `Shared` when sharing |
+| Cross-org sharing with view/edit permissions | `HasVisibility` | `shareWithOrganization()`, `shareWithUser()` |
+
+Do **not** use `BelongsToOrganization` and `HasVisibility` on the same model; `HasVisibility` owns the organization relationship.
+
 ## Visibility levels
 
 - **Global** – Visible to all organizations (read-only). Only super-admins can create or set global visibility.

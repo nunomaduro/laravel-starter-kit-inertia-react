@@ -16,7 +16,7 @@ final readonly class CreatePersonalOrganizationOnUserCreated
 
     public function handle(UserCreated $event): void
     {
-        if (! config('tenancy.enabled', true) || ! config('tenancy.auto_create_personal_organization', true)) {
+        if (! config('tenancy.auto_create_personal_organization', true)) {
             return;
         }
 

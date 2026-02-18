@@ -1,5 +1,7 @@
 # Billing and Multi-Tenancy
 
+The application supports **multi-tenant** (SaaS) and **single-tenant** (internal) modes. See [Single-Tenant Mode](./single-tenant-mode.md) for switching.
+
 ## Seat-Based Billing
 
 Plans can be configured as per-seat (`is_per_seat`, `price_per_seat` on `plans`). Subscriptions store `quantity` and `gateway_subscription_id` on `plan_subscriptions`.

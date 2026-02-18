@@ -11,6 +11,7 @@ use App\Http\Middleware\EnsureFeatureActive;
 use App\Http\Middleware\EnsureOnboardingComplete;
 use App\Http\Middleware\EnsureRegistrationEnabled;
 use App\Http\Middleware\EnsureScrambleApiDocsVisible;
+use App\Http\Middleware\EnsureTenancyEnabled;
 use App\Http\Middleware\EnsureTenantContext;
 use App\Http\Middleware\EnsureTermsAccepted;
 use App\Http\Middleware\HandleAppearance;
@@ -50,6 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auto.permission' => AutoPermissionMiddleware::class,
             'ip.whitelist' => EnforceIpWhitelist::class,
             'tenant' => EnsureTenantContext::class,
+            'tenancy.enabled' => EnsureTenancyEnabled::class,
             'billing.country' => EnsureCountryAllowed::class,
         ]);
 

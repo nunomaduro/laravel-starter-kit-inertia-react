@@ -582,6 +582,24 @@
             "data_files": [
                 "activity_log_injected_models.json"
             ]
+        },
+        {
+            "name": "ActivityLogInjectedModelSeeder",
+            "category": "development",
+            "description": "Seeds ActivityLogInjectedModel data",
+            "dependencies": [],
+            "data_files": [
+                "activity_log_injected_models.json"
+            ]
+        },
+        {
+            "name": "ActivityLogInjectedModelSeeder",
+            "category": "development",
+            "description": "Seeds ActivityLogInjectedModel data",
+            "dependencies": [],
+            "data_files": [
+                "activity_log_injected_models.json"
+            ]
         }
     ],
     "categories": {

@@ -52,11 +52,9 @@ final class HandleInertiaRequests extends Middleware
                 : (new $featureClass)->defaultValue;
         }
 
-        $currentOrganization = $user && config('tenancy.enabled', true)
-            ? \App\Services\TenantContext::get()
-            : null;
-
-        $userOrganizations = $user && config('tenancy.enabled', true)
+        $tenancyEnabled = config('tenancy.enabled', true);
+        $currentOrganization = $user ? \App\Services\TenantContext::get() : null;
+        $userOrganizations = $user
             ? $user->organizations()->orderBy('name')->get(['id', 'name', 'slug'])
             : [];
 
@@ -69,8 +67,9 @@ final class HandleInertiaRequests extends Middleware
                 'permissions' => $user?->getAllPermissions()->pluck('name')->all() ?? [],
                 'roles' => $user?->getRoleNames()->all() ?? [],
                 'can_bypass' => $user?->can('bypass-permissions') ?? false,
+                'tenancy_enabled' => $tenancyEnabled,
                 'current_organization' => $currentOrganization?->only(['id', 'name', 'slug']),
-                'organizations' => $userOrganizations,
+                'organizations' => $tenancyEnabled ? $userOrganizations : [],
             ],
             'features' => $features,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',

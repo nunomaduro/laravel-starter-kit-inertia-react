@@ -44,6 +44,7 @@ const mainNavItems: NavItem[] = [
         title: 'Organizations',
         href: organizations.index.url(),
         icon: Building2,
+        tenancyRequired: true,
         dataPan: 'nav-organizations',
     },
     {
@@ -114,7 +115,11 @@ function canShowNavItem(
     permissions: string[],
     canBypass: boolean,
     features: SharedData['features'],
+    tenancyEnabled: boolean,
 ): boolean {
+    if (item.tenancyRequired && !tenancyEnabled) {
+        return false;
+    }
     if (item.feature && !features?.[item.feature]) {
         return false;
     }
@@ -137,9 +142,10 @@ export function AppSidebar() {
                     auth.permissions ?? [],
                     auth.can_bypass ?? false,
                     features ?? {},
+                    auth.tenancy_enabled ?? true,
                 ),
             ),
-        [auth.permissions, auth.can_bypass, features],
+        [auth.permissions, auth.can_bypass, auth.tenancy_enabled, features],
     );
 
     const visibleFooterNavItems = useMemo(() => {
@@ -161,9 +167,11 @@ export function AppSidebar() {
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <OrganizationSwitcher />
-                    </SidebarMenuItem>
+                    {(auth.tenancy_enabled ?? true) && (
+                        <SidebarMenuItem>
+                            <OrganizationSwitcher />
+                        </SidebarMenuItem>
+                    )}
                 </SidebarMenu>
             </SidebarHeader>
 
