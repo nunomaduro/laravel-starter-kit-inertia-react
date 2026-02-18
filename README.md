@@ -23,7 +23,7 @@ Modern PHP has evolved into a mature, type-safe language, yet many Laravel proje
 - **Fully Actions-Oriented Architecture**: Every operation is encapsulated in a single-action class
 - **Cruddy by Design**: Standardized CRUD operations for all controllers, actions, and Inertia & React pages
 - **100% Type Coverage**: Every method, property, and parameter is explicitly typed
-- **Zero Tolerance for Code Smells**: Rector, PHPStan, ESLint, and Prettier at maximum strictness catch issues before they become bugs
+- **Zero Tolerance for Code Smells**: Rector, PHPStan, OxLint, and Prettier at maximum strictness catch issues before they become bugs
 - **Immutable-First Architecture**: Data structures favor immutability to prevent unexpected mutations
 - **Fail-Fast Philosophy**: Errors are caught at compile-time, not runtime
 - **Automated Code Quality**: Pre-configured tools ensure consistent, pristine code across your entire team
@@ -62,8 +62,8 @@ composer dev
 If you plan to use Pest's browser testing capabilities:
 
 ```bash
-npm install playwright
-npx playwright install
+bun add playwright
+bunx playwright install
 ```
 
 ### Verify Installation
@@ -92,7 +92,7 @@ You should see 100% test coverage and all quality checks passing.
 - `composer test` - Runs the complete test suite (type coverage, unit tests, linting, static analysis)
 
 ### Maintenance
-- `composer update:requirements` - Updates all PHP and NPM dependencies to latest versions
+- `composer update:requirements` - Updates all PHP and Bun dependencies to latest versions
 
 ## License
 
