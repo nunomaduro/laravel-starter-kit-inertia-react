@@ -14,7 +14,7 @@
         "laravel/fortify": "^1.34.1",
         "laravel/framework": "^12.52.0",
         "laravel/wayfinder": "^0.1.13",
-        "nunomaduro/essentials": "^1.0.1"
+        "nunomaduro/essentials": "^1.1.0"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.1.9",
@@ -64,6 +64,8 @@
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
             "@php artisan clear",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi",
             "@update:requirements",
             "@php artisan boost:update --ansi || true"
         ],
