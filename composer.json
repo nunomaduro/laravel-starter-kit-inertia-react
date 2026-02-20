@@ -47,7 +47,9 @@
         "laravel/wayfinder": "^0.1.13",
         "laravelcm/laravel-subscriptions": "^1.7.2",
         "laraveldaily/laravel-invoices": "^4.1.1",
+        "league/flysystem-aws-s3-v3": "^3.31",
         "lemonsqueezy/laravel": "^1.8.5",
+        "machour/laravel-data-table": "dev-main",
         "martinpetricko/laravel-database-mail": "^1.4",
         "nunomaduro/essentials": "^1.0.1",
         "omaralalwi/laravel-taxify": "^2.0.4",
@@ -84,8 +86,7 @@
         "stephenjude/filament-feature-flags": "^5.0.1",
         "stripe/stripe-php": "^19.3",
         "typesense/typesense-php": "^6.0",
-        "wildside/userstamps": "^3.1.1",
-        "machour/laravel-data-table": "dev-main"
+        "wildside/userstamps": "^3.1.1"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.1.9",

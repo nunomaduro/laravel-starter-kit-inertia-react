@@ -20,10 +20,6 @@ Activate this skill when:
 
 Use `search-docs` for detailed Pennant patterns and documentation.
 
-## In this app
-
-This app uses class-based features in `App\Features\*` and `App\Support\FeatureHelper` for checks. Use `FeatureHelper::isActiveForKey($key, $user)` or `FeatureHelper::isActiveForClass($featureClass, $user)` instead of raw `Feature::for($user)->active()` — FeatureHelper respects `GLOBALLY_DISABLED_MODULES` (env), so globally disabled features are always off for everyone. See `docs/developer/backend/feature-flags.md`.
-
 ## Basic Usage
 
 ### Defining Features
