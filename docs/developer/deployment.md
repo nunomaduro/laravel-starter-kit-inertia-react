@@ -8,6 +8,10 @@ For load balancers, Kubernetes, or other orchestrators, use the **health/readine
 
 - **GET `/up`** — Returns `200` with `{"status":"ok","checks":{"app":true,"database":true}` when the app and database are reachable. Returns `503` with `"status":"degraded"` if the database check fails. No authentication required.
 
+## Laravel Cloud
+
+When deploying to [Laravel Cloud](https://cloud.laravel.com/), use the same build steps (`composer install`, `npm ci`, `npm run build`) and run `php artisan migrate --force` in deploy commands. Migrations are compatible with managed Postgres (no `session_replication_role`; pgvector extension is skipped if the DB user cannot create it). Ensure `package-lock.json` is committed and in sync with `package.json` so `npm ci` succeeds. Set `APP_URL`, `APP_DEBUG=false`, and other production env vars in the Cloud dashboard; Cloud injects database and cache credentials automatically when you attach resources.
+
 ## Pre-deployment checklist
 
 - [ ] Tests passing: `php artisan test`
