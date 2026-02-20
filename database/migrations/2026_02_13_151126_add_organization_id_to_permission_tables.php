@@ -128,7 +128,7 @@ return new class extends Migration
         match ($driver) {
             'mysql', 'mariadb' => DB::statement('SET FOREIGN_KEY_CHECKS=0'),
             'sqlite' => DB::statement('PRAGMA foreign_keys = OFF'),
-            'pgsql' => DB::statement('SET session_replication_role = replica'),
+            'pgsql' => null, // Managed Postgres (e.g. Laravel Cloud) does not allow session_replication_role
             default => null,
         };
     }
@@ -139,7 +139,7 @@ return new class extends Migration
         match ($driver) {
             'mysql', 'mariadb' => DB::statement('SET FOREIGN_KEY_CHECKS=1'),
             'sqlite' => DB::statement('PRAGMA foreign_keys = ON'),
-            'pgsql' => DB::statement('SET session_replication_role = DEFAULT'),
+            'pgsql' => null, // Managed Postgres (e.g. Laravel Cloud) does not allow session_replication_role
             default => null,
         };
     }
