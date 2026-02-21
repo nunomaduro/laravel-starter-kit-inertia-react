@@ -5,19 +5,17 @@
         "build": "vite build",
         "build:ssr": "vite build && vite build --ssr",
         "dev": "vite",
-        "lint": "oxlint --fix && prettier --write resources/",
-        "test:lint": "oxlint && prettier --check resources/",
+        "lint": "oxlint --fix && oxfmt resources/",
+        "test:lint": "oxlint && oxfmt --check resources/",
         "test:types": "tsc --noEmit"
     },
     "devDependencies": {
         "@laravel/vite-plugin-wayfinder": "^0.1.7",
         "@types/node": "^25.2.3",
         "npm-check-updates": "^19.3.2",
+        "oxfmt": "^0.34.0",
         "oxlint": "^1.48.0",
-        "playwright": "^1.58.2",
-        "prettier": "^3.8.1",
-        "prettier-plugin-organize-imports": "^4.3.0",
-        "prettier-plugin-tailwindcss": "^0.7.2"
+        "playwright": "^1.58.2"
     },
     "dependencies": {
         "@headlessui/react": "^2.2.9",
