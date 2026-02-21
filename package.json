@@ -6,7 +6,7 @@
         "build:ssr": "vite build && vite build --ssr",
         "dev": "vite",
         "lint": "oxlint --fix && prettier --write resources/",
-        "test:lint": "oxlint && prettier --check resources/",
+        "test:lint": "oxlint --type-aware && prettier --check resources/",
         "test:types": "tsc --noEmit"
     },
     "devDependencies": {
@@ -14,6 +14,7 @@
         "@types/node": "^25.2.3",
         "npm-check-updates": "^19.3.2",
         "oxlint": "^1.48.0",
+        "oxlint-tsgolint": "^0.14.2",
         "playwright": "^1.58.2",
         "prettier": "^3.8.1",
         "prettier-plugin-organize-imports": "^4.3.0",
