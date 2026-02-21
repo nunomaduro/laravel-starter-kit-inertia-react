@@ -16,6 +16,17 @@
         "functions": ["clsx", "cn"],
         "stylesheet": "resources/css/app.css"
     },
+    "experimentalSortImports": {
+        "groups": [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index"
+        ],
+        "newlinesBetween": true
+    },
     "$schema": "./node_modules/oxfmt/configuration_schema.json",
     "ignorePatterns": ["resources/js/components/ui/*", "resources/views/mail/*"]
 }

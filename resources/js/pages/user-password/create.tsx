@@ -1,7 +1,7 @@
-import UserPasswordController from '@/actions/App/Http/Controllers/UserPasswordController';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
+import UserPasswordController from '@/actions/App/Http/Controllers/UserPasswordController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
