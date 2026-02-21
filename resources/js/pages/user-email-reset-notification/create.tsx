@@ -1,15 +1,15 @@
-// Components
-import UserEmailResetNotificationController from '@/actions/App/Http/Controllers/UserEmailResetNotificationController';
-import { login } from '@/routes';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
+// Components
+import UserEmailResetNotificationController from '@/actions/App/Http/Controllers/UserEmailResetNotificationController';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { login } from '@/routes';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     return (

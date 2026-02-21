@@ -1,0 +1,32 @@
+{
+    "printWidth": 80,
+    "tabWidth": 4,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "overrides": [
+        {
+            "files": ["**/*.yml"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ],
+    "experimentalTailwindcss": {
+        "functions": ["clsx", "cn"],
+        "stylesheet": "resources/css/app.css"
+    },
+    "experimentalSortImports": {
+        "groups": [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index"
+        ],
+        "newlinesBetween": true
+    },
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "ignorePatterns": ["resources/js/components/ui/*", "resources/views/mail/*"]
+}
