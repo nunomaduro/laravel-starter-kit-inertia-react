@@ -1,6 +1,6 @@
 - Inertia & React (this project) version: **[github.com/nunomaduro/laravel-starter-kit-inertia-react](https://github.com/nunomaduro/laravel-starter-kit-inertia-react)**
 - Blade version: **[github.com/nunomaduro/laravel-starter-kit](https://github.com/nunomaduro/laravel-starter-kit)**
-- Inertia & Vue version: **[github.com/grnspc/laravel-starter-kit-inertia-vue](https://github.com/grnspc/laravel-starter-kit-inertia-vue)**
+- Inertia & Vue version: **[github.com/nunomaduro/laravel-starter-kit-inertia-vue](https://github.com/nunomaduro/laravel-starter-kit-inertia-vue)**
 
 <p align="center">
     <a href="https://youtu.be/VhzP0XWGTC4" target="_blank">
