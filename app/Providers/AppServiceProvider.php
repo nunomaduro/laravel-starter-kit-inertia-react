@@ -171,6 +171,18 @@ final class AppServiceProvider extends ServiceProvider
             'dashboard-quick-email-templates',
             'dashboard-quick-product-analytics',
             'dashboard-card-view-analytics',
+            'command-palette',
+            'nav-chat',
+            'chat-conversation-list',
+            'chat-new-conversation',
+            'chat-delete-conversation',
+            'chat-rename-conversation',
+            'chat-copy-message',
+            'chat-copy-code',
+            'chat-mobile-menu',
+            'chat-send-message',
+            'dashboard-chart',
+            'users-table',
         ]);
     }
 

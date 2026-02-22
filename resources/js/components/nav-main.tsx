@@ -27,7 +27,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                         >
                             <Link
                                 href={item.href}
-                                prefetch
+                                prefetch="click"
                                 {...(item.dataPan
                                     ? { 'data-pan': item.dataPan }
                                     : {})}

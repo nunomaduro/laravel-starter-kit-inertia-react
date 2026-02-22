@@ -3,7 +3,7 @@
     "table": "payment_gateways",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -33,12 +33,12 @@
             "default": null
         },
         "supported_currencies": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "supported_payment_methods": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },

@@ -38,7 +38,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                         className="block w-full"
                         href={edit()}
                         as="button"
-                        prefetch
+                        prefetch="click"
                         onClick={cleanup}
                     >
                         <Settings className="mr-2" />

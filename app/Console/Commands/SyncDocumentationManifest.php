@@ -368,6 +368,9 @@ final class SyncDocumentationManifest extends Command
         foreach ($files as $file) {
             if ($file->getExtension() === 'tsx') {
                 $relativePath = str_replace($pagesPath.'/', '', $file->getPathname());
+                if (str_contains($relativePath, '/_components/')) {
+                    continue;
+                }
                 $pagePath = str_replace('.tsx', '', $relativePath);
                 $filePath = $file->getPathname();
 

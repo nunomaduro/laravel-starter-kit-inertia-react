@@ -4,24 +4,27 @@ declare(strict_types=1);
 
 namespace App\Ai\Agents;
 
-use Eznix86\AI\Memory\Middleware\WithMemory;
+use App\Ai\Middleware\WithMemoryUnlessUnavailable;
 use Eznix86\AI\Memory\Tools\RecallMemory;
 use Eznix86\AI\Memory\Tools\StoreMemory;
+use Laravel\Ai\Concerns\RemembersConversations;
 use Laravel\Ai\Contracts\Agent;
+use Laravel\Ai\Contracts\Conversational;
 use Laravel\Ai\Contracts\HasMiddleware;
 use Laravel\Ai\Contracts\HasTools;
 use Laravel\Ai\Promptable;
 use Stringable;
 
 /**
- * Example agent with semantic memory (store/recall) and WithMemory middleware.
+ * Example agent with semantic memory (store/recall), WithMemory middleware, and conversation persistence.
  *
+ * Use forUser($user) for a new conversation or continue($conversationId, $user) to continue.
  * Pass context (e.g. ['user_id' => $user->id]) so memories are scoped per user.
- * Uses eznix86/laravel-ai-memory for embeddings + pgvector storage and recall.
  */
-final class AssistantAgent implements Agent, HasMiddleware, HasTools
+final class AssistantAgent implements Agent, Conversational, HasMiddleware, HasTools
 {
     use Promptable;
+    use RemembersConversations;
 
     public function __construct(
         protected array $context = [],
@@ -46,7 +49,7 @@ final class AssistantAgent implements Agent, HasMiddleware, HasTools
     public function middleware(): array
     {
         return [
-            new WithMemory($this->context, limit: (int) config('memory.middleware_recall_limit', 5)),
+            new WithMemoryUnlessUnavailable($this->context, limit: (int) config('memory.middleware_recall_limit', 5)),
         ];
     }
 }

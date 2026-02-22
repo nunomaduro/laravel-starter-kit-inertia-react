@@ -1,0 +1,13 @@
+---
+description: Server-side DataTables with machour/laravel-data-table
+globs: app/DataTables/**/*.php, resources/js/pages/**/table.tsx, **/data-table/**/*.tsx
+---
+
+# Laravel Data Table
+
+- **Backend**: DataTable classes in `App\DataTables\*` extend `Machour\DataTable\AbstractDataTable`. Define `tableColumns()`, `tableBaseQuery()`, `tableDefaultSort()`, `fromModel()`. Optional: `tableQuickViews()`, `tableFooter()`, `tableAllowedFilters()`, `tableAllowedSorts()`.
+- **Route**: Pass `YourDataTable::makeTable($request)` as the `tableData` prop to the Inertia page.
+- **Frontend**: Use `<DataTable tableData={tableData} tableName="…" />` from `@/components/data-table/data-table` with optional `actions`, `bulkActions`, `renderCell`, `options`.
+- **Scaffold**: `php artisan make:data-table ModelName` (options: `--export`, `--route`, `--page-path`).
+- **Exports**: Use `HasExport` trait and register export route when using maatwebsite/excel.
+- See **laravel-data-table** skill and `docs/developer/backend/data-table.md`, `docs/developer/frontend/data-table.md`.

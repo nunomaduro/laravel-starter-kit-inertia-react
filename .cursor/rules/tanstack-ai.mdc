@@ -1,0 +1,11 @@
+---
+globs: resources/js/**/chat/**/*.tsx, resources/js/**/chat/**/*.ts
+description: TanStack AI chat patterns
+---
+
+# TanStack AI (useChat + fetchHttpStream)
+
+- Chat UI uses `useChat` from `@tanstack/ai-react` with a **connection** built from `fetchHttpStream` (from `@tanstack/ai-client`).
+- Backend must return **NDJSON** (newline-delimited JSON) in the **AG-UI protocol**: `RUN_STARTED`, `TEXT_MESSAGE_START`, `TEXT_MESSAGE_CONTENT`, `TEXT_MESSAGE_END`, `RUN_FINISHED`, or `RUN_ERROR`. Each line is one JSON object.
+- Use `credentials: 'include'` and appropriate headers (`Accept: application/x-ndjson`, `Content-Type: application/json`) when calling `/api/chat`.
+- See `docs/developer/frontend/ai-chat.md` and `docs/developer/backend/ai-chat.md`.

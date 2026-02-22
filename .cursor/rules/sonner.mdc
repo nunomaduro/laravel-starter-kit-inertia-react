@@ -1,0 +1,11 @@
+---
+globs: resources/js/**/*.tsx, app/Http/Controllers/**/*.php
+description: Sonner toasts and flash usage
+---
+
+# Sonner toasts
+
+- **Frontend**: Use `toast.success()`, `toast.error()` from `sonner`. The app renders `<Toaster />` in the root; `FlashListener` reads `page.props.flash` and `page.props.status` and shows toasts on load.
+- **Backend**: Prefer `redirect()->with('flash', ['success' => 'Message'])` or `->with('flash', ['error' => 'Message'])`. Legacy `->with('status', '...')` is still shown as a success toast.
+- **Middleware**: `HandleInertiaRequests` shares `flash` from the session. Do not remove it.
+- See `docs/developer/frontend/toasts.md`.

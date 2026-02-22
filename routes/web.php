@@ -125,6 +125,12 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
 
+    Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
+
+    Route::get('users', fn (Illuminate\Http\Request $request) => Inertia::render('users/table', [
+        'tableData' => App\DataTables\UserDataTable::makeTable($request),
+    ]))->name('users.table');
+
     // Organizations (multi-tenancy; routes redirect to dashboard when tenancy disabled)
     Route::middleware('tenancy.enabled')->group(function (): void {
         Route::post('organizations/switch', OrganizationSwitchController::class)->name('organizations.switch');

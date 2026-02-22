@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default' => 'openai',
+    'default' => env('AI_DEFAULT', 'openai'),
     'default_for_images' => 'gemini',
     'default_for_audio' => 'openai',
     'default_for_transcription' => 'openai',
@@ -92,6 +92,11 @@ return [
         'openrouter' => [
             'driver' => 'openrouter',
             'key' => env('OPENROUTER_API_KEY'),
+            'models' => [
+                'text' => [
+                    'default' => env('AI_CHAT_MODEL', 'anthropic/claude-sonnet-4.5'),
+                ],
+            ],
         ],
 
         'xai' => [

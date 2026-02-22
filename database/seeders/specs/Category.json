@@ -3,7 +3,7 @@
     "table": "categories",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -48,7 +48,7 @@
             "default": null
         },
         "organization_id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         }

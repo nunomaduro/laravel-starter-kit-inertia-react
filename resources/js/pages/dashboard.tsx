@@ -1,6 +1,14 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
+import {
+    Area,
+    AreaChart,
+    CartesianGrid,
+    ResponsiveContainer,
+    XAxis,
+    YAxis,
+} from 'recharts';
 import { create as contactCreate } from '@/routes/contact';
 import { exportPdf } from '@/routes/profile';
 import { edit as editProfile } from '@/routes/user-profile';
@@ -81,6 +89,16 @@ export default function Dashboard() {
         },
     ].filter((a) => a.show);
 
+    const chartData = [
+        { name: 'Mon', value: 12 },
+        { name: 'Tue', value: 19 },
+        { name: 'Wed', value: 15 },
+        { name: 'Thu', value: 22 },
+        { name: 'Fri', value: 18 },
+        { name: 'Sat', value: 25 },
+        { name: 'Sun', value: 20 },
+    ];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -136,6 +154,29 @@ export default function Dashboard() {
                             )}
                         </Button>
                     ))}
+                </div>
+
+                <div
+                    className="rounded-lg border bg-card p-4"
+                    data-pan="dashboard-chart"
+                >
+                    <h3 className="mb-2 font-medium">Activity (sample)</h3>
+                    <div className="h-[200px] w-full">
+                        <ResponsiveContainer width="100%" height={200} minHeight={200}>
+                        <AreaChart data={chartData}>
+                            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                            <XAxis dataKey="name" className="text-xs" />
+                            <YAxis className="text-xs" />
+                            <Area
+                                type="monotone"
+                                dataKey="value"
+                                stroke="hsl(var(--primary))"
+                                fill="hsl(var(--primary))"
+                                fillOpacity={0.3}
+                            />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                    </div>
                 </div>
 
                 {canAccessAdmin && (

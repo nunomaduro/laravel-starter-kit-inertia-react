@@ -1,5 +1,7 @@
 import ContactSubmissionController from '@/actions/App/Http/Controllers/ContactSubmissionController';
-import { home } from '@/routes';
+import { dashboard, home } from '@/routes';
+import { create as contactCreate } from '@/routes/contact';
+import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Form, Head, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
@@ -9,20 +11,30 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 
-export default function ContactCreate() {
-    const { flash } = usePage<{ flash?: { status?: string } }>().props;
+function ContactFormContent({
+    isLoggedIn,
+    flashStatus,
+}: {
+    isLoggedIn: boolean;
+    flashStatus?: string;
+}) {
+    const { auth } = usePage<SharedData>().props;
+    const user = auth?.user ?? null;
 
     return (
-        <AuthLayout
-            title="Contact us"
-            description="Send us a message and we'll get back to you."
-        >
-            <Head title="Contact" />
-            {flash?.status && (
-                <p className="mb-4 text-center text-sm text-muted-foreground">
-                    {flash.status}
+        <>
+            {flashStatus && (
+                <p
+                    className={
+                        isLoggedIn
+                            ? 'mb-4 text-sm text-muted-foreground'
+                            : 'mb-4 text-center text-sm text-muted-foreground'
+                    }
+                >
+                    {flashStatus}
                 </p>
             )}
             <Form
@@ -41,10 +53,11 @@ export default function ContactCreate() {
                                     id="name"
                                     type="text"
                                     required
-                                    autoFocus
+                                    autoFocus={!isLoggedIn}
                                     autoComplete="name"
                                     name="name"
                                     placeholder="Your name"
+                                    defaultValue={user?.name}
                                 />
                                 <InputError message={errors.name} />
                             </div>
@@ -57,6 +70,7 @@ export default function ContactCreate() {
                                     autoComplete="email"
                                     name="email"
                                     placeholder="you@example.com"
+                                    defaultValue={user?.email}
                                 />
                                 <InputError message={errors.email} />
                             </div>
@@ -90,12 +104,55 @@ export default function ContactCreate() {
                                 Send message
                             </Button>
                         </div>
-                        <div className="text-center text-sm text-muted-foreground">
-                            <TextLink href={home()}>Back to home</TextLink>
-                        </div>
+                        {!isLoggedIn && (
+                            <div className="text-center text-sm text-muted-foreground">
+                                <TextLink href={home()}>Back to home</TextLink>
+                            </div>
+                        )}
                     </>
                 )}
             </Form>
+        </>
+    );
+}
+
+export default function ContactCreate() {
+    const { auth, flash } = usePage<SharedData>().props;
+    const isLoggedIn = Boolean(auth?.user);
+    const flashStatus = flash?.status;
+
+    if (isLoggedIn) {
+        const breadcrumbs: BreadcrumbItem[] = [
+            { title: 'Dashboard', href: dashboard().url },
+            { title: 'Contact', href: contactCreate().url },
+        ];
+        return (
+            <AppLayout breadcrumbs={breadcrumbs}>
+                <Head title="Contact" />
+                <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
+                    <h1 className="text-2xl font-semibold">Contact support</h1>
+                    <p className="text-muted-foreground">
+                        Send us a message and we&apos;ll get back to you.
+                    </p>
+                    <ContactFormContent
+                        isLoggedIn
+                        flashStatus={flashStatus}
+                    />
+                </div>
+            </AppLayout>
+        );
+    }
+
+    return (
+        <AuthLayout
+            title="Contact us"
+            description="Send us a message and we'll get back to you."
+        >
+            <Head title="Contact" />
+            <ContactFormContent
+                isLoggedIn={false}
+                flashStatus={flashStatus}
+            />
         </AuthLayout>
     );
 }

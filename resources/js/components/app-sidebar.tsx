@@ -11,6 +11,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { chat } from '@/routes';
 import { dashboard } from '@/routes';
 import { index as blogIndex } from '@/routes/blog';
 import { index as changelogIndex } from '@/routes/changelog';
@@ -29,6 +30,7 @@ import {
     LifeBuoy,
     Mail,
     Megaphone,
+    MessageCircle,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from './app-logo';
@@ -39,6 +41,12 @@ const mainNavItems: NavItem[] = [
         href: dashboard().url,
         icon: LayoutGrid,
         dataPan: 'nav-dashboard',
+    },
+    {
+        title: 'Chat',
+        href: chat().url,
+        icon: MessageCircle,
+        dataPan: 'nav-chat',
     },
     {
         title: 'Organizations',
@@ -162,7 +170,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard().url} prefetch>
+                            <Link href={dashboard().url} prefetch="click">
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>

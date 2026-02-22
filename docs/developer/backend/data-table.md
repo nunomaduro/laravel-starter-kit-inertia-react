@@ -30,6 +30,12 @@ Server-side DataTables for **Laravel + Inertia.js + React** are provided by **ma
 
 URL state is bookmarkable: `?filter[column]=operator:value&sort=-column&page=1&per_page=25`. Column visibility and order are persisted in localStorage per `tableName`.
 
+## Users example
+
+- **Backend**: `App\DataTables\UserDataTable` defines DTO (id, name, email, created_at), `tableColumns()`, `tableBaseQuery()` (User::query()), and `fromModel(User $model)`.
+- **Route**: `GET /users` (name: `users.table`) under auth renders `users/table` with `UserDataTable::makeTable($request)` as `tableData`.
+- **Frontend**: `resources/js/pages/users/table.tsx` renders `<DataTable tableData={tableData} tableName="users" />` inside `AppSidebarLayout`.
+
 ## References
 
 - Package README: `vendor/machour/laravel-data-table/README.md`

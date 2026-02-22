@@ -58,6 +58,7 @@ final class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
+            'flash' => fn () => $request->session()->get('flash'),
             'name' => config('app.name'),
             'quote' => ['message' => mb_trim((string) $message), 'author' => mb_trim((string) $author)],
             'auth' => [

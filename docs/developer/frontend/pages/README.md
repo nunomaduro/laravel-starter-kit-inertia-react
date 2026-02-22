@@ -54,5 +54,8 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [pricing](./pricing.md) | pricing | ✅ |
 | [terms/accept](./terms-accept.md) | terms.accept, terms.accept.store | ✅ |
 | [enterprise-inquiries/create](./enterprise-inquiries-create.md) | enterprise-inquiries.create, enterprise-inquiries.store | ✅ |
+| [chat/index](./chat/index.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
+| [user-table](./user-table.md) | N/A | ✅ |
+| [users/table](./users/table.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
 
 

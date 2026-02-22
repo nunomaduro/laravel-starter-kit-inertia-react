@@ -2,7 +2,7 @@
 
 This document lists all available routes in the application.
 
-**Last Updated**: 2026-02-14 (Pan product analytics, Filament Product Analytics page)
+**Last Updated**: 2026-02-22 (Starter kit packages integration: chat, users table, DataTable)
 
 ## Closure
 
@@ -40,6 +40,7 @@ This document lists all available routes in the application.
 | GET | `filament-excel/{path}` | filament-excel-download | web, signed |
 | GET | `filament-impersonate/leave` | filament-impersonate.leave | web |
 | GET | `api` | api | api |
+| POST | `api/chat` | chat | api, auth:sanctum |
 | GET | `api/v1` | api.v1.info | api |
 | GET | `favicon.ico` | favicon | web |
 | GET | `robots.txt` | robots | web |
@@ -516,6 +517,31 @@ This document lists all available routes in the application.
 **Method Parameters**:
 - `filename`: `mixed`
 
+
+## ChatController
+
+**Controller**: `App\Http\Controllers\Api\ChatController` (invokable). Streaming chat; see [AI Chat API](../backend/ai-chat.md).
+
+| Method | URI | Route Name | Middleware |
+|--------|-----|------------|------------|
+| POST | `api/chat` | chat | api, auth:sanctum |
+
+## ChatMemoryController
+
+**Controller**: `App\Http\Controllers\Api\ChatMemoryController` (invokable). Returns current user’s AI memories for the chat UI.
+
+| Method | URI | Route Name | Middleware |
+|--------|-----|------------|------------|
+| GET | `api/chat/memories` | chat.memories | api, auth:sanctum |
+
+## ConversationController
+
+**Controller**: `App\Http\Controllers\Api\ConversationController`. List and show conversations for the authenticated user.
+
+| Method | URI | Route Name | Middleware |
+|--------|-----|------------|------------|
+| GET | `api/conversations` | conversations.index | api, auth:sanctum |
+| GET | `api/conversations/{id}` | conversations.show | api, auth:sanctum |
 
 ## UserController
 

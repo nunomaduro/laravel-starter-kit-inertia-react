@@ -79,6 +79,6 @@ final readonly class TermsAcceptController
 
         $intended = $request->input('intended', route('dashboard'));
 
-        return redirect()->to($intended)->with('status', __('Thank you. You have accepted the required documents.'));
+        return redirect()->to($intended)->with('flash', ['success' => __('Thank you. You have accepted the required documents.')]);
     }
 }

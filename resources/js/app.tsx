@@ -5,8 +5,11 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Toaster } from 'sonner';
 import { CookieConsentBanner } from './components/cookie-consent-banner';
+import { FlashListener } from './components/flash-listener';
 import { initializeTheme } from './hooks/use-appearance';
+import { QueryProvider } from './providers/query-provider';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -24,7 +27,9 @@ createInertiaApp({
                 return (
                     <>
                         <CookieConsentBanner />
+                        <FlashListener />
                         <Page {...props} />
+                        <Toaster richColors position="top-right" />
                     </>
                 );
             };
@@ -32,7 +37,11 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        root.render(
+            <QueryProvider>
+                <App {...props} />
+            </QueryProvider>,
+        );
     },
     progress: {
         color: '#4B5563',
