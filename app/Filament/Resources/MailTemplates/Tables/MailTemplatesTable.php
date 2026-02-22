@@ -8,6 +8,9 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Maatwebsite\Excel\Excel;
+use pxlrbt\FilamentExcel\Actions\ExportAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 final class MailTemplatesTable
 {
@@ -15,6 +18,15 @@ final class MailTemplatesTable
     {
         return $table
             ->defaultSort('name')
+            ->headerActions([
+                ExportAction::make()
+                    ->exports([
+                        ExcelExport::make()->fromTable()->withFilename('mail-templates-'.now()->format('Y-m-d')),
+                        ExcelExport::make()->fromTable()
+                            ->withFilename('mail-templates-'.now()->format('Y-m-d').'-csv')
+                            ->withWriterType(Excel::CSV),
+                    ]),
+            ])
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('event')

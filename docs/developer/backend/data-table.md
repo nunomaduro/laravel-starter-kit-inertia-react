@@ -10,7 +10,7 @@ Server-side DataTables for **Laravel + Inertia.js + React** are provided by **ma
   npx shadcn@latest add ./vendor/machour/laravel-data-table/react/public/r/data-table.json
   ```
   This copies the DataTable React components and installs shadcn/ TanStack Table dependencies.
-- **Optional**: `maatwebsite/excel` for XLSX/CSV export; register export route and use `HasExport` trait on the DataTable class.
+- **Optional**: `maatwebsite/excel` for XLSX/CSV export; register export route and use `HasExport` trait on the DataTable class. See [laravel-excel.md](./laravel-excel.md).
 
 ## Where things live
 

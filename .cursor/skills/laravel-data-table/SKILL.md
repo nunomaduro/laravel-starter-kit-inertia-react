@@ -18,6 +18,7 @@ Activate when building or editing server-side data tables, DataTable PHP classes
 2. **Routes:** Pass `YourDataTable::makeTable()` (or `makeTable($request)`) as the `tableData` prop to the Inertia page that renders the table.
 3. **Frontend:** Use the `<DataTable>` component (from shadcn add) with `tableData`, `tableName`, and optional `actions`, `bulkActions`, `renderCell`, `options`. Install React components once: `npx shadcn@latest add ./vendor/machour/laravel-data-table/react/public/r/data-table.json`.
 4. **Scaffold:** `php artisan make:data-table ModelName` (options: `--export`, `--route`, `--route-file`, `--page-path`). Package is installed from fork: `coding-sunshine/laravel-data-table` (VCS in composer.json). To develop the package in place, use a Composer path repository.
+5. **Exports:** DataTable `HasExport` requires maatwebsite/excel; register export route. For Filament table exports (separate from DataTable), see `docs/developer/backend/laravel-excel.md` and the **laravel-excel** skill.
 
 ## Documentation
 

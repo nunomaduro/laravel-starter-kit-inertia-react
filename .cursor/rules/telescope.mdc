@@ -1,0 +1,15 @@
+---
+description: Laravel Telescope debug dashboard (local-only, requests, queries, jobs, mail)
+globs: app/Providers/TelescopeServiceProvider.php, config/telescope.php, routes/console.php
+---
+# Laravel Telescope
+
+- **Package**: [laravel/telescope](https://laravel.com/docs/12.x/telescope) v5. Debug dashboard at `/telescope` (local only; admin panel access).
+- **Local-only**: Registered in `AppServiceProvider` when `APP_ENV=local`; `dont-discover` in composer.json.
+- **Gate**: `viewTelescope` allows users who `can('access admin panel')` (same as Horizon).
+- **Filter**: Local = all entries; non-local = exceptions, failed requests/jobs, scheduled tasks, slow queries, monitored tags.
+- **Tagging**: Request entries tagged with `status:{code}`. Add tags to monitoring list for production debugging.
+- **Avatar**: User avatars from Spatie Media Library `avatar` collection.
+- **Pruning**: `telescope:prune` scheduled daily. Response cache excludes `telescope/*`.
+
+Consider the **telescope** skill when configuring or debugging with Telescope.

@@ -14,6 +14,10 @@ use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Maatwebsite\Excel\Excel;
+use pxlrbt\FilamentExcel\Actions\ExportAction;
+use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Spatie\Permission\Models\Role;
 
 final class RolesTable
@@ -36,6 +40,15 @@ final class RolesTable
             ])
             ->filters([
                 //
+            ])
+            ->headerActions([
+                ExportAction::make()
+                    ->exports([
+                        ExcelExport::make()->fromTable()->withFilename('roles-'.now()->format('Y-m-d')),
+                        ExcelExport::make()->fromTable()
+                            ->withFilename('roles-'.now()->format('Y-m-d').'-csv')
+                            ->withWriterType(Excel::CSV),
+                    ]),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -70,6 +83,7 @@ final class RolesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    ExportBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

@@ -3,7 +3,7 @@
     "table": "visibility_demos",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -18,7 +18,7 @@
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -28,7 +28,7 @@
             "default": null
         },
         "cloned_from": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

@@ -25,6 +25,11 @@ Schedule::command('sitemap:generate')->daily();
 Schedule::command('backup:run')->daily()->at('01:00');
 Schedule::command('backup:clean')->daily()->at('01:00');
 
+// Telescope: prune old entries (local dev; entries older than 24h).
+if (class_exists(Laravel\Telescope\Telescope::class)) {
+    Schedule::command('telescope:prune')->daily();
+}
+
 // Database Mail: prune old mail exceptions (martinpetricko/laravel-database-mail).
 Schedule::command('model:prune', [
     '--model' => [MartinPetricko\LaravelDatabaseMail\Models\MailException::class],

@@ -29,3 +29,4 @@ yarn-error.log
 /tmp/
 /.kreuzberg
 /prd
+/.playwright-mcp

@@ -1,0 +1,12 @@
+---
+description: Laravel Excel and Filament Excel exports (maatwebsite/excel, pxlrbt/filament-excel)
+globs: app/Filament/Resources/**/Tables/*.php, app/Exports/*.php, app/Imports/*.php, app/DataTables/*.php
+---
+# Laravel Excel & Filament Excel
+
+- **Package**: [maatwebsite/excel](https://docs.laravel-excel.com/3.1/getting-started/) (Laravel Excel v3.1) + [pxlrbt/filament-excel](https://github.com/pxlrbt/filament-excel) for Filament table exports.
+- **Filament**: All list tables have `ExportAction` (header) and `ExportBulkAction` (toolbar). Use `ExcelExport::make()->fromTable()->withFilename('name-'.now()->format('Y-m-d'))` and `->withWriterType(Excel::CSV)` for CSV. For large tables (Users): add `->withChunkSize(500)->queue()`.
+- **Custom exports**: `app/Exports/`; `Excel::download(new Export, 'file.xlsx')`. Imports: `app/Imports/`; `Excel::import(new Import, 'file.xlsx')`.
+- **DataTable**: Optional `HasExport` trait; see `docs/developer/backend/data-table.md` and `laravel-excel.md`.
+
+Consider the **laravel-excel** skill when adding or editing exports.

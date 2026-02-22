@@ -49,6 +49,7 @@
         "laraveldaily/laravel-invoices": "^4.1.1",
         "league/flysystem-aws-s3-v3": "^3.31",
         "lemonsqueezy/laravel": "^1.8.5",
+        "maatwebsite/excel": "^3.1.67",
         "machour/laravel-data-table": "dev-main",
         "martinpetricko/laravel-database-mail": "^1.4",
         "nunomaduro/essentials": "^1.0.1",
@@ -96,6 +97,7 @@
         "laravel/boost": "^2.1.6",
         "laravel/pail": "^1.2.6",
         "laravel/pint": "^1.27.1",
+        "laravel/telescope": "^5.17",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.9.1",
         "pestphp/pest": "^4.4.1",
@@ -195,7 +197,8 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-                "eznix86/laravel-ai-memory"
+                "eznix86/laravel-ai-memory",
+                "laravel/telescope"
             ]
         }
     },

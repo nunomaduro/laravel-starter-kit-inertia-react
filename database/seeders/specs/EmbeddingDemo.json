@@ -3,12 +3,12 @@
     "table": "embedding_demos",
     "fields": {
         "id": {
-            "type": "int8",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "content": {
-            "type": "varchar",
+            "type": "string",
             "nullable": true,
             "default": null
         },

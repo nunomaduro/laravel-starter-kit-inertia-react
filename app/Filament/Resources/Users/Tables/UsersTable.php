@@ -68,10 +68,17 @@ final class UsersTable
             ->headerActions([
                 ExportAction::make()
                     ->exports([
-                        ExcelExport::make()->fromTable()->withFilename('users-'.now()->format('Y-m-d')),
-                        ExcelExport::make()->fromTable()
+                        ExcelExport::make()
+                            ->fromTable()
+                            ->withFilename('users-'.now()->format('Y-m-d'))
+                            ->withChunkSize(500)
+                            ->queue(),
+                        ExcelExport::make()
+                            ->fromTable()
                             ->withFilename('users-'.now()->format('Y-m-d').'-csv')
-                            ->withWriterType(Excel::CSV),
+                            ->withWriterType(Excel::CSV)
+                            ->withChunkSize(500)
+                            ->queue(),
                     ]),
             ])
             ->recordActions([
