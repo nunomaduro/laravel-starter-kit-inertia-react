@@ -11,7 +11,22 @@
       "mcp__firecrawl__firecrawl_search",
       "mcp__firecrawl__firecrawl_map",
       "mcp__kreuzberg__extract_document",
-      "Bash(/tmp/reports_comparison.md:*)"
+      "Bash(/tmp/reports_comparison.md:*)",
+      "Bash(composer update laravel/ai spatie/eloquent-sortable --no-interaction 2>&1)",
+      "Bash(composer show laravel/ai --format=json 2>/dev/null | grep -E '\"version\"|\"name\"' | head -5)",
+      "Bash(composer show spatie/eloquent-sortable --format=json 2>/dev/null | grep -E '\"version\"|\"name\"' | head -5)",
+      "Bash(composer show laravel/ai | head -5)",
+      "Bash(composer show spatie/eloquent-sortable | head -5)",
+      "Bash(composer update laravel/ai spatie/eloquent-sortable --no-interaction --with-all-dependencies 2>&1)",
+      "Bash(composer why spatie/eloquent-sortable 2>&1)",
+      "Bash(composer why eznix86/laravel-ai-memory 2>&1)",
+      "Bash(composer show laravelcm/laravel-subscriptions --all --format=json 2>/dev/null | python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('\\\\n'.join\\(d.get\\('versions',['?']\\)\\)\\)\" | head -10)",
+      "Bash(composer show laravelcm/laravel-subscriptions v1.7.2 --format=json 2>/dev/null | python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(f'{k}: {v}'\\) for k,v in d.get\\('requires',{}\\).items\\(\\) if 'sortable' in k]\")",
+      "Bash(composer show eznix86/laravel-ai-memory --all 2>&1 | head -20)",
+      "Bash(composer show eznix86/laravel-ai-memory dev-main --all 2>&1 | grep -A5 \"requires\")",
+      "Bash(composer update eznix86/laravel-ai-memory laravel/ai spatie/eloquent-sortable --no-interaction --with-all-dependencies 2>&1)",
+      "Bash(npm outdated 2>&1)",
+      "Bash(bunx npm-check-updates 2>&1)"
     ]
   },
   "enableAllProjectMcpServers": true,
