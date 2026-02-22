@@ -30,3 +30,10 @@ yarn-error.log
 /.kreuzberg
 /prd
 /.playwright-mcp
+
+# Agent skills (symlinks from boost:update; canonical source is .ai/skills/)
+/.agents/skills/
+/.claude/skills/
+/.cursor/skills/
+/.github/skills/
+/.junie/skills/
