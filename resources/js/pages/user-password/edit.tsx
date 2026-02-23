@@ -21,8 +21,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Password() {
-    const passwordInput = useRef<HTMLInputElement>(null);
-    const currentPasswordInput = useRef<HTMLInputElement>(null);
+    const passwordInputRef = useRef<HTMLInputElement>(null);
+    const currentPasswordInputRef = useRef<HTMLInputElement>(null);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -48,11 +48,11 @@ export default function Password() {
                         resetOnSuccess
                         onError={(errors) => {
                             if (errors.password) {
-                                passwordInput.current?.focus();
+                                passwordInputRef.current?.focus();
                             }
 
                             if (errors.current_password) {
-                                currentPasswordInput.current?.focus();
+                                currentPasswordInputRef.current?.focus();
                             }
                         }}
                         className="space-y-6"
@@ -66,7 +66,7 @@ export default function Password() {
 
                                     <Input
                                         id="current_password"
-                                        ref={currentPasswordInput}
+                                        ref={currentPasswordInputRef}
                                         name="current_password"
                                         type="password"
                                         className="mt-1 block w-full"
@@ -86,7 +86,7 @@ export default function Password() {
 
                                     <Input
                                         id="password"
-                                        ref={passwordInput}
+                                        ref={passwordInputRef}
                                         name="password"
                                         type="password"
                                         className="mt-1 block w-full"

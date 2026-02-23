@@ -13,25 +13,25 @@ declare module '@inertiajs/react' {
 
 export function FlashListener(): null {
     const { props } = usePage();
-    const shown = useRef(false);
+    const shownRef = useRef(false);
 
     useEffect(() => {
         const flash = props.flash as Flash | undefined;
         const status = props.status as string | undefined;
         if (!flash && !status) {
-            shown.current = false;
+            shownRef.current = false;
             return;
         }
-        if (shown.current) return;
+        if (shownRef.current) return;
         if (flash?.success) {
             toast.success(flash.success);
-            shown.current = true;
+            shownRef.current = true;
         } else if (flash?.error) {
             toast.error(flash.error);
-            shown.current = true;
+            shownRef.current = true;
         } else if (status) {
             toast.success(status);
-            shown.current = true;
+            shownRef.current = true;
         }
     }, [props.flash, props.status]);
 

@@ -45,6 +45,14 @@ final class ManageAi extends SettingsPage
                     ->label('Default for reranking'),
                 TextInput::make('chat_model')
                     ->label('Chat model'),
+                TextInput::make('cohere_api_key')
+                    ->label('Cohere API key')
+                    ->password()
+                    ->revealable(),
+                TextInput::make('jina_api_key')
+                    ->label('Jina API key')
+                    ->password()
+                    ->revealable(),
             ]);
     }
 }

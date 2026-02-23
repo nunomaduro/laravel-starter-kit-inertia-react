@@ -62,7 +62,9 @@ export function ConversationSidebar({
     onConversationRenamed?: (id: string, title: string) => void;
     isMobile?: boolean;
 }) {
-    const [deleteTarget, setDeleteTarget] = useState<ConversationItem | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<ConversationItem | null>(
+        null,
+    );
     const [deleting, setDeleting] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editTitle, setEditTitle] = useState('');
@@ -113,7 +115,9 @@ export function ConversationSidebar({
             return;
         }
 
-        const originalTitle = conversations.find((c) => c.id === editingId)?.title;
+        const originalTitle = conversations.find(
+            (c) => c.id === editingId,
+        )?.title;
         if (trimmed === originalTitle) {
             cancelEditing();
             return;
@@ -136,22 +140,34 @@ export function ConversationSidebar({
             });
             if (!res.ok) {
                 // Revert on failure
-                if (originalTitle) onConversationRenamed?.(editingId, originalTitle);
+                if (originalTitle)
+                    onConversationRenamed?.(editingId, originalTitle);
                 toast.error('Failed to rename conversation');
             } else {
                 toast.success('Conversation renamed');
             }
         } catch {
-            if (originalTitle) onConversationRenamed?.(editingId, originalTitle);
+            if (originalTitle)
+                onConversationRenamed?.(editingId, originalTitle);
             toast.error('Failed to rename conversation');
         }
-    }, [editingId, editTitle, conversations, onConversationRenamed, cancelEditing]);
+    }, [
+        editingId,
+        editTitle,
+        conversations,
+        onConversationRenamed,
+        cancelEditing,
+    ]);
 
     const groups = groupConversations(conversations);
 
     return (
         <aside
-            className={isMobile ? 'flex h-full flex-col overflow-hidden' : 'flex w-64 shrink-0 flex-col overflow-hidden rounded-xl border bg-card'}
+            className={
+                isMobile
+                    ? 'flex h-full flex-col overflow-hidden'
+                    : 'flex w-64 shrink-0 flex-col overflow-hidden rounded-xl border bg-card'
+            }
             data-pan="chat-conversation-list"
         >
             <div className="flex items-center justify-between border-b px-3 py-2.5">
@@ -170,7 +186,10 @@ export function ConversationSidebar({
                 {conversationsLoading ? (
                     <div className="space-y-2 p-2">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-8 animate-pulse rounded-lg bg-muted" />
+                            <div
+                                key={i}
+                                className="h-8 animate-pulse rounded-lg bg-muted"
+                            />
                         ))}
                     </div>
                 ) : conversations.length === 0 ? (
@@ -191,10 +210,14 @@ export function ConversationSidebar({
                                                 ref={editInputRef}
                                                 type="text"
                                                 value={editTitle}
-                                                onChange={(e) => setEditTitle(e.target.value)}
+                                                onChange={(e) =>
+                                                    setEditTitle(e.target.value)
+                                                }
                                                 onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') saveEditing();
-                                                    if (e.key === 'Escape') cancelEditing();
+                                                    if (e.key === 'Enter')
+                                                        saveEditing();
+                                                    if (e.key === 'Escape')
+                                                        cancelEditing();
                                                 }}
                                                 onBlur={saveEditing}
                                                 className="w-full rounded-lg border bg-background px-2 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring"
@@ -204,16 +227,23 @@ export function ConversationSidebar({
                                             <>
                                                 <button
                                                     type="button"
-                                                    onClick={() => onSelectConversation(c.id)}
+                                                    onClick={() =>
+                                                        onSelectConversation(
+                                                            c.id,
+                                                        )
+                                                    }
                                                     className={`w-full rounded-lg px-2 py-1.5 pr-14 text-left text-sm transition-colors ${
-                                                        activeConversationId === c.id
+                                                        activeConversationId ===
+                                                        c.id
                                                             ? 'bg-accent text-accent-foreground'
                                                             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                                     }`}
                                                 >
-                                                    <span className="line-clamp-1">{c.title}</span>
+                                                    <span className="line-clamp-1">
+                                                        {c.title}
+                                                    </span>
                                                 </button>
-                                                <div className="absolute right-1.5 top-1/2 flex -translate-y-1/2 gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+                                                <div className="absolute top-1/2 right-1.5 flex -translate-y-1/2 gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
                                                     <button
                                                         type="button"
                                                         onClick={(e) => {
@@ -247,13 +277,17 @@ export function ConversationSidebar({
                 )}
             </div>
 
-            <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+            <Dialog
+                open={!!deleteTarget}
+                onOpenChange={(open) => !open && setDeleteTarget(null)}
+            >
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Delete conversation</DialogTitle>
                         <DialogDescription>
-                            This will permanently delete &ldquo;{deleteTarget?.title}&rdquo; and all
-                            its messages. This action cannot be undone.
+                            This will permanently delete &ldquo;
+                            {deleteTarget?.title}&rdquo; and all its messages.
+                            This action cannot be undone.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
@@ -262,7 +296,11 @@ export function ConversationSidebar({
                                 Cancel
                             </Button>
                         </DialogClose>
-                        <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                        <Button
+                            variant="destructive"
+                            onClick={handleDelete}
+                            disabled={deleting}
+                        >
                             {deleting ? 'Deleting...' : 'Delete'}
                         </Button>
                     </DialogFooter>

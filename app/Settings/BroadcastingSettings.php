@@ -8,6 +8,8 @@ use Spatie\LaravelSettings\Settings;
 
 final class BroadcastingSettings extends Settings
 {
+    public string $default_connection = 'log';
+
     public ?string $reverb_app_id = null;
 
     public ?string $reverb_app_key = null;

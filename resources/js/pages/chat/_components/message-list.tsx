@@ -49,9 +49,10 @@ export function MessageList({
                 {messages.map((m) => (
                     <MessageBubble key={m.id} message={m} user={user} />
                 ))}
-                {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
-                    <StreamingIndicator />
-                )}
+                {isLoading &&
+                    messages[messages.length - 1]?.role !== 'assistant' && (
+                        <StreamingIndicator />
+                    )}
             </div>
             {showScrollButton && (
                 <button

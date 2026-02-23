@@ -134,10 +134,7 @@ export default function ContactCreate() {
                     <p className="text-muted-foreground">
                         Send us a message and we&apos;ll get back to you.
                     </p>
-                    <ContactFormContent
-                        isLoggedIn
-                        flashStatus={flashStatus}
-                    />
+                    <ContactFormContent isLoggedIn flashStatus={flashStatus} />
                 </div>
             </AppLayout>
         );
@@ -149,10 +146,7 @@ export default function ContactCreate() {
             description="Send us a message and we'll get back to you."
         >
             <Head title="Contact" />
-            <ContactFormContent
-                isLoggedIn={false}
-                flashStatus={flashStatus}
-            />
+            <ContactFormContent isLoggedIn={false} flashStatus={flashStatus} />
         </AuthLayout>
     );
 }

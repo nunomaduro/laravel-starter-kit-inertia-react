@@ -156,9 +156,13 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
                         <NavigationMenu className="flex h-full items-stretch">
                             <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainNavItems.map((item, index) => (
+                                {mainNavItems.map((item) => (
                                     <NavigationMenuItem
-                                        key={index}
+                                        key={
+                                            typeof item.href === 'string'
+                                                ? item.href
+                                                : item.href.url
+                                        }
                                         className="relative flex h-full items-center"
                                     >
                                         <Link

@@ -54,6 +54,7 @@ export function useAppearance() {
     const [appearance, setAppearance] = useState<Appearance>('system');
 
     const updateAppearance = useCallback((mode: Appearance) => {
+        // eslint-disable-next-line @eslint-react/hooks-extra/no-direct-set-state-in-use-effect -- sync from localStorage when called from useEffect on mount
         setAppearance(mode);
 
         // Store in localStorage for client-side persistence...

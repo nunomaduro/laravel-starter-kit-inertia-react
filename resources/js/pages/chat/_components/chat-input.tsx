@@ -48,19 +48,31 @@ export function ChatInput({
             <div className="flex items-end gap-2">
                 <textarea
                     ref={textareaRef}
-                    placeholder={disabled ? 'Preparing chat...' : 'Type a message...'}
+                    placeholder={
+                        disabled ? 'Preparing chat...' : 'Type a message...'
+                    }
                     disabled={disabled}
                     rows={1}
                     onInput={adjustHeight}
                     onKeyDown={handleKeyDown}
-                    className="border-input bg-background ring-offset-background placeholder:text-muted-foreground flex max-h-36 min-h-9 flex-1 resize-none rounded-lg border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex max-h-36 min-h-9 flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 />
                 {isLoading ? (
-                    <Button type="button" size="icon" variant="destructive" onClick={onStop}>
+                    <Button
+                        type="button"
+                        size="icon"
+                        variant="destructive"
+                        onClick={onStop}
+                    >
                         <Square className="size-4" />
                     </Button>
                 ) : (
-                    <Button type="button" size="icon" onClick={handleSubmit} disabled={disabled}>
+                    <Button
+                        type="button"
+                        size="icon"
+                        onClick={handleSubmit}
+                        disabled={disabled}
+                    >
                         <ArrowUp className="size-4" />
                     </Button>
                 )}

@@ -122,17 +122,15 @@ export default function TwoFactorRecoveryCodes({
                                         aria-label="Recovery codes"
                                     >
                                         {recoveryCodesList.length ? (
-                                            recoveryCodesList.map(
-                                                (code, index) => (
-                                                    <div
-                                                        key={index}
-                                                        role="listitem"
-                                                        className="select-text"
-                                                    >
-                                                        {code}
-                                                    </div>
-                                                ),
-                                            )
+                                            recoveryCodesList.map((code) => (
+                                                <div
+                                                    key={code}
+                                                    role="listitem"
+                                                    className="select-text"
+                                                >
+                                                    {code}
+                                                </div>
+                                            ))
                                         ) : (
                                             <div
                                                 className="space-y-2"

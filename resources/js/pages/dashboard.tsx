@@ -1,14 +1,6 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import {
-    Area,
-    AreaChart,
-    CartesianGrid,
-    ResponsiveContainer,
-    XAxis,
-    YAxis,
-} from 'recharts';
 import { create as contactCreate } from '@/routes/contact';
 import { exportPdf } from '@/routes/profile';
 import { edit as editProfile } from '@/routes/user-profile';
@@ -22,6 +14,14 @@ import {
     Settings,
     UserPen,
 } from 'lucide-react';
+import {
+    Area,
+    AreaChart,
+    CartesianGrid,
+    ResponsiveContainer,
+    XAxis,
+    YAxis,
+} from 'recharts';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -162,20 +162,27 @@ export default function Dashboard() {
                 >
                     <h3 className="mb-2 font-medium">Activity (sample)</h3>
                     <div className="h-[200px] w-full">
-                        <ResponsiveContainer width="100%" height={200} minHeight={200}>
-                        <AreaChart data={chartData}>
-                            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                            <XAxis dataKey="name" className="text-xs" />
-                            <YAxis className="text-xs" />
-                            <Area
-                                type="monotone"
-                                dataKey="value"
-                                stroke="hsl(var(--primary))"
-                                fill="hsl(var(--primary))"
-                                fillOpacity={0.3}
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
+                        <ResponsiveContainer
+                            width="100%"
+                            height={200}
+                            minHeight={200}
+                        >
+                            <AreaChart data={chartData}>
+                                <CartesianGrid
+                                    strokeDasharray="3 3"
+                                    className="stroke-muted"
+                                />
+                                <XAxis dataKey="name" className="text-xs" />
+                                <YAxis className="text-xs" />
+                                <Area
+                                    type="monotone"
+                                    dataKey="value"
+                                    stroke="hsl(var(--primary))"
+                                    fill="hsl(var(--primary))"
+                                    fillOpacity={0.3}
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
 

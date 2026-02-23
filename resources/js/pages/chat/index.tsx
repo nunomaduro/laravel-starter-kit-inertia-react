@@ -1,13 +1,18 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { SharedData } from '@/types';
-import { fetchHttpStream } from '@tanstack/ai-client';
-import type { UIMessage } from '@tanstack/ai-client';
-import { useChat } from '@tanstack/ai-react';
 import { Head, router, usePage } from '@inertiajs/react';
+import type { UIMessage } from '@tanstack/ai-client';
+import { fetchHttpStream } from '@tanstack/ai-client';
+import { useChat } from '@tanstack/ai-react';
 import { AlertCircle, Menu, RefreshCw } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ChatInput } from './_components/chat-input';
@@ -26,7 +31,11 @@ type ConversationDetail = ConversationItem & {
     messages: Array<{ id: string; role: string; content: string }>;
 };
 
-function serverMessageToUIMessage(m: { id: string; role: string; content: string }): UIMessage {
+function serverMessageToUIMessage(m: {
+    id: string;
+    role: string;
+    content: string;
+}): UIMessage {
     return {
         id: m.id,
         role: m.role as 'user' | 'assistant' | 'system',
@@ -55,9 +64,9 @@ export default function ChatPage() {
     const { auth } = usePage<SharedData>().props;
     const isMobile = useIsMobile();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [conversationIdFromUrl, setConversationIdFromUrl] = useState<string | null>(() =>
-        getConversationIdFromUrl(),
-    );
+    const [conversationIdFromUrl, setConversationIdFromUrl] = useState<
+        string | null
+    >(() => getConversationIdFromUrl());
     const conversationIdRef = useRef<string | null>(conversationIdFromUrl);
     const createdConversationIdRef = useRef<string | null>(null);
     const [conversations, setConversations] = useState<ConversationItem[]>([]);
@@ -104,12 +113,19 @@ export default function ChatPage() {
                     body: {
                         conversation_id: conversationIdRef.current ?? undefined,
                     },
-                    fetchClient: async (url: RequestInfo | URL, init?: RequestInit) => {
+                    fetchClient: async (
+                        url: RequestInfo | URL,
+                        init?: RequestInit,
+                    ) => {
                         const res = await fetch(url, {
                             ...init,
                             redirect: 'manual',
                         });
-                        if (res.type === 'opaqueredirect' || res.status === 302 || res.status === 301) {
+                        if (
+                            res.type === 'opaqueredirect' ||
+                            res.status === 302 ||
+                            res.status === 301
+                        ) {
                             throw new Error(
                                 'Session expired. Please refresh the page (F5 or Cmd+R) and try again.',
                             );
@@ -117,9 +133,12 @@ export default function ChatPage() {
                         if (!res.ok) {
                             let msg = `${res.status} ${res.statusText}`;
                             try {
-                                const ct = res.headers.get('content-type') ?? '';
+                                const ct =
+                                    res.headers.get('content-type') ?? '';
                                 if (ct.includes('application/json')) {
-                                    const json = (await res.json()) as { message?: string };
+                                    const json = (await res.json()) as {
+                                        message?: string;
+                                    };
                                     if (json.message) msg = json.message;
                                 }
                             } catch {
@@ -134,27 +153,49 @@ export default function ChatPage() {
         [],
     );
 
-    const { messages, sendMessage, setMessages, isLoading, error, stop } = useChat({
-        connection,
-        onChunk(chunk: { type?: string; conversationId?: string; title?: string }) {
-            if (chunk.type === 'CONVERSATION_CREATED' && chunk.conversationId) {
-                createdConversationIdRef.current = chunk.conversationId;
-                conversationIdRef.current = chunk.conversationId;
-                setConversationIdFromUrl(chunk.conversationId);
-                window.history.replaceState({}, '', `/chat?conversation=${chunk.conversationId}`);
-            }
-            if (chunk.type === 'CONVERSATION_TITLE_UPDATED' && chunk.conversationId && chunk.title) {
-                setConversations((prev) =>
-                    prev.map((c) => (c.id === chunk.conversationId ? { ...c, title: chunk.title! } : c)),
-                );
-            }
-        },
-    });
+    const { messages, sendMessage, setMessages, isLoading, error, stop } =
+        useChat({
+            connection,
+            onChunk(chunk: {
+                type?: string;
+                conversationId?: string;
+                title?: string;
+            }) {
+                if (
+                    chunk.type === 'CONVERSATION_CREATED' &&
+                    chunk.conversationId
+                ) {
+                    createdConversationIdRef.current = chunk.conversationId;
+                    conversationIdRef.current = chunk.conversationId;
+                    setConversationIdFromUrl(chunk.conversationId);
+                    window.history.replaceState(
+                        {},
+                        '',
+                        `/chat?conversation=${chunk.conversationId}`,
+                    );
+                }
+                if (
+                    chunk.type === 'CONVERSATION_TITLE_UPDATED' &&
+                    chunk.conversationId &&
+                    chunk.title
+                ) {
+                    setConversations((prev) =>
+                        prev.map((c) =>
+                            c.id === chunk.conversationId
+                                ? { ...c, title: chunk.title! }
+                                : c,
+                        ),
+                    );
+                }
+            },
+        });
 
     const loadConversations = useCallback(async () => {
         setConversationsLoading(true);
         try {
-            const res = await fetch('/api/conversations', { credentials: 'include' });
+            const res = await fetch('/api/conversations', {
+                credentials: 'include',
+            });
             if (res.ok) {
                 const json = (await res.json()) as { data: ConversationItem[] };
                 setConversations(json.data ?? []);
@@ -181,7 +222,9 @@ export default function ChatPage() {
         let cancelled = false;
         (async () => {
             try {
-                const res = await fetch(`/api/conversations/${id}`, { credentials: 'include' });
+                const res = await fetch(`/api/conversations/${id}`, {
+                    credentials: 'include',
+                });
                 if (!res.ok || cancelled) return;
                 const json = (await res.json()) as { data: ConversationDetail };
                 const list = json.data?.messages ?? [];
@@ -212,9 +255,14 @@ export default function ChatPage() {
         router.visit(`/chat?conversation=${id}`);
     }, []);
 
-    const handleConversationRenamed = useCallback((id: string, title: string) => {
-        setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, title } : c)));
-    }, []);
+    const handleConversationRenamed = useCallback(
+        (id: string, title: string) => {
+            setConversations((prev) =>
+                prev.map((c) => (c.id === id ? { ...c, title } : c)),
+            );
+        },
+        [],
+    );
 
     const handleSend = useCallback(
         (content: string) => {
@@ -240,7 +288,9 @@ export default function ChatPage() {
                                 onNewChat={handleNewChat}
                                 onSelectConversation={handleSelectConversation}
                                 onConversationDeleted={loadConversations}
-                                onConversationRenamed={handleConversationRenamed}
+                                onConversationRenamed={
+                                    handleConversationRenamed
+                                }
                                 isMobile
                             />
                         </SheetContent>

@@ -52,6 +52,7 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
         AppSettings::class => [
             'map' => [
                 'site_name' => 'app.name',
+                'url' => 'app.url',
                 'timezone' => 'app.timezone',
                 'locale' => 'app.locale',
                 'fallback_locale' => 'app.fallback_locale',
@@ -274,6 +275,7 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
 
         BroadcastingSettings::class => [
             'map' => [
+                'default_connection' => 'broadcasting.default',
                 'reverb_app_id' => 'broadcasting.connections.reverb.app_id',
                 'reverb_app_key' => 'broadcasting.connections.reverb.key',
                 'reverb_app_secret' => 'broadcasting.connections.reverb.secret',

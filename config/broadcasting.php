@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
 
-    'default' => env('BROADCAST_CONNECTION', 'log'),
+    'default' => 'log',
 
     'connections' => [
 

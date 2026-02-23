@@ -34,6 +34,16 @@ final class ManageTenancy extends SettingsPage
     {
         return $schema
             ->components([
+                Section::make('Core')
+                    ->schema([
+                        Toggle::make('enabled')
+                            ->label('Multi-tenancy enabled'),
+                        TextInput::make('domain')
+                            ->label('Domain')
+                            ->placeholder('e.g. app.example.com'),
+                        Toggle::make('subdomain_resolution')
+                            ->label('Subdomain resolution'),
+                    ]),
                 Section::make('Terminology')
                     ->schema([
                         TextInput::make('term')

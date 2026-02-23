@@ -11,8 +11,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { chat } from '@/routes';
-import { dashboard } from '@/routes';
+import { chat, dashboard } from '@/routes';
 import { index as blogIndex } from '@/routes/blog';
 import { index as changelogIndex } from '@/routes/changelog';
 import { create as contactCreate } from '@/routes/contact';

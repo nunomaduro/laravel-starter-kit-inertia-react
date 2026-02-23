@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import type { DataTableAction } from "./types";
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
+import type { DataTableAction } from './types';
 
 interface DataTableRowActionsProps<TData> {
     row: TData;
@@ -32,14 +32,14 @@ export function DataTableRowActions<TData>({
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                {visibleActions.map((action, index) => (
+                {visibleActions.map((action) => (
                     <DropdownMenuItem
-                        key={index}
+                        key={action.label}
                         onClick={() => action.onClick(row)}
                         className={
-                            action.variant === "destructive"
-                                ? "text-destructive focus:text-destructive"
-                                : ""
+                            action.variant === 'destructive'
+                                ? 'text-destructive focus:text-destructive'
+                                : ''
                         }
                     >
                         {action.label}

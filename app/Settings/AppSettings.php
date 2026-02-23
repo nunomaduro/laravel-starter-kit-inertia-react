@@ -10,6 +10,8 @@ final class AppSettings extends Settings
 {
     public string $site_name;
 
+    public string $url = 'http://localhost';
+
     public bool $maintenance_mode;
 
     public string $timezone;

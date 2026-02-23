@@ -1,7 +1,7 @@
 export interface DataTableColumnDef {
     id: string;
     label: string;
-    type: "text" | "number" | "date" | "option" | "multiOption" | "boolean";
+    type: 'text' | 'number' | 'date' | 'option' | 'multiOption' | 'boolean';
     sortable: boolean;
     filterable: boolean;
     visible: boolean;
@@ -58,7 +58,7 @@ export interface DataTableAction<TData> {
     label: string;
     icon?: string;
     onClick: (row: TData) => void;
-    variant?: "default" | "destructive";
+    variant?: 'default' | 'destructive';
     visible?: (row: TData) => boolean;
 }
 
@@ -66,7 +66,7 @@ export interface DataTableBulkAction<TData> {
     id: string;
     label: string;
     icon?: React.ComponentType<{ className?: string }>;
-    variant?: "default" | "destructive";
+    variant?: 'default' | 'destructive';
     disabled?: (rows: TData[]) => boolean;
     onClick: (rows: TData[]) => void;
 }
@@ -77,9 +77,16 @@ export interface DataTableProps<TData extends object> {
     tableName: string;
     actions?: DataTableAction<TData>[];
     bulkActions?: DataTableBulkAction<TData>[];
-    renderCell?: (columnId: string, value: unknown, row: TData) => React.ReactNode | undefined;
+    renderCell?: (
+        columnId: string,
+        value: unknown,
+        row: TData,
+    ) => React.ReactNode | undefined;
     renderHeader?: Record<string, React.ReactNode>;
-    renderFooterCell?: (columnId: string, value: unknown) => React.ReactNode | undefined;
+    renderFooterCell?: (
+        columnId: string,
+        value: unknown,
+    ) => React.ReactNode | undefined;
     rowClassName?: (row: TData) => string;
     groupClassName?: Record<string, string>;
     options?: Partial<DataTableOptions>;

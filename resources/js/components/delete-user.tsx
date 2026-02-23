@@ -17,7 +17,7 @@ import { Form } from '@inertiajs/react';
 import { useRef } from 'react';
 
 export default function DeleteUser() {
-    const passwordInput = useRef<HTMLInputElement>(null);
+    const passwordInputRef = useRef<HTMLInputElement>(null);
 
     return (
         <div className="space-y-6">
@@ -58,7 +58,7 @@ export default function DeleteUser() {
                             options={{
                                 preserveScroll: true,
                             }}
-                            onError={() => passwordInput.current?.focus()}
+                            onError={() => passwordInputRef.current?.focus()}
                             resetOnSuccess
                             className="space-y-6"
                         >
@@ -76,7 +76,7 @@ export default function DeleteUser() {
                                             id="password"
                                             type="password"
                                             name="password"
-                                            ref={passwordInput}
+                                            ref={passwordInputRef}
                                             placeholder="Password"
                                             autoComplete="current-password"
                                         />

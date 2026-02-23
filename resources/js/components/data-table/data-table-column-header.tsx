@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ArrowDown, ArrowUp } from "lucide-react";
-import type { DataTableSort } from "./types";
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ArrowDown, ArrowUp } from 'lucide-react';
+import type { DataTableSort } from './types';
 
 interface DataTableColumnHeaderProps {
     label: string;
@@ -10,7 +10,7 @@ interface DataTableColumnHeaderProps {
     sorts: DataTableSort[];
     columnId: string;
     onSort: (columnId: string, multi: boolean) => void;
-    align?: "left" | "right";
+    align?: 'left' | 'right';
 }
 
 export function DataTableColumnHeader({
@@ -20,7 +20,7 @@ export function DataTableColumnHeader({
     sorts,
     columnId,
     onSort,
-    align = "left",
+    align = 'left',
 }: DataTableColumnHeaderProps) {
     const content = children ?? label;
 
@@ -37,13 +37,13 @@ export function DataTableColumnHeader({
         <Button
             variant="ghost"
             size="sm"
-            className={cn("-ml-3 h-8", align === "right" && "ml-auto -mr-3")}
+            className={cn('-ml-3 h-8', align === 'right' && '-mr-3 ml-auto')}
             onClick={(e) => onSort(columnId, e.shiftKey)}
         >
             <span>{content}</span>
             {isActive ? (
-                <span className="text-foreground ml-1 inline-flex items-center gap-0.5">
-                    {direction === "desc" ? (
+                <span className="ml-1 inline-flex items-center gap-0.5 text-foreground">
+                    {direction === 'desc' ? (
                         <ArrowDown className="h-3.5 w-3.5" />
                     ) : (
                         <ArrowUp className="h-3.5 w-3.5" />
@@ -51,7 +51,7 @@ export function DataTableColumnHeader({
                     {isMulti && (
                         <span
                             className={cn(
-                                "text-[9px] font-bold tabular-nums leading-none",
+                                'text-[9px] leading-none font-bold tabular-nums',
                             )}
                         >
                             {sortIndex + 1}

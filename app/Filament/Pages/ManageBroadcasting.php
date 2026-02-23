@@ -32,6 +32,16 @@ final class ManageBroadcasting extends SettingsPage
     {
         return $schema
             ->components([
+                Select::make('default_connection')
+                    ->label('Default connection')
+                    ->options([
+                        'reverb' => 'Reverb',
+                        'pusher' => 'Pusher',
+                        'ably' => 'Ably',
+                        'log' => 'Log',
+                        'null' => 'Null',
+                    ])
+                    ->required(),
                 TextInput::make('reverb_app_id')
                     ->label('Reverb app ID'),
                 TextInput::make('reverb_app_key')

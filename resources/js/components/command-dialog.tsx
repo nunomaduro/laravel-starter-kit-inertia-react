@@ -8,17 +8,16 @@ import {
     CommandItem,
     CommandList,
 } from '@/components/ui/command';
-import { dashboard } from '@/routes';
+import { dashboard, logout } from '@/routes';
 import { index as blogIndex } from '@/routes/blog';
 import { index as changelogIndex } from '@/routes/changelog';
 import { create as contactCreate } from '@/routes/contact';
 import { index as helpIndex } from '@/routes/help';
 import organizations from '@/routes/organizations';
-import { logout } from '@/routes';
 import { edit as editUserProfile } from '@/routes/user-profile';
 import { type NavItem, type SharedData } from '@/types';
+import { router, usePage } from '@inertiajs/react';
 import { getHotkeyManager } from '@tanstack/hotkeys';
-import { usePage, router } from '@inertiajs/react';
 import {
     Building2,
     CreditCard,
@@ -34,12 +33,41 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const mainNavItems: NavItem[] = [
     { title: 'Dashboard', href: dashboard().url, icon: LayoutGrid },
-    { title: 'Organizations', href: organizations.index.url(), icon: Building2, tenancyRequired: true },
+    {
+        title: 'Organizations',
+        href: organizations.index.url(),
+        icon: Building2,
+        tenancyRequired: true,
+    },
     { title: 'Billing', href: '/billing', icon: CreditCard },
-    { title: 'Blog', href: blogIndex().url, icon: FileText, permission: 'blog.index', feature: 'blog' },
-    { title: 'Changelog', href: changelogIndex().url, icon: Megaphone, permission: 'changelog.index', feature: 'changelog' },
-    { title: 'Help', href: helpIndex().url, icon: LifeBuoy, permission: 'help.index', feature: 'help' },
-    { title: 'Contact', href: contactCreate().url, icon: Mail, permission: 'contact.create', feature: 'contact' },
+    {
+        title: 'Blog',
+        href: blogIndex().url,
+        icon: FileText,
+        permission: 'blog.index',
+        feature: 'blog',
+    },
+    {
+        title: 'Changelog',
+        href: changelogIndex().url,
+        icon: Megaphone,
+        permission: 'changelog.index',
+        feature: 'changelog',
+    },
+    {
+        title: 'Help',
+        href: helpIndex().url,
+        icon: LifeBuoy,
+        permission: 'help.index',
+        feature: 'help',
+    },
+    {
+        title: 'Contact',
+        href: contactCreate().url,
+        icon: Mail,
+        permission: 'contact.create',
+        feature: 'contact',
+    },
 ];
 
 function canShowNavItem(
@@ -52,7 +80,9 @@ function canShowNavItem(
     if (item.tenancyRequired && !tenancyEnabled) return false;
     if (item.feature && !features?.[item.feature]) return false;
     if (canBypass || !item.permission) return true;
-    const required = Array.isArray(item.permission) ? item.permission : [item.permission];
+    const required = Array.isArray(item.permission)
+        ? item.permission
+        : [item.permission];
     return required.some((p) => permissions.includes(p));
 }
 
@@ -105,7 +135,10 @@ export function CommandPalette(): React.ReactElement {
                 <CommandGroup heading="Navigation">
                     {visibleNavItems.map((item) => {
                         const Icon = item.icon;
-                        const href = typeof item.href === 'string' ? item.href : item.href.url ?? item.href.url();
+                        const href =
+                            typeof item.href === 'string'
+                                ? item.href
+                                : (item.href.url ?? item.href.url());
                         return (
                             <CommandItem
                                 key={item.title}

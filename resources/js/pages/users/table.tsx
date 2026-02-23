@@ -18,7 +18,10 @@ export default function UsersTablePage({ tableData }: Props) {
     return (
         <AppSidebarLayout>
             <Head title="Users" />
-            <div className="flex h-full flex-1 flex-col gap-4 p-4" data-pan="users-table">
+            <div
+                className="flex h-full flex-1 flex-col gap-4 p-4"
+                data-pan="users-table"
+            >
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Users</h1>
                     <p className="text-muted-foreground">

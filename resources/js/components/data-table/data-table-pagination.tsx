@@ -1,18 +1,18 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
     ChevronLeft,
     ChevronRight,
     ChevronsLeft,
     ChevronsRight,
-} from "lucide-react";
-import type { DataTableMeta } from "./types";
+} from 'lucide-react';
+import type { DataTableMeta } from './types';
 
 interface DataTablePaginationProps {
     meta: DataTableMeta;
@@ -28,14 +28,16 @@ export function DataTablePagination({
     return (
         <div className="flex items-center justify-between px-2 py-4">
             <div className="text-sm text-muted-foreground">
-                {meta.total} résultat{meta.total !== 1 ? "s" : ""}
+                {meta.total} résultat{meta.total !== 1 ? 's' : ''}
             </div>
             <div className="flex items-center gap-6 lg:gap-8">
                 <div className="flex items-center gap-2">
                     <p className="text-sm font-medium">Lignes par page</p>
                     <Select
                         value={String(meta.perPage)}
-                        onValueChange={(value) => onPerPageChange(Number(value))}
+                        onValueChange={(value) =>
+                            onPerPageChange(Number(value))
+                        }
                     >
                         <SelectTrigger className="h-8 w-[70px]">
                             <SelectValue placeholder={String(meta.perPage)} />

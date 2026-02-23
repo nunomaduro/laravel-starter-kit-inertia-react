@@ -36,6 +36,10 @@ final class ManageApp extends SettingsPage
                 TextInput::make('site_name')
                     ->label('Site name')
                     ->required(),
+                TextInput::make('url')
+                    ->label('Application URL')
+                    ->url()
+                    ->required(),
                 Toggle::make('maintenance_mode')
                     ->label('Maintenance mode'),
                 TextInput::make('timezone')
