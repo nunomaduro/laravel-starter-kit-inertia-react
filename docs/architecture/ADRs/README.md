@@ -21,3 +21,4 @@ Use `ADR-NNN-short-slug.md` (e.g. `ADR-001-actions-for-business-logic.md`). Numb
 | ADR | Title | Status |
 |-----|-------|--------|
 | [ADR-001](./ADR-001-actions-for-business-logic.md) | Use Action classes for business logic | Accepted |
+| [ADR-002](./ADR-002-db-backed-settings-overlay.md) | DB-backed settings with config overlay and per-org overrides | Accepted |

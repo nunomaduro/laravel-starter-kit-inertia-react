@@ -265,6 +265,19 @@ All relationships are stored in manifest and automatically included in documenta
 
 - Don't include any superfluous PHP Annotations, except ones that start with `@` for typing variables.
 
+=== .ai/settings rules ===
+
+# Settings & Configuration Guidelines
+
+- Runtime configuration is DB-backed via **spatie/laravel-settings**. Settings classes live in `app/Settings/` and are managed via Filament admin pages.
+- Never use `env()` outside of config files. Use `config('key')` — the `SettingsOverlayServiceProvider` writes DB values into config at boot.
+- When adding a new setting: create the Settings class, create a settings migration in `database/settings/`, add the mapping to `SettingsOverlayServiceProvider::OVERLAY_MAP`, and create a Filament `SettingsPage`.
+- Settings that hold secrets (API keys, passwords) must define `public static function encrypted(): array` returning the encrypted property names.
+- 7 groups are org-overridable (Billing, Mail, Stripe, Paddle, LemonSqueezy, Prism, AI). Set `'orgOverridable' => true` in `OVERLAY_MAP` to enable per-org overrides.
+- Per-org overrides are stored in the `organization_settings` table and applied by `ApplyOrganizationSettings` middleware after `SetTenantContext`.
+- Infrastructure settings (`APP_KEY`, `DB_*`, `CACHE_STORE`, `SESSION_DRIVER`, `QUEUE_CONNECTION`, `REDIS_*`, `LOG_CHANNEL`) stay in `.env` — they are needed before the DB is available.
+- See `docs/developer/backend/settings.md` for full documentation.
+
 === foundation rules ===
 
 # Laravel Boost Guidelines
@@ -780,4 +793,5 @@ These apply in addition to the Laravel Boost guidelines above. They are kept **a
 - **Userstamps:** wildside/userstamps for created_by/updated_by (docs/developer/backend/userstamps.md).
 - **Product analytics (Pan):** panphp/pan tracks impressions, hovers, and clicks via `data-pan="name"` on HTML elements. Use only letters, numbers, dashes, underscores. Add new names to `AppServiceProvider::configurePan()` allowedAnalytics whitelist. View with `php artisan pan` or in Filament at Analytics → Product Analytics (`/admin/analytics/product`). See docs/developer/backend/pan.md. When adding new tabs, CTAs, or key nav/buttons, add `data-pan` and register the name in the whitelist.
 - **Database Mail (email templates):** martinpetricko/laravel-database-mail stores email templates in the DB and sends them when events are dispatched. For new events that should send DB-backed emails: implement `TriggersDatabaseMail` and `CanTriggerDatabaseMail`, define `getName()`, `getDescription()`, `getRecipients()`, and optionally `getAttachments()`; register the event in `config/database-mail.php` under `'events'`. Create templates via seeders or Filament plugin. See docs/developer/backend/database-mail.md.
+- **DB-backed settings & config overlay:** spatie/laravel-settings stores runtime config in the DB (26 settings classes in `app/Settings/`). `SettingsOverlayServiceProvider` writes these into `config()` at boot — all `config('...')` consumers read DB values transparently. Per-org overrides stored in `organization_settings` table and applied by `ApplyOrganizationSettings` middleware (after `SetTenantContext`). 7 groups are org-overridable: Billing, Mail, Stripe, Paddle, LemonSqueezy, Prism, AI. To add a new setting: create class in `app/Settings/`, add migration in `database/settings/`, add to `SettingsOverlayServiceProvider::OVERLAY_MAP`, create Filament page. Artisan: `settings:cache`, `settings:clear-cache`. See docs/developer/backend/settings.md, ADR-002.
 - **Architecture decisions:** record in docs/architecture/ADRs/ (see README there).

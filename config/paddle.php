@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
+// Managed via Filament: Settings > Paddle (org-overridable)
 return [
 
-    'vendor_id' => env('PADDLE_VENDOR_ID'),
+    'vendor_id' => null,
 
-    'vendor_auth_code' => env('PADDLE_VENDOR_AUTH_CODE'),
+    'vendor_auth_code' => null,
 
-    'public_key' => env('PADDLE_PUBLIC_KEY'),
+    'public_key' => null,
 
-    'webhook_secret' => env('PADDLE_WEBHOOK_SECRET'),
+    'webhook_secret' => null,
 
-    'sandbox' => env('PADDLE_SANDBOX', true),
+    'sandbox' => true,
 
 ];

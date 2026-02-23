@@ -14,6 +14,10 @@ final class AppSettings extends Settings
 
     public string $timezone;
 
+    public string $locale = 'en';
+
+    public string $fallback_locale = 'en';
+
     public static function group(): string
     {
         return 'app';

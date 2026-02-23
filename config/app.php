@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => 'Laravel',
 
     /*
     |--------------------------------------------------------------------------
@@ -80,11 +80,11 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => 'en',
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => 'en',
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => 'en_US',
 
     /*
     |--------------------------------------------------------------------------
@@ -121,8 +121,8 @@ return [
     */
 
     'maintenance' => [
-        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
-        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+        'driver' => 'file',
+        'store' => 'database',
     ],
 
     /*
@@ -137,6 +137,6 @@ return [
     |
     */
 
-    'ip_whitelist' => array_filter(array_map(trim(...), explode(',', (string) env('IP_WHITELIST', '')))),
+    'ip_whitelist' => [],
 
 ];

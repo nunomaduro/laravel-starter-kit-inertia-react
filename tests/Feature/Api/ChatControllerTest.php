@@ -71,7 +71,7 @@ test('api chat returns 422 when messages are missing', function (): void {
 test('api chat returns 503 when AI provider has no API key', function (): void {
     $user = User::factory()->withoutTwoFactor()->create();
     Config::set('ai.default', 'openai');
-    Config::set('ai.providers.openai.key', null);
+    Config::set('ai.providers.openai.key');
 
     $response = actingAs($user, 'sanctum')->postJson('/api/chat', [
         'messages' => [['role' => 'user', 'content' => 'Hi']],

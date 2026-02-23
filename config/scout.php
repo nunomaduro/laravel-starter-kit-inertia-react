@@ -20,7 +20,8 @@ return [
     |
     */
 
-    'driver' => env('SCOUT_DRIVER', 'collection'),
+    // Managed via Filament: Settings > Scout
+    'driver' => 'collection',
 
     /*
     |--------------------------------------------------------------------------
@@ -33,7 +34,7 @@ return [
     |
     */
 
-    'prefix' => env('SCOUT_PREFIX', ''),
+    'prefix' => '',
 
     /*
     |--------------------------------------------------------------------------
@@ -46,7 +47,7 @@ return [
     |
     */
 
-    'queue' => env('SCOUT_QUEUE', false),
+    'queue' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -103,7 +104,7 @@ return [
     |
     */
 
-    'identify' => env('SCOUT_IDENTIFY', false),
+    'identify' => false,
 
     /*
     |--------------------------------------------------------------------------

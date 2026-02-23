@@ -1,0 +1,81 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\Pages;
+
+use App\Settings\TenancySettings;
+use BackedEnum;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Pages\SettingsPage;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use UnitEnum;
+
+final class ManageTenancy extends SettingsPage
+{
+    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
+
+    protected static ?string $navigationLabel = 'Tenancy';
+
+    protected static string $settings = TenancySettings::class;
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Tenancy';
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make('Terminology')
+                    ->schema([
+                        TextInput::make('term')
+                            ->label('Term')
+                            ->required(),
+                        TextInput::make('term_plural')
+                            ->label('Term plural')
+                            ->required(),
+                    ]),
+                Section::make('Organization Creation')
+                    ->schema([
+                        Toggle::make('allow_user_org_creation')
+                            ->label('Allow user org creation'),
+                        TextInput::make('default_org_name')
+                            ->label('Default org name'),
+                        Toggle::make('auto_create_personal_org')
+                            ->label('Auto create personal org'),
+                    ]),
+                Section::make('Invitations')
+                    ->schema([
+                        TextInput::make('invitation_expires_in_days')
+                            ->label('Invitation expires in days')
+                            ->numeric(),
+                        Toggle::make('invitation_allow_registration')
+                            ->label('Invitation allow registration'),
+                    ]),
+                Section::make('Sharing')
+                    ->schema([
+                        Toggle::make('sharing_restrict_to_connected')
+                            ->label('Sharing restrict to connected'),
+                        Select::make('sharing_edit_ownership')
+                            ->label('Sharing edit ownership')
+                            ->options([
+                                'original_owner' => 'Original Owner',
+                                'copy_on_edit' => 'Copy on Edit',
+                            ]),
+                    ]),
+                Section::make('Super Admin')
+                    ->schema([
+                        Toggle::make('super_admin_can_view_all')
+                            ->label('Super admin can view all'),
+                    ]),
+            ]);
+    }
+}

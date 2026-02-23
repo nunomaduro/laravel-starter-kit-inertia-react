@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Laravel\Ai\Provider;
 
+// Managed via Filament: Settings > AI (org-overridable via SettingsOverlayServiceProvider)
 return [
 
     /*
@@ -17,7 +18,7 @@ return [
     |
     */
 
-    'default' => env('AI_DEFAULT', 'openai'),
+    'default' => 'openai',
     'default_for_images' => 'gemini',
     'default_for_audio' => 'openai',
     'default_for_transcription' => 'openai',
@@ -38,7 +39,7 @@ return [
     'caching' => [
         'embeddings' => [
             'cache' => false,
-            'store' => env('CACHE_STORE', 'database'),
+            'store' => 'database',
         ],
     ],
 
@@ -56,52 +57,52 @@ return [
     'providers' => [
         'anthropic' => [
             'driver' => 'anthropic',
-            'key' => env('ANTHROPIC_API_KEY'),
+            'key' => null,
         ],
 
         'cohere' => [
             'driver' => 'cohere',
-            'key' => env('COHERE_API_KEY'),
+            'key' => null,
         ],
 
         'eleven' => [
             'driver' => 'eleven',
-            'key' => env('ELEVENLABS_API_KEY'),
+            'key' => null,
         ],
 
         'gemini' => [
             'driver' => 'gemini',
-            'key' => env('GEMINI_API_KEY'),
+            'key' => null,
         ],
 
         'groq' => [
             'driver' => 'groq',
-            'key' => env('GROQ_API_KEY'),
+            'key' => null,
         ],
 
         'jina' => [
             'driver' => 'jina',
-            'key' => env('JINA_API_KEY'),
+            'key' => null,
         ],
 
         'openai' => [
             'driver' => 'openai',
-            'key' => env('OPENAI_API_KEY'),
+            'key' => null,
         ],
 
         'openrouter' => [
             'driver' => 'openrouter',
-            'key' => env('OPENROUTER_API_KEY'),
+            'key' => null,
             'models' => [
                 'text' => [
-                    'default' => env('AI_CHAT_MODEL', 'anthropic/claude-sonnet-4.5'),
+                    'default' => 'anthropic/claude-sonnet-4.5',
                 ],
             ],
         ],
 
         'xai' => [
             'driver' => 'xai',
-            'key' => env('XAI_API_KEY'),
+            'key' => null,
         ],
     ],
 

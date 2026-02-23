@@ -24,9 +24,8 @@ return [
      * Keys must match those in inertia_features/route_feature_map (e.g. blog, changelog, gamification).
      * When disabled, Pennant is not consulted; the feature is always off.
      */
-    'globally_disabled' => array_filter(
-        array_map('trim', explode(',', env('GLOBALLY_DISABLED_MODULES', '')))
-    ),
+    // Managed via Filament: Settings > Feature Flags
+    'globally_disabled' => [],
 
     /*
      * Feature classes to resolve and expose to the Inertia frontend as shared props.

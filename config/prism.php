@@ -2,79 +2,75 @@
 
 declare(strict_types=1);
 
+// Managed via Filament: Settings > Prism (org-overridable via SettingsOverlayServiceProvider)
 return [
     'prism_server' => [
-        // The middleware that will be applied to the Prism Server routes.
         'middleware' => [],
-        'enabled' => env('PRISM_SERVER_ENABLED', false),
+        'enabled' => false,
     ],
-    'request_timeout' => env('PRISM_REQUEST_TIMEOUT', 30), // The timeout for requests in seconds.
+    'request_timeout' => 30,
     'defaults' => [
-        'provider' => env('PRISM_DEFAULT_PROVIDER', 'openrouter'),
-        // Using DeepSeek R1 0528 (free) - best free thinking model with performance on par with OpenAI o1
-        // Alternative free options: deepseek/deepseek-r1:free, tng/deepseek-r1t2-chimera:free
-        'model' => env('PRISM_DEFAULT_MODEL', 'deepseek/deepseek-r1-0528:free'),
-        // Provider-specific model defaults (used when provider doesn't match default)
+        'provider' => 'openrouter',
+        'model' => 'deepseek/deepseek-r1-0528:free',
         'models' => [
-            'openrouter' => env('PRISM_DEFAULT_MODEL', 'deepseek/deepseek-r1-0528:free'),
-            'openai' => env('PRISM_OPENAI_DEFAULT_MODEL', 'gpt-4o-mini'),
-            'anthropic' => env('PRISM_ANTHROPIC_DEFAULT_MODEL', 'claude-3-5-sonnet-20241022'),
-            'ollama' => env('PRISM_OLLAMA_DEFAULT_MODEL', 'llama3.2'),
-            'mistral' => env('PRISM_MISTRAL_DEFAULT_MODEL', 'mistral-small-latest'),
+            'openrouter' => 'deepseek/deepseek-r1-0528:free',
+            'openai' => 'gpt-4o-mini',
+            'anthropic' => 'claude-3-5-sonnet-20241022',
+            'ollama' => 'llama3.2',
+            'mistral' => 'mistral-small-latest',
         ],
     ],
     'providers' => [
         'openai' => [
-            'url' => env('OPENAI_URL', 'https://api.openai.com/v1'),
-            'api_key' => env('OPENAI_API_KEY', ''),
-            'organization' => env('OPENAI_ORGANIZATION'),
-            'project' => env('OPENAI_PROJECT'),
+            'url' => 'https://api.openai.com/v1',
+            'api_key' => '',
+            'organization' => null,
+            'project' => null,
         ],
         'anthropic' => [
-            'api_key' => env('ANTHROPIC_API_KEY', ''),
-            'version' => env('ANTHROPIC_API_VERSION', '2023-06-01'),
-            'url' => env('ANTHROPIC_URL', 'https://api.anthropic.com/v1'),
-            'default_thinking_budget' => env('ANTHROPIC_DEFAULT_THINKING_BUDGET', 1024),
-            // Include beta strings as a comma separated list.
-            'anthropic_beta' => env('ANTHROPIC_BETA'),
+            'api_key' => '',
+            'version' => '2023-06-01',
+            'url' => 'https://api.anthropic.com/v1',
+            'default_thinking_budget' => 1024,
+            'anthropic_beta' => null,
         ],
         'ollama' => [
-            'url' => env('OLLAMA_URL', 'http://localhost:11434'),
+            'url' => 'http://localhost:11434',
         ],
         'mistral' => [
-            'api_key' => env('MISTRAL_API_KEY', ''),
-            'url' => env('MISTRAL_URL', 'https://api.mistral.ai/v1'),
+            'api_key' => '',
+            'url' => 'https://api.mistral.ai/v1',
         ],
         'groq' => [
-            'api_key' => env('GROQ_API_KEY', ''),
-            'url' => env('GROQ_URL', 'https://api.groq.com/openai/v1'),
+            'api_key' => '',
+            'url' => 'https://api.groq.com/openai/v1',
         ],
         'xai' => [
-            'api_key' => env('XAI_API_KEY', ''),
-            'url' => env('XAI_URL', 'https://api.x.ai/v1'),
+            'api_key' => '',
+            'url' => 'https://api.x.ai/v1',
         ],
         'gemini' => [
-            'api_key' => env('GEMINI_API_KEY', ''),
-            'url' => env('GEMINI_URL', 'https://generativelanguage.googleapis.com/v1beta/models'),
+            'api_key' => '',
+            'url' => 'https://generativelanguage.googleapis.com/v1beta/models',
         ],
         'deepseek' => [
-            'api_key' => env('DEEPSEEK_API_KEY', ''),
-            'url' => env('DEEPSEEK_URL', 'https://api.deepseek.com/v1'),
+            'api_key' => '',
+            'url' => 'https://api.deepseek.com/v1',
         ],
         'elevenlabs' => [
-            'api_key' => env('ELEVENLABS_API_KEY', ''),
-            'url' => env('ELEVENLABS_URL', 'https://api.elevenlabs.io/v1/'),
+            'api_key' => '',
+            'url' => 'https://api.elevenlabs.io/v1/',
         ],
         'voyageai' => [
-            'api_key' => env('VOYAGEAI_API_KEY', ''),
-            'url' => env('VOYAGEAI_URL', 'https://api.voyageai.com/v1'),
+            'api_key' => '',
+            'url' => 'https://api.voyageai.com/v1',
         ],
         'openrouter' => [
-            'api_key' => env('OPENROUTER_API_KEY', ''),
-            'url' => env('OPENROUTER_URL', 'https://openrouter.ai/api/v1'),
+            'api_key' => '',
+            'url' => 'https://openrouter.ai/api/v1',
             'site' => [
-                'http_referer' => env('OPENROUTER_SITE_HTTP_REFERER'),
-                'x_title' => env('OPENROUTER_SITE_X_TITLE'),
+                'http_referer' => null,
+                'x_title' => null,
             ],
         ],
     ],

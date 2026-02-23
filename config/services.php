@@ -16,37 +16,42 @@ return [
     |
     */
 
+    // Managed via Filament: Settings > Integrations
     'postmark' => [
-        'token' => env('POSTMARK_TOKEN'),
+        'token' => null,
     ],
 
+    // SES uses infrastructure AWS credentials — keep env()
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Managed via Filament: Settings > Integrations
     'resend' => [
-        'key' => env('RESEND_KEY'),
+        'key' => null,
     ],
 
+    // Managed via Filament: Settings > Integrations
     'slack' => [
         'notifications' => [
-            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
-            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+            'bot_user_oauth_token' => null,
+            'channel' => null,
         ],
-        'webhook_url' => env('SLACK_WEBHOOK_URL'),
+        'webhook_url' => null,
     ],
 
     'example_api' => [
         'url' => env('EXAMPLE_API_URL', 'https://jsonplaceholder.typicode.com'),
     ],
 
+    // Managed via Filament: Settings > Lemon Squeezy
     'lemon_squeezy' => [
-        'api_key' => env('LEMON_SQUEEZY_API_KEY'),
-        'store_id' => env('LEMON_SQUEEZY_STORE'),
-        'signing_secret' => env('LEMON_SQUEEZY_SIGNING_SECRET'),
-        'generic_variant_id' => env('LEMON_SQUEEZY_GENERIC_VARIANT_ID'),
+        'api_key' => null,
+        'store_id' => null,
+        'signing_secret' => null,
+        'generic_variant_id' => null,
     ],
 
 ];

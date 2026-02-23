@@ -22,6 +22,6 @@ test('authenticated user can access users table and receives tableData', functio
         ->has('tableData.data')
         ->has('tableData.columns')
         ->has('tableData.meta')
-        ->where('tableData.meta.total', fn ($total) => $total >= 0)
+        ->where('tableData.meta.total', fn ($total): bool => $total >= 0)
     );
 });

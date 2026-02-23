@@ -6,6 +6,7 @@ namespace App\Providers\Filament;
 
 use A909M\FilamentStateFusion\FilamentStateFusionPlugin;
 use AlizHarb\ActivityLog\ActivityLogPlugin;
+use App\Http\Middleware\EnsureSetupComplete;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -77,6 +78,7 @@ final class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                EnsureSetupComplete::class,
             ]);
     }
 }

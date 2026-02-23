@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+// Managed via Filament: Settings > Tenancy (DB-backed via SettingsOverlayServiceProvider)
 return [
 
     /*
@@ -14,7 +15,7 @@ return [
     | When disabled, the application operates in single-tenant mode.
     |
     */
-    'enabled' => env('MULTI_ORGANIZATION_ENABLED', true),
+    'enabled' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ return [
     | 'company', 'account'.
     |
     */
-    'term' => env('TENANT_TERM', 'Organization'),
+    'term' => 'Organization',
 
     /*
     |--------------------------------------------------------------------------
@@ -36,7 +37,7 @@ return [
     | The plural form of the tenant term used in UI text.
     |
     */
-    'term_plural' => env('TENANT_TERM_PLURAL', 'Organizations'),
+    'term_plural' => 'Organizations',
 
     /*
     |--------------------------------------------------------------------------
@@ -47,7 +48,7 @@ return [
     | only admins can create organizations for users.
     |
     */
-    'allow_user_organization_creation' => env('ALLOW_USER_ORGANIZATION_CREATION', true),
+    'allow_user_organization_creation' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -58,7 +59,7 @@ return [
     | registers. Use {name} as a placeholder for the user's name.
     |
     */
-    'default_organization_name' => env('DEFAULT_ORGANIZATION_NAME', "{name}'s Workspace"),
+    'default_organization_name' => "{name}'s Workspace",
 
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +70,7 @@ return [
     | each new user during registration.
     |
     */
-    'auto_create_personal_organization' => env('AUTO_CREATE_PERSONAL_ORGANIZATION', true),
+    'auto_create_personal_organization' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -81,7 +82,7 @@ return [
     | is set as current tenant. Set to null to disable subdomain resolution.
     |
     */
-    'domain' => env('TENANCY_DOMAIN'),
+    'domain' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -92,7 +93,7 @@ return [
     | with that slug. When false, only verified organization_domains are used.
     |
     */
-    'subdomain_resolution' => env('TENANCY_SUBDOMAIN_RESOLUTION', true),
+    'subdomain_resolution' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -100,8 +101,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'invitations' => [
-        'expires_in_days' => env('INVITATION_EXPIRES_IN_DAYS', 7),
-        'allow_registration' => env('INVITATION_ALLOW_REGISTRATION', true),
+        'expires_in_days' => 7,
+        'allow_registration' => true,
     ],
 
     /*
@@ -114,12 +115,12 @@ return [
     */
     'sharing' => [
         // Restrict sharing to only "connected" organizations
-        'restrict_to_connected' => env('SHARING_RESTRICT_TO_CONNECTED', false),
+        'restrict_to_connected' => false,
 
         // What happens when shared data is edited:
         // 'original_owner' - edits belong to original org, shared org loses access on revocation
         // 'copy_on_edit' - any edit creates a copy for the editing org
-        'edit_ownership' => env('SHARING_EDIT_OWNERSHIP', 'original_owner'),
+        'edit_ownership' => 'original_owner',
     ],
 
     /*
@@ -132,7 +133,7 @@ return [
     */
     'super_admin' => [
         // Allow super-admins to view all organizations' data
-        'can_view_all' => env('SUPER_ADMIN_CAN_VIEW_ALL', true),
+        'can_view_all' => true,
 
         // Session key for super-admin view-all mode
         'view_all_session_key' => 'view_all_organizations',

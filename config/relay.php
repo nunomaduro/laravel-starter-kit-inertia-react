@@ -18,7 +18,7 @@ return [
         'puppeteer' => [
             'transport' => Transport::Stdio,
             'command' => ['npx', '-y', '@modelcontextprotocol/server-puppeteer'],
-            'timeout' => env('RELAY_PUPPETEER_SERVER_TIMEOUT', 60),
+            'timeout' => 60,
             'env' => [],
         ],
     ],
@@ -32,5 +32,5 @@ return [
     | from MCP servers will be cached. Set to 0 to disable caching entirely.
     |
     */
-    'cache_duration' => env('RELAY_TOOLS_CACHE_DURATION', 60),
+    'cache_duration' => 60,
 ];

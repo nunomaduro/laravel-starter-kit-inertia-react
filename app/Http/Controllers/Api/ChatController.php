@@ -32,8 +32,8 @@ final class ChatController
     public function __invoke(Request $request): Response|StreamedResponse
     {
         $request->validate([
-            'messages' => 'required|array',
-            'messages.*.role' => 'required|string|in:user,assistant,system',
+            'messages' => ['required', 'array'],
+            'messages.*.role' => ['required', 'string', 'in:user,assistant,system'],
             'conversation_id' => ['nullable', 'string', 'uuid', function (string $attr, string $value, Closure $fail) use ($request): void {
                 $user = $request->user();
                 if ($user === null) {
@@ -52,13 +52,11 @@ final class ChatController
         ]);
 
         $user = $request->user();
-        if ($user === null) {
-            abort(401);
-        }
+        abort_if($user === null, 401);
 
         /** @var array<int, array{role?: string, content?: mixed, parts?: array<int, array{type?: string, content?: string}>}> $messages */
         $messages = $request->input('messages', []);
-        $lastUser = self::getMessageContent(array_reverse($messages), 'user');
+        $lastUser = $this->getMessageContent(array_reverse($messages), 'user');
         $prompt = $lastUser ?? '';
 
         if ($prompt === '') {
@@ -111,12 +109,12 @@ final class ChatController
 
         return response()->stream(
             function () use ($stream, $newConversationId, $prompt, &$runId, &$messageId, &$contentAccumulator): void {
-                if (ob_get_level()) {
+                if (ob_get_level() !== 0) {
                     ob_end_clean();
                 }
                 try {
                     foreach ($stream as $event) {
-                        if (connection_aborted()) {
+                        if (connection_aborted() !== 0) {
                             return;
                         }
 
@@ -261,7 +259,7 @@ final class ChatController
                                 .'Assistant: '.Str::limit($contentAccumulator, 500);
 
                             $generatedTitle = Str::limit(
-                                mb_trim(app(PrismService::class)->generate($titlePrompt)->text),
+                                mb_trim(resolve(PrismService::class)->generate($titlePrompt)->text),
                                 100,
                             );
 
@@ -314,7 +312,7 @@ final class ChatController
      *
      * @param  array<int, array{role?: string, content?: mixed, parts?: array<int, array{type?: string, content?: string}>}>  $messages
      */
-    private static function getMessageContent(array $messages, string $role): ?string
+    private function getMessageContent(array $messages, string $role): ?string
     {
         foreach ($messages as $m) {
             if (($m['role'] ?? '') !== $role) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use AlizHarb\ActivityLog\Http\Middleware\ActivityLogContextMiddleware;
 use App\Http\Middleware\AdditionalSecurityHeaders;
+use App\Http\Middleware\ApplyOrganizationSettings;
 use App\Http\Middleware\AutoPermissionMiddleware;
 use App\Http\Middleware\EnforceIpWhitelist;
 use App\Http\Middleware\EnsureCountryAllowed;
@@ -63,6 +64,7 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAppearance::class,
             HandleInertiaRequests::class,
             SetTenantContext::class,
+            ApplyOrganizationSettings::class,
             AddLinkHeadersForPreloadedAssets::class,
             CacheResponse::class,
             AutoPermissionMiddleware::class,
@@ -83,6 +85,7 @@ return Application::configure(basePath: dirname(__DIR__))
             AddCspHeaders::class,
             AdditionalSecurityHeaders::class,
             SetTenantContext::class,
+            ApplyOrganizationSettings::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

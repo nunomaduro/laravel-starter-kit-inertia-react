@@ -23,11 +23,11 @@ final class ConversationController extends Controller
 
         $conversations = DB::table('agent_conversations')
             ->where('user_id', $user->id)
-            ->orderByDesc('updated_at')
+            ->latest('updated_at')
             ->paginate($perPage);
 
         return response()->json([
-            'data' => $conversations->getCollection()->map(fn ($row) => [
+            'data' => $conversations->getCollection()->map(fn ($row): array => [
                 'id' => $row->id,
                 'title' => $row->title,
                 'created_at' => $row->created_at,
@@ -61,11 +61,10 @@ final class ConversationController extends Controller
         }
 
         $messages = DB::table('agent_conversation_messages')
-            ->where('conversation_id', $id)
-            ->orderBy('created_at')
+            ->where('conversation_id', $id)->oldest()
             ->orderBy('id')
             ->get()
-            ->map(fn ($m) => [
+            ->map(fn ($m): array => [
                 'id' => $m->id,
                 'role' => $m->role,
                 'content' => $m->content ?? '',

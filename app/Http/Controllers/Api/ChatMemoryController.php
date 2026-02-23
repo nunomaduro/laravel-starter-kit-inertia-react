@@ -23,7 +23,7 @@ final class ChatMemoryController
         $limit = max(1, min(50, (int) $request->get('limit', 20)));
         $memories = AgentMemory::all(['user_id' => $user->id], limit: $limit);
 
-        $data = $memories->values()->map(fn ($m) => [
+        $data = $memories->values()->map(fn ($m): array => [
             'id' => $m->id,
             'content' => $m->content ?? '',
         ])->all();

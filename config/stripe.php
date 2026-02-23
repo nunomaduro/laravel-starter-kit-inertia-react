@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
+// Managed via Filament: Settings > Stripe (org-overridable)
 return [
 
-    'key' => env('STRIPE_KEY'),
+    'key' => null,
 
-    'secret' => env('STRIPE_SECRET'),
+    'secret' => null,
 
-    'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    'webhook_secret' => null,
 
 ];

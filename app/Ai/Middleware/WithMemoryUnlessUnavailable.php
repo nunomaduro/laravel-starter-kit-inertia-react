@@ -13,7 +13,7 @@ use Throwable;
  * Runs memory recall when possible; proceeds without memories if embeddings/recall fail
  * (e.g. when only OpenRouter is configured and default_for_embeddings uses OpenAI).
  */
-final class WithMemoryUnlessUnavailable
+final readonly class WithMemoryUnlessUnavailable
 {
     public function __construct(
         private array $context = [],
@@ -29,7 +29,7 @@ final class WithMemoryUnlessUnavailable
         $limit = $this->limit ?? (int) config('memory.middleware_recall_limit', 5);
 
         try {
-            $memoryManager = app(MemoryManager::class);
+            $memoryManager = resolve(MemoryManager::class);
             $memories = $memoryManager->recall($prompt->prompt, $this->context, $limit);
         } catch (Throwable) {
             return $next($prompt);

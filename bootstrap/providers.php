@@ -10,4 +10,5 @@ return [
     App\Providers\HorizonServiceProvider::class,
     App\Providers\MemoryServiceProvider::class,
     App\Providers\PermissionServiceProvider::class,
+    App\Providers\SettingsOverlayServiceProvider::class,
 ];

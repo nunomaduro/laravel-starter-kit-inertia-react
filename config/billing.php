@@ -10,30 +10,31 @@ return [
     |--------------------------------------------------------------------------
     |
     | Supported: "stripe", "paddle", "manual"
+    | Managed via Filament: Settings > Billing
     |
     */
-    'default_gateway' => env('DEFAULT_PAYMENT_GATEWAY', 'stripe'),
+    'default_gateway' => 'stripe',
 
     /*
     |--------------------------------------------------------------------------
     | Currency
     |--------------------------------------------------------------------------
     */
-    'currency' => env('BILLING_CURRENCY', 'usd'),
+    'currency' => 'usd',
 
     /*
     |--------------------------------------------------------------------------
     | Trial Days
     |--------------------------------------------------------------------------
     */
-    'trial_days' => (int) env('BILLING_TRIAL_DAYS', 14),
+    'trial_days' => 14,
 
     /*
     |--------------------------------------------------------------------------
     | Credit Expiration (days)
     |--------------------------------------------------------------------------
     */
-    'credit_expiration_days' => (int) env('BILLING_CREDIT_EXPIRATION_DAYS', 365),
+    'credit_expiration_days' => 365,
 
     /*
     |--------------------------------------------------------------------------
@@ -53,15 +54,15 @@ return [
     | Used by AddCreditsFromLemonSqueezyOrder when deriving credits from order total.
     | Set to 0 to disable fallback (requires custom_data.credits in checkout).
     */
-    'lemon_squeezy_cents_per_credit' => (int) env('BILLING_LEMON_SQUEEZY_CENTS_PER_CREDIT', 10),
+    'lemon_squeezy_cents_per_credit' => 10,
 
     /*
     |--------------------------------------------------------------------------
     | Geo-restriction (laravel-geo-genius)
     |--------------------------------------------------------------------------
     */
-    'geo_restriction_enabled' => (bool) env('BILLING_GEO_RESTRICTION_ENABLED', false),
-    'geo_blocked_countries' => array_map(strtoupper(...), array_filter(explode(',', (string) env('BILLING_GEO_BLOCKED_COUNTRIES', '')))),
-    'geo_allowed_countries' => array_map(strtoupper(...), array_filter(explode(',', (string) env('BILLING_GEO_ALLOWED_COUNTRIES', '')))),
+    'geo_restriction_enabled' => false,
+    'geo_blocked_countries' => [],
+    'geo_allowed_countries' => [],
 
 ];

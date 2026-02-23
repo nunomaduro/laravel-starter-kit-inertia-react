@@ -29,7 +29,7 @@ final class LogImpersonationEvents
 
     public function handleLeaveImpersonation(LeaveImpersonation $event): void
     {
-        if ($event->impersonated === null) {
+        if (! $event->impersonated instanceof Authenticatable) {
             return;
         }
 

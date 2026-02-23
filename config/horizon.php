@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Str;
-
 return [
 
     /*
@@ -17,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('HORIZON_NAME'),
+    'name' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -30,7 +28,7 @@ return [
     |
     */
 
-    'domain' => env('HORIZON_DOMAIN'),
+    'domain' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -43,7 +41,7 @@ return [
     |
     */
 
-    'path' => env('HORIZON_PATH', 'horizon'),
+    'path' => 'horizon',
 
     /*
     |--------------------------------------------------------------------------
@@ -69,10 +67,7 @@ return [
     |
     */
 
-    'prefix' => env(
-        'HORIZON_PREFIX',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_horizon:'
-    ),
+    'prefix' => 'laravel_horizon:',
 
     /*
     |--------------------------------------------------------------------------

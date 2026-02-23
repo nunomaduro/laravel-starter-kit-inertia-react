@@ -6,6 +6,7 @@ namespace App\Filament\Pages;
 
 use App\Settings\AppSettings;
 use BackedEnum;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
@@ -40,6 +41,34 @@ final class ManageApp extends SettingsPage
                 TextInput::make('timezone')
                     ->label('Timezone')
                     ->required(),
+                Select::make('locale')
+                    ->label('Locale')
+                    ->options([
+                        'en' => 'English',
+                        'es' => 'Spanish',
+                        'fr' => 'French',
+                        'de' => 'German',
+                        'pt' => 'Portuguese',
+                        'it' => 'Italian',
+                        'nl' => 'Dutch',
+                        'ja' => 'Japanese',
+                        'ko' => 'Korean',
+                        'zh' => 'Chinese',
+                        'ar' => 'Arabic',
+                    ])
+                    ->required()
+                    ->searchable(),
+                Select::make('fallback_locale')
+                    ->label('Fallback locale')
+                    ->options([
+                        'en' => 'English',
+                        'es' => 'Spanish',
+                        'fr' => 'French',
+                        'de' => 'German',
+                        'pt' => 'Portuguese',
+                    ])
+                    ->required()
+                    ->searchable(),
             ]);
     }
 }

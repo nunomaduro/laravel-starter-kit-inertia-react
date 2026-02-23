@@ -27,7 +27,7 @@ final class EnsureTenancyEnabled
                 ], 403);
             }
 
-            return redirect()->route('dashboard');
+            return to_route('dashboard');
         }
 
         return $next($request);

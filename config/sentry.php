@@ -9,8 +9,8 @@ declare(strict_types=1);
  */
 return [
 
-    // @see https://docs.sentry.io/product/sentry-basics/dsn-explainer/
-    'dsn' => env('SENTRY_LARAVEL_DSN', env('SENTRY_DSN')),
+    // Managed via Filament: Settings > Monitoring
+    'dsn' => null,
 
     // @see https://spotlightjs.com/
     // 'spotlight' => env('SENTRY_SPOTLIGHT', false),
@@ -26,10 +26,10 @@ return [
     'environment' => env('SENTRY_ENVIRONMENT'),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#sample_rate
-    'sample_rate' => env('SENTRY_SAMPLE_RATE') === null ? 1.0 : (float) env('SENTRY_SAMPLE_RATE'),
+    'sample_rate' => 1.0,
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces_sample_rate
-    'traces_sample_rate' => env('SENTRY_TRACES_SAMPLE_RATE') === null ? null : (float) env('SENTRY_TRACES_SAMPLE_RATE'),
+    'traces_sample_rate' => null,
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#profiles-sample-rate
     'profiles_sample_rate' => env('SENTRY_PROFILES_SAMPLE_RATE') === null ? null : (float) env('SENTRY_PROFILES_SAMPLE_RATE'),

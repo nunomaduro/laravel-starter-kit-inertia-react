@@ -54,16 +54,17 @@ return [
         //
     ],
 
-    'report_uri' => env('CSP_REPORT_URI', ''),
+    // Managed via Filament: Settings > Security
+    'report_uri' => '',
 
-    'enabled' => env('CSP_ENABLED', true),
+    'enabled' => true,
 
-    'enabled_while_hot_reloading' => env('CSP_ENABLED_WHILE_HOT_RELOADING', true),
+    'enabled_while_hot_reloading' => true,
 
     'nonce_generator' => RandomString::class,
 
     /*
      * Disabled for Inertia/Vite compatibility (single script bundle, no per-script nonces).
      */
-    'nonce_enabled' => env('CSP_NONCE_ENABLED', false),
+    'nonce_enabled' => false,
 ];
