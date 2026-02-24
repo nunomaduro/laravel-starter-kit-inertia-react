@@ -6,6 +6,8 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAppearance } from '@/hooks/use-appearance';
+import type { SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { HTMLAttributes } from 'react';
 
@@ -13,7 +15,13 @@ export default function AppearanceToggleDropdown({
     className = '',
     ...props
 }: HTMLAttributes<HTMLDivElement>) {
+    const { branding } = usePage<SharedData>().props;
+    const allowUserCustomization = branding?.allowUserCustomization ?? true;
     const { appearance, updateAppearance } = useAppearance();
+
+    if (!allowUserCustomization) {
+        return null;
+    }
 
     const getCurrentIcon = () => {
         switch (appearance) {

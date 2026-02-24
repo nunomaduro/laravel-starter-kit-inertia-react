@@ -42,6 +42,7 @@ Backend components, services, and patterns for developers.
 - [Pan (product analytics)](./pan.md) - Privacy-focused product analytics (impressions, hovers, clicks) via `data-pan`; `php artisan pan`
 - [SEO & Monitoring](./seo-and-monitoring.md) - Sitemap, robots.txt, legal pages, Sentry, GA4, Slack notifications
 - [Settings](./settings.md) - Database-backed settings (app/auth/SEO), Filament Settings pages
+- [Theming & Page Builder](./theming-and-page-builder.md) - App theme, org branding, Puck page builder (Page model, PageController, PageViewController, puck-config, blocks)
 
 ## Quick Links
 

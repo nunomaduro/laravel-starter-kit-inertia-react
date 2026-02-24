@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2747ca5f2721061438b5663944a105df",
+    "content-hash": "0fe000a488ca69b76506c5a0e108cdbd",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -427,16 +427,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.370.0",
+            "version": "3.370.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "3cfb2c787c43efa546ba3b6b596956cbef5cdd53"
+                "reference": "273a9bbed9e73016be390b8428f7925f15ea053e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3cfb2c787c43efa546ba3b6b596956cbef5cdd53",
-                "reference": "3cfb2c787c43efa546ba3b6b596956cbef5cdd53",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/273a9bbed9e73016be390b8428f7925f15ea053e",
+                "reference": "273a9bbed9e73016be390b8428f7925f15ea053e",
                 "shasum": ""
             },
             "require": {
@@ -518,9 +518,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.370.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.370.1"
             },
-            "time": "2026-02-20T19:09:33+00:00"
+            "time": "2026-02-23T19:05:30+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -790,30 +790,30 @@
         },
         {
             "name": "blade-ui-kit/blade-icons",
-            "version": "1.8.1",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driesvints/blade-icons.git",
-                "reference": "47e7b6f43250e6404e4224db8229219cd42b543c"
+                "reference": "caa92fde675d7a651c38bf73ca582ddada56f318"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driesvints/blade-icons/zipball/47e7b6f43250e6404e4224db8229219cd42b543c",
-                "reference": "47e7b6f43250e6404e4224db8229219cd42b543c",
+                "url": "https://api.github.com/repos/driesvints/blade-icons/zipball/caa92fde675d7a651c38bf73ca582ddada56f318",
+                "reference": "caa92fde675d7a651c38bf73ca582ddada56f318",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/filesystem": "^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/view": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/filesystem": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/view": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
                 "php": "^7.4|^8.0",
-                "symfony/console": "^5.3|^6.0|^7.0",
-                "symfony/finder": "^5.3|^6.0|^7.0"
+                "symfony/console": "^5.3|^6.0|^7.0|^8.0",
+                "symfony/finder": "^5.3|^6.0|^7.0|^8.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.5.1",
-                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
                 "phpunit/phpunit": "^9.0|^10.5|^11.0"
             },
             "bin": [
@@ -867,7 +867,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2026-01-20T09:46:32+00:00"
+            "time": "2026-02-23T10:42:23+00:00"
         },
         {
             "name": "brick/math",
@@ -7190,16 +7190,16 @@
         },
         {
             "name": "martinpetricko/laravel-database-mail",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MartinPetricko/laravel-database-mail.git",
-                "reference": "c53c9505e49168be438cb0ef14495dc2e5400ac4"
+                "reference": "6d0d5e0c659b12de808fecb144fb022338306e38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MartinPetricko/laravel-database-mail/zipball/c53c9505e49168be438cb0ef14495dc2e5400ac4",
-                "reference": "c53c9505e49168be438cb0ef14495dc2e5400ac4",
+                "url": "https://api.github.com/repos/MartinPetricko/laravel-database-mail/zipball/6d0d5e0c659b12de808fecb144fb022338306e38",
+                "reference": "6d0d5e0c659b12de808fecb144fb022338306e38",
                 "shasum": ""
             },
             "require": {
@@ -7269,7 +7269,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-23T09:12:49+00:00"
+            "time": "2026-02-23T20:09:05+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -8106,25 +8106,25 @@
         },
         {
             "name": "nunomaduro/essentials",
-            "version": "v1.1.0",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nunomaduro/essentials.git",
-                "reference": "f555d7dced8a66891a05e09a9f81d229ea5eeec8"
+                "reference": "c5458ca21a395e592ba7d2ae16ec62632f7c7f3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/essentials/zipball/f555d7dced8a66891a05e09a9f81d229ea5eeec8",
-                "reference": "f555d7dced8a66891a05e09a9f81d229ea5eeec8",
+                "url": "https://api.github.com/repos/nunomaduro/essentials/zipball/c5458ca21a395e592ba7d2ae16ec62632f7c7f3a",
+                "reference": "c5458ca21a395e592ba7d2ae16ec62632f7c7f3a",
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "^11.44.2|^12.52.0",
+                "laravel/framework": "^11.44.2|^12.52.0|^13.0",
                 "php": "^8.3.0"
             },
             "require-dev": {
                 "laravel/pint": "^1.27.1",
-                "orchestra/testbench": "^9.0|^10.9.0",
+                "orchestra/testbench": "^9.0|^10.9.0|^11.0",
                 "pestphp/pest": "^3.8.5|^4.4.1",
                 "pestphp/pest-plugin-type-coverage": "^3.6.1|^4.0.3",
                 "phpstan/phpstan": "^2.1.39",
@@ -8164,7 +8164,7 @@
             ],
             "support": {
                 "issues": "https://github.com/nunomaduro/essentials/issues",
-                "source": "https://github.com/nunomaduro/essentials/tree/v1.1.0"
+                "source": "https://github.com/nunomaduro/essentials/tree/v1.2.0"
             },
             "funding": [
                 {
@@ -8180,7 +8180,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2026-02-18T14:01:00+00:00"
+            "time": "2026-02-23T09:37:58+00:00"
         },
         {
             "name": "nunomaduro/termwind",
@@ -13382,16 +13382,16 @@
         },
         {
             "name": "spatie/laravel-permission",
-            "version": "7.2.2",
+            "version": "7.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-permission.git",
-                "reference": "4b2572eb5ef2c8cb719df09e0e6feb7431fda93f"
+                "reference": "062b0cd8e3a1753fa7a53e468b918710004aa06b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/4b2572eb5ef2c8cb719df09e0e6feb7431fda93f",
-                "reference": "4b2572eb5ef2c8cb719df09e0e6feb7431fda93f",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/062b0cd8e3a1753fa7a53e468b918710004aa06b",
+                "reference": "062b0cd8e3a1753fa7a53e468b918710004aa06b",
                 "shasum": ""
             },
             "require": {
@@ -13399,7 +13399,7 @@
                 "illuminate/container": "^12.0|^13.0",
                 "illuminate/contracts": "^12.0|^13.0",
                 "illuminate/database": "^12.0|^13.0",
-                "php": "^8.3",
+                "php": "^8.4",
                 "spatie/laravel-package-tools": "^1.0"
             },
             "require-dev": {
@@ -13457,7 +13457,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-permission/issues",
-                "source": "https://github.com/spatie/laravel-permission/tree/7.2.2"
+                "source": "https://github.com/spatie/laravel-permission/tree/7.2.3"
             },
             "funding": [
                 {
@@ -13465,7 +13465,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-22T08:20:44+00:00"
+            "time": "2026-02-23T20:30:07+00:00"
         },
         {
             "name": "spatie/laravel-personal-data-export",
@@ -21642,11 +21642,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.39",
+            "version": "2.1.40",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/c6f73a2af4cbcd99c931d0fb8f08548cc0fa8224",
-                "reference": "c6f73a2af4cbcd99c931d0fb8f08548cc0fa8224",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9b2c7aeb83a75d8680ea5e7c9b7fca88052b766b",
+                "reference": "9b2c7aeb83a75d8680ea5e7c9b7fca88052b766b",
                 "shasum": ""
             },
             "require": {
@@ -21691,7 +21691,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-11T14:48:56+00:00"
+            "time": "2026-02-23T15:04:35+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

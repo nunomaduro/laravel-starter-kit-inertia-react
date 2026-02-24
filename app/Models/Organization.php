@@ -123,6 +123,14 @@ final class Organization extends Model
     }
 
     /**
+     * @return HasMany<OrganizationDomain, $this>
+     */
+    public function domains(): HasMany
+    {
+        return $this->hasMany(OrganizationDomain::class);
+    }
+
+    /**
      * @return HasMany<OrganizationInvitation, $this>
      */
     public function invitations(): HasMany

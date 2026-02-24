@@ -1,0 +1,77 @@
+{
+    "model": "Page",
+    "table": "pages",
+    "fields": {
+        "id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "organization_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "name": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "slug": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "puck_json": {
+            "type": "json",
+            "nullable": true,
+            "default": null
+        },
+        "is_published": {
+            "type": "boolean",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "meta_description": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "meta_image": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "revisions": {
+            "type": "hasMany",
+            "model": "Revision"
+        },
+        "organization": {
+            "type": "belongsTo",
+            "model": "Organization"
+        }
+    },
+    "value_hints": {
+        "is_published": {
+            "type": "boolean",
+            "example": true
+        },
+        "name": {
+            "type": "name",
+            "example": "John Doe"
+        }
+    },
+    "scenarios": []
+}

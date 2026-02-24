@@ -3,7 +3,7 @@
     "table": "terms_versions",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

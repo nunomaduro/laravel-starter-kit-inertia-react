@@ -834,6 +834,46 @@
                 "relatedRoutes": [],
                 "rendersPages": []
             }
+        },
+        "PageController": {
+            "documented": true,
+            "path": "./pagecontroller.md",
+            "relationships": {
+                "usesActions": [],
+                "usesFormRequests": [
+                    "StorePageRequest",
+                    "UpdatePageRequest"
+                ],
+                "relatedRoutes": [
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy"
+                ],
+                "rendersPages": {
+                    "0": "pages/index",
+                    "1": "pages/edit",
+                    "3": "pages/show"
+                }
+            }
+        },
+        "PageViewController": {
+            "documented": true,
+            "path": "./pageviewcontroller.md",
+            "relationships": {
+                "usesActions": [],
+                "usesFormRequests": [],
+                "relatedRoutes": [
+                    "pages.show"
+                ],
+                "rendersPages": [
+                    "pages/show"
+                ]
+            }
         }
     },
     "pages": {
@@ -879,6 +919,7 @@
                     "filament.admin.pages.manage-seo",
                     "filament.admin.pages.manage-stripe",
                     "filament.admin.pages.manage-tenancy",
+                    "filament.admin.pages.manage-theme",
                     "filament.admin.pages.analytics.product",
                     "filament.admin.pages.setup-wizard",
                     "filament.admin.resources.feature-segments.index",
@@ -1025,6 +1066,17 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
+                    "settings.branding.edit",
+                    "settings.branding.update",
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show",
                     "profile.export-pdf",
                     "webhooks.stripe",
                     "webhooks.paddle",
@@ -1094,6 +1146,7 @@
                     "filament.admin.pages.manage-seo",
                     "filament.admin.pages.manage-stripe",
                     "filament.admin.pages.manage-tenancy",
+                    "filament.admin.pages.manage-theme",
                     "filament.admin.pages.analytics.product",
                     "filament.admin.pages.setup-wizard",
                     "filament.admin.resources.feature-segments.index",
@@ -1240,6 +1293,17 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
+                    "settings.branding.edit",
+                    "settings.branding.update",
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show",
                     "profile.export-pdf",
                     "webhooks.stripe",
                     "webhooks.paddle",
@@ -1444,6 +1508,7 @@
                     "filament.admin.pages.manage-seo",
                     "filament.admin.pages.manage-stripe",
                     "filament.admin.pages.manage-tenancy",
+                    "filament.admin.pages.manage-theme",
                     "filament.admin.pages.analytics.product",
                     "filament.admin.pages.setup-wizard",
                     "filament.admin.resources.feature-segments.index",
@@ -1590,6 +1655,17 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
+                    "settings.branding.edit",
+                    "settings.branding.update",
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show",
                     "profile.export-pdf",
                     "webhooks.stripe",
                     "webhooks.paddle",
@@ -1732,6 +1808,7 @@
                     "filament.admin.pages.manage-seo",
                     "filament.admin.pages.manage-stripe",
                     "filament.admin.pages.manage-tenancy",
+                    "filament.admin.pages.manage-theme",
                     "filament.admin.pages.analytics.product",
                     "filament.admin.pages.setup-wizard",
                     "filament.admin.resources.feature-segments.index",
@@ -1878,6 +1955,17 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
+                    "settings.branding.edit",
+                    "settings.branding.update",
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show",
                     "profile.export-pdf",
                     "webhooks.stripe",
                     "webhooks.paddle",
@@ -1961,6 +2049,7 @@
                     "filament.admin.pages.manage-seo",
                     "filament.admin.pages.manage-stripe",
                     "filament.admin.pages.manage-tenancy",
+                    "filament.admin.pages.manage-theme",
                     "filament.admin.pages.analytics.product",
                     "filament.admin.pages.setup-wizard",
                     "filament.admin.resources.feature-segments.index",
@@ -2107,6 +2196,17 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
+                    "settings.branding.edit",
+                    "settings.branding.update",
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show",
                     "profile.export-pdf",
                     "webhooks.stripe",
                     "webhooks.paddle",
@@ -2176,6 +2276,7 @@
                     "filament.admin.pages.manage-seo",
                     "filament.admin.pages.manage-stripe",
                     "filament.admin.pages.manage-tenancy",
+                    "filament.admin.pages.manage-theme",
                     "filament.admin.pages.analytics.product",
                     "filament.admin.pages.setup-wizard",
                     "filament.admin.resources.feature-segments.index",
@@ -2322,6 +2423,17 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
+                    "settings.branding.edit",
+                    "settings.branding.update",
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show",
                     "profile.export-pdf",
                     "webhooks.stripe",
                     "webhooks.paddle",
@@ -2564,6 +2676,7 @@
                     "filament.admin.pages.manage-seo",
                     "filament.admin.pages.manage-stripe",
                     "filament.admin.pages.manage-tenancy",
+                    "filament.admin.pages.manage-theme",
                     "filament.admin.pages.analytics.product",
                     "filament.admin.pages.setup-wizard",
                     "filament.admin.resources.feature-segments.index",
@@ -2710,6 +2823,17 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
+                    "settings.branding.edit",
+                    "settings.branding.update",
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show",
                     "profile.export-pdf",
                     "webhooks.stripe",
                     "webhooks.paddle",
@@ -2788,6 +2912,7 @@
                     "filament.admin.pages.manage-seo",
                     "filament.admin.pages.manage-stripe",
                     "filament.admin.pages.manage-tenancy",
+                    "filament.admin.pages.manage-theme",
                     "filament.admin.pages.analytics.product",
                     "filament.admin.pages.setup-wizard",
                     "filament.admin.resources.feature-segments.index",
@@ -2934,6 +3059,17 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
+                    "settings.branding.edit",
+                    "settings.branding.update",
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show",
                     "profile.export-pdf",
                     "webhooks.stripe",
                     "webhooks.paddle",
@@ -2958,6 +3094,80 @@
                     "verification.notice",
                     "verification.send",
                     "verification.verify"
+                ]
+            }
+        },
+        "pages/edit": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./pages/edit.md",
+            "relationships": {
+                "renderedBy": [
+                    "PageController"
+                ],
+                "relatedRoutes": [
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy"
+                ]
+            }
+        },
+        "pages/index": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./pages/index.md",
+            "relationships": {
+                "renderedBy": [
+                    "PageController"
+                ],
+                "relatedRoutes": [
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy"
+                ]
+            }
+        },
+        "pages/show": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./pages/show.md",
+            "relationships": {
+                "renderedBy": [
+                    "PageController",
+                    "PageViewController"
+                ],
+                "relatedRoutes": [
+                    "pages.index",
+                    "pages.create",
+                    "pages.store",
+                    "pages.edit",
+                    "pages.update",
+                    "pages.preview",
+                    "pages.duplicate",
+                    "pages.destroy",
+                    "pages.show"
+                ]
+            }
+        },
+        "settings/branding": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./settings/branding.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": [
+                    "settings.branding.edit",
+                    "settings.branding.update"
                 ]
             }
         }

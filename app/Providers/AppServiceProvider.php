@@ -183,6 +183,12 @@ final class AppServiceProvider extends ServiceProvider
             'chat-send-message',
             'dashboard-chart',
             'users-table',
+            'pages-index',
+            'pages-create',
+            'pages-edit-preview',
+            'pages-edit-save',
+            'pages-duplicate',
+            'pages-delete',
         ]);
     }
 

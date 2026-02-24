@@ -3,7 +3,7 @@
     "table": "model_flags",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -18,7 +18,7 @@
             "default": null
         },
         "flaggable_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

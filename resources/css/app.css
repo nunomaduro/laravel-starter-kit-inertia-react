@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './themes.css';
 
 @plugin 'tailwindcss-animate';
 
@@ -8,10 +9,18 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+    /* Driven by data-font on documentElement; see themes.css [data-font='...'] */
+    --font-sans: var(
+        --app-font-sans,
+        'Instrument Sans',
+        ui-sans-serif,
+        system-ui,
+        sans-serif,
+        'Apple Color Emoji',
+        'Segoe UI Emoji',
+        'Segoe UI Symbol',
+        'Noto Color Emoji'
+    );
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);

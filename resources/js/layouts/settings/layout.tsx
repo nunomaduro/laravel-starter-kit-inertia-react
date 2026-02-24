@@ -7,6 +7,7 @@ import { show as showAchievements } from '@/routes/achievements';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
 import { edit as editPersonalDataExport } from '@/routes/personal-data-export';
+import { edit as editBranding } from '@/routes/settings/branding';
 import { show } from '@/routes/two-factor';
 import { edit } from '@/routes/user-profile';
 import { type NavItem, type SharedData } from '@/types';
@@ -39,6 +40,12 @@ const sidebarNavItems: (NavItem & { feature?: string; dataPan: string })[] = [
         icon: null,
         feature: 'appearance_settings',
         dataPan: 'settings-nav-appearance',
+    },
+    {
+        title: 'Organization branding',
+        href: editBranding(),
+        icon: null,
+        dataPan: 'settings-nav-branding',
     },
     {
         title: 'Data export',

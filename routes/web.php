@@ -27,9 +27,12 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationInvitationController;
 use App\Http\Controllers\OrganizationMemberController;
 use App\Http\Controllers\OrganizationSwitchController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\PersonalDataExportController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\Settings\AchievementsController;
+use App\Http\Controllers\Settings\BrandingController;
 use App\Http\Controllers\TermsAcceptController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserEmailResetNotificationController;
@@ -152,6 +155,25 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::post('billing/credits/checkout/lemon-squeezy', [CreditController::class, 'checkoutLemonSqueezy'])->name('billing.credits.checkout.lemon-squeezy');
         Route::get('billing/invoices', [InvoiceController::class, 'index'])->name('billing.invoices.index');
         Route::get('billing/invoices/{invoice}', [InvoiceController::class, 'download'])->name('billing.invoices.download');
+    });
+
+    // Org branding (tenant middleware ensures current org)
+    Route::middleware(['tenant', 'permission:org.settings.manage'])->group(function (): void {
+        Route::get('settings/branding', [BrandingController::class, 'edit'])->name('settings.branding.edit');
+        Route::put('settings/branding', [BrandingController::class, 'update'])->name('settings.branding.update');
+    });
+
+    // Puck pages (tenant middleware ensures current org)
+    Route::middleware('tenant')->group(function (): void {
+        Route::get('pages', [PageController::class, 'index'])->name('pages.index');
+        Route::get('pages/create', [PageController::class, 'create'])->name('pages.create');
+        Route::post('pages', [PageController::class, 'store'])->name('pages.store')->middleware('throttle:30,1');
+        Route::get('pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
+        Route::put('pages/{page}', [PageController::class, 'update'])->name('pages.update')->middleware('throttle:30,1');
+        Route::get('pages/{page}/preview', [PageController::class, 'preview'])->name('pages.preview');
+        Route::post('pages/{page}/duplicate', [PageController::class, 'duplicate'])->name('pages.duplicate');
+        Route::delete('pages/{page}', [PageController::class, 'destroy'])->name('pages.destroy');
+        Route::get('p/{slug}', [PageViewController::class, 'show'])->name('pages.show')->middleware('throttle:120,1');
     });
 
     Route::get('profile/export-pdf', App\Http\Controllers\ProfileExportPdfController::class)

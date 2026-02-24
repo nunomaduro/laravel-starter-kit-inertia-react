@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Services\OrganizationSettingsService;
+use App\Services\TenantContext;
 use App\Settings\SeoSettings;
 use App\Support\FeatureHelper;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 use Inertia\Middleware;
 use Spatie\Honeypot\Honeypot;
 use Throwable;
@@ -36,6 +40,9 @@ final class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $theme = $this->resolveTheme();
+        View::share('theme', $theme);
+
         $quote = Inspiring::quotes()->random();
         assert(is_string($quote));
 
@@ -51,7 +58,7 @@ final class HandleInertiaRequests extends Middleware
         }
 
         $tenancyEnabled = config('tenancy.enabled', true);
-        $currentOrganization = $user ? \App\Services\TenantContext::get() : null;
+        $currentOrganization = $user ? TenantContext::get() : null;
         $userOrganizations = $user
             ? $user->organizations()->orderBy('name')->get(['id', 'name', 'slug'])
             : [];
@@ -79,7 +86,69 @@ final class HandleInertiaRequests extends Middleware
                 'lifetimeDays' => (int) config('cookie-consent.cookie_lifetime', 365 * 20),
             ] : null,
             'seo' => $this->seoSharedData(),
+            'theme' => $theme,
+            'branding' => $this->resolveBranding(...),
         ];
+    }
+
+    /**
+     * Resolve theme from DB (settings table) so Manage Theme changes take effect immediately.
+     * Bypasses Settings class cache by reading directly. Falls back to config when unavailable.
+     *
+     * @return array{preset: string, base_color: string, radius: string, font: string, default_appearance: string}
+     */
+    private function resolveTheme(): array
+    {
+        $defaults = [
+            'preset' => config('theme.preset', 'default'),
+            'base_color' => config('theme.base_color', 'neutral'),
+            'radius' => config('theme.radius', 'default'),
+            'font' => config('theme.font', 'instrument-sans'),
+            'default_appearance' => config('theme.default_appearance', 'system'),
+        ];
+
+        try {
+            $rows = DB::table('settings')->where('group', 'theme')->get(['name', 'payload']);
+            if ($rows->isEmpty()) {
+                return $defaults;
+            }
+            $db = [];
+            foreach ($rows as $row) {
+                $db[$row->name] = is_string($row->payload) ? json_decode($row->payload, true) : $row->payload;
+            }
+
+            return [
+                'preset' => $db['preset'] ?? $defaults['preset'],
+                'base_color' => $db['base_color'] ?? $defaults['base_color'],
+                'radius' => $db['radius'] ?? $defaults['radius'],
+                'font' => $db['font'] ?? $defaults['font'],
+                'default_appearance' => $db['default_appearance'] ?? $defaults['default_appearance'],
+            ];
+        } catch (Throwable) {
+            return $defaults;
+        }
+    }
+
+    /**
+     * Resolve branding at response time (after SetTenantContext / ApplyOrganizationSettings).
+     *
+     * @return array{logoUrl: string|null, themePreset: string|null, themeRadius: string|null, themeFont: string|null, allowUserCustomization: bool}
+     */
+    private function resolveBranding(): array
+    {
+        $organization = TenantContext::get();
+
+        if (! $organization instanceof \App\Models\Organization) {
+            return [
+                'logoUrl' => null,
+                'themePreset' => null,
+                'themeRadius' => null,
+                'themeFont' => null,
+                'allowUserCustomization' => false,
+            ];
+        }
+
+        return resolve(OrganizationSettingsService::class)->getBranding($organization);
     }
 
     /**

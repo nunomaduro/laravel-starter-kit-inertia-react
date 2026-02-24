@@ -8,6 +8,7 @@ import { createRoot } from 'react-dom/client';
 import { Toaster } from 'sonner';
 import { CookieConsentBanner } from './components/cookie-consent-banner';
 import { FlashListener } from './components/flash-listener';
+import { ThemeFromProps } from './components/theme-from-props';
 import { initializeTheme } from './hooks/use-appearance';
 import { QueryProvider } from './providers/query-provider';
 
@@ -26,6 +27,7 @@ createInertiaApp({
             ): ReactNode {
                 return (
                     <>
+                        <ThemeFromProps />
                         <CookieConsentBanner />
                         <FlashListener />
                         <Page {...props} />

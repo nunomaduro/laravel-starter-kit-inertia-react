@@ -3,17 +3,17 @@
     "table": "gateway_products",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "payment_gateway_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "plan_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

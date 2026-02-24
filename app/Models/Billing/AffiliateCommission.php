@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Billing;
 
+use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +52,7 @@ final class AffiliateCommission extends Model
 
     public function getFormattedAmount(): string
     {
-        return new Money($this->amount, $this->currency)->format();
+        return new Money($this->amount, new Currency($this->currency))->format();
     }
 
     public function isPending(): bool

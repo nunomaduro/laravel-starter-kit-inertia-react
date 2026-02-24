@@ -28,6 +28,7 @@ use App\Settings\ScoutSettings;
 use App\Settings\SecuritySettings;
 use App\Settings\StripeSettings;
 use App\Settings\TenancySettings;
+use App\Settings\ThemeSettings;
 use Illuminate\Support\ServiceProvider;
 use Throwable;
 
@@ -56,6 +57,17 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
                 'timezone' => 'app.timezone',
                 'locale' => 'app.locale',
                 'fallback_locale' => 'app.fallback_locale',
+            ],
+            'orgOverridable' => false,
+        ],
+
+        ThemeSettings::class => [
+            'map' => [
+                'preset' => 'theme.preset',
+                'base_color' => 'theme.base_color',
+                'radius' => 'theme.radius',
+                'font' => 'theme.font',
+                'default_appearance' => 'theme.default_appearance',
             ],
             'orgOverridable' => false,
         ],

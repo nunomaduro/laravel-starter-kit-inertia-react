@@ -98,7 +98,10 @@
       "Bash(php artisan tinker --execute=\"\n\\\\$url = url\\('/admin'\\);\necho 'Admin URL: ' . \\\\$url . PHP_EOL;\n\" 2>&1)",
       "Bash(php artisan test --compact --filter=SettingsOverlay 2>&1)",
       "Bash(php artisan tinker --execute=\"\n\\\\$app = resolve\\(\\\\App\\\\Settings\\\\AppSettings::class\\);\necho 'AppSettings url: ' . var_export\\(\\\\$app->url, true\\) . PHP_EOL;\necho 'config app.url: ' . var_export\\(config\\('app.url'\\), true\\) . PHP_EOL;\necho PHP_EOL;\n\n\\\\$bc = resolve\\(\\\\App\\\\Settings\\\\BroadcastingSettings::class\\);\necho 'BroadcastingSettings default_connection: ' . var_export\\(\\\\$bc->default_connection, true\\) . PHP_EOL;\necho 'config broadcasting.default: ' . var_export\\(config\\('broadcasting.default'\\), true\\) . PHP_EOL;\n\" 2>&1)",
-      "Bash(php artisan tinker --execute=\"\n\\\\$app = resolve\\(\\\\App\\\\Settings\\\\AppSettings::class\\);\n\\\\$app->url = 'https://laravel-starter-kit-inertia-react.test';\n\\\\$app->save\\(\\);\necho 'Updated url to: ' . \\\\$app->url . PHP_EOL;\necho 'config app.url: ' . config\\('app.url'\\) . PHP_EOL;\n\" 2>&1)"
+      "Bash(php artisan tinker --execute=\"\n\\\\$app = resolve\\(\\\\App\\\\Settings\\\\AppSettings::class\\);\n\\\\$app->url = 'https://laravel-starter-kit-inertia-react.test';\n\\\\$app->save\\(\\);\necho 'Updated url to: ' . \\\\$app->url . PHP_EOL;\necho 'config app.url: ' . config\\('app.url'\\) . PHP_EOL;\n\" 2>&1)",
+      "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/app/Policies -name \"*.php\" 2>/dev/null | head -5)",
+      "Bash(grep -r \"Page\\\\b\\\\|LandingPage\\\\|WebPage\\\\|PageContent\" /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/app --include=\"*.php\" -l 2>/dev/null | grep -v \"Filament\\\\|Settings\\\\|Policy\\\\|Controller\\\\|Middleware\")",
+      "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/public -name \"*.svg\" -o -name \"*.png\" 2>/dev/null | head -10)"
     ]
   },
   "enableAllProjectMcpServers": true,

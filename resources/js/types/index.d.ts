@@ -68,6 +68,22 @@ export interface SharedFeatures {
     [key: string]: boolean | undefined;
 }
 
+export interface ThemeProps {
+    preset?: string;
+    base_color?: string;
+    radius?: string;
+    font?: string;
+    default_appearance?: string;
+}
+
+export interface BrandingProps {
+    logoUrl?: string | null;
+    themePreset?: string | null;
+    themeRadius?: string | null;
+    themeFont?: string | null;
+    allowUserCustomization?: boolean;
+}
+
 export interface SharedData {
     name: string;
     quote: { message: string; author: string };
@@ -75,6 +91,10 @@ export interface SharedData {
     /** Feature flags (guest = default value, authenticated = resolved for user). */
     features: SharedFeatures;
     sidebarOpen: boolean;
+    /** App-wide theme (from ThemeSettings overlay). Org branding may override preset/radius/font. */
+    theme?: ThemeProps;
+    /** Org branding (logo, theme overrides). Resolved lazily after tenant context. */
+    branding?: BrandingProps;
     [key: string]: unknown;
 }
 

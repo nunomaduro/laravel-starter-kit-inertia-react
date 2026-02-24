@@ -3,7 +3,7 @@
     "table": "users",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -63,7 +63,7 @@
             "default": null
         },
         "onboarding_steps_completed": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },

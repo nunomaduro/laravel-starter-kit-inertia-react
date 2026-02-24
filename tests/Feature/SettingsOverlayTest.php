@@ -9,6 +9,7 @@ use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
 use App\Settings\AppSettings;
 use App\Settings\BillingSettings;
+use App\Settings\ThemeSettings;
 use Illuminate\Support\Facades\DB;
 use Tests\Traits\InteractsWithSettings;
 
@@ -232,4 +233,24 @@ it('clearOrgOverrides removes all overrides for an org', function (): void {
 
     $service = resolve(OrganizationSettingsService::class);
     expect($service->getOverridesForOrganization($org))->toHaveCount(0);
+});
+
+// ─── Theme in Inertia (resolveTheme reads from DB) ────────────────────────
+
+it('sends updated theme from DB to Inertia login page', function (): void {
+    $this->fakeSettings(ThemeSettings::class, [
+        'preset' => 'vega',
+        'radius' => 'lg',
+        'font' => 'geist-sans',
+    ]);
+
+    $response = $this->get(route('login'));
+
+    $response->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('session/create')
+            ->has('theme')
+            ->where('theme.preset', 'vega')
+            ->where('theme.radius', 'lg')
+            ->where('theme.font', 'geist-sans'));
 });

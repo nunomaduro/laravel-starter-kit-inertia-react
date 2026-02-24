@@ -3,27 +3,27 @@
     "table": "affiliate_commissions",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "affiliate_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "referred_organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "invoice_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "amount": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

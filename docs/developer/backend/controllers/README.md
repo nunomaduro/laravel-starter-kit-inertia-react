@@ -39,5 +39,7 @@ All Controllers:
 | [TermsAcceptController](./TermsAcceptController.md) | N/A | ✅ |
 | [EnterpriseInquiryController](./EnterpriseInquiryController.md) | N/A | ✅ |
 | [Controller](./controller.md) | N/A | ✅ |
+| [PageController](./pagecontroller.md) | N/A | ✅ |
+| [PageViewController](./pageviewcontroller.md) | N/A | ✅ |
 
 

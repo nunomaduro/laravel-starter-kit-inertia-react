@@ -8,6 +8,7 @@ use App\Models\Organization;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 final class OrganizationSettingsService
 {
@@ -108,6 +109,57 @@ final class OrganizationSettingsService
     public function clearCache(Organization $organization): void
     {
         Cache::forget($this->cacheKey($organization));
+    }
+
+    /**
+     * Get branding for an organization (group=branding). Used for Inertia shared props.
+     *
+     * @return array{logoUrl: string|null, themePreset: string|null, themeRadius: string|null, themeFont: string|null, allowUserCustomization: bool}
+     */
+    public function getBranding(Organization $organization): array
+    {
+        $overrides = $this->getOverridesForOrganization($organization)
+            ->where('group', 'branding');
+
+        if ($overrides->isEmpty()) {
+            return [
+                'logoUrl' => null,
+                'themePreset' => null,
+                'themeRadius' => null,
+                'themeFont' => null,
+                'allowUserCustomization' => false,
+            ];
+        }
+
+        $logoPath = null;
+        $themePreset = null;
+        $themeRadius = null;
+        $themeFont = null;
+        $allowUserCustomization = false;
+
+        foreach ($overrides as $override) {
+            $value = $this->decodePayload($override->payload, $override->is_encrypted);
+            match ($override->name) {
+                'logo_path' => $logoPath = is_string($value) ? $value : null,
+                'theme_preset' => $themePreset = is_string($value) ? $value : null,
+                'theme_radius' => $themeRadius = is_string($value) ? $value : null,
+                'theme_font' => $themeFont = is_string($value) ? $value : null,
+                'allow_user_ui_customization' => $allowUserCustomization = (bool) $value,
+                default => null,
+            };
+        }
+
+        $logoUrl = $logoPath
+            ? (Storage::disk('public')->exists($logoPath) ? Storage::disk('public')->url($logoPath) : null)
+            : null;
+
+        return [
+            'logoUrl' => $logoUrl,
+            'themePreset' => $themePreset,
+            'themeRadius' => $themeRadius,
+            'themeFont' => $themeFont,
+            'allowUserCustomization' => $allowUserCustomization,
+        ];
     }
 
     private function cacheKey(Organization $organization): string

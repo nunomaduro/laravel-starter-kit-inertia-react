@@ -27,6 +27,10 @@ final class PublicContentCacheProfile extends BaseCacheProfile
             return false;
         }
 
+        if ($request->is('pages') || $request->is('pages/*') || $request->is('p/*')) {
+            return false;
+        }
+
         return ! $request->is('login', 'register', 'forgot-password', 'reset-password*', 'verify-email*', 'favicon.ico');
     }
 

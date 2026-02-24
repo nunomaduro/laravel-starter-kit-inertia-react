@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Widgets\Billing;
 
+use Akaunting\Money\Currency;
+use Akaunting\Money\Money;
 use App\Models\Billing\Invoice;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -44,10 +46,10 @@ final class RevenueOverviewStats extends StatsOverviewWidget
 
         $churnRate = $this->calculateChurnRate($subscriptionsTable);
 
-        $currency = config('billing.currency', 'usd');
+        $currency = new Currency(config('billing.currency', 'usd'));
 
         return [
-            Stat::make('Monthly Recurring Revenue (MRR)', new \Akaunting\Money\Money($mrr, $currency)->format())
+            Stat::make('Monthly Recurring Revenue (MRR)', new Money($mrr, $currency)->format())
                 ->description($this->getMrrTrend($subscriptionsTable, $plansTable))
                 ->descriptionIcon($this->getMrrTrendIcon($subscriptionsTable, $plansTable))
                 ->chart($this->getMrrSparkline($subscriptionsTable, $plansTable))
@@ -58,7 +60,7 @@ final class RevenueOverviewStats extends StatsOverviewWidget
                 ->descriptionIcon($subscriptionGrowth >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($subscriptionGrowth >= 0 ? 'success' : 'danger'),
 
-            Stat::make('Revenue This Month', new \Akaunting\Money\Money($monthlyRevenue, $currency)->format())
+            Stat::make('Revenue This Month', new Money($monthlyRevenue, $currency)->format())
                 ->description('vs last month')
                 ->descriptionIcon('heroicon-m-banknotes'),
 

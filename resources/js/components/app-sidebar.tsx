@@ -1,3 +1,4 @@
+import PageController from '@/actions/App/Http/Controllers/PageController';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -53,6 +54,14 @@ const mainNavItems: NavItem[] = [
         icon: Building2,
         tenancyRequired: true,
         dataPan: 'nav-organizations',
+    },
+    {
+        title: 'Pages',
+        href: PageController.index().url,
+        icon: FileText,
+        permission: 'org.pages.manage',
+        tenancyRequired: true,
+        dataPan: 'nav-pages',
     },
     {
         title: 'Billing',
