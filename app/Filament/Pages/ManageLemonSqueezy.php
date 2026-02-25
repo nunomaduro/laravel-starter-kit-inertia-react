@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageLemonSqueezy extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedReceiptPercent;
 
     protected static ?string $navigationLabel = 'Lemon Squeezy';
 
-    protected static string $settings = LemonSqueezySettings::class;
+    protected static ?int $navigationSort = 40;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Lemon Squeezy';
-    }
+    protected static string $settings = LemonSqueezySettings::class;
 
     public function form(Schema $schema): Schema
     {

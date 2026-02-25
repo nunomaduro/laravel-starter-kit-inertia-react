@@ -17,18 +17,15 @@ use UnitEnum;
 
 final class ManageScout extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentMagnifyingGlass;
 
     protected static ?string $navigationLabel = 'Search';
 
-    protected static string $settings = ScoutSettings::class;
+    protected static ?int $navigationSort = 20;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Search';
-    }
+    protected static string $settings = ScoutSettings::class;
 
     public function form(Schema $schema): Schema
     {

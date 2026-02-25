@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Users\Tables;
 
 use App\Features\ImpersonationFeature;
+use App\Filament\Concerns\HasStandardExports;
 use App\Support\FeatureHelper;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -13,14 +14,12 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Maatwebsite\Excel\Excel;
-use pxlrbt\FilamentExcel\Actions\ExportAction;
-use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use STS\FilamentImpersonate\Actions\Impersonate;
 
 final class UsersTable
 {
+    use HasStandardExports;
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -66,20 +65,7 @@ final class UsersTable
                 //
             ])
             ->headerActions([
-                ExportAction::make()
-                    ->exports([
-                        ExcelExport::make()
-                            ->fromTable()
-                            ->withFilename('users-'.now()->format('Y-m-d'))
-                            ->withChunkSize(500)
-                            ->queue(),
-                        ExcelExport::make()
-                            ->fromTable()
-                            ->withFilename('users-'.now()->format('Y-m-d').'-csv')
-                            ->withWriterType(Excel::CSV)
-                            ->withChunkSize(500)
-                            ->queue(),
-                    ]),
+                self::makeExportHeaderAction('users', queued: true, chunkSize: 500),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -90,7 +76,7 @@ final class UsersTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    ExportBulkAction::make(),
+                    self::makeExportBulkAction(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

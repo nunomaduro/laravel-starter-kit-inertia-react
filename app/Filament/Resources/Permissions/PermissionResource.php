@@ -18,9 +18,9 @@ final class PermissionResource extends Resource
 {
     protected static ?string $model = Permission::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'User management';
+    protected static string|UnitEnum|null $navigationGroup = 'User Management';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 30;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedKey;
 

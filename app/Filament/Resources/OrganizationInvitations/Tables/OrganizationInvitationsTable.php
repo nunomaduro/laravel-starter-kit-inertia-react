@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\OrganizationInvitations\Tables;
 
+use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Maatwebsite\Excel\Excel;
-use pxlrbt\FilamentExcel\Actions\ExportAction;
-use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 final class OrganizationInvitationsTable
 {
+    use HasStandardExports;
+
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
+            ->defaultPaginationPageOption(10)
+            ->paginationPageOptions([10, 25, 50])
+            ->searchDebounce('300ms')
             ->columns([
                 TextColumn::make('organization.name')
                     ->searchable(),
@@ -50,20 +53,14 @@ final class OrganizationInvitationsTable
                 //
             ])
             ->headerActions([
-                ExportAction::make()
-                    ->exports([
-                        ExcelExport::make()->fromTable()->withFilename('organization-invitations-'.now()->format('Y-m-d')),
-                        ExcelExport::make()->fromTable()
-                            ->withFilename('organization-invitations-'.now()->format('Y-m-d').'-csv')
-                            ->withWriterType(Excel::CSV),
-                    ]),
+                self::makeExportHeaderAction('organization-invitations'),
             ])
             ->recordActions([
                 EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    ExportBulkAction::make(),
+                    self::makeExportBulkAction(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

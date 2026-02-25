@@ -15,18 +15,15 @@ use UnitEnum;
 
 final class ManagePermissions extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Features & Access';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedLockClosed;
 
-    protected static ?string $navigationLabel = 'Permissions';
+    protected static ?string $navigationLabel = 'Permission Settings';
+
+    protected static ?int $navigationSort = 30;
 
     protected static string $settings = PermissionSettings::class;
-
-    public static function getNavigationLabel(): string
-    {
-        return 'Permissions';
-    }
 
     public function form(Schema $schema): Schema
     {

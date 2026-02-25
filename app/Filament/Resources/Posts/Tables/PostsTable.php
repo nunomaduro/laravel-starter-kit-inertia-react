@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Posts\Tables;
 
+use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -14,16 +15,18 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Maatwebsite\Excel\Excel;
-use pxlrbt\FilamentExcel\Actions\ExportAction;
-use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 final class PostsTable
 {
+    use HasStandardExports;
+
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('published_at', 'desc')
+            ->defaultPaginationPageOption(10)
+            ->paginationPageOptions([10, 25, 50])
+            ->searchDebounce('300ms')
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
@@ -51,13 +54,7 @@ final class PostsTable
                 TrashedFilter::make(),
             ])
             ->headerActions([
-                ExportAction::make()
-                    ->exports([
-                        ExcelExport::make()->fromTable()->withFilename('posts-'.now()->format('Y-m-d')),
-                        ExcelExport::make()->fromTable()
-                            ->withFilename('posts-'.now()->format('Y-m-d').'-csv')
-                            ->withWriterType(Excel::CSV),
-                    ]),
+                self::makeExportHeaderAction('posts'),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -65,7 +62,7 @@ final class PostsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    ExportBulkAction::make(),
+                    self::makeExportBulkAction(),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),

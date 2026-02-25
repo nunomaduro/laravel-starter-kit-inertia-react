@@ -3,12 +3,12 @@
     "table": "failed_payment_attempts",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -23,12 +23,12 @@
             "default": null
         },
         "attempt_number": {
-            "type": "int2",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "dunning_emails_sent": {
-            "type": "int2",
+            "type": "integer",
             "nullable": true,
             "default": null
         },

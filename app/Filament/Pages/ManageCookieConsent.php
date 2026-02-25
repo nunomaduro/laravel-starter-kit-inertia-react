@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageCookieConsent extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFingerPrint;
 
     protected static ?string $navigationLabel = 'Cookie Consent';
 
-    protected static string $settings = CookieConsentSettings::class;
+    protected static ?int $navigationSort = 50;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Cookie Consent';
-    }
+    protected static string $settings = CookieConsentSettings::class;
 
     public function form(Schema $schema): Schema
     {

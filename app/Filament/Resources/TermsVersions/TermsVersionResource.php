@@ -21,13 +21,21 @@ final class TermsVersionResource extends Resource
 {
     protected static ?string $model = TermsVersion::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedScale;
+
+    protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $navigationLabel = 'Terms & Privacy';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Content & Legal';
 
-    protected static ?int $navigationSort = 90;
+    protected static ?int $navigationSort = 20;
+
+    /** @return array<string> */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title'];
+    }
 
     public static function canAccess(): bool
     {

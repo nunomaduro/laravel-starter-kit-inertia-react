@@ -26,9 +26,29 @@ final class OrganizationInvitationResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Organizations';
 
+    protected static ?int $navigationSort = 20;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Envelope;
 
     protected static ?string $recordTitleAttribute = 'email';
+
+    /** @return array<string> */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['email'];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = self::getModel()::query()->where('status', OrganizationInvitation::STATUS_PENDING)->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        return 'warning';
+    }
 
     public static function form(Schema $schema): Schema
     {

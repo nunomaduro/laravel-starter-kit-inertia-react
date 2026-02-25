@@ -12,9 +12,9 @@ use UnitEnum;
 
 final class RevenueDashboard extends Page
 {
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPresentationChartLine;
 
-    protected static ?int $navigationSort = 50;
+    protected static ?int $navigationSort = 10;
 
     protected static UnitEnum|string|null $navigationGroup = 'Billing';
 

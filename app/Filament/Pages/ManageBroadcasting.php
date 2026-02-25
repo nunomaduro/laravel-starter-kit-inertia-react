@@ -15,18 +15,15 @@ use UnitEnum;
 
 final class ManageBroadcasting extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSignal;
 
     protected static ?string $navigationLabel = 'Broadcasting';
 
-    protected static string $settings = BroadcastingSettings::class;
+    protected static ?int $navigationSort = 70;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Broadcasting';
-    }
+    protected static string $settings = BroadcastingSettings::class;
 
     public function form(Schema $schema): Schema
     {

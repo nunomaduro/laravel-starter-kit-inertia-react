@@ -27,11 +27,19 @@ final class ChangelogEntryResource extends Resource
 {
     protected static ?string $model = ChangelogEntry::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMegaphone;
+
+    protected static ?string $recordTitleAttribute = 'title';
 
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 20;
+
+    /** @return array<string> */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'version'];
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -17,18 +17,15 @@ use UnitEnum;
 
 final class ManageTenancy extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
     protected static ?string $navigationLabel = 'Tenancy';
 
-    protected static string $settings = TenancySettings::class;
+    protected static ?int $navigationSort = 70;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Tenancy';
-    }
+    protected static string $settings = TenancySettings::class;
 
     public function form(Schema $schema): Schema
     {

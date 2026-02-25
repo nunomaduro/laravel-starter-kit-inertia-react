@@ -27,9 +27,17 @@ final class OrganizationResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Organizations';
 
+    protected static ?int $navigationSort = 10;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::BuildingOffice2;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    /** @return array<string> */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'slug'];
+    }
 
     public static function form(Schema $schema): Schema
     {

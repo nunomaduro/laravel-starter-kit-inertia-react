@@ -23,7 +23,17 @@ final class CreditPackResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Billing';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::CurrencyDollar;
+    protected static ?int $navigationSort = 20;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGift;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    /** @return array<string> */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name'];
+    }
 
     public static function form(Schema $schema): Schema
     {

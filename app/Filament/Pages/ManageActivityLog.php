@@ -15,18 +15,15 @@ use UnitEnum;
 
 final class ManageActivityLog extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Features & Access';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
-    protected static ?string $navigationLabel = 'Activity Log';
+    protected static ?string $navigationLabel = 'Activity Log Settings';
+
+    protected static ?int $navigationSort = 50;
 
     protected static string $settings = ActivityLogSettings::class;
-
-    public static function getNavigationLabel(): string
-    {
-        return 'Activity Log';
-    }
 
     public function form(Schema $schema): Schema
     {

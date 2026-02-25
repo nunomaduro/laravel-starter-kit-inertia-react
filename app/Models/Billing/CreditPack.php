@@ -33,6 +33,11 @@ final class CreditPack extends Model implements Sortable
     use SoftDeletes;
     use SortableTrait;
 
+    /** @var array<string, mixed> */
+    public array $sortable = [
+        'order_column_name' => 'sort_order',
+    ];
+
     protected $fillable = [
         'name',
         'slug',

@@ -3,12 +3,12 @@
     "table": "affiliates",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "user_id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -38,22 +38,22 @@
             "default": null
         },
         "payment_details": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "total_earnings": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "pending_earnings": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "paid_earnings": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },

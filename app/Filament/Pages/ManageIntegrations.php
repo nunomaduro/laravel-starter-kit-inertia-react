@@ -15,18 +15,15 @@ use UnitEnum;
 
 final class ManageIntegrations extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPuzzlePiece;
 
     protected static ?string $navigationLabel = 'Integrations';
 
-    protected static string $settings = IntegrationsSettings::class;
+    protected static ?int $navigationSort = 80;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Integrations';
-    }
+    protected static string $settings = IntegrationsSettings::class;
 
     public function form(Schema $schema): Schema
     {

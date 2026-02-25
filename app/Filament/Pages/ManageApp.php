@@ -16,18 +16,15 @@ use UnitEnum;
 
 final class ManageApp extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static ?string $navigationLabel = 'App';
 
-    protected static string $settings = AppSettings::class;
+    protected static ?int $navigationSort = 10;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'App';
-    }
+    protected static string $settings = AppSettings::class;
 
     public function form(Schema $schema): Schema
     {

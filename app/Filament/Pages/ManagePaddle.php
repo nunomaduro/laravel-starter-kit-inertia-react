@@ -15,18 +15,15 @@ use UnitEnum;
 
 final class ManagePaddle extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCurrencyDollar;
 
     protected static ?string $navigationLabel = 'Paddle';
 
-    protected static string $settings = PaddleSettings::class;
+    protected static ?int $navigationSort = 30;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Paddle';
-    }
+    protected static string $settings = PaddleSettings::class;
 
     public function form(Schema $schema): Schema
     {

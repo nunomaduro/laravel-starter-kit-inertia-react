@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageTheme extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPaintBrush;
 
     protected static ?string $navigationLabel = 'Theme';
 
-    protected static string $settings = ThemeSettings::class;
+    protected static ?int $navigationSort = 30;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Theme';
-    }
+    protected static string $settings = ThemeSettings::class;
 
     public static function canAccess(): bool
     {

@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageMemory extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCircleStack;
 
     protected static ?string $navigationLabel = 'Memory';
 
-    protected static string $settings = MemorySettings::class;
+    protected static ?int $navigationSort = 80;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Memory';
-    }
+    protected static string $settings = MemorySettings::class;
 
     public function form(Schema $schema): Schema
     {

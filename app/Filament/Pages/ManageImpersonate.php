@@ -15,18 +15,15 @@ use UnitEnum;
 
 final class ManageImpersonate extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Features & Access';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserCircle;
 
     protected static ?string $navigationLabel = 'Impersonate';
 
-    protected static string $settings = ImpersonateSettings::class;
+    protected static ?int $navigationSort = 40;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Impersonate';
-    }
+    protected static string $settings = ImpersonateSettings::class;
 
     public function form(Schema $schema): Schema
     {

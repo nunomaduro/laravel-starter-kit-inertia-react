@@ -23,6 +23,8 @@ final class VoucherResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Billing';
 
+    protected static ?int $navigationSort = 30;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;
 
     protected static ?string $modelLabel = 'Voucher';
@@ -30,6 +32,12 @@ final class VoucherResource extends Resource
     protected static ?string $pluralModelLabel = 'Vouchers';
 
     protected static ?string $recordTitleAttribute = 'code';
+
+    /** @return array<string> */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['code'];
+    }
 
     public static function form(Schema $schema): Schema
     {

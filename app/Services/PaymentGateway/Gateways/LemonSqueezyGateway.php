@@ -146,7 +146,7 @@ final class LemonSqueezyGateway implements PaymentGatewayInterface
         $amount = (int) ($first['amount'] ?? 0);
 
         return [
-            'session_id' => 'ls_'.md5($url),
+            'session_id' => 'ls_'.mb_substr(hash('sha256', $url), 0, 32),
             'url' => $url,
             'metadata' => [
                 'billable_type' => Organization::class,

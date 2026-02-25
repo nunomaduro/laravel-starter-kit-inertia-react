@@ -7494,16 +7494,27 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     let component;
     return new Proxy({}, {
       get(target, property) {
-        if (!component)
-          component = findComponentByEl(el);
+        if (!component) {
+          try {
+            component = findComponentByEl(el);
+          } catch (e) {
+            return () => {
+            };
+          }
+        }
         if (["$entangle", "entangle"].includes(property)) {
           return generateEntangleFunction(component, cleanup);
         }
         return component.$wire[property];
       },
       set(target, property, value) {
-        if (!component)
-          component = findComponentByEl(el);
+        if (!component) {
+          try {
+            component = findComponentByEl(el);
+          } catch (e) {
+            return true;
+          }
+        }
         component.$wire[property] = value;
         return true;
       }
@@ -14761,12 +14772,12 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
       strings.push(m);
       return `___${strings.length - 1}___`;
     });
-    result = result.replace(/(?<![.\w$])(\$?[a-zA-Z_]\w*)/g, (m, ident, offset2) => {
+    result = result.replace(/(^|[^.\w$])(\$?[a-zA-Z_]\w*)/g, (m, pre, ident, offset2) => {
       if (SKIP.includes(ident) || /^___\d+___$/.test(ident))
-        return ident;
+        return pre + ident;
       if (result[offset2 + m.length] === ":")
-        return ident;
-      return "$wire." + ident;
+        return pre + ident;
+      return pre + "$wire." + ident;
     });
     return result.replace(/___(\d+)___/g, (m, i) => strings[i]);
   }
@@ -14906,10 +14917,21 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
   var import_alpinejs9 = __toESM(require_module_cjs());
 
   // js/directives/wire-transition.js
+  var defaultName = "match-element";
   globalDirective("transition", ({ el, directive: directive2, cleanup }) => {
-    let transitionName = directive2.expression || "match-element";
-    el.style.viewTransitionName = transitionName;
   });
+  function setTransitionNames(root) {
+    root.querySelectorAll("[wire\\:transition]").forEach((el) => {
+      if (!el.style.viewTransitionName) {
+        el.style.viewTransitionName = el.getAttribute("wire:transition") || defaultName;
+      }
+    });
+  }
+  function clearTransitionNames(root) {
+    root.querySelectorAll("[wire\\:transition]").forEach((el) => {
+      el.style.viewTransitionName = "";
+    });
+  }
   async function transitionDomMutation(fromEl, toEl, callback, options = {}) {
     if (options.skip)
       return callback();
@@ -14918,6 +14940,9 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     if (typeof document.startViewTransition !== "function") {
       return callback();
     }
+    if (document.querySelector("dialog:modal"))
+      return callback();
+    setTransitionNames(fromEl);
     let style = document.createElement("style");
     style.textContent = `
         @media (prefers-reduced-motion: reduce) {
@@ -14937,23 +14962,41 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
         }
     `;
     document.head.appendChild(style);
-    let transitionConfig = {
-      update: () => callback()
+    let update = () => {
+      callback();
+      setTransitionNames(fromEl);
     };
+    let transitionConfig = { update };
     if (options.type) {
       transitionConfig.types = [options.type];
     }
+    let cleanup = () => {
+      style.remove();
+      clearTransitionNames(fromEl);
+    };
+    let skipOnDialog = (transition) => {
+      let observer = new MutationObserver(() => {
+        if (document.querySelector("dialog:modal")) {
+          transition.skipTransition();
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["open"],
+        subtree: true
+      });
+      transition.finished.finally(() => observer.disconnect());
+    };
     try {
       let transition = document.startViewTransition(transitionConfig);
-      transition.finished.finally(() => {
-        style.remove();
-      });
+      skipOnDialog(transition);
+      transition.finished.finally(cleanup);
       await transition.updateCallbackDone;
     } catch (e) {
-      let transition = document.startViewTransition(() => callback());
-      transition.finished.finally(() => {
-        style.remove();
-      });
+      let transition = document.startViewTransition(update);
+      skipOnDialog(transition);
+      transition.finished.finally(cleanup);
       await transition.updateCallbackDone;
     }
   }
@@ -15017,7 +15060,17 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     }
     trigger("island.morph", { startNode, endNode, component });
     let transitionOptions = component.effects.transition || {};
-    await transitionDomMutation(fromContainer, toContainer, () => {
+    let islandHasTransition = false;
+    let node = startNode.nextSibling;
+    while (node && node !== endNode) {
+      if (node.nodeType === 1 && (node.hasAttribute?.("wire:transition") || node.querySelector?.("[wire\\:transition]"))) {
+        islandHasTransition = true;
+        break;
+      }
+      node = node.nextSibling;
+    }
+    let fromEl = islandHasTransition ? fromContainer : document.createElement("div");
+    await transitionDomMutation(fromEl, toContainer, () => {
       import_alpinejs9.default.morphBetween(startNode, endNode, toContainer, getMorphConfig(component));
     }, transitionOptions);
     trigger("island.morphed", { startNode, endNode, component });
@@ -15171,11 +15224,23 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
   }
   function shouldMarkDisabled(el) {
     let tag = el.tagName.toLowerCase();
+    let inputTypesThatDontSupportReadonly = [
+      "hidden",
+      "range",
+      "color",
+      "checkbox",
+      "radio",
+      "file",
+      "submit",
+      "image",
+      "reset",
+      "button"
+    ];
     if (tag === "select")
       return true;
     if (tag === "button" && el.type === "submit")
       return true;
-    if (tag === "input" && (el.type === "checkbox" || el.type === "radio"))
+    if (tag === "input" && inputTypesThatDontSupportReadonly.includes(el.type))
       return true;
     return false;
   }
@@ -15326,16 +15391,22 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
             window.Echo.join(channel)[event_name]((e) => {
               dispatchSelf(component, event, [e]);
             });
+            component.addCleanup(() => {
+              window.Echo.leave(channel);
+            });
           } else {
             let handler = (e) => dispatchSelf(component, event, [e]);
             window.Echo.join(channel).listen(event_name, handler);
             component.addCleanup(() => {
-              window.Echo.leaveChannel(channel);
+              window.Echo.leave(channel);
             });
           }
         } else if (channel_type == "notification") {
           window.Echo.private(channel).notification((notification) => {
             dispatchSelf(component, event, [notification]);
+          });
+          component.addCleanup(() => {
+            window.Echo.private(channel).stopListening(".Illuminate\\Notifications\\Events\\BroadcastNotificationCreated");
           });
         } else {
           console.warn("Echo channel type not yet supported");
@@ -15723,6 +15794,8 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
             return expression;
           }
         });
+      } else if (el.attributes[i].name.startsWith("wire:sort:group-id")) {
+        continue;
       } else if (el.attributes[i].name.startsWith("wire:sort:group")) {
         return;
       } else if (el.attributes[i].name.startsWith("wire:sort")) {
@@ -15744,10 +15817,14 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
         import_alpinejs15.default.bind(el, {
           [attribute]() {
             setNextActionOrigin({ el, directive: directive2 });
-            evaluateActionExpression(el, expression, { scope: {
-              $item: this.$item,
-              $position: this.$position
-            }, params: [this.$item, this.$position] });
+            let params = [this.$item, this.$position];
+            let scope = { $item: this.$item, $position: this.$position };
+            let sortId = el.getAttribute("wire:sort:group-id");
+            if (sortId !== null) {
+              params.push(sortId);
+              scope.$id = sortId;
+            }
+            evaluateActionExpression(el, expression, { scope, params });
           }
         });
       }

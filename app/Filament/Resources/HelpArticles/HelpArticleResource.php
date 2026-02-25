@@ -29,9 +29,17 @@ final class HelpArticleResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedQuestionMarkCircle;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 30;
+
+    /** @return array<string> */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'excerpt'];
+    }
 
     public static function form(Schema $schema): Schema
     {

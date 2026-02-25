@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageBackup extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCloudArrowUp;
 
     protected static ?string $navigationLabel = 'Backup';
 
-    protected static string $settings = BackupSettings::class;
+    protected static ?int $navigationSort = 10;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Backup';
-    }
+    protected static string $settings = BackupSettings::class;
 
     public function form(Schema $schema): Schema
     {

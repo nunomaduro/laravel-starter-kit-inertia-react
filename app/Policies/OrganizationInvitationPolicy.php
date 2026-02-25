@@ -13,8 +13,16 @@ use function setPermissionsTeamId;
 
 final class OrganizationInvitationPolicy
 {
-    public function viewAny(User $user, Organization $organization): bool
+    public function viewAny(User $user, ?Organization $organization = null): bool
     {
+        if (! $organization instanceof Organization) {
+            if ($user->isSuperAdmin()) {
+                return true;
+            }
+
+            return $user->organizations()->exists();
+        }
+
         return $user->belongsToOrganization($organization->id);
     }
 

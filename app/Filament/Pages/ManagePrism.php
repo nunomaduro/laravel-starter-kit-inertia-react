@@ -16,18 +16,15 @@ use UnitEnum;
 
 final class ManagePrism extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
 
     protected static ?string $navigationLabel = 'Prism';
 
-    protected static string $settings = PrismSettings::class;
+    protected static ?int $navigationSort = 50;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Prism';
-    }
+    protected static string $settings = PrismSettings::class;
 
     public function form(Schema $schema): Schema
     {

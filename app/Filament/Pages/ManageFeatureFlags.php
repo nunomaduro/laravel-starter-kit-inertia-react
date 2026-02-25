@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageFeatureFlags extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Features & Access';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFlag;
 
-    protected static ?string $navigationLabel = 'Feature Flags';
+    protected static ?string $navigationLabel = 'Feature Flag Settings';
+
+    protected static ?int $navigationSort = 10;
 
     protected static string $settings = FeatureFlagSettings::class;
-
-    public static function getNavigationLabel(): string
-    {
-        return 'Feature Flags';
-    }
 
     public function form(Schema $schema): Schema
     {

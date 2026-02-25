@@ -3,17 +3,17 @@
     "table": "page_revisions",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "page_id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "puck_json": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },

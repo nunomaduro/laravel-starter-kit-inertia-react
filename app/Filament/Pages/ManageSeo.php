@@ -15,18 +15,15 @@ use UnitEnum;
 
 final class ManageSeo extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlass;
 
     protected static ?string $navigationLabel = 'SEO';
 
-    protected static string $settings = SeoSettings::class;
+    protected static ?int $navigationSort = 40;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'SEO';
-    }
+    protected static string $settings = SeoSettings::class;
 
     public function form(Schema $schema): Schema
     {

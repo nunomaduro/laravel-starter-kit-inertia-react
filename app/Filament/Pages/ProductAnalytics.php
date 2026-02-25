@@ -16,9 +16,9 @@ final class ProductAnalytics extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
-    protected static ?int $navigationSort = 60;
+    protected static ?int $navigationSort = 90;
 
-    protected static UnitEnum|string|null $navigationGroup = 'Analytics';
+    protected static UnitEnum|string|null $navigationGroup = 'System';
 
     protected static ?string $navigationLabel = 'Product Analytics';
 

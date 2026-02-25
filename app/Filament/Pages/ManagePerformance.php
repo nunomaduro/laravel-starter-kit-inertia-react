@@ -16,18 +16,15 @@ use UnitEnum;
 
 final class ManagePerformance extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBolt;
 
     protected static ?string $navigationLabel = 'Performance';
 
-    protected static string $settings = PerformanceSettings::class;
+    protected static ?int $navigationSort = 60;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Performance';
-    }
+    protected static string $settings = PerformanceSettings::class;
 
     public function form(Schema $schema): Schema
     {

@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageStripe extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
 
     protected static ?string $navigationLabel = 'Stripe';
 
-    protected static string $settings = StripeSettings::class;
+    protected static ?int $navigationSort = 20;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Stripe';
-    }
+    protected static string $settings = StripeSettings::class;
 
     public function form(Schema $schema): Schema
     {

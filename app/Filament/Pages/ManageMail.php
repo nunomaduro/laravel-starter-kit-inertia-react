@@ -16,18 +16,15 @@ use UnitEnum;
 
 final class ManageMail extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
 
     protected static ?string $navigationLabel = 'Mail';
 
-    protected static string $settings = MailSettings::class;
+    protected static ?int $navigationSort = 10;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Mail';
-    }
+    protected static string $settings = MailSettings::class;
 
     public function form(Schema $schema): Schema
     {

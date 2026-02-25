@@ -15,18 +15,15 @@ use UnitEnum;
 
 final class ManageMedia extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
     protected static ?string $navigationLabel = 'Media';
 
-    protected static string $settings = MediaSettings::class;
+    protected static ?int $navigationSort = 30;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Media';
-    }
+    protected static string $settings = MediaSettings::class;
 
     public function form(Schema $schema): Schema
     {

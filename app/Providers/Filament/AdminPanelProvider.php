@@ -11,6 +11,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -45,15 +46,35 @@ final class AdminPanelProvider extends PanelProvider
             ])
             ->globalSearch()
             ->darkMode()
+            ->sidebarCollapsibleOnDesktop()
+            ->spa()
             ->maxContentWidth(Width::SevenExtraLarge)
             ->databaseNotifications()
+            ->navigationGroups([
+                NavigationGroup::make('User Management'),
+                NavigationGroup::make('Content'),
+                NavigationGroup::make('Engagement'),
+                NavigationGroup::make('Organizations'),
+                NavigationGroup::make('Billing'),
+                NavigationGroup::make('Platform')
+                    ->collapsed(),
+                NavigationGroup::make('Integrations')
+                    ->collapsed(),
+                NavigationGroup::make('System')
+                    ->collapsed(),
+                NavigationGroup::make('Features & Access')
+                    ->collapsed(),
+                NavigationGroup::make('Content & Legal')
+                    ->collapsed(),
+            ])
             ->plugins([
                 FilamentStateFusionPlugin::make(),
                 FeatureFlagPlugin::make(),
                 ActivityLogPlugin::make()
                     ->label('Log')
                     ->pluralLabel('Logs')
-                    ->navigationGroup('System'),
+                    ->navigationGroup('System')
+                    ->navigationSort(110),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

@@ -16,11 +16,13 @@ use UnitEnum;
 
 final class ApiDocs extends Page
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Developer';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCodeBracketSquare;
 
     protected static ?string $navigationLabel = 'API docs';
+
+    protected static ?int $navigationSort = 100;
 
     protected static ?string $title = 'API documentation';
 

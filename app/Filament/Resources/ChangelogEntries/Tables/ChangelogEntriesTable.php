@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\ChangelogEntries\Tables;
 
 use App\Enums\ChangelogType;
+use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -15,16 +16,18 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Maatwebsite\Excel\Excel;
-use pxlrbt\FilamentExcel\Actions\ExportAction;
-use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 final class ChangelogEntriesTable
 {
+    use HasStandardExports;
+
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('released_at', 'desc')
+            ->defaultPaginationPageOption(10)
+            ->paginationPageOptions([10, 25, 50])
+            ->searchDebounce('300ms')
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
@@ -62,13 +65,7 @@ final class ChangelogEntriesTable
                 TrashedFilter::make(),
             ])
             ->headerActions([
-                ExportAction::make()
-                    ->exports([
-                        ExcelExport::make()->fromTable()->withFilename('changelog-entries-'.now()->format('Y-m-d')),
-                        ExcelExport::make()->fromTable()
-                            ->withFilename('changelog-entries-'.now()->format('Y-m-d').'-csv')
-                            ->withWriterType(Excel::CSV),
-                    ]),
+                self::makeExportHeaderAction('changelog-entries'),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -76,7 +73,7 @@ final class ChangelogEntriesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    ExportBulkAction::make(),
+                    self::makeExportBulkAction(),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),

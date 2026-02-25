@@ -4,27 +4,24 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Permissions\Tables;
 
+use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Maatwebsite\Excel\Excel;
-use pxlrbt\FilamentExcel\Actions\ExportAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 final class PermissionsTable
 {
+    use HasStandardExports;
+
     public static function configure(Table $table): Table
     {
         return $table
             ->defaultSort('name')
+            ->defaultPaginationPageOption(10)
+            ->paginationPageOptions([10, 25, 50])
+            ->searchDebounce('300ms')
             ->headerActions([
-                ExportAction::make()
-                    ->exports([
-                        ExcelExport::make()->fromTable()->withFilename('permissions-'.now()->format('Y-m-d')),
-                        ExcelExport::make()->fromTable()
-                            ->withFilename('permissions-'.now()->format('Y-m-d').'-csv')
-                            ->withWriterType(Excel::CSV),
-                    ]),
+                self::makeExportHeaderAction('permissions'),
             ])
             ->columns([
                 TextColumn::make('name')

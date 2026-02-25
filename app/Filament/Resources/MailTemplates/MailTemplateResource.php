@@ -20,7 +20,7 @@ final class MailTemplateResource extends Resource
 {
     protected static ?string $model = MailTemplate::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelopeOpen;
 
     protected static ?string $navigationLabel = 'Email templates';
 
@@ -28,11 +28,17 @@ final class MailTemplateResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Email templates';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Content & Legal';
 
-    protected static ?int $navigationSort = 95;
+    protected static ?int $navigationSort = 10;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    /** @return array<string> */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'subject'];
+    }
 
     public static function canAccess(): bool
     {

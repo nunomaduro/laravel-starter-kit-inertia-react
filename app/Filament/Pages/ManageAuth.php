@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageAuth extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldCheck;
 
     protected static ?string $navigationLabel = 'Auth';
 
-    protected static string $settings = AuthSettings::class;
+    protected static ?int $navigationSort = 20;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Auth';
-    }
+    protected static string $settings = AuthSettings::class;
 
     public function form(Schema $schema): Schema
     {

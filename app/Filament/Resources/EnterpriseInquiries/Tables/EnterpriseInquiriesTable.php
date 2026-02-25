@@ -4,23 +4,25 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\EnterpriseInquiries\Tables;
 
+use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Maatwebsite\Excel\Excel;
-use pxlrbt\FilamentExcel\Actions\ExportAction;
-use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 final class EnterpriseInquiriesTable
 {
+    use HasStandardExports;
+
     public static function configure(Table $table): Table
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->defaultPaginationPageOption(10)
+            ->paginationPageOptions([10, 25, 50])
+            ->searchDebounce('300ms')
             ->columns([
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email')->searchable(),
@@ -30,13 +32,7 @@ final class EnterpriseInquiriesTable
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->headerActions([
-                ExportAction::make()
-                    ->exports([
-                        ExcelExport::make()->fromTable()->withFilename('enterprise-inquiries-'.now()->format('Y-m-d')),
-                        ExcelExport::make()->fromTable()
-                            ->withFilename('enterprise-inquiries-'.now()->format('Y-m-d').'-csv')
-                            ->withWriterType(Excel::CSV),
-                    ]),
+                self::makeExportHeaderAction('enterprise-inquiries'),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -44,7 +40,7 @@ final class EnterpriseInquiriesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    ExportBulkAction::make(),
+                    self::makeExportBulkAction(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

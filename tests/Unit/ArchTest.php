@@ -10,7 +10,10 @@ arch()->preset()->security()->ignoring([
 arch('controllers')
     ->expect('App\Http\Controllers')
     ->not->toBeUsed()
-    ->ignoring(App\Http\Controllers\Api\V1\BaseApiController::class);
+    ->ignoring([
+        App\Http\Controllers\Api\V1\BaseApiController::class,
+        App\Http\Controllers\Controller::class, // base class extended by all controllers
+    ]);
 
 // Prism: only PrismService may use the Prism facade; all other app code must use PrismService or ai().
 arch('Prism facade only in PrismService')
@@ -57,6 +60,7 @@ arch('seeders only use allowed layers')
     ->expect(['Database\Seeders\Essential', 'Database\Seeders\Development', 'Database\Seeders\Production'])
     ->toOnlyUse([
         'App\Enums',
+        'App\Events',
         'App\Models',
         'App\Services',
         'Database\Seeders',
@@ -66,6 +70,7 @@ arch('seeders only use allowed layers')
         'Illuminate\Contracts',
         'Illuminate\Foundation',
         'LevelUp\Experience',
+        'MartinPetricko\LaravelDatabaseMail',
         'Pgvector\Laravel',
         'Spatie\Permission',
     ])

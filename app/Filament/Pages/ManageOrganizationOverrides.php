@@ -31,7 +31,7 @@ final class ManageOrganizationOverrides extends Page implements HasTable
 
     public ?int $selectedOrganizationId = null;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
 
@@ -39,12 +39,7 @@ final class ManageOrganizationOverrides extends Page implements HasTable
 
     protected string $view = 'filament.pages.manage-organization-overrides';
 
-    protected static ?int $navigationSort = 99;
-
-    public static function getNavigationLabel(): string
-    {
-        return 'Organization Overrides';
-    }
+    protected static ?int $navigationSort = 120;
 
     public function table(Table $table): Table
     {

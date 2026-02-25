@@ -18,18 +18,15 @@ use UnitEnum;
 
 final class ManageBilling extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
     protected static ?string $navigationLabel = 'Billing';
 
-    protected static string $settings = BillingSettings::class;
+    protected static ?int $navigationSort = 60;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Billing';
-    }
+    protected static string $settings = BillingSettings::class;
 
     public function form(Schema $schema): Schema
     {

@@ -17,18 +17,15 @@ use UnitEnum;
 
 final class ManageSecurity extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldExclamation;
 
     protected static ?string $navigationLabel = 'Security';
 
-    protected static string $settings = SecuritySettings::class;
+    protected static ?int $navigationSort = 50;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Security';
-    }
+    protected static string $settings = SecuritySettings::class;
 
     public function form(Schema $schema): Schema
     {

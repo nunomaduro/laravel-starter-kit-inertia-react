@@ -14,18 +14,15 @@ use UnitEnum;
 
 final class ManageAi extends SettingsPage
 {
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCpuChip;
 
     protected static ?string $navigationLabel = 'AI';
 
-    protected static string $settings = AiSettings::class;
+    protected static ?int $navigationSort = 60;
 
-    public static function getNavigationLabel(): string
-    {
-        return 'AI';
-    }
+    protected static string $settings = AiSettings::class;
 
     public function form(Schema $schema): Schema
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Roles\Tables;
 
+use App\Filament\Concerns\HasStandardExports;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Services\ActivityLogRbac;
 use Filament\Actions\Action;
@@ -14,18 +15,19 @@ use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Maatwebsite\Excel\Excel;
-use pxlrbt\FilamentExcel\Actions\ExportAction;
-use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Spatie\Permission\Models\Role;
 
 final class RolesTable
 {
+    use HasStandardExports;
+
     public static function configure(Table $table): Table
     {
         return $table
             ->defaultSort('name')
+            ->defaultPaginationPageOption(10)
+            ->paginationPageOptions([10, 25, 50])
+            ->searchDebounce('300ms')
             ->columns([
                 TextColumn::make('name')
                     ->searchable()
@@ -42,13 +44,7 @@ final class RolesTable
                 //
             ])
             ->headerActions([
-                ExportAction::make()
-                    ->exports([
-                        ExcelExport::make()->fromTable()->withFilename('roles-'.now()->format('Y-m-d')),
-                        ExcelExport::make()->fromTable()
-                            ->withFilename('roles-'.now()->format('Y-m-d').'-csv')
-                            ->withWriterType(Excel::CSV),
-                    ]),
+                self::makeExportHeaderAction('roles'),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -83,7 +79,7 @@ final class RolesTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    ExportBulkAction::make(),
+                    self::makeExportBulkAction(),
                     DeleteBulkAction::make(),
                 ]),
             ]);
