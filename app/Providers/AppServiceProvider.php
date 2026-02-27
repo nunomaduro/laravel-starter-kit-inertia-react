@@ -24,7 +24,6 @@ use App\Policies\ShareablePolicy;
 use App\Services\PaymentGateway\PaymentGatewayManager;
 use App\Services\PrismService;
 use App\Settings\SeoSettings;
-use Essa\APIToolKit\Exceptions\Handler as ApiToolKitExceptionHandler;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Queue\Events\JobFailed;
@@ -54,7 +53,9 @@ final class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(PrismService::class, fn (): PrismService => new PrismService);
 
-        $this->app->singleton(ExceptionHandler::class, ApiToolKitExceptionHandler::class);
+        if (class_exists(\Essa\APIToolKit\Exceptions\Handler::class)) {
+            $this->app->singleton(ExceptionHandler::class, \Essa\APIToolKit\Exceptions\Handler::class);
+        }
 
         $this->app->singleton(PaymentGatewayManager::class);
 

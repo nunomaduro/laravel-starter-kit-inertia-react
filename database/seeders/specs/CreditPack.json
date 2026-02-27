@@ -3,7 +3,7 @@
     "table": "credit_packs",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

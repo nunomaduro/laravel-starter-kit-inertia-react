@@ -3,17 +3,17 @@
     "table": "user_terms_acceptances",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "user_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "terms_version_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
