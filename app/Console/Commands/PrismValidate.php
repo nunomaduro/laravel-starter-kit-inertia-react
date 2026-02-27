@@ -13,23 +13,10 @@ use ValueError;
 
 final class PrismValidate extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'prism:validate';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Validate Prism and Relay configuration';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(PrismService $prism): int
     {
         $this->info('Validating Prism and Relay configuration...');
@@ -38,7 +25,6 @@ final class PrismValidate extends Command
         $errors = [];
         $warnings = [];
 
-        // Validate Prism configuration
         $this->line('Checking Prism configuration...');
 
         $defaultProvider = config('prism.defaults.provider');
@@ -62,7 +48,6 @@ final class PrismValidate extends Command
             $this->info("  ✓ Default model: {$defaultModel}");
         }
 
-        // Validate OpenRouter configuration
         $this->newLine();
         $this->line('Checking OpenRouter configuration...');
 
@@ -81,7 +66,6 @@ final class PrismValidate extends Command
             $this->info("  ✓ OpenRouter URL: {$openRouterUrl}");
         }
 
-        // Validate Relay configuration
         $this->newLine();
         $this->line('Checking Relay configuration...');
 
@@ -102,7 +86,6 @@ final class PrismValidate extends Command
             }
         }
 
-        // Display results
         $this->newLine();
 
         if ($warnings !== []) {

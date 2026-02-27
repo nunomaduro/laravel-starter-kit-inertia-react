@@ -17,36 +17,7 @@ final class SchemaWatcher
      */
     public function detectMigrationChanges(?string $since = null): array
     {
-        $migrationsPath = database_path('migrations');
-
-        if (! File::isDirectory($migrationsPath)) {
-            return [];
-        }
-
-        $files = File::files($migrationsPath);
-        $changed = [];
-
-        if ($since !== null) {
-            $result = Process::run(['git', 'diff', '--name-only', $since, '--', 'database/migrations/']);
-            $output = $result->output();
-
-            if ($output !== '') {
-                $changedFiles = array_filter(explode("\n", mb_trim($output)));
-
-                foreach ($changedFiles as $file) {
-                    if (Str::endsWith($file, '.php')) {
-                        $changed[] = $file;
-                    }
-                }
-            }
-        } else {
-            // Return all migrations if no baseline
-            foreach ($files as $file) {
-                $changed[] = $file->getPathname();
-            }
-        }
-
-        return $changed;
+        return $this->detectChanges(database_path('migrations'), 'database/migrations/', $since);
     }
 
     /**
@@ -56,36 +27,7 @@ final class SchemaWatcher
      */
     public function detectModelChanges(?string $since = null): array
     {
-        $modelsPath = app_path('Models');
-
-        if (! File::isDirectory($modelsPath)) {
-            return [];
-        }
-
-        $changed = [];
-
-        if ($since !== null) {
-            $result = Process::run(['git', 'diff', '--name-only', $since, '--', 'app/Models/']);
-            $output = $result->output();
-
-            if ($output !== '') {
-                $changedFiles = array_filter(explode("\n", mb_trim($output)));
-
-                foreach ($changedFiles as $file) {
-                    if (Str::endsWith($file, '.php')) {
-                        $changed[] = $file;
-                    }
-                }
-            }
-        } else {
-            $files = File::allFiles($modelsPath);
-
-            foreach ($files as $file) {
-                $changed[] = $file->getPathname();
-            }
-        }
-
-        return $changed;
+        return $this->detectChanges(app_path('Models'), 'app/Models/', $since);
     }
 
     /**
@@ -100,7 +42,6 @@ final class SchemaWatcher
         if (preg_match('/create\([\'"](\w+)[\'"]/', $content, $matches)) {
             $tableName = $matches[1];
 
-            // Convert table name to model name (e.g., users -> User)
             return Str::studly(Str::singular($tableName));
         }
 
@@ -148,6 +89,48 @@ final class SchemaWatcher
         }
 
         return array_unique($models);
+    }
+
+    /**
+     * Detect changed PHP files in a directory, optionally since a git ref.
+     *
+     * @return array<string>
+     */
+    private function detectChanges(string $directory, string $gitPath, ?string $since): array
+    {
+        if (! File::isDirectory($directory)) {
+            return [];
+        }
+
+        if ($since !== null) {
+            return $this->getChangedPhpFilesFromGit($gitPath, $since);
+        }
+
+        return collect(File::allFiles($directory))
+            ->map(fn ($file): string => $file->getPathname())
+            ->all();
+    }
+
+    /**
+     * Get changed PHP files from git diff.
+     *
+     * @return array<string>
+     */
+    private function getChangedPhpFilesFromGit(string $gitPath, string $since): array
+    {
+        $result = Process::run(['git', 'diff', '--name-only', $since, '--', $gitPath]);
+        $output = $result->output();
+
+        if ($output === '') {
+            return [];
+        }
+
+        return array_values(
+            array_filter(
+                array_map(trim(...), explode("\n", $output)),
+                fn (string $file): bool => $file !== '' && Str::endsWith($file, '.php'),
+            )
+        );
     }
 
     /**

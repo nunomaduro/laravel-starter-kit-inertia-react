@@ -66,7 +66,6 @@ final class AddCreditsFromLemonSqueezyOrder
 
     private function creditsFromAmount(int $totalCents): int
     {
-        config('billing.currency', 'usd');
         $centsPerCredit = config('billing.lemon_squeezy_cents_per_credit', 10);
 
         if ($centsPerCredit <= 0) {

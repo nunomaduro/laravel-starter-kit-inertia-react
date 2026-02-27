@@ -12,11 +12,6 @@ use NunoMaduro\Collision\Adapters\Laravel\Commands\TestCommand as CollisionTestC
  */
 final class TestCommand extends CollisionTestCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'test
         {--without-tty : Disable output to TTY}
         {--compact : Indicates whether the compact printer should be used (default)}
@@ -31,12 +26,6 @@ final class TestCommand extends CollisionTestCommand
         {--without-databases : Indicates if database configuration should be performed}
     ';
 
-    /**
-     * Get the value of a command option. Default parallel and compact to true for max speed.
-     *
-     * @param  string|null  $key
-     * @return mixed
-     */
     public function option($key = null)
     {
         if ($key === 'parallel') {
@@ -51,8 +40,6 @@ final class TestCommand extends CollisionTestCommand
     }
 
     /**
-     * Pass compact printer to parallel workers so output stays compact by default.
-     *
      * @return array<string, mixed>
      */
     protected function paratestEnvironmentVariables(): array

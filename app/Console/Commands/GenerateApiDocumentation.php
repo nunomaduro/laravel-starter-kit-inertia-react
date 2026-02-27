@@ -13,24 +13,11 @@ use ReflectionType;
 
 final class GenerateApiDocumentation extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'docs:api
                             {--format=markdown : Output format (markdown, openapi)}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generate API documentation from routes and controllers';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $this->info('Generating API documentation...');
@@ -55,8 +42,6 @@ final class GenerateApiDocumentation extends Command
     }
 
     /**
-     * Collect all routes with controller information.
-     *
      * @return array<string, mixed>
      */
     private function collectRoutes(): array
@@ -81,7 +66,6 @@ final class GenerateApiDocumentation extends Command
                 'parameters' => [],
             ];
 
-            // Extract controller information
             if (isset($action['controller'])) {
                 $controller = $action['controller'];
                 if (str_contains($controller, '@')) {
@@ -92,19 +76,14 @@ final class GenerateApiDocumentation extends Command
                 }
             }
 
-            // Extract route parameters
             $routeInfo['uriParameters'] = $this->extractUriParameters($uri);
 
             $routes[] = $routeInfo;
         }
 
-        // Group by controller
         $grouped = [];
         foreach ($routes as $route) {
             $controller = $route['controller'] ?? 'Closure';
-            if (! isset($grouped[$controller])) {
-                $grouped[$controller] = [];
-            }
             $grouped[$controller][] = $route;
         }
 
@@ -112,8 +91,6 @@ final class GenerateApiDocumentation extends Command
     }
 
     /**
-     * Generate Markdown API documentation.
-     *
      * @param  array<string, array<string, mixed>>  $routes
      */
     private function generateMarkdown(array $routes): string
@@ -181,8 +158,6 @@ final class GenerateApiDocumentation extends Command
     }
 
     /**
-     * Generate OpenAPI documentation.
-     *
      * @param  array<string, array<string, mixed>>  $routes
      */
     private function generateOpenApi(array $routes): string
@@ -223,8 +198,6 @@ final class GenerateApiDocumentation extends Command
     }
 
     /**
-     * Generate OpenAPI parameters from route.
-     *
      * @param  array<string, mixed>  $route
      * @return array<string, mixed>
      */
@@ -247,8 +220,6 @@ final class GenerateApiDocumentation extends Command
     }
 
     /**
-     * Extract route parameters from controller method.
-     *
      * @return array<string, mixed>
      */
     private function extractRouteParameters(string $controllerClass, string $methodName): array
@@ -279,8 +250,6 @@ final class GenerateApiDocumentation extends Command
     }
 
     /**
-     * Extract URI parameters from route URI.
-     *
      * @return array<string>
      */
     private function extractUriParameters(string $uri): array

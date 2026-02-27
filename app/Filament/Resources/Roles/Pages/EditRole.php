@@ -7,6 +7,7 @@ namespace App\Filament\Resources\Roles\Pages;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\Roles\Schemas\RoleForm;
 use App\Services\ActivityLogRbac;
+use App\Services\PermissionCategoryResolver;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
@@ -67,7 +68,7 @@ final class EditRole extends EditRecord
      */
     private function getRoleFormStateFromRecord(): array
     {
-        $resolver = resolve(\App\Services\PermissionCategoryResolver::class);
+        $resolver = resolve(PermissionCategoryResolver::class);
         $grouped = $resolver->getPermissionsGroupedByCategory();
         $rolePermissionIds = $this->record->permissions->pluck('id')->all();
         $state = [];

@@ -6,21 +6,24 @@ namespace Database\Seeders\Development;
 
 use App\Models\Post;
 use App\Models\User;
+use Database\Seeders\Concerns\LoadsJsonData;
 use Illuminate\Database\Seeder;
+use RuntimeException;
 
 final class PostSeeder extends Seeder
 {
+    use LoadsJsonData;
+
     public function run(): void
     {
-        $jsonPath = database_path('seeders/data/posts.json');
-
-        if (! file_exists($jsonPath)) {
+        try {
+            $data = $this->loadJson('posts.json');
+        } catch (RuntimeException) {
             $this->command?->warn('Blog posts JSON file not found');
 
             return;
         }
 
-        $data = json_decode((string) file_get_contents($jsonPath), true);
         $posts = $data['posts'] ?? [];
 
         foreach ($posts as $postData) {

@@ -33,13 +33,7 @@ final class VisibilityScope implements Scope
         $userId = auth()->id();
         $orgId = TenantContext::id();
 
-        if (! $userId) {
-            $builder->where($model->getTable().'.visibility', VisibilityEnum::Global->value);
-
-            return;
-        }
-
-        if (! $orgId) {
+        if (! $userId || ! $orgId) {
             $builder->where($model->getTable().'.visibility', VisibilityEnum::Global->value);
 
             return;

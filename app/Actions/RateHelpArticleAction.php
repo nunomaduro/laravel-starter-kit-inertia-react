@@ -10,10 +10,6 @@ final readonly class RateHelpArticleAction
 {
     public function handle(HelpArticle $article, bool $isHelpful): void
     {
-        if ($isHelpful) {
-            $article->increment('helpful_count');
-        } else {
-            $article->increment('not_helpful_count');
-        }
+        $article->increment($isHelpful ? 'helpful_count' : 'not_helpful_count');
     }
 }

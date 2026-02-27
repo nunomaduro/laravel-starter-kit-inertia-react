@@ -9,25 +9,12 @@ use Illuminate\Console\Command;
 
 final class SeedersSyncCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeders:sync
                             {--update : Update existing seeders to new patterns}
                             {--dry-run : Show what would be done without making changes}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Sync seeders with models and update to latest patterns';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(ModelRegistry $registry): int
     {
         $models = $registry->getAllModels();

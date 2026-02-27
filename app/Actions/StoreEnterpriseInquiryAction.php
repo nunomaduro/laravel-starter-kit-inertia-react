@@ -13,12 +13,6 @@ final readonly class StoreEnterpriseInquiryAction
      */
     public function handle(array $data): EnterpriseInquiry
     {
-        return EnterpriseInquiry::query()->create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'company' => $data['company'] ?? null,
-            'phone' => $data['phone'] ?? null,
-            'message' => $data['message'],
-        ]);
+        return EnterpriseInquiry::query()->create($data);
     }
 }

@@ -13,16 +13,14 @@ final readonly class RecordTermsAcceptance
 {
     public function handle(User $user, TermsVersion $termsVersion, ?Request $request = null): UserTermsAcceptance
     {
-        $acceptedAt = now();
         $ip = $request?->ip();
-        $userAgent = $request?->userAgent();
 
         return UserTermsAcceptance::query()->create([
             'user_id' => $user->id,
             'terms_version_id' => $termsVersion->id,
-            'accepted_at' => $acceptedAt,
-            'ip' => $ip ? mb_substr($ip, 0, 45) : null,
-            'user_agent' => $userAgent,
+            'accepted_at' => now(),
+            'ip' => $ip !== null ? mb_substr($ip, 0, 45) : null,
+            'user_agent' => $request?->userAgent(),
         ]);
     }
 }

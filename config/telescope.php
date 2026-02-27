@@ -110,9 +110,7 @@ return [
     |
     */
 
-    'only_paths' => [
-        // 'api/*'
-    ],
+    'only_paths' => [],
 
     'ignore_paths' => [
         'livewire*',
@@ -122,9 +120,7 @@ return [
         '.well-known*',
     ],
 
-    'ignore_commands' => [
-        //
-    ],
+    'ignore_commands' => [],
 
     /*
     |--------------------------------------------------------------------------

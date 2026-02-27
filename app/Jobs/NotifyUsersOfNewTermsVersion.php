@@ -22,8 +22,6 @@ final class NotifyUsersOfNewTermsVersion implements ShouldQueue
     {
         User::query()
             ->whereNotNull('email_verified_at')
-            ->each(function (User $user): void {
-                event(new NewTermsVersionPublished($this->termsVersion, $user));
-            });
+            ->each(fn (User $user) => event(new NewTermsVersionPublished($this->termsVersion, $user)));
     }
 }

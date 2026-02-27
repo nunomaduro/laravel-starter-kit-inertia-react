@@ -10,9 +10,6 @@ enum VisibilityEnum: string
     case Organization = 'organization';
     case Shared = 'shared';
 
-    /**
-     * Get a human-readable label for the visibility level.
-     */
     public function label(): string
     {
         return match ($this) {
@@ -22,9 +19,6 @@ enum VisibilityEnum: string
         };
     }
 
-    /**
-     * Get a description of what this visibility level means.
-     */
     public function description(): string
     {
         return match ($this) {
@@ -34,9 +28,6 @@ enum VisibilityEnum: string
         };
     }
 
-    /**
-     * Get the icon for this visibility level.
-     */
     public function icon(): string
     {
         return match ($this) {
@@ -46,9 +37,6 @@ enum VisibilityEnum: string
         };
     }
 
-    /**
-     * Get the color for this visibility level.
-     */
     public function color(): string
     {
         return match ($this) {

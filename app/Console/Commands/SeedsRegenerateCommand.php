@@ -15,26 +15,13 @@ use Illuminate\Support\Str;
 
 final class SeedsRegenerateCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:regenerate
                             {--check : Check mode - only report what would change}
                             {--model= : Regenerate specific model only}
                             {--force : Force regeneration even if custom code exists}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Regenerate seeder and JSON files from seed specs';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(SeedSpecGenerator $generator, ModelRegistry $registry): int
     {
         $checkMode = $this->option('check');
@@ -96,9 +83,6 @@ final class SeedsRegenerateCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * Regenerate JSON file from spec.
-     */
     private function regenerateJson(string $modelName, array $spec, bool $checkMode): bool
     {
         $jsonKey = Str::snake(Str::plural($modelName));
@@ -112,18 +96,14 @@ final class SeedsRegenerateCommand extends Command
             $existingData = json_decode($existingContent, true) ?? [];
         }
 
-        // Build new JSON structure
         $newData = [
             $jsonKey => [],
         ];
 
-        // Preserve existing entries if they exist
-        if (isset($existingData[$jsonKey]) && is_array($existingData[$jsonKey]) && (isset($existingData[$jsonKey]) && $existingData[$jsonKey] !== [])) {
-            // Keep existing data but ensure all fields are present
+        if (isset($existingData[$jsonKey]) && is_array($existingData[$jsonKey]) && $existingData[$jsonKey] !== []) {
             foreach ($existingData[$jsonKey] as $entry) {
                 $updatedEntry = $entry;
 
-                // Add missing fields with defaults
                 foreach ($fields as $field => $fieldSpec) {
                     if (! isset($updatedEntry[$field]) && $fieldSpec['default'] !== null) {
                         $updatedEntry[$field] = $fieldSpec['default'];
@@ -133,7 +113,6 @@ final class SeedsRegenerateCommand extends Command
                 $newData[$jsonKey][] = $updatedEntry;
             }
         } else {
-            // Create example entry
             $example = [];
 
             foreach ($fields as $field => $fieldSpec) {
@@ -164,12 +143,8 @@ final class SeedsRegenerateCommand extends Command
         return false;
     }
 
-    /**
-     * Regenerate seeder skeleton from spec.
-     */
     private function regenerateSeeder(string $modelName, array $spec, bool $checkMode, bool $force): bool
     {
-        // Find seeder in any category
         $categories = ['essential', 'development', 'production'];
         $seederPath = null;
         $category = null;
@@ -185,19 +160,14 @@ final class SeedsRegenerateCommand extends Command
         }
 
         if ($seederPath === null) {
-            // Seeder doesn't exist yet - would be created by make:model:full
             return false;
         }
 
         $content = File::get($seederPath);
 
-        // Check for protected regions
         if (Str::contains($content, '// GENERATED START') && Str::contains($content, '// GENERATED END')) {
-            // Extract custom code outside protected regions
             $beforeGenerated = Str::before($content, '// GENERATED START');
             $afterGenerated = Str::after($content, '// GENERATED END');
-
-            // Generate new protected region
             $generatedCode = $this->generateSeederCode($modelName, $spec, $category);
 
             $newContent = $beforeGenerated."// GENERATED START\n{$generatedCode}\n    // GENERATED END".$afterGenerated;
@@ -213,27 +183,20 @@ final class SeedsRegenerateCommand extends Command
                 return true;
             }
         } elseif ($force) {
-            // No protected regions - would overwrite (only with --force)
             $this->warn("  {$modelName}: Seeder has no protected regions - skipping (use --force to overwrite)");
         }
 
         return false;
     }
 
-    /**
-     * Generate seeder code from spec using AI or traditional method.
-     */
     private function generateSeederCode(string $modelName, array $spec, string $category): string
     {
         $modelClass = "App\\Models\\{$modelName}";
-
-        // Use enhanced analyzer to get full relationship details
         $enhancedAnalyzer = resolve(EnhancedRelationshipAnalyzer::class);
         $relationships = class_exists($modelClass)
             ? $enhancedAnalyzer->analyzeModel($modelClass)
             : [];
 
-        // Convert spec relationships format if needed
         if (empty($relationships)) {
             $specRelationships = $spec['relationships'] ?? [];
             foreach ($specRelationships as $relName => $relSpec) {
@@ -247,31 +210,25 @@ final class SeedsRegenerateCommand extends Command
             }
         }
 
-        // Use AI generator for intelligent code generation
         $aiGenerator = resolve(AISeederCodeGenerator::class);
 
         return $aiGenerator->generateSeederCode($modelName, $spec, $relationships, $category);
     }
 
     /**
-     * Generate example value for a field.
-     *
      * @param  array<string, mixed>  $fieldSpec
      * @param  array<string, mixed>  $valueHints
      */
     private function generateExampleValue(string $field, array $fieldSpec, array $valueHints): mixed
     {
-        // Check value hints first
         if (isset($valueHints[$field])) {
             return $valueHints[$field]['example'] ?? null;
         }
 
-        // Use default if available
         if ($fieldSpec['default'] !== null) {
             return $fieldSpec['default'];
         }
 
-        // Generate based on type
         $type = $fieldSpec['type'] ?? 'string';
 
         return match ($type) {

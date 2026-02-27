@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use UnitEnum;
 
 final class ProductAnalytics extends Page
@@ -28,8 +29,6 @@ final class ProductAnalytics extends Page
 
     protected string $view = 'filament.pages.product-analytics';
 
-    private static ?string $modelLabel = 'Product Analytics';
-
     public static function canAccess(): bool
     {
         return auth()->user()?->can('access admin panel') ?? false;
@@ -45,7 +44,7 @@ final class ProductAnalytics extends Page
      */
     public function getAnalytics(): Collection
     {
-        if (! \Illuminate\Support\Facades\Schema::hasTable('pan_analytics')) {
+        if (! Schema::hasTable('pan_analytics')) {
             return collect();
         }
 

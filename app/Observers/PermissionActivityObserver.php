@@ -30,9 +30,6 @@ final class PermissionActivityObserver
     /**
      * @param  array<string, mixed>  $properties
      */
-    /**
-     * @param  array<string, mixed>  $properties
-     */
     private function log(Permission $permission, ActivityType $type, array $properties): void
     {
         $logger = activity()->performedOn($permission)->withProperties($properties);

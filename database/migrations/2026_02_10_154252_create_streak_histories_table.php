@@ -11,13 +11,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create(table: 'streak_histories', callback: function (Blueprint $table): void {
+        Schema::create('streak_histories', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId(column: config(key: 'level-up.user.foreign_key'))->constrained(table: config(key: 'level-up.user.users_table'))->cascadeOnDelete();
-            $table->foreignIdFor(model: Activity::class)->constrained(table: 'streak_activities');
-            $table->integer(column: 'count')->default(value: 1);
-            $table->timestamp(column: 'started_at');
-            $table->timestamp(column: 'ended_at')->nullable();
+            $table->foreignId(config('level-up.user.foreign_key'))->constrained(config('level-up.user.users_table'))->cascadeOnDelete();
+            $table->foreignIdFor(Activity::class)->constrained('streak_activities');
+            $table->integer('count')->default(1);
+            $table->timestamp('started_at');
+            $table->timestamp('ended_at')->nullable();
             $table->timestamps();
         });
     }

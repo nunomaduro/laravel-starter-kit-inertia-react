@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\RemoveOrganizationMemberAction;
 use App\Models\Organization;
 use App\Models\User;
+use App\Services\TenantContext;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -80,7 +81,7 @@ final readonly class OrganizationMemberController
         $action->handle($organization, $member, $request->user());
 
         if ($member->id === $request->user()?->id) {
-            \App\Services\TenantContext::forget();
+            TenantContext::forget();
             $default = $request->user()->defaultOrganization();
             if ($default instanceof Organization) {
                 $request->user()->switchOrganization($default);

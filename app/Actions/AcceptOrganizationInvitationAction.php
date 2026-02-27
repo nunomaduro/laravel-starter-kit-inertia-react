@@ -8,15 +8,9 @@ use App\Events\OrganizationInvitationAccepted;
 use App\Events\OrganizationMemberAdded;
 use App\Models\OrganizationInvitation;
 use App\Models\User;
-use Throwable;
 
 final readonly class AcceptOrganizationInvitationAction
 {
-    /**
-     * Accept an invitation for the given user. Adds user to organization and marks invitation accepted.
-     *
-     * @throws Throwable If transaction fails
-     */
     public function handle(OrganizationInvitation $invitation, User $user): OrganizationInvitation
     {
         $invitation->acceptForUser($user);

@@ -5,21 +5,24 @@ declare(strict_types=1);
 namespace Database\Seeders\Development;
 
 use App\Models\HelpArticle;
+use Database\Seeders\Concerns\LoadsJsonData;
 use Illuminate\Database\Seeder;
+use RuntimeException;
 
 final class HelpArticleSeeder extends Seeder
 {
+    use LoadsJsonData;
+
     public function run(): void
     {
-        $jsonPath = database_path('seeders/data/help-articles.json');
-
-        if (! file_exists($jsonPath)) {
+        try {
+            $data = $this->loadJson('help-articles.json');
+        } catch (RuntimeException) {
             $this->command?->warn('Help articles JSON file not found');
 
             return;
         }
 
-        $data = json_decode((string) file_get_contents($jsonPath), true);
         $articles = $data['help_articles'] ?? [];
 
         foreach ($articles as $article) {

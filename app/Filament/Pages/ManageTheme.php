@@ -33,33 +33,31 @@ final class ManageTheme extends SettingsPage
 
     public function form(Schema $schema): Schema
     {
-        $presets = collect(config('theme.presets', []))->mapWithKeys(fn (array $v, string $k): array => [$k => $v['label'] ?? $k]);
-        $baseColors = collect(config('theme.base_colors', []))->mapWithKeys(fn (string $v, string $k): array => [$k => $v]);
-        $radii = collect(config('theme.radii', []))->mapWithKeys(fn (string $v, string $k): array => [$k => $v]);
-        $fonts = collect(config('theme.fonts', []))->mapWithKeys(fn (string $v, string $k): array => [$k => $v]);
-        $appearances = collect(config('theme.appearances', []))->mapWithKeys(fn (string $v, string $k): array => [$k => $v]);
+        $presets = collect(config('theme.presets', []))
+            ->mapWithKeys(fn (array $v, string $k): array => [$k => $v['label'] ?? $k])
+            ->all();
 
         return $schema
             ->components([
                 Select::make('preset')
                     ->label('Preset')
-                    ->options($presets->all())
+                    ->options($presets)
                     ->required(),
                 Select::make('base_color')
                     ->label('Base color')
-                    ->options($baseColors->all())
+                    ->options(config('theme.base_colors', []))
                     ->required(),
                 Select::make('radius')
                     ->label('Radius')
-                    ->options($radii->all())
+                    ->options(config('theme.radii', []))
                     ->required(),
                 Select::make('font')
                     ->label('Font')
-                    ->options($fonts->all())
+                    ->options(config('theme.fonts', []))
                     ->required(),
                 Select::make('default_appearance')
                     ->label('Default appearance')
-                    ->options($appearances->all())
+                    ->options(config('theme.appearances', []))
                     ->required(),
             ]);
     }

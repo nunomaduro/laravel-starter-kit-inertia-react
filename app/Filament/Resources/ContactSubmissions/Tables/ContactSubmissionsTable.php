@@ -30,9 +30,6 @@ final class ContactSubmissionsTable
                 TextColumn::make('status')->badge(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ])
-            ->filters([
-                //
-            ])
             ->headerActions([
                 self::makeExportHeaderAction('contact-submissions'),
             ])

@@ -89,11 +89,12 @@ final readonly class PaddleWebhookController
      */
     private function handleSubscriptionEvent(string $eventType, array $data): ?int
     {
-        $object = $data;
         if (isset($data['id']) && isset($data['customer_id'])) {
             $object = $data;
+        } elseif ($data['subscription_id'] ?? null) {
+            $object = ['id' => $data['subscription_id'], 'customer_id' => $data['customer_id'] ?? null];
         } else {
-            $object = $data['subscription_id'] ? ['id' => $data['subscription_id'], 'customer_id' => $data['customer_id'] ?? null] : $data;
+            $object = $data;
         }
 
         $subscriptionId = $object['id'] ?? $object['subscription_id'] ?? '';
@@ -116,7 +117,11 @@ final readonly class PaddleWebhookController
             ->orderByDesc('id')
             ->first();
 
-        $norm = str_contains($eventType, 'cancel') ? 'canceled' : (str_contains($eventType, 'update') ? 'updated' : 'created');
+        $norm = match (true) {
+            str_contains($eventType, 'cancel') => 'canceled',
+            str_contains($eventType, 'update') => 'updated',
+            default => 'created',
+        };
 
         if ($norm === 'canceled' && $subscription instanceof Subscription) {
             $effectiveAt = $object['scheduled_change']['effective_at'] ?? $object['cancellation_effective_date'] ?? null;

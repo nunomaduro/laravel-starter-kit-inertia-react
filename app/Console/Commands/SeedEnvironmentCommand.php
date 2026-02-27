@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Artisan;
 
 final class SeedEnvironmentCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seed:environment
                             {--category= : Run specific category only (essential, development, production)}
                             {--only= : Run specific seeder(s) (comma-separated)}
@@ -25,16 +20,8 @@ final class SeedEnvironmentCommand extends Command
                             {--strict : Strict mode - fail on any errors}
                             {--lenient : Lenient mode - continue on warnings (default in local)}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Seed the database with environment-aware seeders';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         if (app()->environment('production') && ! $this->option('force')) {
@@ -62,8 +49,6 @@ final class SeedEnvironmentCommand extends Command
     }
 
     /**
-     * Get categories to run.
-     *
      * @return array<SeederCategory>|null
      */
     private function getCategories(): ?array
@@ -85,8 +70,6 @@ final class SeedEnvironmentCommand extends Command
     }
 
     /**
-     * Get seeders to run.
-     *
      * @return array<string>|null
      */
     private function getOnly(): ?array
@@ -101,8 +84,6 @@ final class SeedEnvironmentCommand extends Command
     }
 
     /**
-     * Get seeders to skip.
-     *
      * @return array<string>|null
      */
     private function getSkip(): ?array

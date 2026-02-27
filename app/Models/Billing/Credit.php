@@ -6,9 +6,7 @@ namespace App\Models\Billing;
 
 use App\Enums\Billing\CreditTransactionType;
 use App\Models\Concerns\BelongsToOrganization;
-use App\Models\Organization;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -44,11 +42,6 @@ final class Credit extends Model
     public function creditable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
     }
 
     protected function casts(): array

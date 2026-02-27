@@ -13,26 +13,13 @@ use Prism\Prism\Enums\Provider;
 
 final class SeedsReviewCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:review
                             {--model= : Review specific model only}
                             {--dry-run : Show review prompts without calling AI}
                             {--provider= : AI provider (openai, anthropic, local)}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'AI-based review of seeders and specs';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(SeedSpecGenerator $specGenerator, ModelRegistry $registry, PrismService $prismService): int
     {
         $specificModel = $this->option('model');
@@ -86,7 +73,6 @@ final class SeedsReviewCommand extends Command
                     continue;
                 }
 
-                // Build review prompt
                 $prompt = $this->buildReviewPrompt($modelName, $spec, $seederInfo);
 
                 if ($dryRun) {
@@ -131,9 +117,6 @@ final class SeedsReviewCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * Build review prompt.
-     */
     private function buildReviewPrompt(string $modelName, array $spec, array $seederInfo): string
     {
         $prompt = "Review the seeding setup for model: {$modelName}\n\n";
@@ -149,9 +132,6 @@ final class SeedsReviewCommand extends Command
         return $prompt.'Return a JSON object with: {issues: [], suggestions: []}';
     }
 
-    /**
-     * Get Prism provider from string.
-     */
     private function getPrismProvider(string $provider): Provider
     {
         return match ($provider) {
@@ -163,8 +143,6 @@ final class SeedsReviewCommand extends Command
     }
 
     /**
-     * Call AI for review.
-     *
      * @return array<string, mixed>|null
      */
     private function callAIReview(string $prompt, string $provider, PrismService $prismService): ?array
@@ -172,10 +150,8 @@ final class SeedsReviewCommand extends Command
         try {
             $prismProvider = $this->getPrismProvider($provider);
 
-            // Use model from config based on provider
             $model = $prismService->defaultModelForProvider($prismProvider);
 
-            // Define schema for review response
             $schema = [
                 'type' => 'object',
                 'properties' => [
@@ -194,7 +170,6 @@ final class SeedsReviewCommand extends Command
             try {
                 $jsonData = $prismService->generateStructured($prompt, $schema, $model);
             } catch (Exception $e) {
-                // Fallback to text parsing
                 $response = $prismService->using($prismProvider, $model)
                     ->withPrompt($prompt)
                     ->asText();
@@ -217,7 +192,6 @@ final class SeedsReviewCommand extends Command
                 }
             }
 
-            // Ensure required structure
             return [
                 'issues' => $jsonData['issues'] ?? [],
                 'suggestions' => $jsonData['suggestions'] ?? [],
@@ -230,8 +204,6 @@ final class SeedsReviewCommand extends Command
     }
 
     /**
-     * Display review results.
-     *
      * @param  array<string, mixed>  $review
      */
     private function displayReview(string $modelName, array $review): void
@@ -260,8 +232,6 @@ final class SeedsReviewCommand extends Command
     }
 
     /**
-     * Perform basic validation when AI is not available.
-     *
      * @param  array<string, mixed>  $spec
      */
     private function performBasicValidation(string $modelName, array $spec): void
@@ -269,18 +239,15 @@ final class SeedsReviewCommand extends Command
         $issues = [];
         $suggestions = [];
 
-        // Check if spec has fields
         if (empty($spec['fields'] ?? [])) {
             $issues[] = 'No fields defined in spec';
         }
 
-        // Check if relationships are documented
         $relationships = $spec['relationships'] ?? [];
         if (! empty($relationships)) {
             $suggestions[] = 'Consider verifying relationship seeding in seeder';
         }
 
-        // Check value hints
         $valueHints = $spec['value_hints'] ?? [];
         if (empty($valueHints)) {
             $suggestions[] = 'Add value hints for better seed data generation';

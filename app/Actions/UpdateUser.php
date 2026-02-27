@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 final readonly class UpdateUser
 {
@@ -16,9 +17,8 @@ final readonly class UpdateUser
     {
         $emailChanged = array_key_exists('email', $attributes) && $user->email !== $attributes['email'];
 
-        $fillable = array_diff_key($attributes, array_flip(['avatar']));
         $user->update([
-            ...$fillable,
+            ...Arr::except($attributes, 'avatar'),
             ...($emailChanged ? ['email_verified_at' => null] : []),
         ]);
 

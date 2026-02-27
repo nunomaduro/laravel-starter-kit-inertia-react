@@ -162,10 +162,7 @@ return [
        |
        */
         'cells' => [
-            'middleware' => [
-                // \Maatwebsite\Excel\Middleware\TrimCellValue::class,
-                // \Maatwebsite\Excel\Middleware\ConvertEmptyCellValuesToNull::class,
-            ],
+            'middleware' => [],
         ],
 
     ],
@@ -340,10 +337,7 @@ return [
         | If omitted the default permissions of the filesystem will be used.
         |
         */
-        'local_permissions' => [
-            // 'dir'  => 0755,
-            // 'file' => 0644,
-        ],
+        'local_permissions' => [],
 
         /*
         |--------------------------------------------------------------------------

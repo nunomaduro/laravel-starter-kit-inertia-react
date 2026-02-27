@@ -11,6 +11,7 @@ use App\Services\PageDataSourceRegistry;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -54,7 +55,7 @@ final class PageController extends Controller
         $validated = $request->validated();
         $page = new Page;
         $page->name = $validated['name'];
-        $page->slug = $validated['slug'] ?? \Illuminate\Support\Str::slug($validated['name']);
+        $page->slug = $validated['slug'] ?? Str::slug($validated['name']);
         $page->puck_json = $validated['puck_json'] ?? ['root' => (object) [], 'content' => []];
         $page->is_published = false;
         $page->save();
@@ -101,7 +102,7 @@ final class PageController extends Controller
 
         $copy = $page->replicate();
         $copy->name = 'Copy of '.$page->name;
-        $copy->slug = \Illuminate\Support\Str::slug($copy->name);
+        $copy->slug = Str::slug($copy->name);
         $copy->is_published = false;
         $copy->save();
 

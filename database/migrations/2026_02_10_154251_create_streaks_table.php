@@ -12,10 +12,10 @@ return new class extends Migration
     {
         Schema::create('streaks', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId(column: config('level-up.user.foreign_key'))->constrained()->onDelete('cascade');
-            $table->foreignId(column: 'activity_id')->constrained('streak_activities')->onDelete('cascade');
-            $table->integer(column: 'count')->default(1);
-            $table->timestamp(column: 'activity_at');
+            $table->foreignId(config('level-up.user.foreign_key'))->constrained()->cascadeOnDelete();
+            $table->foreignId('activity_id')->constrained('streak_activities')->cascadeOnDelete();
+            $table->integer('count')->default(1);
+            $table->timestamp('activity_at');
             $table->timestamps();
         });
     }

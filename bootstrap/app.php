@@ -25,6 +25,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use MartinPetricko\LaravelDatabaseMail\Exceptions\DatabaseMailException;
+use MartinPetricko\LaravelDatabaseMail\Facades\LaravelDatabaseMail;
 use Spatie\Csp\AddCspHeaders;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -89,7 +91,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->report(function (MartinPetricko\LaravelDatabaseMail\Exceptions\DatabaseMailException $e): void {
-            MartinPetricko\LaravelDatabaseMail\Facades\LaravelDatabaseMail::logException($e);
+        $exceptions->report(function (DatabaseMailException $e): void {
+            LaravelDatabaseMail::logException($e);
         });
     })->create();

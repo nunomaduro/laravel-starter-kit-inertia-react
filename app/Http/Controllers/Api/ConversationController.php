@@ -61,7 +61,7 @@ final class ConversationController extends Controller
         }
 
         $messages = DB::table('agent_conversation_messages')
-            ->where('conversation_id', $id)->oldest()
+            ->where('conversation_id', $id)
             ->orderBy('id')
             ->get()
             ->map(fn ($m): array => [

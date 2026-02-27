@@ -72,9 +72,6 @@ final class CategoryResource extends Resource
                 TextColumn::make('type')->badge()->toggleable(),
                 TextColumn::make('parent.name')->label('Parent')->sortable()->toggleable(),
             ])
-            ->filters([
-                //
-            ])
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),

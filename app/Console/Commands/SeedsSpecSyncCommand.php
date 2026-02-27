@@ -11,26 +11,13 @@ use Illuminate\Console\Command;
 
 final class SeedsSpecSyncCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:spec-sync
                             {--check : Check mode - only report differences without updating}
                             {--model= : Sync specific model only}
                             {--force : Force update even if needs approval items exist}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Sync seed specs with current model and migration state';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(SeedSpecGenerator $generator, ModelRegistry $registry): int
     {
         $checkMode = $this->option('check');
@@ -61,7 +48,6 @@ final class SeedsSpecSyncCommand extends Command
                 $oldSpec = $generator->loadSpec($modelClass);
 
                 if ($oldSpec === null) {
-                    // New spec
                     if ($checkMode) {
                         $this->warn("  {$modelName}: Missing spec (would be created)");
                         $hasChanges = true;
@@ -70,7 +56,6 @@ final class SeedsSpecSyncCommand extends Command
                         $this->info("  {$modelName}: Created new spec");
                     }
                 } else {
-                    // Compare specs
                     $diff = $generator->diffSpecs($oldSpec, $newSpec);
 
                     if (! empty($diff['added_fields']) || ! empty($diff['removed_fields']) || ! empty($diff['changed_fields']) || ! empty($diff['added_relationships']) || ! empty($diff['removed_relationships'])) {
@@ -98,7 +83,6 @@ final class SeedsSpecSyncCommand extends Command
                         } elseif ($hasApprovalNeeded && ! $force) {
                             $this->error("  {$modelName}: Cannot update - approval needed. Use --force to override.");
                         } else {
-                            // Auto-update safe changes
                             $updatedSpec = $oldSpec;
                             $updatedSpec['fields'] = $newSpec['fields'];
                             $updatedSpec['relationships'] = $newSpec['relationships'];

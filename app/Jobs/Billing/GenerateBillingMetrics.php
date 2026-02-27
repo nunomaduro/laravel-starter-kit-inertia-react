@@ -7,25 +7,14 @@ namespace App\Jobs\Billing;
 use App\Models\Billing\BillingMetric;
 use App\Models\Billing\Credit;
 use App\Models\Organization;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-/**
- * Generate daily billing metrics for analytics.
- *
- * Runs daily to calculate and store billing metrics per organization.
- */
 final class GenerateBillingMetrics implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
     use Queueable;
-    use SerializesModels;
 
     public function handle(): void
     {
@@ -40,15 +29,6 @@ final class GenerateBillingMetrics implements ShouldQueue
                 $subscriptionQuery = fn () => DB::table($subscriptionsTable)
                     ->where('subscriber_type', Organization::class)
                     ->where('subscriber_id', $orgId);
-
-                $activeSubscriptions = $subscriptionQuery()
-                    ->whereNull('canceled_at')
-                    ->whereDate('starts_at', '<=', $date)
-                    ->where(function ($q) use ($date): void {
-                        $q->whereNull('ends_at')
-                            ->orWhereDate('ends_at', '>', $date);
-                    })
-                    ->count();
 
                 $newSubscriptions = $subscriptionQuery()
                     ->whereDate('created_at', $date)

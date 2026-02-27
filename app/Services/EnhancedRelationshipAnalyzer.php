@@ -102,22 +102,18 @@ final class EnhancedRelationshipAnalyzer
      */
     private function isRelationshipMethod(ReflectionMethod $method): bool
     {
-        // Skip non-public methods
         if (! $method->isPublic()) {
             return false;
         }
 
-        // Skip methods with parameters
         if ($method->getNumberOfParameters() > 0) {
             return false;
         }
 
-        // Skip magic methods
         if (str_starts_with($method->getName(), '__')) {
             return false;
         }
 
-        // Check return type
         $returnType = $method->getReturnType();
 
         if ($returnType === null) {
@@ -126,7 +122,6 @@ final class EnhancedRelationshipAnalyzer
 
         $returnTypeName = $returnType->getName();
 
-        // Check if it's a relationship type
         return is_subclass_of($returnTypeName, \Illuminate\Database\Eloquent\Relations\Relation::class);
     }
 
@@ -145,7 +140,7 @@ final class EnhancedRelationshipAnalyzer
         }
 
         $returnTypeName = $returnType->getName();
-        $type = $this->inferRelationshipType($returnTypeName, $methodName);
+        $type = $this->inferRelationshipType($returnTypeName);
 
         if ($type === null) {
             return null;
@@ -203,64 +198,26 @@ final class EnhancedRelationshipAnalyzer
     }
 
     /**
-     * Infer relationship type from return type and method name.
+     * Infer relationship type from return type name.
+     *
+     * More specific types (e.g. BelongsToMany) must be checked before their
+     * substring matches (e.g. BelongsTo) to avoid incorrect classification.
      */
-    private function inferRelationshipType(string $returnType, string $methodName): ?string
+    private function inferRelationshipType(string $returnType): ?string
     {
-        if (Str::contains($returnType, 'BelongsTo')) {
-            return 'belongsTo';
-        }
-
-        if (Str::contains($returnType, 'HasMany')) {
-            return 'hasMany';
-        }
-
-        if (Str::contains($returnType, 'HasOne')) {
-            return 'hasOne';
-        }
-
-        if (Str::contains($returnType, 'BelongsToMany')) {
-            return 'belongsToMany';
-        }
-
-        if (Str::contains($returnType, 'HasOneThrough')) {
-            return 'hasOneThrough';
-        }
-
-        if (Str::contains($returnType, 'HasManyThrough')) {
-            return 'hasManyThrough';
-        }
-
-        if (Str::contains($returnType, 'MorphTo')) {
-            return 'morphTo';
-        }
-
-        if (Str::contains($returnType, 'MorphMany')) {
-            return 'morphMany';
-        }
-
-        if (Str::contains($returnType, 'MorphOne')) {
-            return 'morphOne';
-        }
-
-        if (Str::contains($returnType, 'MorphToMany')) {
-            return 'morphToMany';
-        }
-
-        // Fallback: infer from method name
-        if (Str::startsWith($methodName, 'belongsTo')) {
-            return 'belongsTo';
-        }
-
-        if (Str::startsWith($methodName, 'hasMany')) {
-            return 'hasMany';
-        }
-
-        if (Str::startsWith($methodName, 'hasOne')) {
-            return 'hasOne';
-        }
-
-        return null;
+        return match (true) {
+            Str::contains($returnType, 'MorphToMany') => 'morphToMany',
+            Str::contains($returnType, 'MorphTo') => 'morphTo',
+            Str::contains($returnType, 'MorphMany') => 'morphMany',
+            Str::contains($returnType, 'MorphOne') => 'morphOne',
+            Str::contains($returnType, 'BelongsToMany') => 'belongsToMany',
+            Str::contains($returnType, 'BelongsTo') => 'belongsTo',
+            Str::contains($returnType, 'HasManyThrough') => 'hasManyThrough',
+            Str::contains($returnType, 'HasOneThrough') => 'hasOneThrough',
+            Str::contains($returnType, 'HasMany') => 'hasMany',
+            Str::contains($returnType, 'HasOne') => 'hasOne',
+            default => null,
+        };
     }
 
     /**

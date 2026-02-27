@@ -7,6 +7,7 @@ namespace App\Filament\Widgets\Billing;
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
 use App\Models\Billing\Invoice;
+use App\Models\Organization;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
@@ -21,15 +22,17 @@ final class RevenueOverviewStats extends StatsOverviewWidget
         $plansTable = config('laravel-subscriptions.tables.plans', 'plans');
 
         $mrr = $this->calculateMrr($subscriptionsTable, $plansTable);
+        $sparkline = $this->getMrrSparkline($subscriptionsTable, $plansTable);
+        $mrrTrend = $this->analyzeMrrTrend($sparkline);
 
         $activeSubscriptions = DB::table($subscriptionsTable)
-            ->where('subscriber_type', \App\Models\Organization::class)
+            ->where('subscriber_type', Organization::class)
             ->whereNull('canceled_at')
             ->where(fn ($q) => $q->whereNull('ends_at')->orWhere('ends_at', '>', now()))
             ->count();
 
         $lastMonthSubscriptions = DB::table($subscriptionsTable)
-            ->where('subscriber_type', \App\Models\Organization::class)
+            ->where('subscriber_type', Organization::class)
             ->where('created_at', '<', now()->startOfMonth())
             ->whereNull('canceled_at')
             ->count();
@@ -50,10 +53,10 @@ final class RevenueOverviewStats extends StatsOverviewWidget
 
         return [
             Stat::make('Monthly Recurring Revenue (MRR)', new Money($mrr, $currency)->format())
-                ->description($this->getMrrTrend($subscriptionsTable, $plansTable))
-                ->descriptionIcon($this->getMrrTrendIcon($subscriptionsTable, $plansTable))
-                ->chart($this->getMrrSparkline($subscriptionsTable, $plansTable))
-                ->color($this->getMrrTrendColor($subscriptionsTable, $plansTable)),
+                ->description($mrrTrend['description'])
+                ->descriptionIcon($mrrTrend['icon'])
+                ->chart($sparkline)
+                ->color($mrrTrend['color']),
 
             Stat::make('Active Subscriptions', number_format($activeSubscriptions))
                 ->description($subscriptionGrowth >= 0 ? sprintf('+%s%%', $subscriptionGrowth) : $subscriptionGrowth.'%')
@@ -65,8 +68,8 @@ final class RevenueOverviewStats extends StatsOverviewWidget
                 ->descriptionIcon('heroicon-m-banknotes'),
 
             Stat::make('Churn Rate', $churnRate.'%')
-                ->description($churnRate <= 5 ? 'Healthy' : ($churnRate <= 10 ? 'Monitor' : 'Action needed'))
-                ->color($churnRate <= 5 ? 'success' : ($churnRate <= 10 ? 'warning' : 'danger')),
+                ->description($this->getChurnDescription($churnRate))
+                ->color($this->getChurnColor($churnRate)),
         ];
     }
 
@@ -74,7 +77,7 @@ final class RevenueOverviewStats extends StatsOverviewWidget
     {
         $result = DB::table($subscriptionsTable)
             ->join($plansTable, "{$subscriptionsTable}.plan_id", '=', "{$plansTable}.id")
-            ->where("{$subscriptionsTable}.subscriber_type", \App\Models\Organization::class)
+            ->where("{$subscriptionsTable}.subscriber_type", Organization::class)
             ->whereNull("{$subscriptionsTable}.canceled_at")
             ->where(fn ($q) => $q->whereNull("{$subscriptionsTable}.ends_at")->orWhere("{$subscriptionsTable}.ends_at", '>', now()))
             ->sum("{$plansTable}.price");
@@ -87,7 +90,7 @@ final class RevenueOverviewStats extends StatsOverviewWidget
         $startOfMonth = now()->startOfMonth();
 
         $startCount = DB::table($subscriptionsTable)
-            ->where('subscriber_type', \App\Models\Organization::class)
+            ->where('subscriber_type', Organization::class)
             ->where('created_at', '<', $startOfMonth)
             ->whereNull('canceled_at')
             ->count();
@@ -97,7 +100,7 @@ final class RevenueOverviewStats extends StatsOverviewWidget
         }
 
         $canceledCount = DB::table($subscriptionsTable)
-            ->where('subscriber_type', \App\Models\Organization::class)
+            ->where('subscriber_type', Organization::class)
             ->whereBetween('canceled_at', [$startOfMonth, now()])
             ->count();
 
@@ -112,7 +115,7 @@ final class RevenueOverviewStats extends StatsOverviewWidget
             $date = now()->subMonths($i)->endOfMonth();
             $mrr = DB::table($subscriptionsTable)
                 ->join($plansTable, "{$subscriptionsTable}.plan_id", '=', "{$plansTable}.id")
-                ->where("{$subscriptionsTable}.subscriber_type", \App\Models\Organization::class)
+                ->where("{$subscriptionsTable}.subscriber_type", Organization::class)
                 ->where("{$subscriptionsTable}.created_at", '<=', $date)
                 ->where(fn ($q) => $q->whereNull("{$subscriptionsTable}.canceled_at")->orWhere("{$subscriptionsTable}.canceled_at", '>', $date))
                 ->sum("{$plansTable}.price");
@@ -122,36 +125,47 @@ final class RevenueOverviewStats extends StatsOverviewWidget
         return $data;
     }
 
-    private function getMrrTrend(string $subscriptionsTable, string $plansTable): string
+    /** @return array{description: string, icon: string, color: string} */
+    private function analyzeMrrTrend(array $sparkline): array
     {
-        $sparkline = $this->getMrrSparkline($subscriptionsTable, $plansTable);
         $current = end($sparkline);
         $previous = $sparkline[count($sparkline) - 2] ?? $current;
+        $isGrowing = $current >= $previous;
 
         if ($previous === 0) {
-            return 'New';
+            return [
+                'description' => 'New',
+                'icon' => 'heroicon-m-arrow-trending-up',
+                'color' => 'success',
+            ];
         }
 
         $change = round((($current - $previous) / $previous) * 100, 1);
 
-        return $change >= 0 ? sprintf('+%s%% from last month', $change) : $change.'% from last month';
+        return [
+            'description' => $change >= 0
+                ? sprintf('+%s%% from last month', $change)
+                : $change.'% from last month',
+            'icon' => $isGrowing ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down',
+            'color' => $isGrowing ? 'success' : 'danger',
+        ];
     }
 
-    private function getMrrTrendIcon(string $subscriptionsTable, string $plansTable): string
+    private function getChurnDescription(float $churnRate): string
     {
-        $sparkline = $this->getMrrSparkline($subscriptionsTable, $plansTable);
-        $current = end($sparkline);
-        $previous = $sparkline[count($sparkline) - 2] ?? $current;
-
-        return $current >= $previous ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
+        return match (true) {
+            $churnRate <= 5 => 'Healthy',
+            $churnRate <= 10 => 'Monitor',
+            default => 'Action needed',
+        };
     }
 
-    private function getMrrTrendColor(string $subscriptionsTable, string $plansTable): string
+    private function getChurnColor(float $churnRate): string
     {
-        $sparkline = $this->getMrrSparkline($subscriptionsTable, $plansTable);
-        $current = end($sparkline);
-        $previous = $sparkline[count($sparkline) - 2] ?? $current;
-
-        return $current >= $previous ? 'success' : 'danger';
+        return match (true) {
+            $churnRate <= 5 => 'success',
+            $churnRate <= 10 => 'warning',
+            default => 'danger',
+        };
     }
 }

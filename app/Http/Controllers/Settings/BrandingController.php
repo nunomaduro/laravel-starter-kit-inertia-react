@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\UpdateBrandingRequest;
+use App\Models\Organization;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +25,7 @@ final class BrandingController extends Controller
     public function edit(Request $request): Response|RedirectResponse
     {
         $organization = TenantContext::get();
-        if (! $organization instanceof \App\Models\Organization) {
+        if (! $organization instanceof Organization) {
             return to_route('dashboard')->with('flash', ['status' => 'error', 'message' => 'No organization selected.']);
         }
         abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);
@@ -42,7 +43,7 @@ final class BrandingController extends Controller
     public function update(UpdateBrandingRequest $request): RedirectResponse
     {
         $organization = TenantContext::get();
-        if (! $organization instanceof \App\Models\Organization) {
+        if (! $organization instanceof Organization) {
             return to_route('dashboard')->with('flash', ['status' => 'error', 'message' => 'No organization selected.']);
         }
         abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);

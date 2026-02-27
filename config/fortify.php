@@ -146,19 +146,9 @@ return [
     */
 
     'features' => [
-        // NOTE: The features below are handled by custom controllers (not Fortify's).
-        // The corresponding Fortify action classes in app/Actions/Fortify/ are kept
-        // as reference implementations but are NOT used while these features are
-        // commented out. Enable only if you want Fortify to handle them directly.
-        // Features::registration(),
-        // Features::resetPasswords(),
-        // Features::emailVerification(),
-        // Features::updateProfileInformation(),
-        // Features::updatePasswords(),
         Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,
-            // 'window' => 0
         ]),
     ],
 

@@ -127,13 +127,15 @@ final class AISeedGenerator
 
             foreach ($relationships as $relName => $relSpec) {
                 $type = $relSpec['type'] ?? '';
+                $description = match ($type) {
+                    'belongsTo' => "belongs to {$relName}",
+                    'hasMany' => "has many {$relName}",
+                    'belongsToMany' => "belongs to many {$relName}",
+                    default => null,
+                };
 
-                if ($type === 'belongsTo') {
-                    $relDescs[] = "belongs to {$relName}";
-                } elseif ($type === 'hasMany') {
-                    $relDescs[] = "has many {$relName}";
-                } elseif ($type === 'belongsToMany') {
-                    $relDescs[] = "belongs to many {$relName}";
+                if ($description !== null) {
+                    $relDescs[] = $description;
                 }
             }
 
@@ -162,12 +164,10 @@ final class AISeedGenerator
                 'type' => $fieldSpec['type'] ?? 'string',
             ];
 
-            // Check for enum values
             if (isset($fieldSpec['enum'])) {
                 $semantic['enum'] = $fieldSpec['enum'];
             }
 
-            // Check value hints
             if (isset($valueHints[$field])) {
                 $semantic['hint'] = $valueHints[$field];
             }

@@ -3,7 +3,7 @@
     "table": "users",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -63,7 +63,7 @@
             "default": null
         },
         "onboarding_steps_completed": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
@@ -75,7 +75,7 @@
     },
     "relationships": {
         "organizations": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "Organization"
         },
         "ownedOrganizations": {
@@ -87,7 +87,7 @@
             "model": "TermsAcceptance"
         },
         "categories": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "Category"
         },
         "experience": {
@@ -99,23 +99,23 @@
             "model": "ExperienceHistory"
         },
         "allAchievements": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "AllAchievement"
         },
         "achievements": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "Achievement"
         },
         "achievementsWithProgress": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "AchievementsWithProgress"
         },
         "achievementsWithSpecificProgress": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "AchievementsWithSpecificProgress"
         },
         "secretAchievements": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "SecretAchievement"
         },
         "affiliate": {
@@ -123,11 +123,11 @@
             "model": "Affiliate"
         },
         "roles": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "Role"
         },
         "permissions": {
-            "type": "belongsTo",
+            "type": "belongsToMany",
             "model": "Permission"
         }
     },

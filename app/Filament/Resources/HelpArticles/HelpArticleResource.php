@@ -56,13 +56,6 @@ final class HelpArticleResource extends Resource
         return HelpArticlesTable::configure($table);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function canAccess(): bool
     {
         $user = auth()->user();

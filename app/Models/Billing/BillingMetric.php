@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Billing;
 
 use App\Models\Concerns\BelongsToOrganization;
-use App\Models\Organization;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -34,11 +32,6 @@ final class BillingMetric extends Model
         'credits_purchased',
         'credits_used',
     ];
-
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     protected function casts(): array
     {

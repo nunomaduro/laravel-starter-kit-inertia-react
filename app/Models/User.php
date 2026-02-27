@@ -143,28 +143,6 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     }
 
     /**
-     * @return array<string, string>
-     */
-    public function casts(): array
-    {
-        return [
-            'id' => 'integer',
-            'name' => 'string',
-            'email' => 'string',
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'remember_token' => 'string',
-            'two_factor_secret' => 'string',
-            'two_factor_recovery_codes' => 'string',
-            'two_factor_confirmed_at' => 'datetime',
-            'onboarding_completed' => 'boolean',
-            'onboarding_steps_completed' => 'array',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
-    /**
      * Only super-admins may impersonate, and only when Impersonation feature is active.
      */
     public function canImpersonate(): bool
@@ -296,6 +274,20 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
             ->where($tableNames['model_has_roles'].'.'.$teamKey, 0)
             ->where($tableNames['roles'].'.name', 'super-admin')
             ->exists();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'two_factor_confirmed_at' => 'datetime',
+            'onboarding_completed' => 'boolean',
+            'onboarding_steps_completed' => 'array',
+        ];
     }
 
     /**

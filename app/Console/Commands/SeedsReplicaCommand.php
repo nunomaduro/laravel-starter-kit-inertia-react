@@ -12,26 +12,13 @@ use Illuminate\Support\Facades\File;
 
 final class SeedsReplicaCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:replica
                             {--profile= : Path to production profile JSON}
                             {--count=1000 : Number of records to generate}
                             {--force : Force operation in non-dev environments}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generate synthetic replica data based on production profiles';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(SeedSpecGenerator $specGenerator, ModelRegistry $registry): int
     {
         $profilePath = $this->option('profile') ?? database_path('seeders/profiles/production.json');
@@ -82,7 +69,6 @@ final class SeedsReplicaCommand extends Command
 
             $this->line("  {$modelName}: Generating {$count} records...");
 
-            // Use factory with profile constraints
             try {
                 $factory = $modelClass::factory();
                 $factory->count($count)->create();

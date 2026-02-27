@@ -16,28 +16,12 @@ final class UsersSeeder extends Seeder
 
     private array $dependencies = ['RolesAndPermissionsSeeder'];
 
-    /**
-     * Run the database seeds (idempotent).
-     */
     public function run(): void
     {
-        $this->seedRelationships();
         $this->seedFromJson();
         $this->seedFromFactory();
     }
 
-    /**
-     * Seed relationships (idempotent).
-     */
-    private function seedRelationships(): void
-    {
-        // User model has no belongsTo relationships that need seeding
-        // If relationships are added in the future, they will be auto-detected
-    }
-
-    /**
-     * Seed users from JSON data file (idempotent).
-     */
     private function seedFromJson(): void
     {
         try {
@@ -53,7 +37,7 @@ final class UsersSeeder extends Seeder
                 $roles = $userData['roles'] ?? [];
                 unset($userData['_factory_state'], $userData['role'], $userData['roles']);
 
-                if (isset($userData['email']) && ! empty($userData['email'])) {
+                if (! empty($userData['email'])) {
                     if (! isset($userData['password'])) {
                         $userData['password'] = Hash::make('password');
                     }
@@ -92,9 +76,6 @@ final class UsersSeeder extends Seeder
         }
     }
 
-    /**
-     * Seed users using factory states (idempotent - safe to run multiple times).
-     */
     private function seedFromFactory(): void
     {
         $adminUsers = User::factory()
@@ -102,8 +83,8 @@ final class UsersSeeder extends Seeder
             ->count(2)
             ->create();
 
-        foreach ($adminUsers as $u) {
-            $u->assignRole('admin');
+        foreach ($adminUsers as $user) {
+            $user->assignRole('admin');
         }
 
         User::factory()

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\Organization;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
 use App\Settings\SeoSettings;
@@ -138,7 +139,7 @@ final class HandleInertiaRequests extends Middleware
     {
         $organization = TenantContext::get();
 
-        if (! $organization instanceof \App\Models\Organization) {
+        if (! $organization instanceof Organization) {
             return [
                 'logoUrl' => null,
                 'themePreset' => null,

@@ -6,21 +6,24 @@ namespace Database\Seeders\Development;
 
 use App\Enums\ChangelogType;
 use App\Models\ChangelogEntry;
+use Database\Seeders\Concerns\LoadsJsonData;
 use Illuminate\Database\Seeder;
+use RuntimeException;
 
 final class ChangelogEntrySeeder extends Seeder
 {
+    use LoadsJsonData;
+
     public function run(): void
     {
-        $jsonPath = database_path('seeders/data/changelog-entries.json');
-
-        if (! file_exists($jsonPath)) {
+        try {
+            $data = $this->loadJson('changelog-entries.json');
+        } catch (RuntimeException) {
             $this->command?->warn('Changelog entries JSON file not found');
 
             return;
         }
 
-        $data = json_decode((string) file_get_contents($jsonPath), true);
         $entries = $data['changelog_entries'] ?? [];
 
         foreach ($entries as $entry) {

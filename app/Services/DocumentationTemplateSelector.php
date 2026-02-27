@@ -15,17 +15,14 @@ final readonly class DocumentationTemplateSelector
     {
         $complexity = $this->calculateActionComplexity($actionInfo);
 
-        // Simple template for basic actions
         if ($complexity < 3) {
             return 'action-simple';
         }
 
-        // Detailed template for complex actions
         if ($complexity >= 5) {
             return 'action-detailed';
         }
 
-        // Standard template
         return 'action';
     }
 
@@ -39,12 +36,10 @@ final readonly class DocumentationTemplateSelector
         $methodCount = count($controllerInfo['methods'] ?? []);
         $routeCount = count($controllerInfo['relationships']['relatedRoutes'] ?? []);
 
-        // API template for controllers with many routes
         if ($routeCount >= 5 || $methodCount >= 5) {
             return 'controller-api';
         }
 
-        // Standard template
         return 'controller';
     }
 
@@ -57,12 +52,10 @@ final readonly class DocumentationTemplateSelector
     {
         $propsCount = count($pageInfo['tsDoc']['props'] ?? []);
 
-        // Detailed template for pages with many props
         if ($propsCount >= 5) {
             return 'page-detailed';
         }
 
-        // Standard template
         return 'page';
     }
 
@@ -72,39 +65,23 @@ final readonly class DocumentationTemplateSelector
     public function getTemplatePath(string $templateName): string
     {
         $basePath = base_path('docs/.templates');
+        $path = "{$basePath}/{$templateName}.md";
 
-        // Check if specific template exists
-        $specificPath = "{$basePath}/{$templateName}.md";
-        if (file_exists($specificPath)) {
-            return $specificPath;
-        }
-
-        // Fallback to standard template
-        $standardPath = "{$basePath}/{$templateName}.md";
-        if (file_exists($standardPath)) {
-            return $standardPath;
-        }
-
-        // Default fallback
-        return "{$basePath}/action.md";
+        return file_exists($path) ? $path : "{$basePath}/action.md";
     }
 
     /**
      * Calculate complexity score for an Action.
+     *
+     * @param  array<string, mixed>  $actionInfo
      */
     private function calculateActionComplexity(array $actionInfo): int
     {
         $complexity = 0;
 
-        // Count dependencies
-        $dependencyCount = count($actionInfo['dependencies'] ?? []);
-        $complexity += $dependencyCount;
+        $complexity += count($actionInfo['dependencies'] ?? []);
+        $complexity += count($actionInfo['handleMethod']['parameters'] ?? []);
 
-        // Count parameters in handle method
-        $paramCount = count($actionInfo['handleMethod']['parameters'] ?? []);
-        $complexity += $paramCount;
-
-        // Check for relationships
         $relationships = $actionInfo['relationships'] ?? [];
         if (! empty($relationships['usedBy'])) {
             $complexity += 1;
@@ -113,7 +90,6 @@ final readonly class DocumentationTemplateSelector
             $complexity += 1;
         }
 
-        // Check for PHPDoc complexity
         if (isset($actionInfo['phpDoc']['class']['parsed']['throws'])) {
             $complexity += count($actionInfo['phpDoc']['class']['parsed']['throws']);
         }

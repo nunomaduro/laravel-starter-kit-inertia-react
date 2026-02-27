@@ -70,18 +70,14 @@ final class SeedScenarioManager
 
         $results = [];
 
-        $models = $scenario['models'] ?? [];
-
-        foreach ($models as $modelConfig) {
+        foreach ($scenario['models'] ?? [] as $modelConfig) {
             $modelClass = $modelConfig['class'] ?? null;
+            if ($modelClass === null || ! class_exists($modelClass)) {
+                continue;
+            }
+
             $count = $modelConfig['count'] ?? 1;
             $state = $modelConfig['state'] ?? null;
-            if ($modelClass === null) {
-                continue;
-            }
-            if (! class_exists($modelClass)) {
-                continue;
-            }
 
             $factory = $modelClass::factory();
 

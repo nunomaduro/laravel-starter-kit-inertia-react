@@ -163,7 +163,7 @@ final class SeedSpecGenerator
                 $default = $columnInfo->getDefault();
             } catch (Exception) {
                 // Fallback for SQLite or other drivers that don't support Doctrine introspection
-                $nullable = true; // Default to nullable if we can't determine
+                $nullable = true;
                 $default = null;
             }
 
@@ -225,18 +225,14 @@ final class SeedSpecGenerator
 
             $returnTypeName = $returnType->getName();
 
-            // Check if it's a relationship method
             if (! is_subclass_of($returnTypeName, \Illuminate\Database\Eloquent\Relations\Relation::class)) {
                 continue;
             }
 
             $methodName = $method->getName();
-
-            // Infer relationship type from method name or return type
-            $type = $this->inferRelationshipType($returnTypeName, $methodName);
+            $type = $this->inferRelationshipType($returnTypeName);
 
             if ($type !== null) {
-                // Try to extract related model from return type
                 $relatedModel = $this->extractRelatedModelFromReturnType($methodName);
 
                 $relationships[$methodName] = [
@@ -250,44 +246,22 @@ final class SeedSpecGenerator
     }
 
     /**
-     * Infer relationship type from return type and method name.
+     * Infer relationship type from return type name.
+     *
+     * More specific types (e.g. BelongsToMany) must be checked before their
+     * substring matches (e.g. BelongsTo) to avoid incorrect classification.
      */
-    private function inferRelationshipType(string $returnType, string $methodName): ?string
+    private function inferRelationshipType(string $returnType): ?string
     {
-        if (Str::contains($returnType, 'BelongsTo')) {
-            return 'belongsTo';
-        }
-
-        if (Str::contains($returnType, 'HasMany')) {
-            return 'hasMany';
-        }
-
-        if (Str::contains($returnType, 'HasOne')) {
-            return 'hasOne';
-        }
-
-        if (Str::contains($returnType, 'BelongsToMany')) {
-            return 'belongsToMany';
-        }
-
-        if (Str::contains($returnType, 'HasOneThrough')) {
-            return 'hasOneThrough';
-        }
-
-        if (Str::contains($returnType, 'HasManyThrough')) {
-            return 'hasManyThrough';
-        }
-
-        // Fallback: infer from method name
-        if (Str::startsWith($methodName, 'belongsTo')) {
-            return 'belongsTo';
-        }
-
-        if (Str::startsWith($methodName, 'hasMany')) {
-            return 'hasMany';
-        }
-
-        return null;
+        return match (true) {
+            Str::contains($returnType, 'BelongsToMany') => 'belongsToMany',
+            Str::contains($returnType, 'BelongsTo') => 'belongsTo',
+            Str::contains($returnType, 'HasManyThrough') => 'hasManyThrough',
+            Str::contains($returnType, 'HasOneThrough') => 'hasOneThrough',
+            Str::contains($returnType, 'HasMany') => 'hasMany',
+            Str::contains($returnType, 'HasOne') => 'hasOne',
+            default => null,
+        };
     }
 
     /**
@@ -295,8 +269,6 @@ final class SeedSpecGenerator
      */
     private function extractRelatedModelFromReturnType(string $methodName): ?string
     {
-        // For now, infer from method name
-        // Enhanced analyzer will get actual model from relationship instance
         $name = $methodName;
 
         if (Str::startsWith($name, 'belongsTo')) {
@@ -319,7 +291,6 @@ final class SeedSpecGenerator
     {
         $hints = [];
 
-        // Check casts for hints
         if ($reflection->hasMethod('casts')) {
             $castsMethod = $reflection->getMethod('casts');
 
@@ -343,7 +314,6 @@ final class SeedSpecGenerator
             }
         }
 
-        // Add common field hints
         if (Schema::hasTable($table)) {
             $columns = Schema::getColumnListing($table);
 

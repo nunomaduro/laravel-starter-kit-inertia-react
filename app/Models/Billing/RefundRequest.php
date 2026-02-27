@@ -6,7 +6,6 @@ namespace App\Models\Billing;
 
 use App\Enums\Billing\RefundStatus;
 use App\Models\Concerns\BelongsToOrganization;
-use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,11 +33,6 @@ final class RefundRequest extends Model
         'processed_at',
         'processed_by',
     ];
-
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     public function invoice(): BelongsTo
     {

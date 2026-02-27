@@ -56,13 +56,6 @@ final class ChangelogEntryResource extends Resource
         return ChangelogEntriesTable::configure($table);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function canAccess(): bool
     {
         $user = auth()->user();

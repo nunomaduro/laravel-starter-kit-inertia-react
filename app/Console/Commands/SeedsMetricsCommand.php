@@ -9,25 +9,12 @@ use Illuminate\Support\Facades\File;
 
 final class SeedsMetricsCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:metrics
                             {--file= : Specific metrics file to display}
                             {--latest : Show latest metrics file}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Display seeding metrics from last run';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $metricsPath = storage_path('logs');

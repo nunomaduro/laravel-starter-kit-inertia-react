@@ -61,9 +61,6 @@ final class UsersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
             ->headerActions([
                 self::makeExportHeaderAction('users', queued: true, chunkSize: 500),
             ])

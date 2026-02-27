@@ -13,25 +13,12 @@ use ReflectionType;
 
 final class ReviewDocumentation extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'docs:review
                             {--component= : Review specific component (action, controller, page)}
                             {--name= : Name of specific component to review}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Review documentation quality and completeness';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $manifestPath = base_path('docs/.manifest.json');
@@ -48,17 +35,14 @@ final class ReviewDocumentation extends Command
 
         $issues = [];
 
-        // Review Actions
         if ($this->option('component') === null || $this->option('component') === 'action') {
             $issues = array_merge($issues, $this->reviewActions($manifest['actions'] ?? []));
         }
 
-        // Review Controllers
         if ($this->option('component') === null || $this->option('component') === 'controller') {
             $issues = array_merge($issues, $this->reviewControllers($manifest['controllers'] ?? []));
         }
 
-        // Review Pages
         if ($this->option('component') === null || $this->option('component') === 'page') {
             $issues = array_merge($issues, $this->reviewPages($manifest['pages'] ?? []));
         }
@@ -78,8 +62,6 @@ final class ReviewDocumentation extends Command
     }
 
     /**
-     * Review Actions documentation.
-     *
      * @param  array<string, mixed>  $actions
      * @return array<string>
      */
@@ -116,8 +98,6 @@ final class ReviewDocumentation extends Command
     }
 
     /**
-     * Review Controllers documentation.
-     *
      * @param  array<string, mixed>  $controllers
      * @return array<string>
      */
@@ -154,8 +134,6 @@ final class ReviewDocumentation extends Command
     }
 
     /**
-     * Review Pages documentation.
-     *
      * @param  array<string, mixed>  $pages
      * @return array<string>
      */
@@ -189,8 +167,6 @@ final class ReviewDocumentation extends Command
     }
 
     /**
-     * Verify Action method signature matches documentation.
-     *
      * @return array<string>
      */
     private function verifyActionSignature(string $actionName, string $codePath, string $docPath): array
@@ -233,8 +209,6 @@ final class ReviewDocumentation extends Command
     }
 
     /**
-     * Verify Controller methods match documentation.
-     *
      * @return array<string>
      */
     private function verifyControllerMethods(string $controllerName, string $codePath, string $docPath): array
@@ -267,8 +241,6 @@ final class ReviewDocumentation extends Command
     }
 
     /**
-     * Resolve manifest doc path (section-relative or project-relative) to absolute path.
-     *
      * @param  'action'|'controller'|'page'  $type
      */
     private function resolveDocPath(string $path, string $type): ?string
@@ -293,9 +265,6 @@ final class ReviewDocumentation extends Command
         return base_path($sectionBase.'/'.$path);
     }
 
-    /**
-     * Get class name from file path.
-     */
     private function getClassNameFromFile(string $filePath): ?string
     {
         if (! File::exists($filePath)) {
@@ -304,14 +273,12 @@ final class ReviewDocumentation extends Command
 
         $content = File::get($filePath);
 
-        // Extract namespace
         if (! preg_match('/namespace\s+([^;]+);/', $content, $namespaceMatch)) {
             return null;
         }
 
         $namespace = $namespaceMatch[1];
 
-        // Extract class name
         if (! preg_match('/\b(?:final\s+)?(?:readonly\s+)?class\s+(\w+)/', $content, $classMatch)) {
             return null;
         }

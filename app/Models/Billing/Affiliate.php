@@ -14,7 +14,6 @@ use Illuminate\Support\Str;
 final class Affiliate extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-    use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     public const string STATUS_PENDING = 'pending';
 

@@ -45,9 +45,6 @@ final class VouchersTable
                     ->label('Redeemed')
                     ->counts('users'),
             ])
-            ->filters([
-                //
-            ])
             ->headerActions([
                 self::makeExportHeaderAction('vouchers'),
             ])

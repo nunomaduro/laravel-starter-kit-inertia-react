@@ -31,22 +31,11 @@ final class OrganizationInvitationPolicy
         return $user->belongsToOrganization($organizationInvitation->organization_id);
     }
 
-    /**
-     * Authorize creating an invitation for the given organization.
-     */
     public function create(User $user, Organization $organization): bool
     {
-        if ($organization->isOwner($user) || $user->isSuperAdmin()) {
-            return true;
-        }
-
-        $previousTeamId = getPermissionsTeamId();
-        setPermissionsTeamId($organization->id);
-        try {
-            return $user->hasRole('admin');
-        } finally {
-            setPermissionsTeamId($previousTeamId);
-        }
+        return $organization->isOwner($user)
+            || $user->isSuperAdmin()
+            || $this->userHasOrgRole($user, $organization, 'admin');
     }
 
     public function update(User $user, OrganizationInvitation $organizationInvitation): bool
@@ -55,22 +44,25 @@ final class OrganizationInvitationPolicy
             return true;
         }
 
-        $org = $organizationInvitation->organization;
-        if ($org->isOwner($user)) {
-            return true;
-        }
+        $organization = $organizationInvitation->organization;
 
-        $previousTeamId = getPermissionsTeamId();
-        setPermissionsTeamId($org->id);
-        try {
-            return $user->hasRole('admin');
-        } finally {
-            setPermissionsTeamId($previousTeamId);
-        }
+        return $organization->isOwner($user)
+            || $this->userHasOrgRole($user, $organization, 'admin');
     }
 
     public function delete(User $user, OrganizationInvitation $organizationInvitation): bool
     {
         return $this->update($user, $organizationInvitation);
+    }
+
+    private function userHasOrgRole(User $user, Organization $organization, string $role): bool
+    {
+        $previousTeamId = getPermissionsTeamId();
+        setPermissionsTeamId($organization->id);
+        try {
+            return $user->hasRole($role);
+        } finally {
+            setPermissionsTeamId($previousTeamId);
+        }
     }
 }

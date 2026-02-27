@@ -5,25 +5,14 @@ declare(strict_types=1);
 namespace App\Jobs\Billing;
 
 use App\Models\Billing\Credit;
-use Exception;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
-/**
- * Expire credits that have passed their expiration date.
- *
- * Runs daily to process expired credits and create debit entries.
- */
 final class ExpireCredits implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
     use Queueable;
-    use SerializesModels;
 
     public function handle(): void
     {
@@ -62,7 +51,7 @@ final class ExpireCredits implements ShouldQueue
                     'creditable_id' => $group->creditable_id,
                     'amount' => $expiredAmount,
                 ]);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 $errors++;
                 Log::error('Failed to expire credits for entity', [
                     'creditable_type' => $group->creditable_type,

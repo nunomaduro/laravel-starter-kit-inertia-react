@@ -214,17 +214,11 @@ final class PaddleGateway implements PaymentGatewayInterface
     private function request(string $method, string $endpoint, array $data = []): array
     {
         $url = $this->getBaseUrl().$endpoint;
-        $headers = [
+
+        $response = Http::withHeaders([
             'Authorization' => 'Bearer '.config('paddle.vendor_auth_code'),
             'Content-Type' => 'application/json',
-        ];
-
-        $response = match (mb_strtoupper($method)) {
-            'GET' => Http::withHeaders($headers)->get($url, $data),
-            'POST' => Http::withHeaders($headers)->post($url, $data),
-            'PATCH' => Http::withHeaders($headers)->patch($url, $data),
-            default => Http::withHeaders($headers)->$method($url, $data),
-        };
+        ])->{$method}($url, $data);
 
         if (! $response->successful()) {
             throw new RuntimeException(

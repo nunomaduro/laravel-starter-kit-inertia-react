@@ -11,24 +11,11 @@ use Illuminate\Support\Str;
 
 final class SeedsTestCoverageCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:test-coverage
                             {--json : Output as JSON}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Analyze test coverage of seed scenarios';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(SeedScenarioManager $scenarioManager): int
     {
         $testsPath = base_path('tests');
@@ -55,14 +42,12 @@ final class SeedsTestCoverageCommand extends Command
 
             $content = File::get($file->getPathname());
 
-            // Find model references
             if (preg_match_all('/use\s+App\\\Models\\\\(\w+)/', $content, $matches)) {
                 foreach ($matches[1] as $model) {
                     $usedModels[$model] = ($usedModels[$model] ?? 0) + 1;
                 }
             }
 
-            // Find relationship accesses
             if (preg_match_all('/\$(\w+)->(\w+)/', $content, $relMatches)) {
                 foreach ($relMatches[2] as $rel) {
                     if (! in_array($rel, ['id', 'name', 'email', 'created_at', 'updated_at'], true)) {
@@ -71,7 +56,6 @@ final class SeedsTestCoverageCommand extends Command
                 }
             }
 
-            // Find scenario usage
             if (preg_match_all('/seedScenario\([\'"](\w+)[\'"]/', $content, $scenarioMatches)) {
                 foreach ($scenarioMatches[1] as $scenario) {
                     $usedScenarios[$scenario] = ($usedScenarios[$scenario] ?? 0) + 1;
@@ -87,7 +71,6 @@ final class SeedsTestCoverageCommand extends Command
             'missing_scenarios' => [],
         ];
 
-        // Check for models used but not in scenarios
         foreach ($usedModels as $model => $count) {
             $found = false;
 

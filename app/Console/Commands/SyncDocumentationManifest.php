@@ -18,22 +18,12 @@ use ReflectionParameter;
 
 final class SyncDocumentationManifest extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'docs:sync
                             {--check : Only check for undocumented items, do not update manifest}
                             {--generate : Generate documentation stubs for undocumented items}
                             {--ai : Use AI (Prism) to generate full documentation}
                             {--auto : Call Prism to generate and write docs (requires --ai); without --auto only writes prompts to docs/.ai-prompts/}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Sync documentation manifest with actual codebase';
 
     public function __construct(
@@ -45,9 +35,6 @@ final class SyncDocumentationManifest extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $manifestPath = base_path('docs/.manifest.json');
@@ -66,7 +53,6 @@ final class SyncDocumentationManifest extends Command
         $controllers = $this->scanControllers();
         $pages = $this->scanPages();
 
-        // Discover relationships using cross-reference service
         $this->info('Discovering relationships...');
         $actionRelationships = $this->crossReference->discoverActionRelationships($actions);
         $controllerRelationships = $this->crossReference->discoverControllerRelationships($controllers);
@@ -78,7 +64,6 @@ final class SyncDocumentationManifest extends Command
             'pages' => [],
         ];
 
-        // Sync Actions (now returns array with details)
         foreach (array_keys($actions) as $actionName) {
             if (! isset($manifest['actions'][$actionName])) {
                 $manifest['actions'][$actionName] = [
@@ -92,12 +77,10 @@ final class SyncDocumentationManifest extends Command
                 ];
             }
 
-            // Check if documented
             if (! ($manifest['actions'][$actionName]['documented'] ?? false)) {
                 $undocumented['actions'][] = $actionName;
             }
 
-            // Always update relationships (they may have changed)
             if (isset($actionRelationships[$actionName])) {
                 $manifest['actions'][$actionName]['relationships'] = $actionRelationships[$actionName];
             } elseif (! isset($manifest['actions'][$actionName]['relationships'])) {
@@ -109,7 +92,6 @@ final class SyncDocumentationManifest extends Command
             }
         }
 
-        // Sync Controllers (now returns array with details)
         foreach (array_keys($controllers) as $controllerName) {
             if (! isset($manifest['controllers'][$controllerName])) {
                 $manifest['controllers'][$controllerName] = [
@@ -124,12 +106,10 @@ final class SyncDocumentationManifest extends Command
                 ];
             }
 
-            // Check if documented
             if (! ($manifest['controllers'][$controllerName]['documented'] ?? false)) {
                 $undocumented['controllers'][] = $controllerName;
             }
 
-            // Always update relationships (they may have changed)
             if (isset($controllerRelationships[$controllerName])) {
                 $manifest['controllers'][$controllerName]['relationships'] = $controllerRelationships[$controllerName];
             } elseif (! isset($manifest['controllers'][$controllerName]['relationships'])) {
@@ -142,7 +122,6 @@ final class SyncDocumentationManifest extends Command
             }
         }
 
-        // Sync Pages (now returns array with details)
         foreach (array_keys($pages) as $pagePath) {
             if (! isset($manifest['pages'][$pagePath])) {
                 $manifest['pages'][$pagePath] = [
@@ -156,12 +135,10 @@ final class SyncDocumentationManifest extends Command
                 ];
             }
 
-            // Check if documented
             if (! ($manifest['pages'][$pagePath]['documented'] ?? false)) {
                 $undocumented['pages'][] = $pagePath;
             }
 
-            // Always update relationships (they may have changed)
             if (isset($pageRelationships[$pagePath])) {
                 $manifest['pages'][$pagePath]['relationships'] = $pageRelationships[$pagePath];
             } elseif (! isset($manifest['pages'][$pagePath]['relationships'])) {
@@ -172,7 +149,6 @@ final class SyncDocumentationManifest extends Command
             }
         }
 
-        // Update lastGenerated
         $manifest['lastGenerated'] = now()->format('Y-m-d');
 
         if ($this->option('check')) {
@@ -183,12 +159,10 @@ final class SyncDocumentationManifest extends Command
                 : self::FAILURE;
         }
 
-        // Write updated manifest
         File::put($manifestPath, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
 
         $this->info('Manifest synced successfully!');
 
-        // Auto-update index files
         $this->updateIndexFiles($manifest);
 
         if (isset($undocumented['actions']) && $undocumented['actions'] !== [] || isset($undocumented['controllers']) && $undocumented['controllers'] !== [] || isset($undocumented['pages']) && $undocumented['pages'] !== []) {
@@ -221,8 +195,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Scan Actions directory with reflection.
-     *
      * @return array<string, array<string, mixed>>
      */
     private function scanActions(): array
@@ -262,7 +234,6 @@ final class SyncDocumentationManifest extends Command
                     'dependencies' => [],
                 ];
 
-                // Extract constructor dependencies
                 if ($reflection->hasMethod('__construct')) {
                     $constructor = $reflection->getMethod('__construct');
                     foreach ($constructor->getParameters() as $param) {
@@ -278,7 +249,6 @@ final class SyncDocumentationManifest extends Command
 
                 $actions[$shortClassName] = $actionInfo;
             } catch (ReflectionException) {
-                // Skip if reflection fails
                 $actions[$shortClassName] = ['name' => $shortClassName, 'filePath' => $filePath];
             }
         }
@@ -287,8 +257,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Scan Controllers directory with reflection.
-     *
      * @return array<string, array<string, mixed>>
      */
     private function scanControllers(): array
@@ -327,7 +295,6 @@ final class SyncDocumentationManifest extends Command
 
                     $methods[$method->getName()] = $this->extractMethodInfo($method);
 
-                    // Extract Action classes used
                     $methodBody = $this->getMethodBody($filePath, $method->getName());
                     $methods[$method->getName()]['actionsUsed'] = $this->extractActionClasses($methodBody);
                     $methods[$method->getName()]['formRequestsUsed'] = $this->extractFormRequestClasses($methodBody);
@@ -341,7 +308,6 @@ final class SyncDocumentationManifest extends Command
                     'methods' => $methods,
                 ];
             } catch (ReflectionException) {
-                // Skip if reflection fails
                 $controllers[$className] = ['name' => $className, 'filePath' => $filePath];
             }
         }
@@ -350,8 +316,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Scan Pages directory with TSDoc extraction.
-     *
      * @return array<string, array<string, mixed>>
      */
     private function scanPages(): array
@@ -388,8 +352,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Display undocumented items.
-     *
      * @param  array<string, array<string>>  $undocumented
      */
     private function displayUndocumented(array $undocumented): void
@@ -427,8 +389,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Generate documentation stubs.
-     *
      * @param  array<string, array<string>>  $undocumented
      */
     private function generateStubs(array $undocumented): void
@@ -451,8 +411,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Mark generated stubs as documented in the manifest.
-     *
      * @param  array<string, array<string>>  $undocumented
      * @param  array<string, mixed>  $manifest
      */
@@ -474,9 +432,6 @@ final class SyncDocumentationManifest extends Command
         $this->updateIndexFiles($manifest);
     }
 
-    /**
-     * Generate Action documentation stub.
-     */
     private function generateActionStub(string $action): void
     {
         $templatePath = base_path('docs/.templates/action.md');
@@ -497,9 +452,6 @@ final class SyncDocumentationManifest extends Command
         $this->line("  ✓ Generated: {$outputPath}");
     }
 
-    /**
-     * Generate Controller documentation stub.
-     */
     private function generateControllerStub(string $controller): void
     {
         $templatePath = base_path('docs/.templates/controller.md');
@@ -520,9 +472,6 @@ final class SyncDocumentationManifest extends Command
         $this->line("  ✓ Generated: {$outputPath}");
     }
 
-    /**
-     * Generate Page documentation stub.
-     */
     private function generatePageStub(string $page): void
     {
         $templatePath = base_path('docs/.templates/page.md');
@@ -545,8 +494,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Extract PHPDoc from a PHP file.
-     *
      * @return array<string, mixed>
      */
     private function extractPHPDoc(string $filePath): array
@@ -577,19 +524,16 @@ final class SyncDocumentationManifest extends Command
             'methods' => [],
         ];
 
-        // Extract handle() method for Actions
         if ($reflection->hasMethod('handle')) {
             $method = $reflection->getMethod('handle');
             $result['methods']['handle'] = $this->extractMethodInfo($method);
         }
 
-        // Extract constructor for dependencies
         if ($reflection->hasMethod('__construct')) {
             $constructor = $reflection->getMethod('__construct');
             $result['methods']['__construct'] = $this->extractMethodInfo($constructor);
         }
 
-        // Extract all public methods for Controllers
         if (str_contains($className, 'Controller')) {
             foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                 if (! $method->isConstructor()) {
@@ -602,8 +546,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Extract TSDoc from a TypeScript/TSX file.
-     *
      * @return array<string, mixed>
      */
     private function extractTSDoc(string $filePath): array
@@ -619,20 +561,17 @@ final class SyncDocumentationManifest extends Command
             'description' => null,
         ];
 
-        // Extract JSDoc comments
         if (preg_match('/\/\*\*([^*]|(?:\*(?!\/)))*\*\//s', $content, $matches)) {
             $jsDoc = $matches[0];
             $result['description'] = $this->extractJSDocDescription($jsDoc);
         }
 
-        // Extract props from TypeScript interface or type
         if (preg_match('/interface\s+(\w+)\s*\{([^}]+)\}/s', $content, $matches)) {
             $interfaceName = $matches[1];
             $interfaceBody = $matches[2];
             $result['props'] = $this->extractPropsFromInterface($interfaceBody);
         }
 
-        // Extract default export function
         if (preg_match('/export\s+default\s+function\s+(\w+)/', $content, $matches)) {
             $result['component'] = $matches[1];
         }
@@ -641,8 +580,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Parse a docblock into structured data.
-     *
      * @return array<string, mixed>
      */
     private function parseDocBlock(string $docBlock): array
@@ -659,7 +596,6 @@ final class SyncDocumentationManifest extends Command
             'see' => [],
         ];
 
-        // Remove /** and */
         $docBlock = preg_replace('/^\/\*\*|\*\/$/', '', $docBlock);
         $lines = explode("\n", (string) $docBlock);
 
@@ -674,7 +610,6 @@ final class SyncDocumentationManifest extends Command
                 continue;
             }
 
-            // Parse @param
             if (preg_match('/@param\s+([^\s]+)\s+\$(\w+)\s*(.*)/', $line, $matches)) {
                 $inDescription = false;
                 $result['params'][$matches[2]] = [
@@ -686,7 +621,6 @@ final class SyncDocumentationManifest extends Command
                 continue;
             }
 
-            // Parse @return
             if (preg_match('/@return\s+([^\s]+)\s*(.*)/', $line, $matches)) {
                 $inDescription = false;
                 $result['return'] = [
@@ -697,7 +631,6 @@ final class SyncDocumentationManifest extends Command
                 continue;
             }
 
-            // Parse @throws
             if (preg_match('/@throws\s+([^\s]+)\s*(.*)/', $line, $matches)) {
                 $inDescription = false;
                 $result['throws'][] = [
@@ -708,7 +641,6 @@ final class SyncDocumentationManifest extends Command
                 continue;
             }
 
-            // Parse @see
             if (preg_match('/@see\s+(.+)/', $line, $matches)) {
                 $inDescription = false;
                 $result['see'][] = mb_trim($matches[1]);
@@ -727,8 +659,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Extract method information using reflection.
-     *
      * @return array<string, mixed>
      */
     private function extractMethodInfo(ReflectionMethod $method): array
@@ -753,7 +683,6 @@ final class SyncDocumentationManifest extends Command
                 }
             }
 
-            // Merge with PHPDoc param info if available
             if (isset($parsed['params'][$param->getName()])) {
                 $paramInfo = array_merge($paramInfo, $parsed['params'][$param->getName()]);
             }
@@ -771,9 +700,6 @@ final class SyncDocumentationManifest extends Command
         ];
     }
 
-    /**
-     * Get parameter type from reflection.
-     */
     private function getParameterType(ReflectionParameter $param): ?string
     {
         if ($param->hasType()) {
@@ -787,9 +713,6 @@ final class SyncDocumentationManifest extends Command
         return null;
     }
 
-    /**
-     * Get return type from reflection.
-     */
     private function getReturnType(ReflectionMethod $method): ?string
     {
         if ($method->hasReturnType()) {
@@ -803,21 +726,16 @@ final class SyncDocumentationManifest extends Command
         return null;
     }
 
-    /**
-     * Get class name from file path.
-     */
     private function getClassNameFromFile(string $filePath): ?string
     {
         $content = File::get($filePath);
 
-        // Extract namespace
         if (! preg_match('/namespace\s+([^;]+);/', $content, $namespaceMatch)) {
             return null;
         }
 
         $namespace = $namespaceMatch[1];
 
-        // Extract class name
         if (! preg_match('/\b(?:final\s+)?(?:readonly\s+)?class\s+(\w+)/', $content, $classMatch)) {
             return null;
         }
@@ -827,9 +745,6 @@ final class SyncDocumentationManifest extends Command
         return "{$namespace}\\{$className}";
     }
 
-    /**
-     * Extract description from JSDoc comment.
-     */
     private function extractJSDocDescription(string $jsDoc): ?string
     {
         $lines = explode("\n", $jsDoc);
@@ -852,8 +767,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Extract props from TypeScript interface body.
-     *
      * @return array<string, mixed>
      */
     private function extractPropsFromInterface(string $interfaceBody): array
@@ -873,7 +786,6 @@ final class SyncDocumentationManifest extends Command
                 continue;
             }
 
-            // Match prop: type or prop?: type
             if (preg_match('/(\w+)\??\s*:\s*([^;]+);?/', $line, $matches)) {
                 $props[] = [
                     'name' => $matches[1],
@@ -886,14 +798,10 @@ final class SyncDocumentationManifest extends Command
         return $props;
     }
 
-    /**
-     * Get method body from file (simplified extraction).
-     */
     private function getMethodBody(string $filePath, string $methodName): string
     {
         $content = File::get($filePath);
 
-        // Simple regex to extract method body (not perfect but works for most cases)
         $pattern = '/function\s+'.$methodName.'\s*\([^)]*\)\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/s';
 
         if (preg_match($pattern, $content, $matches)) {
@@ -904,20 +812,16 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Extract Action class names from method body.
-     *
      * @return array<string>
      */
     private function extractActionClasses(string $methodBody): array
     {
         $actions = [];
 
-        // Match Action class usage: $action->handle() or app(ActionClass::class)
         if (preg_match_all('/(?:app\(|new\s+)([A-Z]\w+Action)::class/', $methodBody, $matches)) {
             $actions = array_unique($matches[1]);
         }
 
-        // Also match type hints: ActionClass $action
         if (preg_match_all('/([A-Z]\w+Action)\s+\$/', $methodBody, $matches)) {
             $actions = array_merge($actions, $matches[1]);
         }
@@ -926,13 +830,10 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Extract Form Request class names from method body.
-     *
      * @return array<string>
      */
     private function extractFormRequestClasses(string $methodBody): array
     {
-        // Match Form Request type hints: FormRequestClass $request
         if (preg_match_all('/([A-Z]\w+Request)\s+\$request/', $methodBody, $matches)) {
             return array_unique($matches[1]);
         }
@@ -941,29 +842,20 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Update index README files with tables of contents.
-     *
      * @param  array<string, mixed>  $manifest
      */
     private function updateIndexFiles(array $manifest): void
     {
         $this->info('Updating index files...');
 
-        // Update Actions index
         $this->updateActionsIndex($manifest['actions'] ?? []);
-
-        // Update Controllers index
         $this->updateControllersIndex($manifest['controllers'] ?? []);
-
-        // Update Pages index
         $this->updatePagesIndex($manifest['pages'] ?? []);
 
         $this->info('Index files updated!');
     }
 
     /**
-     * Update Actions README index.
-     *
      * @param  array<string, mixed>  $actions
      */
     private function updateActionsIndex(array $actions): void
@@ -976,12 +868,10 @@ final class SyncDocumentationManifest extends Command
 
         $content = File::get($indexPath);
 
-        // Generate table
         $table = "| Action | Purpose | Documented |\n";
         $table .= "|--------|---------|------------|\n";
 
         foreach ($actions as $actionName => $actionInfo) {
-            // Handle both string keys (from manifest) and array values (from scan)
             if (is_string($actionInfo)) {
                 $actionName = $actionInfo;
                 $actionInfo = [];
@@ -990,7 +880,6 @@ final class SyncDocumentationManifest extends Command
             $documented = $actionInfo['documented'] ?? false;
             $path = $actionInfo['path'] ?? null;
 
-            // Try to extract purpose from PHPDoc if available
             $purpose = 'N/A';
             if (isset($actionInfo['phpDoc']['class']['parsed']['description'])) {
                 $purpose = $actionInfo['phpDoc']['class']['parsed']['description'];
@@ -1008,12 +897,10 @@ final class SyncDocumentationManifest extends Command
             $table .= "| {$link} | {$purpose} | {$status} |\n";
         }
 
-        // Replace table section
         if (preg_match('/## Available Actions\n\n(.*?)(?=\n##|\n>|$)/s', $content, $matches)) {
             $newSection = "## Available Actions\n\n{$table}\n";
             $content = str_replace($matches[0], $newSection, $content);
         } else {
-            // Append if section doesn't exist
             $content .= "\n\n## Available Actions\n\n{$table}\n";
         }
 
@@ -1021,8 +908,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Update Controllers README index.
-     *
      * @param  array<string, mixed>  $controllers
      */
     private function updateControllersIndex(array $controllers): void
@@ -1030,19 +915,16 @@ final class SyncDocumentationManifest extends Command
         $indexPath = base_path('docs/developer/backend/controllers/README.md');
 
         if (! File::exists($indexPath)) {
-            // Create if doesn't exist
             File::ensureDirectoryExists(dirname($indexPath));
             File::put($indexPath, "# Controllers\n\n");
         }
 
         $content = File::get($indexPath);
 
-        // Generate table
         $table = "| Controller | Purpose | Documented |\n";
         $table .= "|------------|---------|------------|\n";
 
         foreach ($controllers as $controllerName => $controllerInfo) {
-            // Handle both string keys (from manifest) and array values (from scan)
             if (is_string($controllerInfo)) {
                 $controllerName = $controllerInfo;
                 $controllerInfo = [];
@@ -1068,7 +950,6 @@ final class SyncDocumentationManifest extends Command
             $table .= "| {$link} | {$purpose} | {$status} |\n";
         }
 
-        // Replace or add table section
         if (preg_match('/## Available Controllers\n\n(.*?)(?=\n##|\n>|$)/s', $content, $matches)) {
             $newSection = "## Available Controllers\n\n{$table}\n";
             $content = str_replace($matches[0], $newSection, $content);
@@ -1080,8 +961,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Update Pages README index.
-     *
      * @param  array<string, mixed>  $pages
      */
     private function updatePagesIndex(array $pages): void
@@ -1094,7 +973,6 @@ final class SyncDocumentationManifest extends Command
 
         $content = File::get($indexPath);
 
-        // Generate table
         $table = "| Page | Route | Documented |\n";
         $table .= "|------|-------|------------|\n";
 
@@ -1102,7 +980,6 @@ final class SyncDocumentationManifest extends Command
             $documented = $pageInfo['documented'] ?? false;
             $developerGuide = $pageInfo['developerGuide'] ?? null;
 
-            // Get route from relationships
             $routes = $pageInfo['relationships']['relatedRoutes'] ?? [];
             $routeDisplay = empty($routes) ? 'N/A' : implode(', ', array_slice($routes, 0, 2));
 
@@ -1112,7 +989,6 @@ final class SyncDocumentationManifest extends Command
             $table .= "| {$link} | {$routeDisplay} | {$status} |\n";
         }
 
-        // Replace table section
         if (preg_match('/## Available Pages\n\n(.*?)(?=\n##|\n>|$)/s', $content, $matches)) {
             $newSection = "## Available Pages\n\n{$table}\n";
             $content = str_replace($matches[0], $newSection, $content);
@@ -1124,8 +1000,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Generate documentation using Prism (OpenRouter) and update manifest.
-     *
      * @param  array<string, array<string>>  $undocumented
      * @param  array<string, mixed>  $actions
      * @param  array<string, mixed>  $controllers
@@ -1217,8 +1091,6 @@ final class SyncDocumentationManifest extends Command
     }
 
     /**
-     * Generate documentation using AI prompts.
-     *
      * @param  array<string, array<string>>  $undocumented
      * @param  array<string, mixed>  $actions
      * @param  array<string, mixed>  $controllers
@@ -1242,7 +1114,6 @@ final class SyncDocumentationManifest extends Command
         $promptsDir = base_path('docs/.ai-prompts');
         File::ensureDirectoryExists($promptsDir);
 
-        // Generate prompts for Actions
         foreach ($undocumented['actions'] as $actionName) {
             if (! isset($actions[$actionName])) {
                 continue;
@@ -1262,7 +1133,6 @@ final class SyncDocumentationManifest extends Command
             $this->line("    Use this prompt with an AI agent to generate documentation for {$actionName}");
         }
 
-        // Generate prompts for Controllers
         foreach ($undocumented['controllers'] as $controllerName) {
             if (! isset($controllers[$controllerName])) {
                 continue;
@@ -1281,7 +1151,6 @@ final class SyncDocumentationManifest extends Command
             $this->line("  ✓ Generated prompt: {$promptFile}");
         }
 
-        // Generate prompts for Pages
         foreach ($undocumented['pages'] as $pagePath) {
             if (! isset($pages[$pagePath])) {
                 continue;

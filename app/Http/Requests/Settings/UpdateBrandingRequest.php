@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Settings;
 
+use App\Models\Organization;
+use App\Services\TenantContext;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -11,9 +13,9 @@ final class UpdateBrandingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $organization = \App\Services\TenantContext::get();
+        $organization = TenantContext::get();
 
-        return $organization instanceof \App\Models\Organization && $this->user()?->canInOrganization('org.settings.manage', $organization);
+        return $organization instanceof Organization && $this->user()?->canInOrganization('org.settings.manage', $organization);
     }
 
     /**

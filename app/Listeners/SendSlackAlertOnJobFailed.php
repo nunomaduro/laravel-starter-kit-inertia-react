@@ -14,7 +14,7 @@ final class SendSlackAlertOnJobFailed
 {
     public function handle(JobFailed $event): void
     {
-        if (config('services.slack.webhook_url') === null || config('services.slack.webhook_url') === '') {
+        if (empty(config('services.slack.webhook_url'))) {
             return;
         }
 

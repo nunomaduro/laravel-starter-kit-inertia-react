@@ -85,11 +85,7 @@ final class Shareable extends Model
 
     public function isExpired(): bool
     {
-        if ($this->expires_at === null) {
-            return false;
-        }
-
-        return $this->expires_at->isPast();
+        return $this->expires_at?->isPast() ?? false;
     }
 
     public function canEdit(): bool

@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Enums\SeederCategory;
+use App\Services\AISeederCodeGenerator;
+use App\Services\AISeedGenerator;
+use App\Services\EnhancedRelationshipAnalyzer;
+use App\Services\PrismService;
 use App\Services\RelationshipAnalyzer;
 use App\Services\SeedSpecGenerator;
+use App\Services\TraditionalSeedGenerator;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -15,11 +20,6 @@ use Illuminate\Support\Str;
 
 final class MakeModelFullCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'make:model:full
                             {name : The name of the model}
                             {--category=development : Seeder category (essential, development, production)}
@@ -34,16 +34,8 @@ final class MakeModelFullCommand extends Command
                             {--all : Generate a migration, factory, seeder, and resource controller}
                             {--no-ai : Skip AI generation even if available}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Create a new Eloquent model with factory, seeder, and JSON data file';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $name = $this->argument('name');
@@ -97,9 +89,6 @@ final class MakeModelFullCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * Create the model.
-     */
     private function createModel(string $name, bool $all): void
     {
         $options = ['--no-interaction' => true];
@@ -185,9 +174,6 @@ PHP;
         );
     }
 
-    /**
-     * Create the factory.
-     */
     private function createFactory(string $name): void
     {
         Artisan::call('make:factory', [
@@ -198,45 +184,33 @@ PHP;
         $this->info('✓ Factory created');
     }
 
-    /**
-     * Create the seeder.
-     */
     private function createSeeder(string $name, SeederCategory $category): void
     {
         $seederName = "{$name}Seeder";
         $categoryPath = database_path("seeders/{$category->value}");
 
-        // Ensure category directory exists
         if (! File::isDirectory($categoryPath)) {
             File::makeDirectory($categoryPath, 0755, true);
         }
 
-        // Create seeder file directly (Laravel's make:seeder doesn't support subdirectories)
         $seederPath = "{$categoryPath}/{$seederName}.php";
 
         if (File::exists($seederPath)) {
             $this->warn("Seeder already exists: {$seederPath}");
         } else {
-            // Create the seeder file with our patterns
             $this->updateSeederFile($name, $seederName, $category);
         }
 
         $this->info("✓ Seeder created in {$category->value} category");
     }
 
-    /**
-     * Update seeder file with our patterns.
-     */
     private function updateSeederFile(string $modelName, string $seederName, SeederCategory $category): void
     {
         $seederPath = database_path("seeders/{$category->value}/{$seederName}.php");
         $modelClass = "App\\Models\\{$modelName}";
         $namespace = "Database\\Seeders\\{$category->value}";
-        Str::snake(Str::plural($modelName));
 
-        // Analyze relationships using enhanced analyzer
         $enhancedAnalyzer = resolve(EnhancedRelationshipAnalyzer::class);
-        $modelClass = "App\\Models\\{$modelName}";
 
         // Try enhanced analyzer first (uses model reflection)
         $relationships = class_exists($modelClass)
@@ -303,9 +277,6 @@ PHP;
         File::put($seederPath, $content);
     }
 
-    /**
-     * Create JSON data file.
-     */
     private function createJsonDataFile(string $modelName): void
     {
         $jsonKey = $this->getJsonKey($modelName);
@@ -324,9 +295,6 @@ PHP;
         $this->info('✓ JSON data file created');
     }
 
-    /**
-     * Update manifest.json.
-     */
     private function updateManifest(string $modelName, SeederCategory $category): void
     {
         $manifestPath = database_path('seeders/manifest.json');
@@ -355,9 +323,6 @@ PHP;
         $this->info('✓ Manifest updated');
     }
 
-    /**
-     * Create controller.
-     */
     private function createController(string $name, bool $all): void
     {
         $options = ['--no-interaction' => true];
@@ -374,9 +339,6 @@ PHP;
         $this->info('✓ Controller created');
     }
 
-    /**
-     * Create policy.
-     */
     private function createPolicy(string $name): void
     {
         Artisan::call('make:policy', [
@@ -387,9 +349,6 @@ PHP;
         $this->info('✓ Policy created');
     }
 
-    /**
-     * Create form requests.
-     */
     private function createRequests(string $name): void
     {
         Artisan::call('make:request', [
@@ -405,9 +364,6 @@ PHP;
         $this->info('✓ Form requests created');
     }
 
-    /**
-     * Get category from option.
-     */
     private function getCategory(): SeederCategory
     {
         $category = $this->option('category') ?? 'development';
@@ -419,17 +375,11 @@ PHP;
         };
     }
 
-    /**
-     * Get JSON key for model name.
-     */
     private function getJsonKey(string $modelName): string
     {
         return Str::snake(Str::plural($modelName));
     }
 
-    /**
-     * Generate seed spec for model.
-     */
     private function generateSeedSpec(string $name): void
     {
         $modelClass = "App\\Models\\{$name}";
@@ -448,9 +398,6 @@ PHP;
         }
     }
 
-    /**
-     * Smart JSON generation - auto-generate if missing/empty and AI available.
-     */
     private function autoGenerateJsonIfNeeded(string $name): void
     {
         if ($this->option('no-ai')) {
@@ -503,8 +450,6 @@ PHP;
     }
 
     /**
-     * Generate JSON using AI (structured output first, then text fallback).
-     *
      * @param  array<string, mixed>  $spec
      */
     private function generateJsonWithAI(string $name, array $spec, PrismService $prismService): void
@@ -542,8 +487,6 @@ PHP;
     }
 
     /**
-     * Call Prism: structured output first, then text + parse fallback.
-     *
      * @return array<int, array<string, mixed>>|null
      */
     private function generateSeedJsonViaPrism(string $prompt, string $model, PrismService $prismService): ?array
@@ -584,8 +527,6 @@ PHP;
     }
 
     /**
-     * Normalize AI JSON response to array of record arrays.
-     *
      * @param  array<int, array<string, mixed>>|array<string, mixed>  $jsonData
      * @return array<int, array<string, mixed>>
      */
@@ -607,8 +548,6 @@ PHP;
     }
 
     /**
-     * Generate JSON using Faker.
-     *
      * @param  array<string, mixed>  $spec
      */
     private function generateJsonWithFaker(string $name, array $spec): void

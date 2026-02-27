@@ -16,7 +16,8 @@ final class ThemeSettings extends Settings
 
     public string $font = 'instrument-sans';
 
-    public string $default_appearance = 'system'; // light | dark | system
+    /** @var 'light'|'dark'|'system' */
+    public string $default_appearance = 'system';
 
     public static function group(): string
     {

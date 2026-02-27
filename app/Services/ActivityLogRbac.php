@@ -32,19 +32,10 @@ final readonly class ActivityLogRbac
             return;
         }
 
-        $causer = $this->resolveCauser();
-        if (! $causer instanceof Authenticatable) {
-            return;
-        }
-
-        activity()
-            ->performedOn($user)
-            ->causedBy($causer)
-            ->withProperties([
-                'old' => $oldRoleNames,
-                'attributes' => $newRoleNames,
-            ])
-            ->log(ActivityType::RolesUpdated->value);
+        $this->logActivity($user, ActivityType::RolesUpdated, [
+            'old' => $oldRoleNames,
+            'attributes' => $newRoleNames,
+        ]);
     }
 
     public function logRolesAssigned(Model $user, array $roleNames): void
@@ -53,16 +44,7 @@ final readonly class ActivityLogRbac
             return;
         }
 
-        $causer = $this->resolveCauser();
-        if (! $causer instanceof Authenticatable) {
-            return;
-        }
-
-        activity()
-            ->performedOn($user)
-            ->causedBy($causer)
-            ->withProperties(['attributes' => $roleNames])
-            ->log(ActivityType::RolesAssigned->value);
+        $this->logActivity($user, ActivityType::RolesAssigned, ['attributes' => $roleNames]);
     }
 
     public function logPermissionsUpdated(Model $role, array $oldPermissionNames, array $newPermissionNames): void
@@ -71,19 +53,10 @@ final readonly class ActivityLogRbac
             return;
         }
 
-        $causer = $this->resolveCauser();
-        if (! $causer instanceof Authenticatable) {
-            return;
-        }
-
-        activity()
-            ->performedOn($role)
-            ->causedBy($causer)
-            ->withProperties([
-                'old' => $oldPermissionNames,
-                'attributes' => $newPermissionNames,
-            ])
-            ->log(ActivityType::PermissionsUpdated->value);
+        $this->logActivity($role, ActivityType::PermissionsUpdated, [
+            'old' => $oldPermissionNames,
+            'attributes' => $newPermissionNames,
+        ]);
     }
 
     public function logPermissionsAssigned(Model $role, array $permissionNames): void
@@ -92,22 +65,20 @@ final readonly class ActivityLogRbac
             return;
         }
 
-        $causer = $this->resolveCauser();
+        $this->logActivity($role, ActivityType::PermissionsAssigned, ['attributes' => $permissionNames]);
+    }
+
+    private function logActivity(Model $subject, ActivityType $type, array $properties): void
+    {
+        $causer = auth()->user();
         if (! $causer instanceof Authenticatable) {
             return;
         }
 
         activity()
-            ->performedOn($role)
+            ->performedOn($subject)
             ->causedBy($causer)
-            ->withProperties(['attributes' => $permissionNames])
-            ->log(ActivityType::PermissionsAssigned->value);
-    }
-
-    private function resolveCauser(): ?Authenticatable
-    {
-        $user = auth()->user();
-
-        return $user instanceof Authenticatable ? $user : null;
+            ->withProperties($properties)
+            ->log($type->value);
     }
 }

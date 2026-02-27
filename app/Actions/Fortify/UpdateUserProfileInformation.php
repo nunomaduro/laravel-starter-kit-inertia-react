@@ -13,8 +13,6 @@ use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 final class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
     /**
-     * Validate and update the given user's profile information.
-     *
      * @param  array<string, string>  $input
      */
     public function update(User $user, array $input): void
@@ -43,8 +41,6 @@ final class UpdateUserProfileInformation implements UpdatesUserProfileInformatio
     }
 
     /**
-     * Update the given verified user's profile information.
-     *
      * @param  array<string, string>  $input
      */
     private function updateVerifiedUser(User $user, array $input): void

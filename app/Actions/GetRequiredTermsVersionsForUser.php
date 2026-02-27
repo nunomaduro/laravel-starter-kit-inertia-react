@@ -8,16 +8,14 @@ use App\Models\TermsVersion;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
-/**
- * Returns required terms versions that the user has not yet accepted.
- *
- * @return Collection<int, TermsVersion>
- */
 final readonly class GetRequiredTermsVersionsForUser
 {
+    /**
+     * @return Collection<int, TermsVersion>
+     */
     public function handle(User $user): Collection
     {
-        $acceptedVersionIds = $user->termsAcceptances()->pluck('terms_version_id')->toArray();
+        $acceptedVersionIds = $user->termsAcceptances()->pluck('terms_version_id');
 
         return TermsVersion::query()
             ->where('is_required', true)

@@ -12,26 +12,13 @@ use Illuminate\Support\Facades\Schema;
 
 final class SeedsProfileCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:profile
                             {--connection= : Database connection to profile}
                             {--output= : Output file path (default: database/seeders/profiles/production.json)}
                             {--safe : Only profile if connection is not production}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Profile production/staging database to generate seed profiles (read-only)';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(ModelRegistry $registry): int
     {
         $connection = $this->option('connection') ?? config('database.default');
@@ -87,8 +74,6 @@ final class SeedsProfileCommand extends Command
     }
 
     /**
-     * Profile a single model.
-     *
      * @return array<string, mixed>
      */
     private function profileModel(string $modelClass, string $connection): array
@@ -114,8 +99,6 @@ final class SeedsProfileCommand extends Command
     }
 
     /**
-     * Calculate relationship cardinalities.
-     *
      * @return array<string, mixed>
      */
     private function calculateCardinalities(): array
@@ -126,8 +109,6 @@ final class SeedsProfileCommand extends Command
     }
 
     /**
-     * Calculate value distributions.
-     *
      * @return array<string, mixed>
      */
     private function calculateDistributions(string $table, string $connection): array
@@ -139,7 +120,6 @@ final class SeedsProfileCommand extends Command
             $type = Schema::connection($connection)->getColumnType($table, $column);
 
             if ($type === 'string' || $type === 'text') {
-                // Sample string lengths
                 $lengths = DB::connection($connection)
                     ->table($table)
                     ->selectRaw("LENGTH({$column}) as len")
@@ -157,7 +137,6 @@ final class SeedsProfileCommand extends Command
                     ];
                 }
             } elseif ($type === 'integer' || $type === 'bigint') {
-                // Sample numeric ranges
                 $stats = DB::connection($connection)
                     ->table($table)
                     ->selectRaw("MIN({$column}) as min_val, MAX({$column}) as max_val, AVG({$column}) as avg_val")
@@ -173,7 +152,6 @@ final class SeedsProfileCommand extends Command
                     ];
                 }
             } elseif ($type === 'boolean') {
-                // Count true/false distribution
                 $trueCount = DB::connection($connection)
                     ->table($table)
                     ->where($column, true)

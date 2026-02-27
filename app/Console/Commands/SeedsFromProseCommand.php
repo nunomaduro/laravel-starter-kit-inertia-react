@@ -13,27 +13,14 @@ use Prism\Prism\Enums\Provider;
 
 final class SeedsFromProseCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:from-prose
                             {description : Natural language description of the model/domain}
                             {--model= : Model name to generate spec for}
                             {--dry-run : Show generated spec without saving}
                             {--provider= : AI provider (openai, anthropic, local)}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generate seed spec from natural language description';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(SeedSpecGenerator $specGenerator, PrismService $prismService): int
     {
         $description = $this->argument('description');
@@ -88,9 +75,6 @@ final class SeedsFromProseCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * Build prompt for prose-to-spec conversion.
-     */
     private function buildProsePrompt(string $description, string $modelName): string
     {
         $prompt = "Convert this natural language description into a seed spec JSON structure:\n\n";
@@ -105,9 +89,6 @@ final class SeedsFromProseCommand extends Command
         return $prompt.'Return only valid JSON matching the seed spec format.';
     }
 
-    /**
-     * Get Prism provider from string.
-     */
     private function getPrismProvider(string $provider): Provider
     {
         return match ($provider) {
@@ -119,8 +100,6 @@ final class SeedsFromProseCommand extends Command
     }
 
     /**
-     * Generate basic spec structure when AI is not available.
-     *
      * @return array<string, mixed>
      */
     private function generateBasicSpec(string $modelName, string $description): array
@@ -137,8 +116,6 @@ final class SeedsFromProseCommand extends Command
     }
 
     /**
-     * Call AI to generate spec from prose.
-     *
      * @return array<string, mixed>|null
      */
     private function callAIForSpec(string $prompt, string $provider, string $modelName, PrismService $prismService): ?array

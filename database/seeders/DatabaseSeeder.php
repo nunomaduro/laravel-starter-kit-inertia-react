@@ -14,32 +14,20 @@ use ReflectionClass;
 
 final class DatabaseSeeder extends Seeder
 {
-    /**
-     * Metrics tracker.
-     */
     private ?SeedingMetrics $metrics = null;
 
     /**
-     * Create a new seeder instance.
-     *
-     * @param  array<SeederCategory>|null  $categories
-     * @param  array<string>|null  $only
-     * @param  array<string>|null  $skip
+     * @param  array<SeederCategory>|null  $categories  Categories to run based on environment.
+     * @param  array<string>|null  $only  Specific seeders to run (by class name).
+     * @param  array<string>|null  $skip  Seeders to skip (by class name).
+     * @param  bool  $strict  Strict mode - fail on errors.
      */
-    public function __construct(/**
-     * Categories to run based on environment.
-     */
-        private readonly ?array $categories = null, /**
-     * Specific seeders to run (by class name).
-     */
-        private readonly ?array $only = null, /**
-     * Seeders to skip (by class name).
-     */
-        private readonly ?array $skip = null, /**
-     * Strict mode - fail on errors.
-     */
-        private readonly bool $strict = false)
-    {
+    public function __construct(
+        private readonly ?array $categories = null,
+        private readonly ?array $only = null,
+        private readonly ?array $skip = null,
+        private readonly bool $strict = false,
+    ) {
         $this->metrics = new SeedingMetrics;
     }
 
@@ -95,11 +83,9 @@ final class DatabaseSeeder extends Seeder
         $this->command?->line("Warnings: {$summary['total_warnings']}");
         $this->command?->line("Errors: {$summary['total_errors']}");
 
-        // Save metrics
         $metricsPath = storage_path('logs/seeding_metrics_'.now()->format('Y-m-d_His').'.json');
         $this->metrics->save($metricsPath);
 
-        // Log summary
         Log::info('Seeding completed', [
             'duration' => $duration,
             'seeders' => count($seeders),
@@ -145,28 +131,20 @@ final class DatabaseSeeder extends Seeder
                 continue;
             }
 
-            $files = File::files($path);
-
-            foreach ($files as $file) {
+            foreach (File::files($path) as $file) {
                 if ($file->getExtension() !== 'php') {
                     continue;
                 }
 
                 $className = $namespace.'\\'.$file->getBasename('.php');
 
-                if (! class_exists($className)) {
-                    continue;
-                }
-
-                if (! is_subclass_of($className, Seeder::class)) {
+                if (! class_exists($className) || ! is_subclass_of($className, Seeder::class)) {
                     continue;
                 }
 
                 $reflection = new ReflectionClass($className);
-                if ($reflection->isAbstract()) {
-                    continue;
-                }
-                if ($reflection->isInterface()) {
+
+                if ($reflection->isAbstract() || $reflection->isInterface()) {
                     continue;
                 }
 

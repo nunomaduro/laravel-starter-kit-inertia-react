@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\InviteToOrganizationAction;
+use App\Events\OrganizationInvitationSent;
 use App\Http\Requests\StoreInvitationRequest;
 use App\Models\Organization;
 use App\Models\OrganizationInvitation;
@@ -50,7 +51,7 @@ final readonly class OrganizationInvitationController
 
         $invitation->resend();
         $invitation->load('inviter');
-        event(new \App\Events\OrganizationInvitationSent(
+        event(new OrganizationInvitationSent(
             $invitation,
             $invitation->organization,
             $invitation->email,

@@ -49,9 +49,6 @@ final class OrganizationInvitationsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
             ->headerActions([
                 self::makeExportHeaderAction('organization-invitations'),
             ])

@@ -8,26 +8,15 @@ use App\Events\Billing\TrialEndingReminder;
 use App\Models\Billing\Plan;
 use App\Models\Billing\Subscription;
 use App\Models\Organization;
-use Exception;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
-/**
- * Process trial ending reminders for subscriptions.
- *
- * Runs daily to send reminders at 7, 3, and 1 day before trial ends.
- */
 final class ProcessTrialEndingReminders implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
     use Queueable;
-    use SerializesModels;
 
     public function handle(): void
     {
@@ -76,7 +65,7 @@ final class ProcessTrialEndingReminders implements ShouldQueue
                 'organization_id' => $organization->id,
                 'days_remaining' => $daysRemaining,
             ]);
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             Log::error('Failed to send trial ending reminder', [
                 'subscription_id' => $subscription->id,
                 'error' => $exception->getMessage(),

@@ -17,11 +17,6 @@ use Prism\Prism\Enums\Provider;
 
 final class SeedsGenerateAiCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'seeds:generate-ai
                             {--model= : Generate for specific model only}
                             {--scenario=basic_demo : Scenario to generate (basic_demo, edge_cases, performance, i18n)}
@@ -29,16 +24,8 @@ final class SeedsGenerateAiCommand extends Command
                             {--api-key= : API key for AI provider}
                             {--dry-run : Show prompts without calling AI}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generate seed JSON data using AI (offline, curated)';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(
         SeedSpecGenerator $specGenerator,
         AISeedGenerator $aiGenerator,
@@ -49,7 +36,6 @@ final class SeedsGenerateAiCommand extends Command
         $specificModel = $this->option('model');
         $scenario = $this->option('scenario');
         $provider = $this->option('provider') ?? 'local';
-        $this->option('api-key');
         $dryRun = $this->option('dry-run');
 
         $models = $specificModel
@@ -144,9 +130,6 @@ final class SeedsGenerateAiCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * Get Prism provider from string.
-     */
     private function getPrismProvider(string $provider): Provider
     {
         return match ($provider) {
@@ -158,8 +141,6 @@ final class SeedsGenerateAiCommand extends Command
     }
 
     /**
-     * Call AI provider to generate data.
-     *
      * @return array<int, array<string, mixed>>|null
      */
     private function callAI(string $prompt, string $provider, PrismService $prismService): ?array
@@ -167,10 +148,8 @@ final class SeedsGenerateAiCommand extends Command
         try {
             $prismProvider = $this->getPrismProvider($provider);
 
-            // Use model from config based on provider
             $model = $prismService->defaultModelForProvider($prismProvider);
 
-            // Define JSON schema for structured output
             $schema = [
                 'type' => 'array',
                 'items' => [
@@ -180,12 +159,10 @@ final class SeedsGenerateAiCommand extends Command
             ];
 
             try {
-                // Try structured output first (more reliable)
                 $jsonData = $prismService->generateStructured($prompt, $schema, $model);
 
                 throw_unless(is_array($jsonData), Exception::class, 'Structured output did not return array');
             } catch (Exception $e) {
-                // Fallback to text output with parsing
                 $this->line('  Using text output (structured not available)');
                 $response = $prismService->using($prismProvider, $model)
                     ->withPrompt($prompt)
@@ -195,7 +172,6 @@ final class SeedsGenerateAiCommand extends Command
                 $jsonData = json_decode($text, true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    // Try to extract JSON from markdown code blocks
                     if (preg_match('/```(?:json)?\s*(\[.*?\])/s', $text, $matches)) {
                         $jsonData = json_decode($matches[1], true);
                     } elseif (preg_match('/\[.*\]/s', $text, $matches)) {
@@ -210,7 +186,6 @@ final class SeedsGenerateAiCommand extends Command
                 }
             }
 
-            // Ensure we return an array of records
             if (isset($jsonData['data']) && is_array($jsonData['data'])) {
                 return $jsonData['data'];
             }
@@ -219,7 +194,6 @@ final class SeedsGenerateAiCommand extends Command
                 return $jsonData;
             }
 
-            // If it's a single object, wrap it in an array
             if (is_array($jsonData) && ! isset($jsonData[0])) {
                 return [$jsonData];
             }
@@ -233,8 +207,6 @@ final class SeedsGenerateAiCommand extends Command
     }
 
     /**
-     * Fallback to traditional Faker generation.
-     *
      * @param  array<string, mixed>  $spec
      * @return array<int, array<string, mixed>>|null
      */
@@ -250,8 +222,6 @@ final class SeedsGenerateAiCommand extends Command
     }
 
     /**
-     * Save generated JSON data.
-     *
      * @param  array<int, array<string, mixed>>  $jsonData
      */
     private function saveGeneratedJson(string $modelName, array $jsonData, string $scenario, string $source = 'ai'): void
@@ -266,7 +236,6 @@ final class SeedsGenerateAiCommand extends Command
             $existingData = json_decode($existingContent, true) ?? [];
         }
 
-        // Add scenario-based data
         if (! isset($existingData['_scenarios'])) {
             $existingData['_scenarios'] = [];
         }
@@ -276,7 +245,6 @@ final class SeedsGenerateAiCommand extends Command
         $existingData['_generated_at'] = now()->toIso8601String();
         $existingData['_auto_generated'] = true;
 
-        // Also update main data if scenario is basic_demo
         if ($scenario === 'basic_demo') {
             $existingData[$jsonKey] = $jsonData;
         }

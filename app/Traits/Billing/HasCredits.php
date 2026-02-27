@@ -54,9 +54,6 @@ trait HasCredits
     }
 
     /**
-     * Credits expiring before the given date.
-     */
-    /**
      * Credit ledger entries for this creditable entity.
      */
     public function credits(): MorphMany

@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 
-final class CookieConsentController
+final readonly class CookieConsentController
 {
     /**
      * Set the cookie consent cookie and redirect back.

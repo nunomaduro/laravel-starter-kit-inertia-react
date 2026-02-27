@@ -40,9 +40,6 @@ final class RolesTable
                     ->label('Permissions')
                     ->sortable(),
             ])
-            ->filters([
-                //
-            ])
             ->headerActions([
                 self::makeExportHeaderAction('roles'),
             ])

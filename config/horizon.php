@@ -128,13 +128,9 @@ return [
     |
     */
 
-    'silenced' => [
-        // App\Jobs\ExampleJob::class,
-    ],
+    'silenced' => [],
 
-    'silenced_tags' => [
-        // 'notifications',
-    ],
+    'silenced_tags' => [],
 
     /*
     |--------------------------------------------------------------------------

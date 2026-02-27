@@ -132,7 +132,12 @@
       "Bash(vendor/bin/pest tests/Feature/Filament --compact 2>&1)",
       "Bash(vendor/bin/pest tests/Feature/Filament tests/Feature/Auth tests/Feature/SettingsOverlayTest.php tests/Feature/Billing tests/Unit --compact 2>&1)",
       "Bash(vendor/bin/pest tests/Feature/Filament tests/Feature/SettingsOverlayTest.php tests/Feature/Billing tests/Unit --compact 2>&1)",
-      "Bash(vendor/bin/pest tests/Feature --compact 2>&1 | tail -10)"
+      "Bash(vendor/bin/pest tests/Feature --compact 2>&1 | tail -10)",
+      "Bash(echo \"=== DATABASE DIRECTORY FILE COUNTS ===\"\necho \"Migrations: $\\(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/database/migrations -name \"*.php\" | wc -l\\) files\"\necho \"Seeders:    $\\(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/database/seeders -name \"*.php\" | wc -l\\) files\"\necho \"Settings:   $\\(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/database/settings -name \"*.php\" | wc -l\\) files\"\necho \"Factories:  $\\(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/database/factories -name \"*.php\" | wc -l\\) files\"\necho \"\"\necho \"Total app PHP files: 467\"\necho \"Total database PHP files: 160\"\necho \"Total routes PHP files: 5\"\necho \"Total config PHP files: 75\"\necho \"\"\necho \"GRAND TOTAL: 707 PHP files\")",
+      "Bash(php artisan test --compact --filter=\"UserTest\" 2>&1)",
+      "Bash(php artisan test --compact --filter=\"OrganizationTest\" 2>&1)",
+      "Bash(composer test 2>&1)",
+      "Bash(./vendor/bin/pest --compact 2>&1)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -30,9 +30,6 @@ final class RoleActivityObserver
     /**
      * @param  array<string, mixed>  $properties
      */
-    /**
-     * @param  array<string, mixed>  $properties
-     */
     private function log(Role $role, ActivityType $type, array $properties): void
     {
         $logger = activity()->performedOn($role)->withProperties($properties);

@@ -47,7 +47,6 @@ final readonly class InvitationAcceptController
      */
     public function store(Request $request, string $token, AcceptOrganizationInvitationAction $action): RedirectResponse
     {
-
         $invitation = OrganizationInvitation::findValidByToken($token);
         if (! $invitation instanceof OrganizationInvitation) {
             return to_route('home')->withErrors(['invitation' => __('Invalid or expired invitation.')]);

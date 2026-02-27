@@ -45,9 +45,6 @@ final class TermsVersionsTable
             ->defaultPaginationPageOption(10)
             ->paginationPageOptions([10, 25, 50])
             ->searchDebounce('300ms')
-            ->filters([
-                //
-            ])
             ->headerActions([
                 self::makeExportHeaderAction('terms-versions'),
             ])

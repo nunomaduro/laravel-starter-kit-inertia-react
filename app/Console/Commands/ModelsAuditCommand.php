@@ -10,27 +10,14 @@ use Illuminate\Console\Command;
 
 final class ModelsAuditCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'models:audit
                             {--generate : Auto-generate missing factories and seeders}
                             {--category=development : Default category for generated seeders}
                             {--check-specs : Also check for missing seed specs}
                             {--fail-on-missing : Fail if any components are missing}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Audit models for missing factories, seeders, and seed specs';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(ModelRegistry $registry, SeedSpecGenerator $specGenerator): int
     {
         $report = $registry->getAuditReport();

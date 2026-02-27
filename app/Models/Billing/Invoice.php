@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Billing;
 
 use App\Models\Concerns\BelongsToOrganization;
-use App\Models\Organization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -53,11 +52,6 @@ final class Invoice extends Model
     public function billable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
     }
 
     public function paymentGateway(): BelongsTo

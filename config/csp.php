@@ -46,13 +46,9 @@ return [
             : [Directive::SCRIPT, [Keyword::SELF, Keyword::UNSAFE_INLINE, 'https://unpkg.com']],
     ]),
 
-    'report_only_presets' => [
-        //
-    ],
+    'report_only_presets' => [],
 
-    'report_only_directives' => [
-        //
-    ],
+    'report_only_directives' => [],
 
     // Managed via Filament: Settings > Security
     'report_uri' => '',

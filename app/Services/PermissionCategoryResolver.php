@@ -25,27 +25,11 @@ final class PermissionCategoryResolver
 
         $strategy = $roleConfig['strategy'] ?? 'explicit';
 
-        if ($strategy === 'bypass') {
-            return $this->resolveExplicit($roleConfig['explicit'] ?? []);
-        }
-
-        if ($strategy === 'explicit') {
-            return $this->resolveExplicit($roleConfig['explicit'] ?? []);
-        }
-
-        if ($strategy === 'categories') {
-            $categoryKeys = $roleConfig['categories'] ?? [];
-            $explicit = $roleConfig['explicit'] ?? [];
-            $exclude = $roleConfig['exclude'] ?? [];
-
-            $fromCategories = $this->getPermissionsFromCategories($categoryKeys);
-            $explicitList = $this->resolveExplicit($explicit);
-            $merged = array_values(array_unique(array_merge($fromCategories, $explicitList)));
-
-            return array_values(array_diff($merged, $exclude));
-        }
-
-        return [];
+        return match ($strategy) {
+            'bypass', 'explicit' => $this->resolveExplicit($roleConfig['explicit'] ?? []),
+            'categories' => $this->resolveFromCategories($roleConfig),
+            default => [],
+        };
     }
 
     /**
@@ -82,6 +66,25 @@ final class PermissionCategoryResolver
         }
 
         return array_filter($grouped, fn (array $items): bool => $items !== []);
+    }
+
+    /**
+     * Resolve permissions from categories strategy config.
+     *
+     * @param  array<string, mixed>  $roleConfig
+     * @return list<string>
+     */
+    private function resolveFromCategories(array $roleConfig): array
+    {
+        $categoryKeys = $roleConfig['categories'] ?? [];
+        $explicit = $roleConfig['explicit'] ?? [];
+        $exclude = $roleConfig['exclude'] ?? [];
+
+        $fromCategories = $this->getPermissionsFromCategories($categoryKeys);
+        $explicitList = $this->resolveExplicit($explicit);
+        $merged = array_values(array_unique(array_merge($fromCategories, $explicitList)));
+
+        return array_values(array_diff($merged, $exclude));
     }
 
     /**

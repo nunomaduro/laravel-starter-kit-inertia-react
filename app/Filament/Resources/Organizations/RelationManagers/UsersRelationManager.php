@@ -41,9 +41,6 @@ final class UsersRelationManager extends RelationManager
                 TextColumn::make('name')
                     ->searchable(),
             ])
-            ->filters([
-                //
-            ])
             ->headerActions([
                 AttachAction::make()
                     ->preloadRecordSelectOptionsOnLoad(false),
