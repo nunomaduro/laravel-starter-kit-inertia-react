@@ -278,7 +278,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                         onClick={() => setOpenPill(null)}
                     >
                         <FilterIcon className="size-4" />
-                        {!hasActiveFilters && <span>Filtrer</span>}
+                        {!hasActiveFilters && <span>Filter</span>}
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent

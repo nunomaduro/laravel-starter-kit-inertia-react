@@ -134,9 +134,45 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
 
-    Route::get('users', fn (Request $request) => Inertia::render('users/table', [
-        'tableData' => App\DataTables\UserDataTable::makeTable($request),
-    ]))->name('users.table');
+    Route::get('users', function (Request $request) {
+        $user = $request->user();
+        $canView = $user?->can('bypass-permissions')
+            || (config('tenancy.enabled', true)
+                && $user?->canInOrganization('org.members.view'));
+
+        abort_unless($canView, 403);
+
+        return Inertia::render('users/table', [
+            'tableData' => App\DataTables\UserDataTable::makeTable($request),
+            'searchableColumns' => App\DataTables\UserDataTable::tableSearchableColumns(),
+        ]);
+    })->name('users.table');
+
+    Route::get('users/{user}', function (App\Models\User $user, Request $request) {
+        $currentUser = $request->user();
+        $canView = $currentUser?->can('bypass-permissions')
+            || (config('tenancy.enabled', true)
+                && $currentUser?->canInOrganization('org.members.view'));
+
+        abort_unless($canView, 403);
+
+        $organization = App\Services\TenantContext::get();
+        if ($organization && ! $currentUser?->can('bypass-permissions')) {
+            abort_unless(
+                $user->organizations()->where('organizations.id', $organization->id)->exists(),
+                404,
+            );
+        }
+
+        return Inertia::render('users/show', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at?->toIso8601String(),
+            ],
+        ]);
+    })->name('users.show');
 
     Route::middleware('tenancy.enabled')->group(function (): void {
         Route::post('organizations/switch', OrganizationSwitchController::class)->name('organizations.switch');

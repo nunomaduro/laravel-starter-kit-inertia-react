@@ -7002,12 +7002,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/coding-sunshine/laravel-data-table.git",
-                "reference": "ae51b5ad660d0347a7c780a5a488e4c4ccfdb3a2"
+                "reference": "8cc6e71410b01abbe73a5494f0d65d51b17b9efd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/coding-sunshine/laravel-data-table/zipball/ae51b5ad660d0347a7c780a5a488e4c4ccfdb3a2",
-                "reference": "ae51b5ad660d0347a7c780a5a488e4c4ccfdb3a2",
+                "url": "https://api.github.com/repos/coding-sunshine/laravel-data-table/zipball/8cc6e71410b01abbe73a5494f0d65d51b17b9efd",
+                "reference": "8cc6e71410b01abbe73a5494f0d65d51b17b9efd",
                 "shasum": ""
             },
             "require": {
@@ -7024,6 +7024,7 @@
                 "pestphp/pest": "^3.0 || ^4.0"
             },
             "suggest": {
+                "barryvdh/laravel-dompdf": "Required for PDF export functionality (^2.0 || ^3.0)",
                 "maatwebsite/excel": "Required for XLSX/CSV export functionality (^3.1)",
                 "spatie/laravel-typescript-transformer": "Generate TypeScript types from the PHP DTOs (^2.5)"
             },
@@ -7061,7 +7062,7 @@
             "support": {
                 "source": "https://github.com/coding-sunshine/laravel-data-table/tree/main"
             },
-            "time": "2026-02-16T11:02:25+00:00"
+            "time": "2026-02-27T14:27:36+00:00"
         },
         {
             "name": "maennchen/zipstream-php",

@@ -186,11 +186,11 @@ export function DataTableQuickViews({
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="h-8">
                         <Eye className="h-4 w-4" />
-                        {activeLabel ?? 'Vue'}
+                        {activeLabel ?? 'View'}
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>Vues rapides</DropdownMenuLabel>
+                    <DropdownMenuLabel>Quick views</DropdownMenuLabel>
                     <DropdownMenuSeparator />
 
                     {!editing ? (
@@ -224,7 +224,7 @@ export function DataTableQuickViews({
                                 <>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                                        Vues sauvegardées
+                                        Saved views
                                     </DropdownMenuLabel>
                                     {savedViews.map((sv) => (
                                         <DropdownMenuItem
@@ -263,7 +263,7 @@ export function DataTableQuickViews({
                                     }}
                                 >
                                     <Save className="h-4 w-4" />
-                                    Sauvegarder les filtres
+                                    Save filters
                                 </DropdownMenuItem>
                             )}
 
@@ -326,7 +326,7 @@ export function DataTableQuickViews({
                                 }}
                             >
                                 <X className="h-4 w-4" />
-                                Terminé
+                                Done
                             </DropdownMenuItem>
                         </>
                     )}
@@ -336,19 +336,19 @@ export function DataTableQuickViews({
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>Sauvegarder les filtres</DialogTitle>
+                        <DialogTitle>Save filters</DialogTitle>
                         <DialogDescription>
-                            Les filtres actifs seront sauvegardés localement.
+                            Active filters will be saved locally.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-3 py-2">
                         <div className="grid gap-2">
-                            <Label htmlFor="qv-name">Nom de la vue</Label>
+                            <Label htmlFor="qv-name">View name</Label>
                             <Input
                                 id="qv-name"
                                 value={newName}
                                 onChange={(e) => setNewName(e.target.value)}
-                                placeholder="Ex: Occasions récentes sans photo"
+                                placeholder="e.g. Recent items"
                                 onKeyDown={(e) =>
                                     e.key === 'Enter' && handleSave()
                                 }
@@ -375,16 +375,16 @@ export function DataTableQuickViews({
                                 <div className="space-y-1 rounded border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
                                     <div>
                                         <span className="font-medium text-foreground">
-                                            Filtres :
+                                            Filters:
                                         </span>{' '}
                                         {filters.length > 0
                                             ? filters.join(' · ')
-                                            : 'Aucun'}
+                                            : 'None'}
                                     </div>
                                     {sortParam && (
                                         <div>
                                             <span className="font-medium text-foreground">
-                                                Tri :
+                                                Sort:
                                             </span>{' '}
                                             {sortParam
                                                 .split(',')
@@ -398,9 +398,9 @@ export function DataTableQuickViews({
                                     )}
                                     <div>
                                         <span className="font-medium text-foreground">
-                                            Colonnes :
+                                            Columns:
                                         </span>{' '}
-                                        {visibleCount}/{totalCount} visibles
+                                        {visibleCount}/{totalCount} visible
                                     </div>
                                 </div>
                             );
@@ -411,11 +411,11 @@ export function DataTableQuickViews({
                             variant="outline"
                             onClick={() => setDialogOpen(false)}
                         >
-                            Annuler
+                            Cancel
                         </Button>
                         <Button onClick={handleSave} disabled={!newName.trim()}>
                             <Save className="mr-2 h-4 w-4" />
-                            Sauvegarder
+                            Save
                         </Button>
                     </DialogFooter>
                 </DialogContent>

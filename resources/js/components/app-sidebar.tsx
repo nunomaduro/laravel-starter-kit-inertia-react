@@ -31,6 +31,7 @@ import {
     Mail,
     Megaphone,
     MessageCircle,
+    Users,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from './app-logo';
@@ -47,6 +48,13 @@ const mainNavItems: NavItem[] = [
         href: chat().url,
         icon: MessageCircle,
         dataPan: 'nav-chat',
+    },
+    {
+        title: 'Users',
+        href: '/users',
+        icon: Users,
+        permission: ['view users', 'org.members.view'],
+        dataPan: 'nav-users',
     },
     {
         title: 'Organizations',

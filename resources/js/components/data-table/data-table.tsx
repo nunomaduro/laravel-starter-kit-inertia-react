@@ -45,12 +45,15 @@ import {
     GripVertical,
     Hash,
     List,
+    Search,
     SlidersHorizontal,
     ToggleLeft,
     Type,
     X,
 } from 'lucide-react';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { router } from '@inertiajs/react';
+import { Input } from '@/components/ui/input';
 import { Filters } from '../filters/filters';
 import type { FilterColumn } from '../filters/types';
 import { DataTableColumnHeader } from './data-table-column-header';
@@ -176,11 +179,11 @@ function DataTableToolbar<TData>({
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm" className="h-8">
                             <Download className="h-4 w-4" />
-                            Exporter
+                            Export
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Format d'export</DropdownMenuLabel>
+                        <DropdownMenuLabel>Export format</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                             <a
@@ -359,7 +362,7 @@ function ColumnsDropdown<TData>({
             <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
                     <SlidersHorizontal className="h-4 w-4" />
-                    Colonnes
+                    Columns
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -367,7 +370,7 @@ function ColumnsDropdown<TData>({
                 className="max-h-[400px] w-60 overflow-y-auto"
             >
                 <div className="flex items-center justify-between px-2 py-1.5">
-                    <span className="text-sm font-semibold">Colonnes</span>
+                    <span className="text-sm font-semibold">Columns</span>
                     {showOrdering && (
                         <Button
                             variant="ghost"
@@ -379,7 +382,7 @@ function ColumnsDropdown<TData>({
                                 setReordering((r) => !r);
                             }}
                         >
-                            {reordering ? 'Terminé' : 'Réordonner'}
+                            {reordering ? 'Done' : 'Reorder'}
                         </Button>
                     )}
                 </div>
@@ -438,6 +441,11 @@ export function DataTable<TData extends object>({
     className,
     tableData,
     tableName,
+    searchableColumns,
+    debounceMs = 300,
+    emptyState,
+    rowLink,
+    prefix,
     actions,
     bulkActions,
     renderCell,
@@ -455,10 +463,16 @@ export function DataTable<TData extends object>({
             filters: true,
             columnVisibility: true,
             columnOrdering: true,
+            stickyHeader: false,
+            globalSearch: true,
             ...optionsOverride,
         }),
         [optionsOverride],
     );
+
+    const showGlobalSearch =
+        (searchableColumns?.length ?? 0) > 0 &&
+        (resolvedOptions.globalSearch ?? true);
 
     const hasBulkActions = bulkActions && bulkActions.length > 0;
 
@@ -482,11 +496,11 @@ export function DataTable<TData extends object>({
                     if (typeof value === 'boolean') {
                         return value ? (
                             <Check className="inline-flex h-4 items-center rounded-full font-medium text-green-800 shadow-green-100 dark:text-green-400 dark:shadow-green-900/30">
-                                Oui
+                                Yes
                             </Check>
                         ) : (
                             <X className="inline-flex h-4 items-center rounded-full font-medium text-red-800 shadow-red-100 dark:text-red-400 dark:shadow-red-900/30">
-                                Non
+                                No
                             </X>
                         );
                     }
@@ -495,6 +509,17 @@ export function DataTable<TData extends object>({
                             <span className="tabular-nums">
                                 {value.toLocaleString('fr-TN')}
                             </span>
+                        );
+                    }
+                    if (col.type === 'email' && typeof value === 'string') {
+                        return (
+                            <a
+                                href={`mailto:${value}`}
+                                className="text-primary hover:underline"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                {value}
+                            </a>
                         );
                     }
                     return String(value);
@@ -516,14 +541,14 @@ export function DataTable<TData extends object>({
                         onCheckedChange={(value) =>
                             t.toggleAllPageRowsSelected(!!value)
                         }
-                        aria-label="Tout sélectionner"
+                        aria-label="Select all"
                     />
                 ),
                 cell: ({ row }) => (
                     <Checkbox
                         checked={row.getIsSelected()}
                         onCheckedChange={(value) => row.toggleSelected(!!value)}
-                        aria-label="Sélectionner la ligne"
+                        aria-label="Select row"
                     />
                 ),
                 enableHiding: false,
@@ -576,11 +601,39 @@ export function DataTable<TData extends object>({
         handlePerPageChange,
         handleApplyQuickView,
         handleApplyCustomSearch,
+        handleGlobalSearch,
+        currentSearch,
     } = useDataTable<TData>({
         tableData,
         tableName,
         columnDefs,
+        prefix,
     });
+
+    const [searchInputValue, setSearchInputValue] = useState(currentSearch);
+    useEffect(() => {
+        setSearchInputValue(currentSearch);
+    }, [currentSearch]);
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    useEffect(() => {
+        if (!showGlobalSearch) return;
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+            debounceRef.current = null;
+            if (searchInputValue !== currentSearch) {
+                handleGlobalSearch(searchInputValue);
+            }
+        }, debounceMs);
+        return () => {
+            if (debounceRef.current) clearTimeout(debounceRef.current);
+        };
+    }, [
+        searchInputValue,
+        currentSearch,
+        debounceMs,
+        showGlobalSearch,
+        handleGlobalSearch,
+    ]);
 
     const filterColumns = useMemo(
         () => buildFilterColumns(tableData.columns),
@@ -594,8 +647,22 @@ export function DataTable<TData extends object>({
 
     return (
         <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2 py-1">
-                <div className="flex-1 pl-6">
+            <div className="flex flex-wrap items-center justify-between gap-2 py-1">
+                <div className="flex flex-1 flex-wrap items-center gap-2 pl-6">
+                    {showGlobalSearch && (
+                        <div className="relative w-full min-w-[200px] max-w-sm">
+                            <Search className="text-muted-foreground absolute left-2.5 top-1/2 size-4 -translate-y-1/2" />
+                            <Input
+                                type="search"
+                                placeholder="Search…"
+                                value={searchInputValue}
+                                onChange={(e) =>
+                                    setSearchInputValue(e.target.value)
+                                }
+                                className="h-8 pl-8"
+                            />
+                        </div>
+                    )}
                     {resolvedOptions.filters && (
                         <Filters
                             columns={filterColumns}
@@ -651,8 +718,7 @@ export function DataTable<TData extends object>({
             {hasBulkActions && selectedRows.length > 0 && (
                 <div className="flex items-center gap-2 rounded-lg border bg-muted/50 px-3 py-2">
                     <span className="text-sm font-medium tabular-nums">
-                        {selectedRows.length} sélectionné
-                        {selectedRows.length > 1 ? 's' : ''}
+                        {selectedRows.length} selected
                     </span>
                     <div className="flex items-center gap-1">
                         {bulkActions.map((action) => {
@@ -697,7 +763,12 @@ export function DataTable<TData extends object>({
                 )}
             >
                 <Table>
-                    <TableHeader>
+                    <TableHeader
+                        className={cn(
+                            resolvedOptions.stickyHeader &&
+                                'sticky top-0 z-10 bg-background shadow-sm',
+                        )}
+                    >
                         {table
                             .getHeaderGroups()
                             .map((headerGroup, groupIdx) => {
@@ -826,8 +897,27 @@ export function DataTable<TData extends object>({
                                     className={cn(
                                         index % 2 === 1 && 'bg-muted/40',
                                         row.getIsSelected() && 'bg-primary/5',
+                                        rowLink && 'cursor-pointer',
                                         rowClassName?.(row.original),
                                     )}
+                                    onClick={
+                                        rowLink
+                                            ? (e) => {
+                                                  const href = rowLink(
+                                                      row.original,
+                                                  );
+                                                  if (
+                                                      e.metaKey ||
+                                                      e.ctrlKey
+                                                  ) {
+                                                      window.open(href);
+                                                  } else {
+                                                      router.visit(href);
+                                                  }
+                                              }
+                                            : undefined
+                                    }
+                                    role={rowLink ? 'link' : undefined}
                                 >
                                     {row.getVisibleCells().map((cell) => {
                                         const pin = getColumnPinningProps(
@@ -893,7 +983,11 @@ export function DataTable<TData extends object>({
                                     }
                                     className="h-24 text-center"
                                 >
-                                    Aucun résultat.
+                                    {emptyState ?? (
+                                        <span className="text-muted-foreground">
+                                            No results.
+                                        </span>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         )}

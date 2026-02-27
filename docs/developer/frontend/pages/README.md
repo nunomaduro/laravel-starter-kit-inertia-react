@@ -57,6 +57,7 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [chat/index](./chat/index.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
 | [user-table](./user-table.md) | N/A | ✅ |
 | [users/table](./users/table.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
+| [users/show](./users/show.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
 | [pages/edit](./pages/edit.md) | pages.index, pages.create | ✅ |
 | [pages/index](./pages/index.md) | pages.index, pages.create | ✅ |
 | [pages/show](./pages/show.md) | pages.index, pages.create | ✅ |

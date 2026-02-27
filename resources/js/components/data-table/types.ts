@@ -1,11 +1,24 @@
 export interface DataTableColumnDef {
     id: string;
     label: string;
-    type: 'text' | 'number' | 'date' | 'option' | 'multiOption' | 'boolean';
+    type:
+        | 'text'
+        | 'number'
+        | 'date'
+        | 'option'
+        | 'multiOption'
+        | 'boolean'
+        | 'email'
+        | 'image'
+        | 'badge'
+        | 'currency'
+        | 'percentage'
+        | 'link'
+        | 'phone';
     sortable: boolean;
     filterable: boolean;
     visible: boolean;
-    options?: { label: string; value: string }[] | null;
+    options?: { label: string; value: string; variant?: string }[] | null;
     min?: number | null;
     max?: number | null;
     icon?: string | null;
@@ -43,6 +56,8 @@ export interface DataTableOptions {
     filters: boolean;
     columnVisibility: boolean;
     columnOrdering: boolean;
+    stickyHeader?: boolean;
+    globalSearch?: boolean;
 }
 
 export interface DataTableResponse<TData = object> {
@@ -75,6 +90,16 @@ export interface DataTableProps<TData extends object> {
     className?: string;
     tableData: DataTableResponse<TData>;
     tableName: string;
+    /** Column IDs for server-side global search. When set, a search input is shown. */
+    searchableColumns?: string[];
+    /** Debounce delay in ms for global search and filter inputs. */
+    debounceMs?: number;
+    /** Custom content when table has no data. */
+    emptyState?: React.ReactNode;
+    /** URL for each row; row becomes a link (cmd/ctrl+click opens in new tab). */
+    rowLink?: (row: TData) => string;
+    /** Optional URL param prefix for multiple tables on one page. */
+    prefix?: string;
     actions?: DataTableAction<TData>[];
     bulkActions?: DataTableBulkAction<TData>[];
     renderCell?: (

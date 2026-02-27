@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use LemonSqueezy\Laravel\Events\OrderCreated;
+use Machour\DataTable\Http\Controllers\DataTableExportController;
 use Pan\PanConfiguration;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\Permission\Models\Permission;
@@ -98,6 +99,8 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(OrganizationMemberRemoved::class, SyncSubscriptionSeatsOnMemberChange::class);
         Event::listen(OrderCreated::class, AddCreditsFromLemonSqueezyOrder::class);
         User::observe(UserObserver::class);
+
+        DataTableExportController::register('users', \App\DataTables\UserDataTable::class);
     }
 
     private function userHasBypassPermissions(object $user): bool
@@ -174,6 +177,7 @@ final class AppServiceProvider extends ServiceProvider
             'dashboard-card-view-analytics',
             'command-palette',
             'nav-chat',
+            'nav-users',
             'chat-conversation-list',
             'chat-new-conversation',
             'chat-delete-conversation',

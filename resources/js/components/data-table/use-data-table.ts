@@ -67,14 +67,23 @@ interface UseDataTableOptions<TData> {
     tableData: DataTableResponse<TData>;
     tableName: string;
     columnDefs: ColumnDef<TData>[];
+    prefix?: string;
+}
+
+function getSearchParam(prefix?: string): string {
+    const key = prefix ? `${prefix}_search` : 'search';
+    if (typeof window === 'undefined') return '';
+    return new URLSearchParams(window.location.search).get(key) ?? '';
 }
 
 export function useDataTable<TData>({
     tableData,
     tableName,
     columnDefs,
+    prefix,
 }: UseDataTableOptions<TData>) {
     const { meta } = tableData;
+    const searchKey = prefix ? `${prefix}_search` : 'search';
 
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
         () => loadVisibility(tableName, tableData.columns),
@@ -245,6 +254,15 @@ export function useDataTable<TData>({
         router.get(currentUrl.pathname + search, {}, { preserveScroll: true });
     }, []);
 
+    const handleGlobalSearch = useCallback(
+        (value: string) => {
+            navigate({ [searchKey]: value || null, page: null });
+        },
+        [navigate, searchKey],
+    );
+
+    const currentSearch = getSearchParam(prefix);
+
     return {
         table,
         meta,
@@ -259,5 +277,8 @@ export function useDataTable<TData>({
         handlePerPageChange,
         handleApplyQuickView,
         handleApplyCustomSearch,
+        handleGlobalSearch,
+        currentSearch,
+        searchKey,
     };
 }
