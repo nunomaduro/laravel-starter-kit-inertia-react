@@ -16,7 +16,7 @@
         "@tanstack/devtools": "^0.10.7",
         "@tanstack/hotkeys": "^0.3.0",
         "@tanstack/react-query-devtools": "^5.91.3",
-        "@types/node": "^25.3.2",
+        "@types/node": "^25.3.3",
         "eslint": "^10.0.2",
         "eslint-config-prettier": "^10.1.8",
         "npm-check-updates": "^19.6.3",

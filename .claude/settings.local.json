@@ -137,7 +137,11 @@
       "Bash(php artisan test --compact --filter=\"UserTest\" 2>&1)",
       "Bash(php artisan test --compact --filter=\"OrganizationTest\" 2>&1)",
       "Bash(composer test 2>&1)",
-      "Bash(./vendor/bin/pest --compact 2>&1)"
+      "Bash(./vendor/bin/pest --compact 2>&1)",
+      "Bash(composer require laravel/boost:dev-main --dev --no-interaction -W 2>&1)",
+      "Bash(composer show laravel/mcp --available 2>&1 | head -20)",
+      "Bash(composer show laravel/boost --available 2>&1 | head -20)",
+      "Bash(composer show filament/blueprint --available 2>&1 | head -20)"
     ]
   },
   "enableAllProjectMcpServers": true,
