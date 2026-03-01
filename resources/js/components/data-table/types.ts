@@ -75,7 +75,7 @@ export interface DataTableOptions {
     columnResizing?: boolean;
     keyboardNavigation?: boolean;
     printable?: boolean;
-    density?: boolean;
+    density?: boolean | 'compact' | 'comfortable' | 'spacious';
     copyCell?: boolean;
     contextMenu?: boolean;
     rowGrouping?: boolean;
@@ -213,7 +213,7 @@ export interface DataTableProps<TData extends object> {
     translations?: Partial<DataTableTranslations>;
 }
 
-/** Example translation overrides for full usage. */
+/** Translation overrides for data table UI strings. */
 export interface DataTableTranslations {
     noData?: string;
     loading?: string;
@@ -225,5 +225,5 @@ export interface DataTableTranslations {
     clearFilters?: string;
     density?: string;
     keyboardShortcuts?: string;
-    [key: string]: string | ((...args: unknown[]) => string) | undefined;
+    [key: string]: string | ((...args: never[]) => string) | undefined;
 }

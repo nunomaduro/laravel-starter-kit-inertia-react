@@ -35,16 +35,12 @@ final class ThrottleTwoFactorManagement
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $path = $request->path();
-
-        $shouldThrottle = $this->isSensitivePath($request, $path);
-
-        if (! $shouldThrottle) {
+        if (! $this->isSensitivePath($request)) {
             return $next($request);
         }
 
         $userId = $request->user()?->getKey() ?? $request->session()->getId();
-        $key = 'two-factor-management:'.$userId.':'.$path;
+        $key = 'two-factor-management:'.$userId.':'.$request->path();
 
         abort_if(RateLimiter::tooManyAttempts($key, self::MAX_ATTEMPTS), 429, 'Too Many Requests');
 
@@ -53,8 +49,10 @@ final class ThrottleTwoFactorManagement
         return $next($request);
     }
 
-    private function isSensitivePath(Request $request, string $path): bool
+    private function isSensitivePath(Request $request): bool
     {
+        $path = $request->path();
+
         foreach (self::SENSITIVE_PATHS as $sensitive) {
             if ($path === $sensitive || str_starts_with($path, $sensitive.'/')) {
                 return true;
@@ -62,11 +60,7 @@ final class ThrottleTwoFactorManagement
         }
 
         if ($path === 'user/two-factor-authentication') {
-            if ($request->isMethod('POST')) {
-                return true;
-            }
-
-            return $request->isMethod('DELETE');
+            return $request->isMethod('POST') || $request->isMethod('DELETE');
         }
 
         return false;

@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-final readonly class DuplicateUserAction
+final readonly class DuplicateUser
 {
     /**
      * Duplicate a user (name + " (copy)", unique email, same orgs). Demo for DataTable replicate action.
@@ -16,14 +16,13 @@ final readonly class DuplicateUserAction
     public function handle(User $user): User
     {
         return DB::transaction(function () use ($user): User {
-            $baseEmail = 'copy-'.$user->id.'-'.Str::random(6).'@';
-            $email = $baseEmail.'example.com';
             $copy = User::query()->create([
                 'name' => $user->name.' (copy)',
-                'email' => $email,
+                'email' => 'copy-'.$user->id.'-'.Str::random(6).'@example.com',
                 'password' => bcrypt(Str::random(32)),
                 'onboarding_completed' => false,
             ]);
+
             $orgIds = $user->organizations()->pluck('organizations.id')->all();
             if ($orgIds !== []) {
                 $copy->organizations()->attach($orgIds);

@@ -39,6 +39,6 @@ All Actions:
 | [RecordTermsAcceptance](./RecordTermsAcceptance.md) | N/A | ✅ |
 | [StoreEnterpriseInquiryAction](./StoreEnterpriseInquiryAction.md) | N/A | ✅ |
 | [BulkSoftDeleteUsers](./BulkSoftDeleteUsers.md) | N/A | ✅ |
-| [DuplicateUserAction](./DuplicateUserAction.md) | N/A | ✅ |
+| [DuplicateUser](./DuplicateUser.md) | N/A | ✅ |
 
 

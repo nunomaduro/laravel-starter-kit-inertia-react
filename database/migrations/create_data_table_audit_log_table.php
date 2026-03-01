@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('data_table_audit_log', function (Blueprint $table) {
+        Schema::create('data_table_audit_log', function (Blueprint $table): void {
             $table->id();
             $table->string('table_name');
             $table->string('action'); // inline_edit, toggle, reorder, bulk_*

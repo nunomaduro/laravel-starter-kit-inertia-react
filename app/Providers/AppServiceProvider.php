@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\DataTables\UserDataTable;
 use App\Events\OrganizationMemberAdded;
 use App\Events\OrganizationMemberRemoved;
 use App\Events\User\UserCreated;
@@ -105,13 +106,16 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(OrderCreated::class, AddCreditsFromLemonSqueezyOrder::class);
         User::observe(UserObserver::class);
 
-        $userDataTable = \App\DataTables\UserDataTable::class;
-        DataTableExportController::register('users', $userDataTable);
-        DataTableInlineEditController::register('users', $userDataTable);
-        DataTableToggleController::register('users', $userDataTable);
-        DataTableSelectAllController::register('users', $userDataTable);
-        DataTableDetailRowController::register('users', $userDataTable);
-        DataTableImportController::register('users', $userDataTable);
+        foreach ([
+            DataTableExportController::class,
+            DataTableInlineEditController::class,
+            DataTableToggleController::class,
+            DataTableSelectAllController::class,
+            DataTableDetailRowController::class,
+            DataTableImportController::class,
+        ] as $controller) {
+            $controller::register('users', UserDataTable::class);
+        }
     }
 
     private function userHasBypassPermissions(object $user): bool

@@ -204,17 +204,12 @@ export function useDataTable<TData>({
         [tableData.columns],
     );
 
-    const getRowId = useCallback((row: TData) => {
-        const r = row as { id?: unknown };
-        return r?.id != null ? String(r.id) : '';
-    }, []);
-
     const table = useReactTable<TData>({
         data: tableData.data,
         columns: columnDefs,
         getRowId: (row, index) => {
-            const id = getRowId(row);
-            return id || `row-${index}`;
+            const id = (row as { id?: unknown }).id;
+            return id != null ? String(id) : `row-${index}`;
         },
         manualPagination: true,
         manualSorting: true,

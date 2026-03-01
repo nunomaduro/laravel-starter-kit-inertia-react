@@ -19,11 +19,7 @@ final class OrganizationPolicy
 
     public function view(User $user, Organization $organization): bool
     {
-        if ($user->belongsToOrganization($organization->id)) {
-            return true;
-        }
-
-        return $user->isSuperAdmin();
+        return $user->belongsToOrganization($organization->id) || $user->isSuperAdmin();
     }
 
     public function create(): bool
@@ -34,32 +30,17 @@ final class OrganizationPolicy
 
     public function update(User $user, Organization $organization): bool
     {
-        if ($organization->isOwner($user)) {
-            return true;
-        }
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        return $this->userHasOrgRole($user, $organization, 'admin');
+        return $this->isOwnerSuperAdminOrRole($user, $organization, 'admin');
     }
 
     public function delete(User $user, Organization $organization): bool
     {
-        if ($organization->isOwner($user)) {
-            return true;
-        }
-
-        return $user->isSuperAdmin();
+        return $organization->isOwner($user) || $user->isSuperAdmin();
     }
 
     public function restore(User $user, Organization $organization): bool
     {
-        if ($organization->isOwner($user)) {
-            return true;
-        }
-
-        return $user->isSuperAdmin();
+        return $organization->isOwner($user) || $user->isSuperAdmin();
     }
 
     public function forceDelete(User $user): bool
@@ -69,14 +50,14 @@ final class OrganizationPolicy
 
     public function addMember(User $user, Organization $organization): bool
     {
-        if ($organization->isOwner($user)) {
-            return true;
-        }
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
+        return $this->isOwnerSuperAdminOrRole($user, $organization, 'admin');
+    }
 
-        return $this->userHasOrgRole($user, $organization, 'admin');
+    private function isOwnerSuperAdminOrRole(User $user, Organization $organization, string $role): bool
+    {
+        return $organization->isOwner($user)
+            || $user->isSuperAdmin()
+            || $this->userHasOrgRole($user, $organization, $role);
     }
 
     private function userHasOrgRole(User $user, Organization $organization, string $role): bool

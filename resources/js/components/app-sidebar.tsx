@@ -158,27 +158,19 @@ function canShowNavItem(
 
 export function AppSidebar() {
     const { auth, features } = usePage<SharedData>().props;
-    const visibleMainNavItems = useMemo(
-        () =>
-            mainNavItems.filter((item) =>
-                canShowNavItem(
-                    item,
-                    auth.permissions ?? [],
-                    auth.can_bypass ?? false,
-                    features ?? {},
-                    auth.tenancy_enabled ?? true,
-                ),
-            ),
-        [auth.permissions, auth.can_bypass, auth.tenancy_enabled, features],
-    );
+    const permissions = auth.permissions ?? [];
+    const canBypass = auth.can_bypass ?? false;
+    const resolvedFeatures = features ?? {};
+    const tenancyEnabled = auth.tenancy_enabled ?? true;
 
-    const visibleFooterNavItems = useMemo(() => {
-        const f = features ?? {};
-        return footerNavItems.filter(
-            (item) =>
-                !item.feature || Boolean(f[item.feature as keyof typeof f]),
-        );
-    }, [features]);
+    const visibleMainNavItems = useMemo(
+        () => mainNavItems.filter((item) => canShowNavItem(item, permissions, canBypass, resolvedFeatures, tenancyEnabled)),
+        [permissions, canBypass, resolvedFeatures, tenancyEnabled],
+    );
+    const visibleFooterNavItems = useMemo(
+        () => footerNavItems.filter((item) => canShowNavItem(item, permissions, canBypass, resolvedFeatures, tenancyEnabled)),
+        [permissions, canBypass, resolvedFeatures, tenancyEnabled],
+    );
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -191,7 +183,7 @@ export function AppSidebar() {
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
-                    {(auth.tenancy_enabled ?? true) && (
+                    {tenancyEnabled && (
                         <SidebarMenuItem>
                             <OrganizationSwitcher />
                         </SidebarMenuItem>

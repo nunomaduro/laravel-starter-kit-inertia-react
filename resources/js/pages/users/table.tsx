@@ -5,6 +5,7 @@ import type {
     DataTableHeaderAction,
     DataTableResponse,
 } from '@/components/data-table/types';
+import { Button } from '@/components/ui/button';
 import {
     Dialog,
     DialogContent,
@@ -12,15 +13,14 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import { Head, router } from '@inertiajs/react';
 import { Copy, Keyboard, Trash2, UserPlus, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 
 export interface UsersTableRow {
     id: number;
@@ -220,13 +220,8 @@ export default function UsersTablePage({
                             )}
                         </div>
                     )}
-                    onInlineEdit={async (_row, _columnId, _value) => {
+                    onInlineEdit={() => {
                         router.reload({ only: ['tableData'] });
-                    }}
-                    onStateChange={(state) => {
-                        if (typeof window !== 'undefined' && window.__PAN_ANALYTICS__) {
-                            (window as unknown as { __PAN_ANALYTICS__?: (e: string, p: unknown) => void }).__PAN_ANALYTICS__?.('users-table-state', state);
-                        }
                     }}
                     options={{
                         stickyHeader: true,

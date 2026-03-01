@@ -44,9 +44,7 @@ export function DataTableRowActions<TData>({
     row,
     actions,
 }: DataTableRowActionsProps<TData>) {
-    const [confirmingAction, setConfirmingAction] = useState<{
-        action: DataTableAction<TData>;
-    } | null>(null);
+    const [confirmingAction, setConfirmingAction] = useState<DataTableAction<TData> | null>(null);
 
     const visibleActions = actions.filter(
         (action) => !action.visible || action.visible(row),
@@ -56,7 +54,7 @@ export function DataTableRowActions<TData>({
 
     const runAction = (action: DataTableAction<TData>) => {
         if (action.confirm) {
-            setConfirmingAction({ action });
+            setConfirmingAction(action);
             return;
         }
         action.onClick(row);
@@ -64,13 +62,13 @@ export function DataTableRowActions<TData>({
 
     const runConfirmed = () => {
         if (confirmingAction) {
-            confirmingAction.action.onClick(row);
+            confirmingAction.onClick(row);
             setConfirmingAction(null);
         }
     };
 
     const opts = confirmingAction
-        ? getConfirmOptions(confirmingAction.action.confirm)
+        ? getConfirmOptions(confirmingAction.confirm)
         : null;
 
     return (
@@ -93,15 +91,7 @@ export function DataTableRowActions<TData>({
                                     {action.group.map((sub) => (
                                         <DropdownMenuItem
                                             key={sub.label}
-                                            onClick={() => {
-                                                if (sub.confirm) {
-                                                    setConfirmingAction({
-                                                        action: sub,
-                                                    });
-                                                } else {
-                                                    sub.onClick(row);
-                                                }
-                                            }}
+                                            onClick={() => runAction(sub)}
                                             className={
                                                 sub.variant === 'destructive'
                                                     ? 'text-destructive focus:text-destructive'

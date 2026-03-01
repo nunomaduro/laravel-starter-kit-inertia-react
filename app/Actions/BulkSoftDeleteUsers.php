@@ -17,18 +17,17 @@ final readonly class BulkSoftDeleteUsers
      */
     public function handle(array $ids, ?User $currentUser): int
     {
-        $count = 0;
-        DB::transaction(function () use ($ids, $currentUser, &$count): void {
+        return DB::transaction(function () use ($ids, $currentUser): int {
             $query = User::query()->whereIn('id', $ids);
+
             if ($currentUser) {
                 $query->where('id', '!=', $currentUser->id);
             }
-            foreach ($query->get() as $user) {
-                $user->delete();
-                $count++;
-            }
-        });
 
-        return $count;
+            $users = $query->get();
+            $users->each->delete();
+
+            return $users->count();
+        });
     }
 }

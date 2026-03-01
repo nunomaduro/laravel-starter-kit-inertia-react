@@ -49,11 +49,7 @@ export function DataTableColumnHeader({
                         <ArrowUp className="h-3.5 w-3.5" />
                     )}
                     {isMulti && (
-                        <span
-                            className={cn(
-                                'text-[9px] leading-none font-bold tabular-nums',
-                            )}
-                        >
+                        <span className="text-[9px] leading-none font-bold tabular-nums">
                             {sortIndex + 1}
                         </span>
                     )}

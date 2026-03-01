@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace App\DataTables;
 
 use App\Enums\UserStatusEnum;
+use App\Models\Organization;
 use App\Models\User;
 use App\Services\TenantContext;
 use BackedEnum;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Inertia\Inertia;
 use Machour\DataTable\AbstractDataTable;
 use Machour\DataTable\Columns\ColumnBuilder;
 use Machour\DataTable\Concerns\HasAuditLog;
@@ -56,14 +60,18 @@ final class UserDataTable extends AbstractDataTable
 
     public static function fromModel(User $model): self
     {
-        $status = $model->trashed() ? 'deleted' : ($model->onboarding_completed ? 'active' : 'pending');
+        $status = match (true) {
+            $model->trashed() => UserStatusEnum::Deleted,
+            $model->onboarding_completed => UserStatusEnum::Active,
+            default => UserStatusEnum::Pending,
+        };
 
         return new self(
             id: $model->id,
             name: $model->name,
             email: $model->email,
             avatar: $model->avatar,
-            status: $status,
+            status: $status->value,
             onboarding_completed: $model->onboarding_completed,
             organizations_count: $model->organizations_count ?? $model->organizations()->count(),
             first_organization_name: $model->relationLoaded('organizations')
@@ -281,10 +289,10 @@ final class UserDataTable extends AbstractDataTable
      * Single footer row: page count, created-at range (this page), and org-count sum.
      * Summary row is disabled so this is the only footer line.
      *
-     * @param  \Illuminate\Support\Collection<int, self>  $items
+     * @param  Collection<int, self>  $items
      * @return array<string, mixed>
      */
-    public static function tableFooter(\Illuminate\Support\Collection $items): array
+    public static function tableFooter(Collection $items): array
     {
         $n = $items->count();
         $createdRange = $items->isEmpty()
@@ -368,22 +376,21 @@ final class UserDataTable extends AbstractDataTable
     }
 
     /**
-     * @return array{tableData: array|\Inertia\Deferred, searchableColumns: array<int, string>}
+     * @return array{tableData: array|\Inertia\Deferred, searchableColumns: list<string>}
      */
     public static function inertiaProps(Request $request): array
     {
         $opts = self::tableOptions();
         $defer = $opts['deferLoading'] && ! app()->environment('testing');
         $make = function () use ($request, $opts): array {
-            $raw = self::makeTable($request);
-            $data = is_array($raw) ? $raw : (method_exists($raw, 'toArray') ? $raw->toArray() : (array) $raw);
+            $data = self::makeTable($request)->toArray();
             $data['config'] = array_merge($data['config'] ?? [], $opts);
 
             return $data;
         };
 
         return [
-            'tableData' => $defer ? \Inertia\Inertia::defer($make) : $make(),
+            'tableData' => $defer ? Inertia::defer($make) : $make(),
             'searchableColumns' => self::tableSearchableColumns(),
         ];
     }
@@ -422,18 +429,16 @@ final class UserDataTable extends AbstractDataTable
         $user = request()->user();
         $query = User::query();
 
-        if ($user?->can('bypass-permissions')) {
-            return $query->withCount('organizations')->with('organizations:id,name');
-        }
+        if (! $user?->can('bypass-permissions')) {
+            $organization = TenantContext::get();
+            if (! $organization instanceof Organization) {
+                return $query->whereRaw('1 = 0');
+            }
 
-        $organization = TenantContext::get();
-        if (! $organization instanceof \App\Models\Organization) {
-            return $query->whereRaw('1 = 0');
+            $query->whereHas('organizations', function (Builder $q) use ($organization): void {
+                $q->where('organizations.id', $organization->id);
+            });
         }
-
-        $query->whereHas('organizations', function (Builder $q) use ($organization): void {
-            $q->where('organizations.id', $organization->id);
-        });
 
         return $query->withCount('organizations')->with('organizations:id,name');
     }
@@ -452,18 +457,7 @@ final class UserDataTable extends AbstractDataTable
     /** Authorize table actions. Full usage example. */
     public static function tableAuthorize(string $action, Request $request): bool
     {
-        $user = $request->user();
-        if (! $user) {
-            return false;
-        }
-
-        return match ($action) {
-            'export' => $user->can('bypass-permissions') || true,
-            'import' => $user->can('bypass-permissions') || true,
-            'inline_edit' => true,
-            'toggle' => true,
-            default => true,
-        };
+        return $request->user() !== null;
     }
 
     /** Persist filters/sort to localStorage. Full usage example. */
@@ -548,7 +542,7 @@ final class UserDataTable extends AbstractDataTable
         return url("/{$prefix}/toggle/".self::tableToggleName());
     }
 
-    public static function handleToggle(\Illuminate\Database\Eloquent\Model $model, string $columnId, bool $value): void
+    public static function handleToggle(Model $model, string $columnId, bool $value): void
     {
         $oldValue = $model->{$columnId};
         $model->update([$columnId => $value]);
@@ -580,7 +574,7 @@ final class UserDataTable extends AbstractDataTable
         $errors = [];
 
         $organization = TenantContext::get();
-        if (! $organization instanceof \App\Models\Organization) {
+        if (! $organization instanceof Organization) {
             $errors[] = 'No organization context for import.';
 
             return ['created' => 0, 'updated' => 0, 'errors' => $errors];

@@ -22,7 +22,7 @@ import {
     Trash2,
     X,
 } from 'lucide-react';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { FilterControl } from './filter-controls';
 import type { FilterColumn, FilterValue } from './types';
 import { DEFAULT_OPERATOR, OPERATORS } from './types';
@@ -244,14 +244,6 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
         }
     }
 
-    function handleFilterSubmit(
-        columnId: string,
-        operator: string,
-        values: string[],
-    ) {
-        setFilter(columnId, operator, values);
-    }
-
     function handleQuickOptionToggle(columnId: string, optionValue: string) {
         const current = activeFilters[columnId];
         const operator = current?.operator || DEFAULT_OPERATOR.option;
@@ -302,7 +294,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                                 column={selectedColumn}
                                 value={activeFilters[selectedColumn.id]}
                                 onSubmit={(op, vals) =>
-                                    handleFilterSubmit(
+                                    setFilter(
                                         selectedColumn.id,
                                         op,
                                         vals,
@@ -402,7 +394,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                                             );
 
                                             return (
-                                                <React.Fragment
+                                                <Fragment
                                                     key={`qs-${col.id}`}
                                                 >
                                                     {col.options!.map((opt) => {
@@ -453,7 +445,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                                                             </CommandItem>
                                                         );
                                                     })}
-                                                </React.Fragment>
+                                                </Fragment>
                                             );
                                         })}
                                 </CommandGroup>
@@ -485,7 +477,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                             closeAll();
                         }}
                         onSubmit={(op, vals) =>
-                            handleFilterSubmit(columnId, op, vals)
+                            setFilter(columnId, op, vals)
                         }
                     />
                 );

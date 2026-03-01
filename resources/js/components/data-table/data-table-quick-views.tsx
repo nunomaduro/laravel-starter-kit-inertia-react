@@ -45,6 +45,52 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 const CUSTOM_QV_PREFIX = 'dt-quickviews-';
 
+function SavePreview({
+    currentSearch,
+    visibleColumnCount,
+    totalColumnCount,
+}: {
+    currentSearch: string;
+    visibleColumnCount: number;
+    totalColumnCount: number;
+}) {
+    const decoded = decodeURIComponent(currentSearch);
+    const params = new URLSearchParams(decoded);
+    const filters: string[] = [];
+    const sortParam = params.get('sort');
+
+    for (const [key, val] of params.entries()) {
+        const match = key.match(/^filter\[(.+)]$/);
+        if (match) {
+            filters.push(`${match[1]} = ${val}`);
+        }
+    }
+
+    return (
+        <div className="space-y-1 rounded border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+            <div>
+                <span className="font-medium text-foreground">Filters:</span>{' '}
+                {filters.length > 0 ? filters.join(' · ') : 'None'}
+            </div>
+            {sortParam && (
+                <div>
+                    <span className="font-medium text-foreground">Sort:</span>{' '}
+                    {sortParam
+                        .split(',')
+                        .map((s) =>
+                            s.startsWith('-') ? `${s.slice(1)} \u2193` : `${s} \u2191`,
+                        )
+                        .join(', ')}
+                </div>
+            )}
+            <div>
+                <span className="font-medium text-foreground">Columns:</span>{' '}
+                {visibleColumnCount}/{totalColumnCount} visible
+            </div>
+        </div>
+    );
+}
+
 interface SavedQuickView {
     id: string;
     label: string;
@@ -276,7 +322,7 @@ export function DataTableQuickViews({
                                     }}
                                 >
                                     <Pencil className="h-4 w-4" />
-                                    Gérer les vues
+                                    Manage views
                                 </DropdownMenuItem>
                             )}
                         </>
@@ -355,56 +401,11 @@ export function DataTableQuickViews({
                                 autoFocus
                             />
                         </div>
-                        {(() => {
-                            const decoded = decodeURIComponent(currentSearch);
-                            const params = new URLSearchParams(decoded);
-                            const filters: string[] = [];
-                            const sortParam = params.get('sort');
-
-                            for (const [key, val] of params.entries()) {
-                                const match = key.match(/^filter\[(.+)]$/);
-                                if (match) {
-                                    filters.push(`${match[1]} = ${val}`);
-                                }
-                            }
-
-                            const visibleCount = getVisibleColumnIds().length;
-                            const totalCount = allColumns.length;
-
-                            return (
-                                <div className="space-y-1 rounded border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-                                    <div>
-                                        <span className="font-medium text-foreground">
-                                            Filters:
-                                        </span>{' '}
-                                        {filters.length > 0
-                                            ? filters.join(' · ')
-                                            : 'None'}
-                                    </div>
-                                    {sortParam && (
-                                        <div>
-                                            <span className="font-medium text-foreground">
-                                                Sort:
-                                            </span>{' '}
-                                            {sortParam
-                                                .split(',')
-                                                .map((s) =>
-                                                    s.startsWith('-')
-                                                        ? `${s.slice(1)} ↓`
-                                                        : `${s} ↑`,
-                                                )
-                                                .join(', ')}
-                                        </div>
-                                    )}
-                                    <div>
-                                        <span className="font-medium text-foreground">
-                                            Columns:
-                                        </span>{' '}
-                                        {visibleCount}/{totalCount} visible
-                                    </div>
-                                </div>
-                            );
-                        })()}
+                        <SavePreview
+                            currentSearch={currentSearch}
+                            visibleColumnCount={getVisibleColumnIds().length}
+                            totalColumnCount={allColumns.length}
+                        />
                     </div>
                     <DialogFooter>
                         <Button

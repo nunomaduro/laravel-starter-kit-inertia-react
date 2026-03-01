@@ -27,7 +27,7 @@ Handles the users DataTable page (index), bulk soft-delete, duplicate user, and 
 ## Actions Used
 
 - `BulkSoftDeleteUsers` — Bulk soft-delete
-- `DuplicateUserAction` — Duplicate user
+- `DuplicateUser` — Duplicate user
 
 ## Validation
 
@@ -37,5 +37,5 @@ Handles the users DataTable page (index), bulk soft-delete, duplicate user, and 
 
 - **Pages**: `users/table`, `users/show`
 - **DataTable**: `UserDataTable`
-- **Actions**: `BulkSoftDeleteUsers`, `DuplicateUserAction`
+- **Actions**: `BulkSoftDeleteUsers`, `DuplicateUser`
 - **Routes**: `users.table`, `users.bulk-soft-delete`, `users.duplicate`, `users.show`

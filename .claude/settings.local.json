@@ -141,7 +141,20 @@
       "Bash(composer require laravel/boost:dev-main --dev --no-interaction -W 2>&1)",
       "Bash(composer show laravel/mcp --available 2>&1 | head -20)",
       "Bash(composer show laravel/boost --available 2>&1 | head -20)",
-      "Bash(composer show filament/blueprint --available 2>&1 | head -20)"
+      "Bash(composer show filament/blueprint --available 2>&1 | head -20)",
+      "Bash(php artisan test --compact --filter=\"UsersTable|User\" 2>&1)",
+      "Bash(npx tsc --noEmit --pretty 2>&1 | grep -c \"error TS\")",
+      "Bash(npm run build 2>&1 | tail -15)",
+      "Bash(npx eslint resources/js/components/app-sidebar.tsx resources/js/components/data-table/data-table-pagination.tsx resources/js/components/data-table/data-table-quick-views.tsx resources/js/components/data-table/data-table-row-actions.tsx resources/js/components/data-table/data-table.tsx resources/js/components/data-table/types.ts resources/js/components/data-table/use-data-table.ts resources/js/pages/users/table.tsx 2>&1 | tail -20)",
+      "Bash(vendor/bin/pint app/Actions/DuplicateUser.php app/Http/Controllers/UsersTableController.php app/Providers/AppServiceProvider.php app/Http/Middleware/ThrottleTwoFactorManagement.php app/Services/ModelRegistry.php app/Services/SeedScenarioManager.php app/Models/User.php database/seeders/DatabaseSeeder.php database/migrations/create_data_table_audit_log_table.php database/migrations/create_data_table_saved_views_table.php --format agent 2>&1)",
+      "Bash(npm run build 2>&1 | tail -5)",
+      "Bash(npx tsc --noEmit --pretty 2>&1 | head -80)",
+      "Bash(npx tsc --noEmit --pretty 2>&1 | grep -E \"\\(data-table|filters/filters|app-sidebar|dashboard|users/table|users/show\\)\" | head -30)",
+      "Bash(npx tsc --noEmit --pretty 2>&1 | grep -E \"\\(types\\\\.ts|data-table\\\\.tsx:599|users/table\\\\.tsx:278\\)\" | head -10)",
+      "Bash(npx tsc --noEmit 2>&1 | tail -5)",
+      "Bash(npx tsc --noEmit 2>&1 | grep \"error TS\" | grep -v \"TS2307.*@/routes\\\\|TS2307.*@/actions\" | head -20)",
+      "Bash(npx eslint resources/js/components/app-sidebar.tsx resources/js/components/data-table/data-table.tsx resources/js/components/data-table/data-table-column-header.tsx resources/js/components/data-table/data-table-quick-views.tsx resources/js/components/data-table/types.ts resources/js/components/filters/filters.tsx resources/js/pages/dashboard.tsx resources/js/pages/users/table.tsx 2>&1 | head -30)",
+      "Bash(git stash && npx eslint resources/js/components/data-table/data-table.tsx 2>&1 | head -15)"
     ]
   },
   "enableAllProjectMcpServers": true,

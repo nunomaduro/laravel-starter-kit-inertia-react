@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\BulkSoftDeleteUsers;
-use App\Actions\DuplicateUserAction;
+use App\Actions\DuplicateUser;
 use App\DataTables\UserDataTable;
 use App\Http\Requests\BulkSoftDeleteUsersRequest;
 use App\Models\User;
@@ -31,7 +31,7 @@ final class UsersTableController extends Controller
         return back()->with('flash', ['type' => 'success', 'message' => "{$count} user(s) soft-deleted."]);
     }
 
-    public function duplicate(User $user, DuplicateUserAction $action, Request $request): RedirectResponse
+    public function duplicate(User $user, DuplicateUser $action, Request $request): RedirectResponse
     {
         $this->ensureCanViewUser($user, $request);
         $copy = $action->handle($user);

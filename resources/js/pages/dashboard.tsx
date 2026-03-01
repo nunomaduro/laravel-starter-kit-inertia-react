@@ -47,7 +47,7 @@ export default function Dashboard() {
     const quickActions = [
         {
             label: 'Edit profile',
-            href: editProfile(),
+            href: editProfile().url,
             icon: UserPen,
             show: true,
             dataPan: 'dashboard-quick-edit-profile',
@@ -159,13 +159,7 @@ export default function Dashboard() {
                             data-pan={action.dataPan}
                         >
                             {action.external ? (
-                                <a
-                                    href={
-                                        typeof action.href === 'string'
-                                            ? action.href
-                                            : action.href.url
-                                    }
-                                >
+                                <a href={action.href}>
                                     <action.icon className="size-5 text-muted-foreground" />
                                     <span className="text-sm">
                                         {action.label}

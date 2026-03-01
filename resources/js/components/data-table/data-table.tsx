@@ -17,6 +17,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
     Popover,
@@ -29,6 +30,7 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
+import { Switch } from '@/components/ui/switch';
 import {
     Table,
     TableBody,
@@ -38,8 +40,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { router } from '@inertiajs/react';
 import {
@@ -79,12 +79,39 @@ import { DataTablePagination } from './data-table-pagination';
 import { DataTableQuickViews } from './data-table-quick-views';
 import { DataTableRowActions } from './data-table-row-actions';
 import type {
+    DataTableBulkAction,
     DataTableColumnDef,
+    DataTableConfirmOptions,
     DataTableOptions,
     DataTableProps,
     DataTableTranslations,
 } from './types';
 import { useDataTable } from './use-data-table';
+
+interface ColumnMeta {
+    type?: string;
+    group?: string | null;
+}
+
+function getColumnMeta(columnDef: { meta?: unknown }): ColumnMeta {
+    return (columnDef.meta as ColumnMeta) ?? {};
+}
+
+function getBulkConfirmOptions(
+    action: DataTableBulkAction<unknown>,
+    fallbackDescription: string,
+): DataTableConfirmOptions {
+    if (typeof action.confirm === 'object' && action.confirm !== null) {
+        return action.confirm;
+    }
+    return {
+        title: 'Confirm',
+        description: fallbackDescription,
+        confirmLabel: 'Confirm',
+        cancelLabel: 'Cancel',
+        variant: 'default',
+    };
+}
 
 function buildExportUrl(
     baseUrl: string,
@@ -156,21 +183,19 @@ function getColumnPinningProps<T>(column: Column<T, unknown>) {
     };
 }
 
-/** Opaque background for pinned cells in data rows — matches zebra stripe visually */
+/** Opaque background for pinned cells in data rows */
 function getPinnedCellBg(
     isPinned: string | false,
-    _isEvenRow: boolean,
     isSelected: boolean,
 ): React.CSSProperties {
     if (!isPinned) return {};
-    const base: React.CSSProperties = {};
-    if (isSelected)
+    if (isSelected) {
         return {
-            ...base,
             backgroundImage:
                 'linear-gradient(oklch(from var(--color-primary) l c h / 0.05), oklch(from var(--color-primary) l c h / 0.05))',
         };
-    return base;
+    }
+    return {};
 }
 
 function DataTableToolbar<TData>({
@@ -641,7 +666,7 @@ export function DataTable<TData extends object>({
     const [detailCache, setDetailCache] = useState<Record<string, Record<string, unknown>>>({});
     const [detailOverlayRow, setDetailOverlayRow] = useState<{ id: unknown; data: TData } | null>(null);
     const [confirmingBulkAction, setConfirmingBulkAction] = useState<
-        import('./types').DataTableBulkAction<TData> | null
+        DataTableBulkAction<TData> | null
     >(null);
     const importInputRef = useRef<HTMLInputElement>(null);
     const detailDisplay = tableData.config?.detailDisplay ?? 'inline';
@@ -800,6 +825,25 @@ export function DataTable<TData extends object>({
 
         if (detailRowEnabled) {
             const useOverlay = detailDisplay === 'drawer' || detailDisplay === 'modal';
+
+            async function fetchDetail(rowId: unknown) {
+                if (rowId == null || detailCache[String(rowId)]) return;
+                try {
+                    const url = `${window.location.origin}/data-table/detail/${tableName}/${rowId}`;
+                    const res = await fetch(url);
+                    const json = await res.json();
+                    setDetailCache((prev) => ({
+                        ...prev,
+                        [String(rowId)]: json.detail ?? {},
+                    }));
+                } catch {
+                    setDetailCache((prev) => ({
+                        ...prev,
+                        [String(rowId)]: {},
+                    }));
+                }
+            }
+
             result.push({
                 id: '_expand',
                 header: '',
@@ -807,13 +851,20 @@ export function DataTable<TData extends object>({
                     const rowId = (row.original as { id?: unknown }).id;
                     const isExpanded =
                         !useOverlay &&
-                        expandedRowId !== undefined &&
-                        expandedRowId !== null &&
+                        expandedRowId != null &&
                         String(expandedRowId) === String(rowId);
                     const isOverlayOpen =
                         useOverlay &&
                         detailOverlayRow !== null &&
                         String(detailOverlayRow.id) === String(rowId);
+
+                    function getAriaLabel(): string {
+                        if (useOverlay) {
+                            return isOverlayOpen ? 'Close' : 'View details';
+                        }
+                        return isExpanded ? 'Collapse' : 'Expand';
+                    }
+
                     return (
                         <Button
                             variant="ghost"
@@ -827,23 +878,7 @@ export function DataTable<TData extends object>({
                                         return;
                                     }
                                     setDetailOverlayRow({ id: rowId, data: row.original });
-                                    if (rowId != null && !detailCache[String(rowId)]) {
-                                        try {
-                                            const base = window.location.origin;
-                                            const path = `/data-table/detail/${tableName}/${rowId}`;
-                                            const res = await fetch(base + path);
-                                            const json = await res.json();
-                                            setDetailCache((prev) => ({
-                                                ...prev,
-                                                [String(rowId)]: json.detail ?? {},
-                                            }));
-                                        } catch {
-                                            setDetailCache((prev) => ({
-                                                ...prev,
-                                                [String(rowId)]: {},
-                                            }));
-                                        }
-                                    }
+                                    await fetchDetail(rowId);
                                     return;
                                 }
                                 if (isExpanded) {
@@ -851,37 +886,11 @@ export function DataTable<TData extends object>({
                                     return;
                                 }
                                 setExpandedRowId(rowId);
-                                if (rowId != null && !detailCache[String(rowId)]) {
-                                    try {
-                                        const base = window.location.origin;
-                                        const path = `/data-table/detail/${tableName}/${rowId}`;
-                                        const res = await fetch(base + path);
-                                        const json = await res.json();
-                                        setDetailCache((prev) => ({
-                                            ...prev,
-                                            [String(rowId)]: json.detail ?? {},
-                                        }));
-                                    } catch {
-                                        setDetailCache((prev) => ({
-                                            ...prev,
-                                            [String(rowId)]: {},
-                                        }));
-                                    }
-                                }
+                                await fetchDetail(rowId);
                             }}
-                            aria-label={
-                                useOverlay
-                                    ? isOverlayOpen
-                                        ? 'Close'
-                                        : 'View details'
-                                    : isExpanded
-                                      ? 'Collapse'
-                                      : 'Expand'
-                            }
+                            aria-label={getAriaLabel()}
                         >
-                            {useOverlay ? (
-                                <ChevronRight className="h-4 w-4" />
-                            ) : isExpanded ? (
+                            {!useOverlay && isExpanded ? (
                                 <ChevronDown className="h-4 w-4" />
                             ) : (
                                 <ChevronRight className="h-4 w-4" />
@@ -992,9 +1001,12 @@ export function DataTable<TData extends object>({
         [rowSelection, tableData.data],
     );
 
-    const [density, setDensity] = useState<'compact' | 'comfortable' | 'spacious'>(
-        () => (optionsOverride?.density as 'compact' | 'comfortable' | 'spacious') ?? 'comfortable',
-    );
+    const DENSITY_VALUES = ['compact', 'comfortable', 'spacious'] as const;
+    type Density = (typeof DENSITY_VALUES)[number];
+    const [density, setDensity] = useState<Density>(() => {
+        const d = optionsOverride?.density;
+        return typeof d === 'string' && DENSITY_VALUES.includes(d as Density) ? (d as Density) : 'comfortable';
+    });
 
     const densityRowClass = {
         compact: 'py-1',
@@ -1002,21 +1014,26 @@ export function DataTable<TData extends object>({
         spacious: 'py-3',
     }[density];
 
-    const hasActiveFilters = typeof window !== 'undefined' && (() => {
-        const p = new URLSearchParams(window.location.search);
-        const ignore = new Set(['page', 'per_page', 'sort', prefix ? `${prefix}_search` : 'search']);
-        for (const k of ignore) p.delete(k);
-        return p.toString().length > 0;
-    })();
+    const paginationKeys = useMemo(
+        () => new Set(['page', 'per_page', 'sort', prefix ? `${prefix}_search` : 'search']),
+        [prefix],
+    );
+
+    const hasActiveFilters = useMemo(() => {
+        if (typeof window === 'undefined') return false;
+        const params = new URLSearchParams(window.location.search);
+        for (const k of paginationKeys) params.delete(k);
+        return params.toString().length > 0;
+    }, [paginationKeys, meta.filters]);
 
     const clearAllFilters = useCallback(() => {
         const url = new URL(window.location.href);
-        const keep = new Set(['sort', 'per_page', prefix ? `${prefix}_search` : 'search']);
-        const keys = [...url.searchParams.keys()];
-        keys.forEach((k) => { if (!keep.has(k)) url.searchParams.delete(k); });
+        for (const k of [...url.searchParams.keys()]) {
+            if (!paginationKeys.has(k)) url.searchParams.delete(k);
+        }
         const qs = url.searchParams.toString();
         router.get(url.pathname + (qs ? `?${qs}` : ''), {}, { preserveScroll: true });
-    }, [prefix]);
+    }, [paginationKeys]);
 
     const [selectingAll, setSelectingAll] = useState(false);
     const handleSelectAllMatching = useCallback(async () => {
@@ -1335,7 +1352,7 @@ export function DataTable<TData extends object>({
                         {table.getRowModel().rows.length > 0 ? (
                             table.getRowModel().rows.flatMap((row, index) => {
                                 const rowId = (row.original as { id?: unknown }).id;
-                                const isExpanded = detailRowEnabled && expandedRowId !== null && expandedRowId !== undefined && String(expandedRowId) === String(rowId);
+                                const isExpanded = detailRowEnabled && expandedRowId != null && String(expandedRowId) === String(rowId);
                                 const detailContent = isExpanded && renderDetailRow
                                     ? renderDetailRow(row.original, detailCache[String(rowId)] ?? {})
                                     : null;
@@ -1377,7 +1394,6 @@ export function DataTable<TData extends object>({
                                             );
                                             const pinnedBg = getPinnedCellBg(
                                                 cell.column.getIsPinned(),
-                                                index % 2 === 1,
                                                 row.getIsSelected(),
                                             );
                                             return (
@@ -1391,30 +1407,10 @@ export function DataTable<TData extends object>({
                                                         index % 2 === 1 &&
                                                             'bg-muted/40',
                                                         'py-2 whitespace-nowrap',
-                                                        (
-                                                            cell.column.columnDef
-                                                                .meta as {
-                                                                type?: string;
-                                                            }
-                                                        )?.type === 'number' &&
+                                                        getColumnMeta(cell.column.columnDef).type === 'number' &&
                                                             'text-right',
-                                                        (
-                                                            cell.column.columnDef
-                                                                .meta as {
-                                                                group?:
-                                                                    | string
-                                                                    | null;
-                                                            }
-                                                        )?.group &&
-                                                            groupClassName?.[
-                                                                (
-                                                                    cell.column
-                                                                        .columnDef
-                                                                        .meta as {
-                                                                        group: string;
-                                                                }
-                                                            ).group
-                                                        ],
+                                                        getColumnMeta(cell.column.columnDef).group &&
+                                                            groupClassName?.[getColumnMeta(cell.column.columnDef).group!],
                                                         pin.className,
                                                     )}
                                                 >
@@ -1464,52 +1460,22 @@ export function DataTable<TData extends object>({
                                 ].map((col) => {
                                     const footerValue =
                                         tableData.footer?.[col.id];
-                                    const colMeta = col.columnDef.meta as
-                                        | {
-                                              type?: string;
-                                              group?: string | null;
-                                          }
-                                        | undefined;
-                                    const isNumber = colMeta?.type === 'number';
-                                    const group = colMeta?.group;
+                                    const meta = getColumnMeta(col.columnDef);
+                                    const isNumber = meta.type === 'number';
                                     const pin = getColumnPinningProps(col);
                                     let content: React.ReactNode = null;
-                                    if (
-                                        footerValue !== undefined &&
-                                        footerValue !== null
-                                    ) {
-                                        if (renderFooterCell) {
-                                            const custom = renderFooterCell(
-                                                col.id,
-                                                footerValue,
-                                            );
-                                            if (custom !== undefined) {
-                                                content = custom;
-                                            } else {
-                                                content =
-                                                    isNumber &&
-                                                    typeof footerValue ===
-                                                        'number'
-                                                        ? footerValue.toLocaleString(
-                                                              'fr-TN',
-                                                          )
-                                                        : String(footerValue);
-                                            }
+                                    if (footerValue != null) {
+                                        const custom = renderFooterCell?.(col.id, footerValue);
+                                        if (custom !== undefined) {
+                                            content = custom;
                                         } else {
-                                            content =
-                                                isNumber &&
-                                                typeof footerValue === 'number'
-                                                    ? footerValue.toLocaleString(
-                                                          'fr-TN',
-                                                      )
-                                                    : String(footerValue);
+                                            content = isNumber && typeof footerValue === 'number'
+                                                ? footerValue.toLocaleString('fr-TN')
+                                                : String(footerValue);
                                         }
                                     }
                                     const footerPinnedBg = col.getIsPinned()
-                                        ? {
-                                              backgroundColor:
-                                                  'var(--color-background)',
-                                          }
+                                        ? { backgroundColor: 'var(--color-background)' }
                                         : {};
                                     return (
                                         <TableCell
@@ -1522,8 +1488,8 @@ export function DataTable<TData extends object>({
                                                 'py-2 font-medium whitespace-nowrap',
                                                 isNumber &&
                                                     'text-right tabular-nums',
-                                                group &&
-                                                    groupClassName?.[group],
+                                                meta.group &&
+                                                    groupClassName?.[meta.group],
                                                 pin.className,
                                             )}
                                         >
@@ -1543,10 +1509,9 @@ export function DataTable<TData extends object>({
                                     ...table.getRightVisibleLeafColumns(),
                                 ].map((col) => {
                                     const summaryValue = tableData.summary?.[col.id];
-                                    const colMeta = col.columnDef.meta as { type?: string; group?: string | null } | undefined;
-                                    const isNumber = colMeta?.type === 'number';
+                                    const isNumber = getColumnMeta(col.columnDef).type === 'number';
                                     const pin = getColumnPinningProps(col);
-                                    const content = summaryValue !== undefined && summaryValue !== null
+                                    const content = summaryValue != null
                                         ? (typeof summaryValue === 'number' && isNumber
                                             ? summaryValue.toLocaleString('fr-TN')
                                             : String(summaryValue))
@@ -1576,94 +1541,82 @@ export function DataTable<TData extends object>({
                 onPageChange={handlePageChange}
                 onPerPageChange={handlePerPageChange}
             />
-            {detailRowEnabled &&
-                detailOverlayRow &&
-                (detailDisplay === 'drawer' ? (
-                    <Sheet
-                        open={!!detailOverlayRow}
-                        onOpenChange={(open) => !open && setDetailOverlayRow(null)}
-                    >
-                        <SheetContent className="overflow-y-auto sm:max-w-lg">
-                            <SheetHeader>
-                                <SheetTitle>Details</SheetTitle>
-                            </SheetHeader>
-                            <div className="mt-4">
-                                {renderDetailRow?.(
-                                    detailOverlayRow.data,
-                                    detailCache[String(detailOverlayRow.id)] ?? {},
-                                )}
-                            </div>
-                        </SheetContent>
-                    </Sheet>
-                ) : detailDisplay === 'modal' ? (
-                    <Dialog
-                        open={!!detailOverlayRow}
-                        onOpenChange={(open) => !open && setDetailOverlayRow(null)}
-                    >
-                        <DialogContent className="max-w-lg">
-                            <DialogHeader>
-                                <DialogTitle>Details</DialogTitle>
-                            </DialogHeader>
-                            <div className="mt-4">
-                                {renderDetailRow?.(
-                                    detailOverlayRow.data,
-                                    detailCache[String(detailOverlayRow.id)] ?? {},
-                                )}
-                            </div>
-                        </DialogContent>
-                    </Dialog>
-                ) : null)}
-            {confirmingBulkAction && (
-                <Dialog
-                    open={!!confirmingBulkAction}
-                    onOpenChange={(open) => !open && setConfirmingBulkAction(null)}
+            {detailRowEnabled && detailOverlayRow && detailDisplay === 'drawer' && (
+                <Sheet
+                    open
+                    onOpenChange={(open) => !open && setDetailOverlayRow(null)}
                 >
-                    <DialogContent>
+                    <SheetContent className="overflow-y-auto sm:max-w-lg">
+                        <SheetHeader>
+                            <SheetTitle>Details</SheetTitle>
+                        </SheetHeader>
+                        <div className="mt-4">
+                            {renderDetailRow?.(
+                                detailOverlayRow.data,
+                                detailCache[String(detailOverlayRow.id)] ?? {},
+                            )}
+                        </div>
+                    </SheetContent>
+                </Sheet>
+            )}
+            {detailRowEnabled && detailOverlayRow && detailDisplay === 'modal' && (
+                <Dialog
+                    open
+                    onOpenChange={(open) => !open && setDetailOverlayRow(null)}
+                >
+                    <DialogContent className="max-w-lg">
                         <DialogHeader>
-                            <DialogTitle>
-                                {typeof confirmingBulkAction.confirm === 'object' &&
-                                confirmingBulkAction.confirm?.title
-                                    ? confirmingBulkAction.confirm.title
-                                    : 'Confirm'}
-                            </DialogTitle>
+                            <DialogTitle>Details</DialogTitle>
                         </DialogHeader>
-                        <p className="text-muted-foreground text-sm">
-                            {typeof confirmingBulkAction.confirm === 'object' &&
-                            confirmingBulkAction.confirm?.description
-                                ? confirmingBulkAction.confirm.description
-                                : `Run "${confirmingBulkAction.label}" on ${selectedRows.length} selected item(s)?`}
-                        </p>
-                        <div className="mt-4 flex justify-end gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={() => setConfirmingBulkAction(null)}
-                            >
-                                {typeof confirmingBulkAction.confirm === 'object' &&
-                                confirmingBulkAction.confirm?.cancelLabel
-                                    ? confirmingBulkAction.confirm.cancelLabel
-                                    : 'Cancel'}
-                            </Button>
-                            <Button
-                                variant={
-                                    typeof confirmingBulkAction.confirm === 'object' &&
-                                    confirmingBulkAction.confirm?.variant === 'destructive'
-                                        ? 'destructive'
-                                        : 'default'
-                                }
-                                onClick={() => {
-                                    confirmingBulkAction.onClick(selectedRows);
-                                    setConfirmingBulkAction(null);
-                                }}
-                            >
-                                {typeof confirmingBulkAction.confirm === 'object' &&
-                                confirmingBulkAction.confirm?.confirmLabel
-                                    ? confirmingBulkAction.confirm.confirmLabel
-                                    : 'Confirm'}
-                            </Button>
+                        <div className="mt-4">
+                            {renderDetailRow?.(
+                                detailOverlayRow.data,
+                                detailCache[String(detailOverlayRow.id)] ?? {},
+                            )}
                         </div>
                     </DialogContent>
                 </Dialog>
             )}
+            {confirmingBulkAction && (() => {
+                const opts = getBulkConfirmOptions(
+                    confirmingBulkAction as DataTableBulkAction<unknown>,
+                    `Run "${confirmingBulkAction.label}" on ${selectedRows.length} selected item(s)?`,
+                );
+                return (
+                    <Dialog
+                        open
+                        onOpenChange={(open) => !open && setConfirmingBulkAction(null)}
+                    >
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>{opts.title}</DialogTitle>
+                            </DialogHeader>
+                            {opts.description && (
+                                <p className="text-sm text-muted-foreground">
+                                    {opts.description}
+                                </p>
+                            )}
+                            <div className="mt-4 flex justify-end gap-2">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setConfirmingBulkAction(null)}
+                                >
+                                    {opts.cancelLabel ?? 'Cancel'}
+                                </Button>
+                                <Button
+                                    variant={opts.variant === 'destructive' ? 'destructive' : 'default'}
+                                    onClick={() => {
+                                        confirmingBulkAction.onClick(selectedRows);
+                                        setConfirmingBulkAction(null);
+                                    }}
+                                >
+                                    {opts.confirmLabel ?? 'Confirm'}
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                );
+            })()}
         </div>
     );
 }

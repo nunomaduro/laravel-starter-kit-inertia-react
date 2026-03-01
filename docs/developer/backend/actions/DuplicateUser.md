@@ -1,4 +1,4 @@
-# DuplicateUserAction
+# DuplicateUser
 
 ## Purpose
 
@@ -6,7 +6,7 @@ Duplicates a user with a new name (suffix " (copy)"), unique email, and same org
 
 ## Location
 
-`app/Actions/DuplicateUserAction.php`
+`app/Actions/DuplicateUser.php`
 
 ## Method Signature
 
@@ -33,7 +33,7 @@ The newly created `User` (the copy).
 ### From Controller
 
 ```php
-app(DuplicateUserAction::class)->handle($user);
+app(DuplicateUser::class)->handle($user);
 ```
 
 ## Related Components

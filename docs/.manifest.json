@@ -436,9 +436,9 @@
                 ]
             }
         },
-        "DuplicateUserAction": {
+        "DuplicateUser": {
             "documented": true,
-            "path": "./DuplicateUserAction.md",
+            "path": "./DuplicateUser.md",
             "relationships": {
                 "usedBy": [
                     "UsersTableController"
@@ -922,7 +922,7 @@
             "relationships": {
                 "usesActions": [
                     "BulkSoftDeleteUsers",
-                    "DuplicateUserAction"
+                    "DuplicateUser"
                 ],
                 "usesFormRequests": [
                     "BulkSoftDeleteUsersRequest"
