@@ -19,6 +19,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -56,13 +57,14 @@ use Spatie\Tags\HasTags;
  * @property array<string>|null $onboarding_steps_completed
  * @property-read CarbonInterface $created_at
  * @property-read CarbonInterface $updated_at
+ * @property-read CarbonInterface|null $deleted_at
  */
 final class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasMedia, MustVerifyEmail
 {
     /**
      * @use HasFactory<UserFactory>
      */
-    use CanRedeemVouchers, Categorizable, GiveExperience, HasAchievements, HasAffiliate, HasApiTokens, HasFactory, HasOrganizationPermissions, HasRoles, HasTags, InteractsWithMedia, LogsActivity, Notifiable, Referrable, Searchable, TwoFactorAuthenticatable;
+    use CanRedeemVouchers, Categorizable, GiveExperience, HasAchievements, HasAffiliate, HasApiTokens, HasFactory, HasOrganizationPermissions, HasRoles, HasTags, InteractsWithMedia, LogsActivity, Notifiable, Referrable, Searchable, SoftDeletes, TwoFactorAuthenticatable;
 
     /**
      * @var list<string>
@@ -283,6 +285,7 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     {
         return [
             'email_verified_at' => 'datetime',
+            'deleted_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'onboarding_completed' => 'boolean',

@@ -56,8 +56,8 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [enterprise-inquiries/create](./enterprise-inquiries-create.md) | enterprise-inquiries.create, enterprise-inquiries.store | ✅ |
 | [chat/index](./chat/index.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
 | [user-table](./user-table.md) | N/A | ✅ |
-| [users/table](./users/table.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
-| [users/show](./users/show.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
+| [users/table](./users/table.md) | users.table, users.bulk-soft-delete | ✅ |
+| [users/show](./users/show.md) | users.table, users.bulk-soft-delete | ✅ |
 | [pages/edit](./pages/edit.md) | pages.index, pages.create | ✅ |
 | [pages/index](./pages/index.md) | pages.index, pages.create | ✅ |
 | [pages/show](./pages/show.md) | pages.index, pages.create | ✅ |

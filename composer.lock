@@ -7118,12 +7118,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/coding-sunshine/laravel-data-table.git",
-                "reference": "5f74780845c33acfaef1c48837f477fc8e916e05"
+                "reference": "8bc5fa4cc51a781968fab0be15951b22b969a5bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/coding-sunshine/laravel-data-table/zipball/5f74780845c33acfaef1c48837f477fc8e916e05",
-                "reference": "5f74780845c33acfaef1c48837f477fc8e916e05",
+                "url": "https://api.github.com/repos/coding-sunshine/laravel-data-table/zipball/8bc5fa4cc51a781968fab0be15951b22b969a5bd",
+                "reference": "8bc5fa4cc51a781968fab0be15951b22b969a5bd",
                 "shasum": ""
             },
             "require": {
@@ -7178,7 +7178,7 @@
             "support": {
                 "source": "https://github.com/coding-sunshine/laravel-data-table/tree/main"
             },
-            "time": "2026-03-01T07:34:15+00:00"
+            "time": "2026-03-01T12:39:07+00:00"
         },
         {
             "name": "maennchen/zipstream-php",

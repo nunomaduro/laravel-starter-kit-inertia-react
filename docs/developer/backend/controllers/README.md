@@ -41,5 +41,6 @@ All Controllers:
 | [Controller](./controller.md) | N/A | ✅ |
 | [PageController](./pagecontroller.md) | N/A | ✅ |
 | [PageViewController](./pageviewcontroller.md) | N/A | ✅ |
+| [UsersTableController](./UsersTableController.md) | N/A | ✅ |
 
 

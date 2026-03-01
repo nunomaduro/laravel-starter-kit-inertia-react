@@ -34,7 +34,12 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use LemonSqueezy\Laravel\Events\OrderCreated;
+use Machour\DataTable\Http\Controllers\DataTableDetailRowController;
 use Machour\DataTable\Http\Controllers\DataTableExportController;
+use Machour\DataTable\Http\Controllers\DataTableImportController;
+use Machour\DataTable\Http\Controllers\DataTableInlineEditController;
+use Machour\DataTable\Http\Controllers\DataTableSelectAllController;
+use Machour\DataTable\Http\Controllers\DataTableToggleController;
 use Pan\PanConfiguration;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\Permission\Models\Permission;
@@ -100,7 +105,13 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(OrderCreated::class, AddCreditsFromLemonSqueezyOrder::class);
         User::observe(UserObserver::class);
 
-        DataTableExportController::register('users', \App\DataTables\UserDataTable::class);
+        $userDataTable = \App\DataTables\UserDataTable::class;
+        DataTableExportController::register('users', $userDataTable);
+        DataTableInlineEditController::register('users', $userDataTable);
+        DataTableToggleController::register('users', $userDataTable);
+        DataTableSelectAllController::register('users', $userDataTable);
+        DataTableDetailRowController::register('users', $userDataTable);
+        DataTableImportController::register('users', $userDataTable);
     }
 
     private function userHasBypassPermissions(object $user): bool

@@ -71,6 +71,11 @@
             "type": "string",
             "nullable": true,
             "default": null
+        },
+        "deleted_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
         }
     },
     "relationships": {
@@ -163,6 +168,10 @@
         "onboarding_completed": {
             "type": "boolean",
             "example": true
+        },
+        "deleted_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
         }
     },
     "scenarios": []
