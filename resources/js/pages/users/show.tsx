@@ -42,9 +42,7 @@ export default function UserShowPage({ user }: Props) {
                                 Created at
                             </dt>
                             <dd>
-                                {new Date(
-                                    user.created_at,
-                                ).toLocaleDateString()}
+                                {new Date(user.created_at).toLocaleDateString()}
                             </dd>
                         </div>
                     )}

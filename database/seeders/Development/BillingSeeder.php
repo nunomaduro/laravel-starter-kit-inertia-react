@@ -8,8 +8,6 @@ use Illuminate\Database\Seeder;
 
 final class BillingSeeder extends Seeder
 {
-    private array $dependencies = ['CreditPackSeeder'];
-
     public function run(): void
     {
         $this->call(CreditPackSeeder::class);

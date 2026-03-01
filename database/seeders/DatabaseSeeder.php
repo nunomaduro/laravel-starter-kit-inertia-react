@@ -137,14 +137,18 @@ final class DatabaseSeeder extends Seeder
                 }
 
                 $className = $namespace.'\\'.$file->getBasename('.php');
-
-                if (! class_exists($className) || ! is_subclass_of($className, Seeder::class)) {
+                if (! class_exists($className)) {
+                    continue;
+                }
+                if (! is_subclass_of($className, Seeder::class)) {
                     continue;
                 }
 
                 $reflection = new ReflectionClass($className);
-
-                if ($reflection->isAbstract() || $reflection->isInterface()) {
+                if ($reflection->isAbstract()) {
+                    continue;
+                }
+                if ($reflection->isInterface()) {
                     continue;
                 }
 

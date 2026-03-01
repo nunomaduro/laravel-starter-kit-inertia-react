@@ -33,9 +33,14 @@ final class OrganizationInvitationPolicy
 
     public function create(User $user, Organization $organization): bool
     {
-        return $organization->isOwner($user)
-            || $user->isSuperAdmin()
-            || $this->userHasOrgRole($user, $organization, 'admin');
+        if ($organization->isOwner($user)) {
+            return true;
+        }
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->userHasOrgRole($user, $organization, 'admin');
     }
 
     public function update(User $user, OrganizationInvitation $organizationInvitation): bool
@@ -45,9 +50,11 @@ final class OrganizationInvitationPolicy
         }
 
         $organization = $organizationInvitation->organization;
+        if ($organization->isOwner($user)) {
+            return true;
+        }
 
-        return $organization->isOwner($user)
-            || $this->userHasOrgRole($user, $organization, 'admin');
+        return $this->userHasOrgRole($user, $organization, 'admin');
     }
 
     public function delete(User $user, OrganizationInvitation $organizationInvitation): bool

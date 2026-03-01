@@ -96,7 +96,7 @@ final class UserDataTable extends AbstractDataTable
         }
 
         $organization = TenantContext::get();
-        if (! $organization) {
+        if (! $organization instanceof \App\Models\Organization) {
             return $query->whereRaw('1 = 0');
         }
 
@@ -120,7 +120,7 @@ final class UserDataTable extends AbstractDataTable
         return 'users';
     }
 
-    public static function tableExportFilename(): string|Closure
+    public static function tableExportFilename(): Closure
     {
         return fn (): string => 'users-'.now()->format('Y-m-d-His');
     }

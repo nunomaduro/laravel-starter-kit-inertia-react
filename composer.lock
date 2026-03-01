@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5090f3d5fa206723e7f118af59a9e4f1",
+    "content-hash": "0f4b3813c6a7ae02d7f749ecda483808",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -4637,6 +4637,122 @@
             "time": "2025-12-17T00:37:48+00:00"
         },
         {
+            "name": "laravel-workflow/laravel-workflow",
+            "version": "1.0.69",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/durable-workflow/workflow.git",
+                "reference": "794173d81fe68c9b8bba515dd6d845daa0f48267"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/durable-workflow/workflow/zipball/794173d81fe68c9b8bba515dd6d845daa0f48267",
+                "reference": "794173d81fe68c9b8bba515dd6d845daa0f48267",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^9.0|^10.0|^11.0|^12.0",
+                "php": "^8.1",
+                "react/promise": "^2.9|^3.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0",
+                "phpstan/phpstan": "^2.0",
+                "symplify/easy-coding-standard": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Workflow\\Providers\\WorkflowServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Workflow\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Richard McDaniel",
+                    "email": "richard.lee.mcdaniel@gmail.com"
+                }
+            ],
+            "description": "Durable workflow engine that allows users to write long running persistent distributed workflows (orchestrations) in PHP powered by Laravel queues.",
+            "support": {
+                "issues": "https://github.com/durable-workflow/workflow/issues",
+                "source": "https://github.com/durable-workflow/workflow/tree/1.0.69"
+            },
+            "time": "2026-02-27T14:21:42+00:00"
+        },
+        {
+            "name": "laravel-workflow/waterline",
+            "version": "1.0.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/durable-workflow/waterline.git",
+                "reference": "03e60f83d73fd1edaa8c0d2f3d3d1511ce2f6a57"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/durable-workflow/waterline/zipball/03e60f83d73fd1edaa8c0d2f3d3d1511ce2f6a57",
+                "reference": "03e60f83d73fd1edaa8c0d2f3d3d1511ce2f6a57",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+                "laravel-workflow/laravel-workflow": "^1.0",
+                "php": "^8.0.2"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.9.1",
+                "mockery/mockery": "^1.4.4",
+                "orchestra/testbench": "^7.29",
+                "orchestra/workbench": "^7.29",
+                "phpunit/phpunit": "^9.5.10"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Waterline": "Waterline\\Waterline"
+                    },
+                    "providers": [
+                        "Waterline\\WaterlineServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Waterline\\": "app/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Richard McDaniel",
+                    "email": "richard.lee.mcdaniel@gmail.com"
+                }
+            ],
+            "description": "An elegant UI for monitoring Laravel Workflows.",
+            "support": {
+                "issues": "https://github.com/durable-workflow/waterline/issues",
+                "source": "https://github.com/durable-workflow/waterline/tree/1.0.14"
+            },
+            "time": "2025-10-27T04:40:59+00:00"
+        },
+        {
             "name": "laravel/ai",
             "version": "v0.2.5",
             "source": {
@@ -7002,12 +7118,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/coding-sunshine/laravel-data-table.git",
-                "reference": "dc407a9a30e13c9e889d16fa5cf1f81eef9db7c1"
+                "reference": "5f74780845c33acfaef1c48837f477fc8e916e05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/coding-sunshine/laravel-data-table/zipball/dc407a9a30e13c9e889d16fa5cf1f81eef9db7c1",
-                "reference": "dc407a9a30e13c9e889d16fa5cf1f81eef9db7c1",
+                "url": "https://api.github.com/repos/coding-sunshine/laravel-data-table/zipball/5f74780845c33acfaef1c48837f477fc8e916e05",
+                "reference": "5f74780845c33acfaef1c48837f477fc8e916e05",
                 "shasum": ""
             },
             "require": {
@@ -7062,7 +7178,7 @@
             "support": {
                 "source": "https://github.com/coding-sunshine/laravel-data-table/tree/main"
             },
-            "time": "2026-02-28T16:54:50+00:00"
+            "time": "2026-03-01T07:34:15+00:00"
         },
         {
             "name": "maennchen/zipstream-php",

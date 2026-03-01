@@ -11,4 +11,5 @@ return [
     App\Providers\MemoryServiceProvider::class,
     App\Providers\PermissionServiceProvider::class,
     App\Providers\SettingsOverlayServiceProvider::class,
+    App\Providers\WaterlineServiceProvider::class,
 ];

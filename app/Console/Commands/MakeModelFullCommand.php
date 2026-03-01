@@ -508,12 +508,12 @@ PHP;
         } catch (Exception) {
             $response = $prismService->generate($prompt, $model);
             $text = $response->text;
-            $jsonData = json_decode((string) $text, true);
+            $jsonData = json_decode($text, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                if (preg_match('/```(?:json)?\s*(\[.*?\])/s', (string) $text, $matches)) {
+                if (preg_match('/```(?:json)?\s*(\[.*?\])/s', $text, $matches)) {
                     $jsonData = json_decode($matches[1], true);
-                } elseif (preg_match('/\[.*\]/s', (string) $text, $matches)) {
+                } elseif (preg_match('/\[.*\]/s', $text, $matches)) {
                     $jsonData = json_decode($matches[0], true);
                 }
             }

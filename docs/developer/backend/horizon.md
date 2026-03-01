@@ -29,6 +29,10 @@ In `.env.example`:
 
 With Horizon running and `QUEUE_CONNECTION=redis`, visit `/horizon` (or `HORIZON_PATH`) when logged in as a user with admin panel access. The dashboard shows recent jobs, failed jobs, and queue metrics.
 
+## Related
+
+- **Waterline** — Workflow monitoring UI at `/waterline` (admin only). Use it to inspect runs of [Durable Workflow](./durable-workflow.md) workflows. Same authorization as Horizon (`access admin panel`).
+
 ## References
 
 - [Laravel Horizon](https://laravel.com/docs/horizon) — official documentation.

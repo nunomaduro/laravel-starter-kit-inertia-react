@@ -11,6 +11,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
     Popover,
     PopoverContent,
@@ -26,6 +27,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
+import { router } from '@inertiajs/react';
 import {
     type Column,
     type ColumnDef,
@@ -52,8 +54,6 @@ import {
     X,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { router } from '@inertiajs/react';
-import { Input } from '@/components/ui/input';
 import { Filters } from '../filters/filters';
 import type { FilterColumn } from '../filters/types';
 import { DataTableColumnHeader } from './data-table-column-header';
@@ -650,8 +650,8 @@ export function DataTable<TData extends object>({
             <div className="flex flex-wrap items-center justify-between gap-2 py-1">
                 <div className="flex flex-1 flex-wrap items-center gap-2 pl-6">
                     {showGlobalSearch && (
-                        <div className="relative w-full min-w-[200px] max-w-sm">
-                            <Search className="text-muted-foreground absolute left-2.5 top-1/2 size-4 -translate-y-1/2" />
+                        <div className="relative w-full max-w-sm min-w-[200px]">
+                            <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 type="search"
                                 placeholder="Search…"
@@ -906,10 +906,7 @@ export function DataTable<TData extends object>({
                                                   const href = rowLink(
                                                       row.original,
                                                   );
-                                                  if (
-                                                      e.metaKey ||
-                                                      e.ctrlKey
-                                                  ) {
+                                                  if (e.metaKey || e.ctrlKey) {
                                                       window.open(href);
                                                   } else {
                                                       router.visit(href);

@@ -23,7 +23,7 @@ final class PublicContentCacheProfile extends BaseCacheProfile
             return false;
         }
 
-        if ($request->is('admin/*') || $request->is('api/*') || $request->is('telescope/*') || $request->is('horizon/*') || $request->is('pulse/*')) {
+        if ($request->is('admin/*') || $request->is('api/*') || $request->is('telescope/*') || $request->is('horizon/*') || $request->is('waterline/*') || $request->is('pulse/*')) {
             return false;
         }
 

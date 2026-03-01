@@ -7,8 +7,11 @@ import { edit as editProfile } from '@/routes/user-profile';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
+    Activity,
     BarChart3,
+    Bug,
     FileText,
+    GitBranch,
     LifeBuoy,
     Mail,
     Settings,
@@ -86,6 +89,30 @@ export default function Dashboard() {
             show: canAccessAdmin,
             external: true,
             dataPan: 'dashboard-quick-product-analytics',
+        },
+        {
+            label: 'Horizon (queues)',
+            href: '/horizon',
+            icon: Activity,
+            show: canAccessAdmin,
+            external: true,
+            dataPan: 'dashboard-quick-horizon',
+        },
+        {
+            label: 'Waterline (workflows)',
+            href: '/waterline',
+            icon: GitBranch,
+            show: canAccessAdmin,
+            external: true,
+            dataPan: 'dashboard-quick-waterline',
+        },
+        {
+            label: 'Telescope (debug)',
+            href: '/telescope',
+            icon: Bug,
+            show: canAccessAdmin,
+            external: true,
+            dataPan: 'dashboard-quick-telescope',
         },
     ].filter((a) => a.show);
 

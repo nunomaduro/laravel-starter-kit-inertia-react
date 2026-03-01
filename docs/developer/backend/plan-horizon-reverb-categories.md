@@ -18,6 +18,8 @@ Plan for adding Laravel Horizon (queues), Laravel Reverb (WebSockets), and Categ
 
 **Current kit benefit:** Personal data export job, Scout queue, backup notifications, and all future queued jobs get monitoring and retries.
 
+**Durable Workflow & Waterline (added):** [laravel-workflow/laravel-workflow](https://github.com/durable-workflow/workflow) and [laravel-workflow/waterline](https://github.com/durable-workflow/waterline) are installed for long-running workflows; Waterline dashboard at `/waterline` (admin only). See [durable-workflow.md](./durable-workflow.md).
+
 ---
 
 ## 2. Laravel Reverb (WebSockets)

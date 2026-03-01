@@ -72,7 +72,10 @@ final class SeedScenarioManager
 
         foreach ($scenario['models'] ?? [] as $modelConfig) {
             $modelClass = $modelConfig['class'] ?? null;
-            if ($modelClass === null || ! class_exists($modelClass)) {
+            if ($modelClass === null) {
+                continue;
+            }
+            if (! class_exists($modelClass)) {
                 continue;
             }
 
