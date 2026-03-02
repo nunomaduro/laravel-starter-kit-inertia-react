@@ -44,7 +44,7 @@
         "Rector config (rector.php) is confirmed to exist and be valid"
       ],
       "priority": 2,
-      "passes": false
+      "passes": true
     },
     {
       "id": "US-004",
