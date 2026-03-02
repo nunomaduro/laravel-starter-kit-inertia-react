@@ -197,3 +197,25 @@
   - `diffInDays()` returns signed values by default — use `diffInDays(now(), absolute: true)` or `isFuture()` for expiration assertions
   - Event::fake() prevents listeners from running but vendor controller code still executes — can cause 500 if controller has side effects
 ---
+
+## 2026-03-02 - US-014
+- Created `tests/Unit/Listeners/AddCreditsFromLemonSqueezyOrderTest.php` with 14 tests (37 assertions):
+  - Credits from explicit custom_data.credits
+  - Credits from amount calculation (total / cents_per_credit fallback)
+  - Custom cents_per_credit config respected
+  - Explicit credits preferred over amount calculation
+  - Non-Organization billable returns early (no credits created)
+  - Zero total amount returns early
+  - Negative total amount returns early
+  - Zero cents_per_credit returns zero credits (logs warning)
+  - credit_pack_id included in metadata when provided, omitted when not
+  - Credit expiration set from config, null when config is null
+  - Running balance accumulates across multiple orders
+  - Missing total attribute handled gracefully
+- Files changed: `tests/Unit/Listeners/AddCreditsFromLemonSqueezyOrderTest.php` (new)
+- **Learnings for future iterations:**
+  - Unit tests for listeners: instantiate directly with `new AddCreditsFromLemonSqueezyOrder`, call `->handle()` with constructed events
+  - Use `Credit::query()->withoutGlobalScopes()` in test assertions since Credit uses BelongsToOrganization (global scope filters by TenantContext)
+  - `Log::shouldReceive()` works for verifying warning log calls in Pest tests
+  - `->toBeBetween(29, 31)` is a good way to assert approximate day counts for expiration dates
+---

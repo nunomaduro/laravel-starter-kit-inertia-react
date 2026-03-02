@@ -229,7 +229,7 @@
         "php artisan test --compact --filter=AddCreditsFromLemonSqueezyOrder passes"
       ],
       "priority": 2,
-      "passes": false
+      "passes": true
     },
     {
       "id": "US-015",
