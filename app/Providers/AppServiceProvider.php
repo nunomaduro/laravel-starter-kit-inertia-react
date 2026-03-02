@@ -194,6 +194,7 @@ final class AppServiceProvider extends ServiceProvider
             'dashboard-quick-telescope',
             'dashboard-card-view-analytics',
             'command-palette',
+            'global-search',
             'nav-chat',
             'nav-users',
             'chat-conversation-list',
