@@ -1,0 +1,296 @@
+{
+  "project": "Starter Kit Completeness — Final Gaps",
+  "description": "This PRD addresses the remaining gaps in the Laravel starter kit to bring it to production-ready, ship-quality completeness. Seven workstreams close the remaining gaps: MCP route verification, CI enforcement of code style/static analysis, example durable workflows, global search UI backed by Scout, billing webhook test coverage, Paddle/Lemon Squeezy documentation, and a single-page auth feature checklist.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Verify MCP route registration",
+      "description": "As a developer, I need to confirm that the MCP endpoint at /mcp/api is reachable so that AI assistants can connect to the application's MCP server.",
+      "acceptanceCriteria": [
+        "routes/ai.php is loaded (either by the laravel/mcp package auto-discovery or explicit registration in bootstrap/app.php)",
+        "php artisan route:list --path=mcp shows the MCP route",
+        "A feature test confirms POST /mcp/api returns a valid MCP response when authenticated via Sanctum",
+        "If manual registration is needed, add it to bootstrap/app.php with a comment explaining why",
+        "Documentation updated in docs/developer/backend/ if any changes were made",
+        "vendor/bin/pint --dirty --format agent passes",
+        "php artisan test --compact --filter=Mcp passes"
+      ],
+      "priority": 1,
+      "passes": true
+    },
+    {
+      "id": "US-002",
+      "title": "Add Pint code style check to CI",
+      "description": "As a developer, I want CI to enforce code style via Laravel Pint so that style regressions are caught before merge.",
+      "acceptanceCriteria": [
+        ".github/workflows/tests.yml includes a step that runs vendor/bin/pint --test",
+        "The step runs before the test suite (fail fast on style)",
+        "If Pint fails, the workflow fails with a clear error message",
+        "The step name is descriptive (e.g. \"Check code style (Pint)\")",
+        "Verified by pushing a deliberately mis-styled file and confirming CI catches it"
+      ],
+      "priority": 1,
+      "passes": true
+    },
+    {
+      "id": "US-003",
+      "title": "Add Rector dry-run to CI (optional but recommended)",
+      "description": "As a developer, I want CI to run Rector in dry-run mode so that automated refactoring regressions are detected.",
+      "acceptanceCriteria": [
+        ".github/workflows/tests.yml includes a step that runs vendor/bin/rector --dry-run",
+        "The step runs after Pint and before tests",
+        "If Rector finds changes, the workflow fails with a clear diff",
+        "The step name is descriptive (e.g. \"Check refactoring rules (Rector)\")",
+        "Rector config (rector.php) is confirmed to exist and be valid"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-004",
+      "title": "Create user onboarding workflow",
+      "description": "As a developer using this starter kit, I want a reference onboarding workflow so I can understand how to build durable workflows with laravel-workflow.",
+      "acceptanceCriteria": [
+        "app/Workflows/OnboardingWorkflow.php created extending Workflow",
+        "Activities: SendWelcomeEmailActivity, SetupDefaultOrganizationActivity, SendOnboardingCompleteNotificationActivity",
+        "Each activity class lives in app/Workflows/Activities/",
+        "Workflow is triggerable via an Artisan command: php artisan workflow:onboarding {userId}",
+        "Workflow appears in Waterline UI at /waterline when run",
+        "Feature test verifies the workflow completes successfully with all activities executed",
+        "vendor/bin/pint --dirty --format agent passes",
+        "Documentation created at docs/developer/backend/durable-workflow.md (or updated if exists) with usage examples"
+      ],
+      "priority": 3,
+      "passes": false
+    },
+    {
+      "id": "US-005",
+      "title": "Create approval workflow",
+      "description": "As a developer, I want a reference approval workflow demonstrating submit/review/approve/reject patterns.",
+      "acceptanceCriteria": [
+        "app/Workflows/ApprovalWorkflow.php created extending Workflow",
+        "Activities: SubmitForReviewActivity, NotifyReviewerActivity, ProcessDecisionActivity",
+        "Workflow accepts a decision signal (approve/reject) to proceed",
+        "Rejection loops back or terminates with appropriate status",
+        "Approval completes the workflow with a success status",
+        "Workflow is triggerable via Artisan command: php artisan workflow:approval {modelType} {modelId}",
+        "Feature test verifies both approve and reject paths",
+        "vendor/bin/pint --dirty --format agent passes"
+      ],
+      "priority": 3,
+      "passes": false
+    },
+    {
+      "id": "US-006",
+      "title": "Create AI pipeline workflow",
+      "description": "As a developer, I want a reference AI pipeline workflow demonstrating how to orchestrate multi-step AI tasks using laravel-workflow and laravel/ai.",
+      "acceptanceCriteria": [
+        "app/Workflows/AiPipelineWorkflow.php created extending Workflow",
+        "Activities: GenerateContentActivity, ReviewContentActivity, PublishContentActivity",
+        "GenerateContentActivity uses laravel/ai SDK to generate text content",
+        "ReviewContentActivity uses laravel/ai to review/score the generated content",
+        "PublishContentActivity stores the final result (e.g. to a model or log)",
+        "Workflow is triggerable via Artisan command: php artisan workflow:ai-pipeline {prompt}",
+        "Graceful failure handling: if AI generation fails, workflow retries or fails with a clear status",
+        "Feature test verifies the pipeline completes (using mocked AI responses)",
+        "vendor/bin/pint --dirty --format agent passes"
+      ],
+      "priority": 3,
+      "passes": false
+    },
+    {
+      "id": "US-007",
+      "title": "Document Typesense setup for production",
+      "description": "As a developer deploying to production, I need clear documentation on how to configure Scout with Typesense so full-text search works beyond the default collection driver.",
+      "acceptanceCriteria": [
+        "docs/developer/backend/scout-typesense.md updated (or created) with: Required environment variables (SCOUT_DRIVER=typesense, TYPESENSE_API_KEY, TYPESENSE_HOST, TYPESENSE_PORT)",
+        "Herd-specific setup instructions (TYPESENSE_API_KEY=LARAVEL-HERD, localhost)",
+        "Production Typesense Cloud setup instructions",
+        "How to add new searchable models (trait, toSearchableArray(), config/scout.php schema)",
+        "How to index existing data (php artisan scout:import)",
+        "List of currently searchable models: User, Post, HelpArticle, ChangelogEntry",
+        "Documentation manifest updated"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-008",
+      "title": "Create global search API endpoint",
+      "description": "As the frontend search component, I need a backend API endpoint that searches across all searchable models and returns unified results.",
+      "acceptanceCriteria": [
+        "SearchController created with a single __invoke method",
+        "Route: GET /search (authenticated, under tenant middleware) accepting q (query string) and optional type filter",
+        "Searches across User, Post, HelpArticle, ChangelogEntry (respecting feature flags for blog, changelog, help)",
+        "Results respect organization scope (tenant context)",
+        "Results respect visibility and permissions (user can only see what they have access to)",
+        "Returns JSON with grouped results: { users: [...], posts: [...], help_articles: [...], changelog_entries: [...] }",
+        "Each result includes: id, title (or name), subtitle (secondary text), url (link to the item), type",
+        "Maximum 5 results per category, 20 total",
+        "Feature test covers: authenticated search, empty query, filtered by type, respects tenant scope",
+        "vendor/bin/pint --dirty --format agent passes"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-009",
+      "title": "Build global search command palette UI",
+      "description": "As a user, I want to press Cmd+K (or click the search icon in the header) to open a search dialog that searches across the entire application so I can quickly find what I need.",
+      "acceptanceCriteria": [
+        "Existing command-dialog.tsx extended (or replaced) with a search-enabled version",
+        "Search input at top of dialog with debounced (300ms) queries to the /search endpoint",
+        "Results grouped by category (Users, Posts, Help Articles, Changelog Entries) with icons per category",
+        "Each result shows title, subtitle, and a type badge",
+        "Clicking a result navigates to that item's page via router.visit()",
+        "Arrow keys navigate results, Enter selects, Escape closes",
+        "Empty state: shows navigation shortcuts (existing command palette items) when no query entered",
+        "Loading state: shows skeleton/spinner while fetching",
+        "No results state: shows \"No results found for {query}\"",
+        "Search button in app-header.tsx (currently a placeholder) triggers the dialog",
+        "Keyboard shortcut Cmd+K / Ctrl+K opens the dialog (already wired)",
+        "data-pan=\"global-search\" added to the search trigger button; Pan analytics name registered in AppServiceProvider::configurePan()",
+        "Typecheck passes (npx tsc --noEmit or equivalent)"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-010",
+      "title": "Add search result highlighting",
+      "description": "As a user, I want to see my search term highlighted in the results so I can quickly identify why each result matched.",
+      "acceptanceCriteria": [
+        "Matched text in result titles and subtitles is visually highlighted (bold or background color)",
+        "Highlighting is case-insensitive",
+        "Special characters in the search query are escaped to prevent XSS",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false
+    },
+    {
+      "id": "US-011",
+      "title": "Add Stripe webhook integration tests",
+      "description": "As a developer, I need tests that verify Stripe webhook handling so that subscription and invoice events are processed correctly.",
+      "acceptanceCriteria": [
+        "Test file: tests/Feature/Billing/StripeWebhookTest.php",
+        "Tests cover: customer.subscription.created, customer.subscription.updated, customer.subscription.deleted, invoice.paid, invoice.payment_failed",
+        "Each test POSTs a realistic payload to /webhooks/stripe",
+        "Asserts correct database side effects (subscription created/updated/cancelled, invoice recorded)",
+        "Asserts webhook is logged to WebhookLog table",
+        "Tests signature validation (rejects unsigned payloads when signing secret is configured)",
+        "vendor/bin/pint --dirty --format agent passes",
+        "php artisan test --compact --filter=StripeWebhook passes"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-012",
+      "title": "Add Paddle webhook integration tests",
+      "description": "As a developer, I need tests that verify Paddle webhook handling so that transaction and subscription events are processed correctly.",
+      "acceptanceCriteria": [
+        "Test file: tests/Feature/Billing/PaddleWebhookTest.php",
+        "Tests cover the events handled by PaddleWebhookController",
+        "Each test POSTs a realistic payload to /webhooks/paddle",
+        "Asserts correct database side effects",
+        "Asserts webhook is logged to WebhookLog table",
+        "vendor/bin/pint --dirty --format agent passes",
+        "php artisan test --compact --filter=PaddleWebhook passes"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-013",
+      "title": "Add Lemon Squeezy webhook integration tests",
+      "description": "As a developer, I need tests that verify Lemon Squeezy webhook handling so that credit purchases via one-time orders are processed correctly.",
+      "acceptanceCriteria": [
+        "Test file: tests/Feature/Billing/LemonSqueezyWebhookTest.php",
+        "Tests cover: order_created event dispatching OrderCreated and triggering AddCreditsFromLemonSqueezyOrder listener",
+        "Test verifies credits are added to the correct organization based on custom metadata (billable_type, billable_id, credits, credit_pack_id)",
+        "Test verifies fallback credit calculation: totalCents / centsPerCredit when no explicit credits in metadata",
+        "Test verifies order_refunded event handling (if implemented)",
+        "Test verifies signature validation rejection (when signing secret is set)",
+        "vendor/bin/pint --dirty --format agent passes",
+        "php artisan test --compact --filter=LemonSqueezy passes"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-014",
+      "title": "Add AddCreditsFromLemonSqueezyOrder listener unit test",
+      "description": "As a developer, I need a unit test for the AddCreditsFromLemonSqueezyOrder listener so the credit calculation logic is verified in isolation.",
+      "acceptanceCriteria": [
+        "Test file: tests/Unit/Listeners/AddCreditsFromLemonSqueezyOrderTest.php",
+        "Tests: credits from explicit metadata, credits from amount calculation, missing organization handling, zero-amount handling",
+        "vendor/bin/pint --dirty --format agent passes",
+        "php artisan test --compact --filter=AddCreditsFromLemonSqueezyOrder passes"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "US-015",
+      "title": "Document supported billing providers",
+      "description": "As a developer setting up billing, I need a clear reference documenting which billing providers are supported, what each one handles, and how to configure them.",
+      "acceptanceCriteria": [
+        "docs/developer/backend/billing-providers.md created (or billing-and-tenancy.md updated) with: Overview stating this starter supports Stripe (subscriptions + invoices), Paddle (subscriptions + transactions), and Lemon Squeezy (one-time credit purchases)",
+        "Provider comparison table: what each handles (subscriptions vs one-time), webhook URLs, required env vars",
+        "Stripe setup: env vars, webhook URL (/webhooks/stripe), handled events",
+        "Paddle setup: env vars, webhook URL (/webhooks/paddle), handled events, note that it's optional",
+        "Lemon Squeezy setup: env vars, webhook URL (/lemon-squeezy/webhook — vendor-managed), handled events, credit calculation logic",
+        "How to disable a provider you don't need (env vars, removing routes)",
+        "Per-org override instructions (reference organization_settings and ApplyOrganizationSettings middleware)",
+        "Documentation manifest updated"
+      ],
+      "priority": 3,
+      "passes": false
+    },
+    {
+      "id": "US-016",
+      "title": "Create auth feature checklist documentation",
+      "description": "As a developer, I need a single-page reference listing every authentication feature, its current status, and how to toggle it so I can quickly configure auth for my needs.",
+      "acceptanceCriteria": [
+        "docs/developer/backend/auth/auth-features-checklist.md created with: Table listing every auth feature: Login, Registration, Password Reset, Email Verification, Two-Factor Authentication (2FA), Password Confirmation, Profile Update",
+        "For each feature: current status (enabled/disabled), where it's configured (config/fortify.php, Pennant feature flag, middleware), how to enable/disable",
+        "Note that registration is controlled by a Pennant feature flag (not Fortify's Features::registration())",
+        "Note that only 2FA is enabled in config/fortify.php currently",
+        "Guard configuration: web guard, email as username field, lowercase usernames enabled",
+        "Reference to the Inertia React pages that implement each auth flow",
+        "Reference to relevant Fortify Actions in app/Actions/Fortify/",
+        "Documentation manifest updated"
+      ],
+      "priority": 3,
+      "passes": false
+    },
+    {
+      "id": "US-017",
+      "title": "Add inline comments to config/fortify.php",
+      "description": "As a developer reading the Fortify config, I want clear inline comments explaining each feature toggle and its implications.",
+      "acceptanceCriteria": [
+        "config/fortify.php features section has a comment block listing all available Fortify features and their current on/off status",
+        "Each commented-out feature has a note explaining why it's disabled (e.g. \"Registration is managed by Pennant feature flag instead\")",
+        "vendor/bin/pint --dirty --format agent passes"
+      ],
+      "priority": 4,
+      "passes": false
+    },
+    {
+      "id": "US-018",
+      "title": "Verify all changes pass existing test suite",
+      "description": "As a developer, I need to confirm that all additions from this PRD do not break any existing tests.",
+      "acceptanceCriteria": [
+        "composer test:full passes with no regressions",
+        "vendor/bin/pint --test passes",
+        "vendor/bin/rector --dry-run passes (if Rector is configured)",
+        "php artisan docs:sync --check passes",
+        "All new test files pass individually",
+        "CI workflow (if modified) runs successfully on a test push"
+      ],
+      "priority": 1,
+      "passes": false
+    }
+  ]
+}

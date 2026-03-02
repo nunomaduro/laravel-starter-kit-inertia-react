@@ -102,6 +102,9 @@ jobs:
       - name: Create Cache Directories
         run: mkdir -p /tmp/rector /tmp/phpstan
 
+      - name: Check code style (Pint)
+        run: vendor/bin/pint --test
+
       - name: Check Documentation
         run: php artisan docs:sync --check
         continue-on-error: false
