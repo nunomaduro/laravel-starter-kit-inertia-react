@@ -15,6 +15,9 @@
 - Feature flag check: `FeatureHelper::isActiveForKey('blog')` — checks globally_disabled first, then Pennant
 - CommandPalette uses custom DOM events (`open-command-palette`) for cross-component communication without context providers
 - CommandPalette must be mounted in both sidebar and header layouts for Cmd+K to work everywhere
+- PaymentGatewayManager is `final` — mock gateways by binding to the concrete class: `app()->instance(StripeGateway::class, $mock)` + `Cache::forget('billing.default_gateway_model')`
+- Webhook tests: use `$this->call('POST', $url, [], [], [], ['HTTP_STRIPE_SIGNATURE' => $sig, 'CONTENT_TYPE' => 'application/json'], $rawPayload)` for raw JSON with custom headers
+- Invoice model uses BelongsToOrganization (global scope) — use `->withoutGlobalScopes()` when querying in tests
 
 ---
 
@@ -122,4 +125,25 @@
   - `useRef<ReturnType<typeof setTimeout>>(undefined)` is the correct way to type timeout refs in React 19 (no `null` initial)
   - AbortController pattern: create new controller per request, abort previous on new request, check `signal.aborted` before setting state
   - Pre-existing TS errors in command-dialog.tsx: `Mod+k` hotkey type, `item.href.url()` pattern, RouteDefinition types — all from original code
+---
+
+## 2026-03-02 - US-011
+- Created `tests/Feature/Billing/StripeWebhookTest.php` with 12 tests (59 assertions):
+  - Signature validation: rejects invalid signature, rejects empty signature header
+  - customer.subscription.created: sets gateway_subscription_id on existing subscription, logs to WebhookLog with org_id
+  - customer.subscription.updated: updates quantity from webhook data, handles canceled status
+  - customer.subscription.deleted: sets canceled_at and ends_at, logs with processed=true
+  - invoice.paid: creates Invoice model with correct amounts/currency, dispatches InvoicePaid event, idempotent (updates existing invoice)
+  - invoice.payment_failed: updates existing invoice status to 'open'
+  - WebhookLog: verifies all webhooks are logged with gateway='stripe' and payload
+  - Unknown organization: handles gracefully, logs but marks processed=false
+  - Unknown event type: handles gracefully, logs event_type but processed=false
+- Files changed: `tests/Feature/Billing/StripeWebhookTest.php` (new)
+- **Learnings for future iterations:**
+  - `PaymentGatewayManager` is `final` — can't mock with Mockery. Instead, bind mock `PaymentGatewayInterface` to `StripeGateway::class` via `app()->instance(StripeGateway::class, $mock)` — the manager's `resolve()` uses `resolve($class)` which picks up the container binding
+  - Must `Cache::forget('billing.default_gateway_model')` before each test to prevent cached `PaymentGatewayModel` from bypassing the mocked gateway
+  - `$this->call('POST', '/webhooks/stripe', [], [], [], ['HTTP_STRIPE_SIGNATURE' => $sig, 'CONTENT_TYPE' => 'application/json'], $payload)` is how to POST raw JSON bodies with custom headers in Laravel tests
+  - Invoice model uses `BelongsToOrganization` trait (global OrganizationScope) — use `->withoutGlobalScopes()` for test assertions
+  - `$org->planSubscriptions()->create([...])` creates a subscription linked to the organization (polymorphic subscriber)
+  - WebhookLog is always created first (even before signature validation), then updated with event_type and processed=true on success
 ---
