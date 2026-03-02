@@ -147,3 +147,26 @@
   - `$org->planSubscriptions()->create([...])` creates a subscription linked to the organization (polymorphic subscriber)
   - WebhookLog is always created first (even before signature validation), then updated with event_type and processed=true on success
 ---
+
+## 2026-03-02 - US-012
+- Created `tests/Feature/Billing/PaddleWebhookTest.php` with 14 tests (66 assertions):
+  - Signature validation: rejects invalid signature, rejects empty signature header
+  - subscription.created: sets gateway_subscription_id on existing subscription, logs to WebhookLog with org_id
+  - subscription.updated: updates quantity from webhook data, handles canceled status
+  - subscription.canceled: sets canceled_at and ends_at from scheduled_change.effective_at, logs with processed=true
+  - transaction.completed: creates Invoice with PDL- prefix, correct amounts/currency, idempotent (updates existing invoice)
+  - transaction.payment_failed: creates FailedPaymentAttempt record, increments attempt_number on repeated failures
+  - WebhookLog: verifies all webhooks are logged with gateway='paddle' and payload
+  - Unknown organization: handles gracefully, logs but marks processed=false
+  - Unknown event type: handles gracefully, logs event_type but processed=false
+  - customer.created: handled as no-op, logs but not processed
+- Files changed: `tests/Feature/Billing/PaddleWebhookTest.php` (new)
+- **Learnings for future iterations:**
+  - Paddle webhook signature format: `ts={timestamp};h1={hmac_sha256}` — different from Stripe's `t={timestamp},v1={signature}`
+  - Paddle uses `Paddle-Signature` header (vs Stripe's `Stripe-Signature`)
+  - Paddle payload structure: `{ event_type: "...", data: {...} }` — different from Stripe's `{ type: "...", data: { object: {...} } }`
+  - Paddle controller resolves PaddleGateway directly via `resolve(PaddleGateway::class)` — mock with `app()->instance(PaddleGateway::class, $mock)`
+  - Paddle invoice number format: `PDL-{first 20 chars of transaction_id}`
+  - FailedPaymentAttempt uses `increment('attempt_number')` — doesn't use updateOrCreate, uses find-then-increment pattern
+  - Paddle handles both new API (`subscription.created`) and legacy API (`subscription_created`) event names
+---
