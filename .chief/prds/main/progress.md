@@ -8,6 +8,11 @@
 - Test style: Pest with `declare(strict_types=1)`, no `uses()` needed for basic feature tests
 - `.chief/` is in `.gitignore` — use `git add -f` when committing PRD/progress files
 - CI workflow: Pint step uses `--test` flag (non-modifying), local pre-commit uses `--dirty --format agent`
+- Pre-commit hook checks documentation completeness with `docs:sync --check` — new controllers require documentation before committing
+- Scout search with `collection` driver: `Model::search($query)->query(fn ($b) => $b->published())->take(5)->get()` respects Eloquent scopes
+- User model doesn't use BelongsToOrganization; scope to org members via `whereHas('organizations', ...)`
+- BelongsToOrganization models (Post, HelpArticle, ChangelogEntry) auto-filter by TenantContext via global OrganizationScope
+- Feature flag check: `FeatureHelper::isActiveForKey('blog')` — checks globally_disabled first, then Pennant
 
 ---
 
@@ -63,4 +68,31 @@
   - Scout driver is managed via Filament Settings > Scout (`ScoutSettings`), which overlays the `.env` value
   - `docs:sync --check` confirms all items documented; `docs:sync` updates manifest and index files
   - Pre-commit hook auto-runs Pint, so documentation-only commits still pass
+---
+
+## 2026-03-02 - US-008
+- Created `app/Http/Controllers/SearchController.php` — invokable controller with `__invoke()` method
+- Added `GET /search` route in `routes/web.php` under `['auth', 'verified']` group with `tenant` middleware
+- Searches across User, Post, HelpArticle, ChangelogEntry using Laravel Scout
+- Users scoped to current org via `whereHas('organizations')`, other models scoped via BelongsToOrganization global scope
+- Feature flags respected: blog, help, changelog checked via `FeatureHelper::isActiveForKey()`
+- Only published content returned (Post, HelpArticle, ChangelogEntry use `->published()` scope)
+- Results grouped by category with max 5 per category, 20 total
+- Each result has: id, title, subtitle, url, type
+- Created `tests/Feature/SearchTest.php` with 13 tests (54 assertions):
+  - Requires authentication, empty query returns empty results
+  - Searches users within current org, published posts, published help articles, published changelog entries
+  - Filters by type parameter, respects tenant scope, returns correct structure
+  - Limits to 5 per category, excludes posts when blog feature disabled
+- Created `docs/developer/backend/controllers/SearchController.md`
+- Updated `docs/.manifest.json` and `docs/developer/backend/controllers/README.md`
+- Files changed: `app/Http/Controllers/SearchController.php` (new), `tests/Feature/SearchTest.php` (new), `routes/web.php` (modified), `docs/developer/backend/controllers/SearchController.md` (new), `docs/.manifest.json` (modified), `docs/developer/backend/controllers/README.md` (modified)
+- **Learnings for future iterations:**
+  - Pre-commit hook checks documentation — new controllers must have docs before commit
+  - Scout `collection` driver searches in-memory; `->query()` callback adds Eloquent scopes
+  - User model has no BelongsToOrganization trait; use `whereHas('organizations', ...)` for org scoping
+  - BelongsToOrganization models auto-filter via OrganizationScope (global scope); no explicit `where` needed
+  - `FeatureHelper::isActiveForKey('blog')` is the correct way to check feature flags programmatically
+  - Test setup pattern: create user, create org, `addMember($user, 'admin')`, `TenantContext::set($org)`
+  - `Feature::for($user)->activate(BlogFeature::class)` / `->deactivate()` to toggle flags in tests
 ---
