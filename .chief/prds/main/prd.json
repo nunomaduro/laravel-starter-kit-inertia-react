@@ -153,7 +153,7 @@
         "Typecheck passes (npx tsc --noEmit or equivalent)"
       ],
       "priority": 2,
-      "passes": false
+      "passes": true
     },
     {
       "id": "US-010",

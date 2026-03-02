@@ -13,6 +13,8 @@
 - User model doesn't use BelongsToOrganization; scope to org members via `whereHas('organizations', ...)`
 - BelongsToOrganization models (Post, HelpArticle, ChangelogEntry) auto-filter by TenantContext via global OrganizationScope
 - Feature flag check: `FeatureHelper::isActiveForKey('blog')` — checks globally_disabled first, then Pennant
+- CommandPalette uses custom DOM events (`open-command-palette`) for cross-component communication without context providers
+- CommandPalette must be mounted in both sidebar and header layouts for Cmd+K to work everywhere
 
 ---
 
@@ -95,4 +97,29 @@
   - `FeatureHelper::isActiveForKey('blog')` is the correct way to check feature flags programmatically
   - Test setup pattern: create user, create org, `addMember($user, 'admin')`, `TenantContext::set($org)`
   - `Feature::for($user)->activate(BlogFeature::class)` / `->deactivate()` to toggle flags in tests
+---
+
+## 2026-03-02 - US-009
+- Extended `resources/js/components/command-dialog.tsx` with global search functionality:
+  - Added debounced (300ms) API calls to `/search` endpoint with AbortController for cancellation
+  - Search results grouped by category (Users, Posts, Help Articles, Changelog) with per-category icons
+  - Each result shows title, subtitle, and type badge
+  - Clicking a result navigates via `router.visit()`; arrow keys/Enter/Escape handled by cmdk
+  - Empty state shows existing navigation shortcuts and account actions
+  - Loading state shows animated skeleton placeholders
+  - No results state shows "No results found for {query}"
+  - Listens for custom `open-command-palette` event from header search button
+- Modified `resources/js/components/ui/command.tsx`: added `shouldFilter` prop to `CommandDialog` (passed through to cmdk `Command`)
+- Wired search button in `resources/js/components/app-header.tsx`: dispatches `open-command-palette` custom event on click, added `data-pan="global-search"`
+- Added `CommandPalette` to `resources/js/layouts/app/app-header-layout.tsx` (was only in sidebar layout)
+- Registered `global-search` Pan analytics name in `app/Providers/AppServiceProvider.php`
+- Files changed: `command-dialog.tsx` (rewritten), `ui/command.tsx` (modified), `app-header.tsx` (modified), `app-header-layout.tsx` (modified), `AppServiceProvider.php` (modified)
+- **Learnings for future iterations:**
+  - cmdk's `shouldFilter` prop on `Command` disables client-side filtering — needed for server-side search results
+  - `CommandDialog` wrapper doesn't pass arbitrary props to `Command` — had to explicitly add `shouldFilter`
+  - Custom DOM events (`window.dispatchEvent(new CustomEvent(...))`) are the simplest way to communicate between disconnected components without context providers
+  - `CommandPalette` was only mounted in sidebar layout, not header layout — both need it for Cmd+K to work everywhere
+  - `useRef<ReturnType<typeof setTimeout>>(undefined)` is the correct way to type timeout refs in React 19 (no `null` initial)
+  - AbortController pattern: create new controller per request, abort previous on new request, check `signal.aborted` before setting state
+  - Pre-existing TS errors in command-dialog.tsx: `Mod+k` hotkey type, `item.href.url()` pattern, RouteDefinition types — all from original code
 ---
