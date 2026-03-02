@@ -52,3 +52,15 @@
   - A custom rule `RemoveFinalFromAnonymousClassRector` exists in `app/Rector/`
   - `AddOverrideAttributeToOverriddenMethodsRector` is explicitly skipped
 ---
+
+## 2026-03-02 - US-007
+- Updated `docs/developer/backend/scout-typesense.md` with comprehensive Typesense documentation
+- Added: environment variables table, all 4 searchable models (User, Post, HelpArticle, ChangelogEntry) with field schemas, "Adding a new searchable model" guide, indexing existing data commands, Typesense Cloud production setup, self-hosted setup, Scout driver management via Filament
+- Ran `php artisan docs:sync` — manifest updated (date only, all items already documented)
+- Files changed: `docs/developer/backend/scout-typesense.md` (updated), `docs/.manifest.json` (date update)
+- **Learnings for future iterations:**
+  - Only User has a Typesense collection schema in `config/scout.php`; Post, HelpArticle, ChangelogEntry have `toSearchableArray()` but no schema — they work with `collection` driver but need schemas for Typesense
+  - Scout driver is managed via Filament Settings > Scout (`ScoutSettings`), which overlays the `.env` value
+  - `docs:sync --check` confirms all items documented; `docs:sync` updates manifest and index files
+  - Pre-commit hook auto-runs Pint, so documentation-only commits still pass
+---
