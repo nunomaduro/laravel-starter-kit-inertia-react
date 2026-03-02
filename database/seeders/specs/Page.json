@@ -3,12 +3,12 @@
     "table": "pages",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -23,7 +23,7 @@
             "default": null
         },
         "puck_json": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },

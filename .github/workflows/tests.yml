@@ -105,6 +105,9 @@ jobs:
       - name: Check code style (Pint)
         run: vendor/bin/pint --test
 
+      - name: Check refactoring rules (Rector)
+        run: vendor/bin/rector --dry-run
+
       - name: Check Documentation
         run: php artisan docs:sync --check
         continue-on-error: false

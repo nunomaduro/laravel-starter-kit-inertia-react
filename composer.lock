@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f4b3813c6a7ae02d7f749ecda483808",
+    "content-hash": "ec13d34af937e0438e7e382f38c35753",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -9996,16 +9996,16 @@
         },
         {
             "name": "prism-php/prism",
-            "version": "v0.99.20",
+            "version": "v0.99.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/prism-php/prism.git",
-                "reference": "51efcb3d746315c5823593d56c77ecb29b960250"
+                "reference": "95272567629a62831294f63b1b927b1e2e608daf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/prism-php/prism/zipball/51efcb3d746315c5823593d56c77ecb29b960250",
-                "reference": "51efcb3d746315c5823593d56c77ecb29b960250",
+                "url": "https://api.github.com/repos/prism-php/prism/zipball/95272567629a62831294f63b1b927b1e2e608daf",
+                "reference": "95272567629a62831294f63b1b927b1e2e608daf",
                 "shasum": ""
             },
             "require": {
@@ -10063,7 +10063,7 @@
             "description": "A powerful Laravel package for integrating Large Language Models (LLMs) into your applications.",
             "support": {
                 "issues": "https://github.com/prism-php/prism/issues",
-                "source": "https://github.com/prism-php/prism/tree/v0.99.20"
+                "source": "https://github.com/prism-php/prism/tree/v0.99.21"
             },
             "funding": [
                 {
@@ -10071,20 +10071,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-26T21:31:53+00:00"
+            "time": "2026-03-01T21:12:44+00:00"
         },
         {
             "name": "prism-php/relay",
-            "version": "v1.6.0",
+            "version": "v1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/prism-php/relay.git",
-                "reference": "8bd8ab0a6bfa96668f5cee86abda4fb0bc171435"
+                "reference": "fe2c6078d38260f375afb31a26c3bd911ebac314"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/prism-php/relay/zipball/8bd8ab0a6bfa96668f5cee86abda4fb0bc171435",
-                "reference": "8bd8ab0a6bfa96668f5cee86abda4fb0bc171435",
+                "url": "https://api.github.com/repos/prism-php/relay/zipball/fe2c6078d38260f375afb31a26c3bd911ebac314",
+                "reference": "fe2c6078d38260f375afb31a26c3bd911ebac314",
                 "shasum": ""
             },
             "require": {
@@ -10135,7 +10135,7 @@
             "description": "A Prism tool for interacting with MCP servers",
             "support": {
                 "issues": "https://github.com/prism-php/relay/issues",
-                "source": "https://github.com/prism-php/relay/tree/v1.6.0"
+                "source": "https://github.com/prism-php/relay/tree/v1.7.0"
             },
             "funding": [
                 {
@@ -10143,7 +10143,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-21T17:59:47+00:00"
+            "time": "2026-03-01T22:03:16+00:00"
         },
         {
             "name": "psr/cache",
@@ -12374,16 +12374,16 @@
         },
         {
             "name": "spatie/image",
-            "version": "3.9.1",
+            "version": "3.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/image.git",
-                "reference": "9a8e02839897b236f37708d24bcb12381ba050ff"
+                "reference": "1ea40e429587df64b34139e6b18af34cb20ae5b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/image/zipball/9a8e02839897b236f37708d24bcb12381ba050ff",
-                "reference": "9a8e02839897b236f37708d24bcb12381ba050ff",
+                "url": "https://api.github.com/repos/spatie/image/zipball/1ea40e429587df64b34139e6b18af34cb20ae5b9",
+                "reference": "1ea40e429587df64b34139e6b18af34cb20ae5b9",
                 "shasum": ""
             },
             "require": {
@@ -12431,7 +12431,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/image/tree/3.9.1"
+                "source": "https://github.com/spatie/image/tree/3.9.3"
             },
             "funding": [
                 {
@@ -12443,7 +12443,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-12T07:34:13+00:00"
+            "time": "2026-03-01T20:58:11+00:00"
         },
         {
             "name": "spatie/image-optimizer",

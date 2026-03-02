@@ -2,6 +2,16 @@
 
 Full-text search is provided by **Laravel Scout** with the **Typesense** driver. Typesense can be run locally (e.g. via [Laravel Herd](https://herd.laravel.com)) or hosted (Typesense Cloud).
 
+## Production checklist
+
+For production search you must:
+
+1. Set `SCOUT_DRIVER=typesense` in your environment (default is `collection`, which is in-memory only).
+2. Set `TYPESENSE_API_KEY`, `TYPESENSE_HOST`, and optionally `TYPESENSE_PORT` / `TYPESENSE_PROTOCOL` (use `https` and port `443` for Typesense Cloud).
+3. Run `php artisan scout:import "App\Models\User"` (and other searchable models) after deployment to index existing data.
+
+Without these, search in the app and Filament will use the collection driver (in-memory, not persisted). The command palette and API can still offer search by calling Scout; with `collection` driver results are limited to the current request.
+
 ## Environment variables
 
 | Variable | Required | Default | Description |

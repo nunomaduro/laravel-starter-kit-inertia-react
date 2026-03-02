@@ -3,17 +3,17 @@
     "table": "refund_requests",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "invoice_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -38,7 +38,7 @@
             "default": null
         },
         "processed_by": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

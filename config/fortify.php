@@ -143,6 +143,14 @@ return [
     | by removing them from this array. You're free to only remove some of
     | these features, or you can even remove all of these if you need to.
     |
+    | Auth feature checklist (all implemented in this app):
+    | - Login: Fortify default (SessionController / session.create).
+    | - Registration: Fortify default (UserController / user.create); toggle via registration.enabled middleware.
+    | - Password reset: Fortify default (UserPasswordController, UserEmailResetNotificationController).
+    | - Email verification: Fortify default (MustVerifyEmail, UserEmailVerificationController, notice/send/verify routes).
+    | - Two-factor authentication: Enabled below; setup/disable/challenge via UserTwoFactorAuthenticationController;
+    |   feature flag TwoFactorAuthFeature; throttle ThrottleTwoFactorManagement.
+    |
     */
 
     'features' => [

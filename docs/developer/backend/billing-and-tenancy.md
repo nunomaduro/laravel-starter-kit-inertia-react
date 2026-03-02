@@ -2,6 +2,18 @@
 
 The application supports **multi-tenant** (SaaS) and **single-tenant** (internal) modes. See [Single-Tenant Mode](./single-tenant-mode.md) for switching.
 
+## Payment gateways overview
+
+| Gateway        | Use case              | Subscriptions | One-time / credits | Webhook route              | Config / docs                    |
+|----------------|------------------------|---------------|--------------------|----------------------------|----------------------------------|
+| **Stripe**     | Plans, seats, recurring| Yes           | Yes (e.g. credits) | `POST /webhooks/stripe`    | [Manage Stripe](../api-reference/routes.md), StripeSettings |
+| **Paddle**     | Plans, recurring       | Yes           | —                  | `POST /webhooks/paddle`   | Paddle webhook + gateway config  |
+| **Lemon Squeezy** | One-time products, credits | No        | Yes                | Package: `/lemon-squeezy/webhook` | [Lemon Squeezy](./lemon-squeezy.md), LemonSqueezySettings |
+
+- **Subscriptions** (recurring plans, seat-based): use **Stripe** or **Paddle**. Stripe is the primary subscription gateway; Paddle is optional and wired for webhooks.
+- **One-time purchases** (e.g. credit packs): use **Stripe** or **Lemon Squeezy**. Lemon Squeezy is documented in [Lemon Squeezy](./lemon-squeezy.md); the app listens to `OrderCreated` and adds credits via `AddCreditsFromLemonSqueezyOrder`.
+- You can enable one or more gateways; per-organization overrides are supported via `ApplyOrganizationSettings` and the Billing settings group.
+
 ## Seat-Based Billing
 
 Plans can be configured as per-seat (`is_per_seat`, `price_per_seat` on `plans`). Subscriptions store `quantity` and `gateway_subscription_id` on `plan_subscriptions`.

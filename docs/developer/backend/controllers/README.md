@@ -42,6 +42,6 @@ All Controllers:
 | [PageController](./pagecontroller.md) | N/A | ✅ |
 | [PageViewController](./pageviewcontroller.md) | N/A | ✅ |
 | [UsersTableController](./UsersTableController.md) | N/A | ✅ |
-| [SearchController](./SearchController.md) | Global search API endpoint | ✅ |
+| [SearchController](docs/developer/backend/controllers/SearchController.md) | N/A | ✅ |
 
 

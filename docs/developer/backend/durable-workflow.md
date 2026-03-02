@@ -77,6 +77,25 @@ $output = $workflow->output(); // 'Hello, world!'
 
 Use `php artisan make:workflow MyWorkflow` to generate a workflow class.
 
+### Example in this app
+
+The starter includes a minimal demo:
+
+- **Activity**: `App\Workflows\DemoGreetingActivity` — `execute(string $name)` returns a greeting string.
+- **Workflow**: `App\Workflows\DemoGreetingWorkflow` — yields the activity and returns its result.
+
+To run it (e.g. in tinker or a command):
+
+```php
+use Workflow\WorkflowStub;
+
+$workflow = WorkflowStub::make(\App\Workflows\DemoGreetingWorkflow::class);
+$workflow->start('world');
+// Optional: $workflow->output(); to wait for result
+```
+
+With the queue running (e.g. `php artisan horizon`), the run appears in the Waterline dashboard at `/waterline`.
+
 ## Waterline Dashboard
 
 With the queue running (e.g. `php artisan horizon` or `queue:work`) and workflows in use, visit `/waterline` (or your `WATERLINE_PATH`) when logged in as a user with admin panel access. The dashboard lists workflow runs, status, duration, and activity history.

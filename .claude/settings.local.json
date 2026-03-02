@@ -154,7 +154,12 @@
       "Bash(npx tsc --noEmit 2>&1 | tail -5)",
       "Bash(npx tsc --noEmit 2>&1 | grep \"error TS\" | grep -v \"TS2307.*@/routes\\\\|TS2307.*@/actions\" | head -20)",
       "Bash(npx eslint resources/js/components/app-sidebar.tsx resources/js/components/data-table/data-table.tsx resources/js/components/data-table/data-table-column-header.tsx resources/js/components/data-table/data-table-quick-views.tsx resources/js/components/data-table/types.ts resources/js/components/filters/filters.tsx resources/js/pages/dashboard.tsx resources/js/pages/users/table.tsx 2>&1 | head -30)",
-      "Bash(git stash && npx eslint resources/js/components/data-table/data-table.tsx 2>&1 | head -15)"
+      "Bash(git stash && npx eslint resources/js/components/data-table/data-table.tsx 2>&1 | head -15)",
+      "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/resources/js -name \"*Search*\" -o -name \"*search*\" 2>/dev/null | head -20)",
+      "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/tests -name \"*Billing*\" -o -name \"*billing*\" -o -name \"*Webhook*\" 2>/dev/null | head -15)",
+      "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/resources/js/layouts -type f -name \"*.tsx\" -o -name \"*.jsx\" 2>/dev/null | head -15)",
+      "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/tests -name \"*Webhook*\" 2>/dev/null | head -15)",
+      "Bash(grep -n \"use.*Userstamps\" /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/app/Models/*.php)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -35,6 +35,7 @@
         "laravel-data-table",
         "laravel-excel",
         "pan-product-analytics",
+        "taylor-otwell-style",
         "telescope",
         "visibility-sharing"
     ]

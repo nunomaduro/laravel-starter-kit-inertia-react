@@ -3,12 +3,12 @@
     "table": "invoices",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -18,7 +18,7 @@
             "default": null
         },
         "billable_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -63,17 +63,17 @@
             "default": null
         },
         "line_items": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "billing_address": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "payment_gateway_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
