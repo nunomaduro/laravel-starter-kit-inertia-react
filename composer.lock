@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec13d34af937e0438e7e382f38c35753",
+    "content-hash": "57dc81739494f5deb7b7dbd4a4ad6372",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -4695,29 +4695,29 @@
         },
         {
             "name": "laravel-workflow/waterline",
-            "version": "1.0.14",
+            "version": "1.0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/durable-workflow/waterline.git",
-                "reference": "03e60f83d73fd1edaa8c0d2f3d3d1511ce2f6a57"
+                "reference": "a173ce5386edc826415b60266ab2393a6f0f4cb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/durable-workflow/waterline/zipball/03e60f83d73fd1edaa8c0d2f3d3d1511ce2f6a57",
-                "reference": "03e60f83d73fd1edaa8c0d2f3d3d1511ce2f6a57",
+                "url": "https://api.github.com/repos/durable-workflow/waterline/zipball/a173ce5386edc826415b60266ab2393a6f0f4cb9",
+                "reference": "a173ce5386edc826415b60266ab2393a6f0f4cb9",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
                 "laravel-workflow/laravel-workflow": "^1.0",
                 "php": "^8.0.2"
             },
             "require-dev": {
                 "fakerphp/faker": "^1.9.1",
                 "mockery/mockery": "^1.4.4",
-                "orchestra/testbench": "^7.29",
+                "orchestra/testbench": "^7.29|^11.0",
                 "orchestra/workbench": "^7.29",
-                "phpunit/phpunit": "^9.5.10"
+                "phpunit/phpunit": "^9.5.10|^12.5.12"
             },
             "type": "library",
             "extra": {
@@ -4748,9 +4748,9 @@
             "description": "An elegant UI for monitoring Laravel Workflows.",
             "support": {
                 "issues": "https://github.com/durable-workflow/waterline/issues",
-                "source": "https://github.com/durable-workflow/waterline/tree/1.0.14"
+                "source": "https://github.com/durable-workflow/waterline/tree/1.0.15"
             },
-            "time": "2025-10-27T04:40:59+00:00"
+            "time": "2026-03-02T18:55:02+00:00"
         },
         {
             "name": "laravel/ai",
@@ -14779,16 +14779,16 @@
         },
         {
             "name": "stephenjude/filament-feature-flags",
-            "version": "5.0.1",
+            "version": "5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stephenjude/filament-feature-flags.git",
-                "reference": "e19a0ac8e39c33d21e1bb8043beaac39b5778522"
+                "reference": "14369f43c1718309a6fc9ec4fbb634404df45e02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stephenjude/filament-feature-flags/zipball/e19a0ac8e39c33d21e1bb8043beaac39b5778522",
-                "reference": "e19a0ac8e39c33d21e1bb8043beaac39b5778522",
+                "url": "https://api.github.com/repos/stephenjude/filament-feature-flags/zipball/14369f43c1718309a6fc9ec4fbb634404df45e02",
+                "reference": "14369f43c1718309a6fc9ec4fbb634404df45e02",
                 "shasum": ""
             },
             "require": {
@@ -14839,9 +14839,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stephenjude/filament-feature-flags/issues",
-                "source": "https://github.com/stephenjude/filament-feature-flags/tree/5.0.1"
+                "source": "https://github.com/stephenjude/filament-feature-flags/tree/5.0.2"
             },
-            "time": "2026-02-16T18:31:04+00:00"
+            "time": "2026-03-02T08:57:51+00:00"
         },
         {
             "name": "stripe/stripe-php",

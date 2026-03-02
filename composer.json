@@ -38,7 +38,7 @@
         "jijunair/laravel-referral": "^1.0.4",
         "kalnoy/nestedset": "^6.0.6",
         "laravel-workflow/laravel-workflow": "^1.0.69",
-        "laravel-workflow/waterline": "^1.0.14",
+        "laravel-workflow/waterline": "^1.0.15",
         "laravel/ai": "^0.2.5",
         "laravel/fortify": "^1.35.0",
         "laravel/framework": "^12.53.0",
@@ -90,7 +90,7 @@
         "spatie/laravel-sluggable": "^3.8.0",
         "spatie/laravel-tags": "^4.11.0",
         "stechstudio/filament-impersonate": "^5.1",
-        "stephenjude/filament-feature-flags": "^5.0.1",
+        "stephenjude/filament-feature-flags": "^5.0.2",
         "stripe/stripe-php": "^19.4",
         "typesense/typesense-php": "^6.0",
         "wildside/userstamps": "^3.1.1"
