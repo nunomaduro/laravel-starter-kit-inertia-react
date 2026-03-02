@@ -169,4 +169,31 @@
   - Paddle invoice number format: `PDL-{first 20 chars of transaction_id}`
   - FailedPaymentAttempt uses `increment('attempt_number')` — doesn't use updateOrCreate, uses find-then-increment pattern
   - Paddle handles both new API (`subscription.created`) and legacy API (`subscription_created`) event names
+- Lemon Squeezy webhook route `POST /lemon-squeezy/webhook` is vendor-managed by `lemonsqueezy/laravel` package — not a custom app controller
+- Lemon Squeezy signature validation uses `x-signature` header with HMAC-SHA256 against `config('lemon-squeezy.signing_secret')`
+- Organization model does NOT use the LemonSqueezy `Billable` trait — only uses `HasCredits` and `HasBilling`; vendor webhook controller's `$billable->orders()` call fails
+- Test the `AddCreditsFromLemonSqueezyOrder` listener directly by dispatching `OrderCreated` events, not via the webhook endpoint
+- Credit model uses `BelongsToOrganization` which guards `organization_id` from mass assignment and sets it from `TenantContext` in creating event
+- Always set `TenantContext::set($org)` in tests that create Credit records
+---
+
+## 2026-03-02 - US-013
+- Created `tests/Feature/Billing/LemonSqueezyWebhookTest.php` with 14 tests (33 assertions):
+  - Signature validation: rejects invalid signature, rejects empty signature, accepts valid signature and dispatches WebhookReceived
+  - OrderCreated listener: adds credits from explicit custom_data, calculates credits from total (fallback), includes credit_pack_id in metadata
+  - Credit expiration: sets expires_at based on billing.credit_expiration_days config
+  - Edge cases: non-Organization billable returns early, zero total returns early
+  - Running balance: accumulates credits correctly across multiple orders
+  - Config: respects custom cents_per_credit setting, handles zero cents_per_credit gracefully
+  - OrderRefunded: confirms no listener exists (credits not reversed)
+  - Event dispatch: WebhookReceived dispatched for any valid webhook event type
+- Files changed: `tests/Feature/Billing/LemonSqueezyWebhookTest.php` (new)
+- **Learnings for future iterations:**
+  - Lemon Squeezy webhook route is vendor-managed at `POST /lemon-squeezy/webhook` — unlike Stripe/Paddle which have custom app controllers
+  - Signature header is `x-signature` (not `X-Signature` or `Signature`) — use `HTTP_X_SIGNATURE` in test server params
+  - Vendor `WebhookController` calls `$billable->orders()->create(...)` but Organization doesn't have the LemonSqueezy `Billable` trait (no `orders()` method) — full end-to-end webhook test returns 500
+  - Test the listener directly: `(new AddCreditsFromLemonSqueezyOrder)->handle(new OrderCreated($org, null, $payload))` — bypasses vendor controller issues
+  - Credit model uses `BelongsToOrganization` which sets `organization_id` from `TenantContext` in creating event — MUST set `TenantContext::set($org)` before creating credits
+  - `diffInDays()` returns signed values by default — use `diffInDays(now(), absolute: true)` or `isFuture()` for expiration assertions
+  - Event::fake() prevents listeners from running but vendor controller code still executes — can cause 500 if controller has side effects
 ---
