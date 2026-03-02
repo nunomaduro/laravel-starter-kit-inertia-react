@@ -30,6 +30,7 @@ use App\Http\Controllers\OrganizationSwitchController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\PersonalDataExportController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\Settings\AchievementsController;
 use App\Http\Controllers\Settings\BrandingController;
@@ -150,6 +151,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::delete('organizations/{organization}/invitations/{invitation}', [OrganizationInvitationController::class, 'destroy'])->name('organizations.invitations.destroy')->scopeBindings();
         Route::put('organizations/{organization}/invitations/{invitation}/resend', [OrganizationInvitationController::class, 'update'])->name('organizations.invitations.resend')->scopeBindings();
     });
+
+    Route::get('search', SearchController::class)->middleware('tenant')->name('search');
 
     Route::middleware('tenant')->group(function (): void {
         Route::get('billing', [BillingDashboardController::class, 'index'])->name('billing.index');

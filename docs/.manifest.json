@@ -938,6 +938,19 @@
                     "users/show"
                 ]
             }
+        },
+        "SearchController": {
+            "documented": true,
+            "path": "docs/developer/backend/controllers/SearchController.md",
+            "lastUpdated": "2026-03-02",
+            "relationships": {
+                "usesActions": [],
+                "usesFormRequests": [],
+                "relatedRoutes": [
+                    "search"
+                ],
+                "rendersPages": []
+            }
         }
     },
     "pages": {
@@ -1100,7 +1113,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -1148,6 +1160,7 @@
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
+                    "search",
                     "billing.index",
                     "billing.credits.index",
                     "billing.credits.purchase",
@@ -1351,7 +1364,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -1399,6 +1411,7 @@
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
+                    "search",
                     "billing.index",
                     "billing.credits.index",
                     "billing.credits.purchase",
@@ -1737,7 +1750,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -1785,6 +1797,7 @@
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
+                    "search",
                     "billing.index",
                     "billing.credits.index",
                     "billing.credits.purchase",
@@ -2061,7 +2074,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -2109,6 +2121,7 @@
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
+                    "search",
                     "billing.index",
                     "billing.credits.index",
                     "billing.credits.purchase",
@@ -2326,7 +2339,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -2374,6 +2386,7 @@
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
+                    "search",
                     "billing.index",
                     "billing.credits.index",
                     "billing.credits.purchase",
@@ -2577,7 +2590,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -2625,6 +2637,7 @@
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
+                    "search",
                     "billing.index",
                     "billing.credits.index",
                     "billing.credits.purchase",
@@ -3001,7 +3014,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -3049,6 +3061,7 @@
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
+                    "search",
                     "billing.index",
                     "billing.credits.index",
                     "billing.credits.purchase",
