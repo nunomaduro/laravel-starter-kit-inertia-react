@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Rector\RemoveFinalFromAnonymousClassRector;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
+use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\Config\RectorConfig;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use RectorLaravel\Set\LaravelSetList;
@@ -42,6 +43,7 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         AddOverrideAttributeToOverriddenMethodsRector::class,
+        MakeInheritedMethodVisibilitySameAsParentRector::class,
     ])
     ->withPreparedSets(
         deadCode: true,
@@ -49,5 +51,6 @@ return RectorConfig::configure()
         typeDeclarations: true,
         privatization: true,
         earlyReturn: true,
+        codingStyle: true,
     )
     ->withPhpSets();
