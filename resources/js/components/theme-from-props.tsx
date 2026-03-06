@@ -1,25 +1,29 @@
 import { usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 
-interface ThemeProps {
-    preset?: string;
-    base_color?: string;
-    radius?: string;
-    font?: string;
-    default_appearance?: string;
-}
+import type { SharedData } from '@/types';
+
+type Mode = 'dark' | 'light' | 'system';
+
+const prefersDark = (): boolean =>
+    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+const applyMode = (mode: Mode): void => {
+    const isDark = mode === 'dark' || (mode === 'system' && prefersDark());
+    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+};
 
 /**
  * Applies theme from page.props.theme (and later branding overrides) to documentElement
  * so CSS vars in themes.css take effect. Runs on every Inertia load.
  */
 export function ThemeFromProps() {
-    const { props } = usePage();
-    const theme = (props.theme as ThemeProps | undefined) ?? {};
-    const branding = props.branding as
-        | { themePreset?: string; themeRadius?: string; themeFont?: string }
-        | undefined;
+    const { props } = usePage<SharedData>();
+    const theme = props.theme ?? {};
+    const branding = props.branding;
 
+    // Apply legacy data-theme / data-radius / data-font attributes (backward-compatible)
     useEffect(() => {
         const root = document.documentElement;
         const userPreset = localStorage.getItem('theme-preset');
@@ -41,6 +45,43 @@ export function ThemeFromProps() {
         branding?.themeRadius,
         branding?.themeFont,
     ]);
+
+    // Apply Tailux theme attributes from DB settings
+    useEffect(() => {
+        const root = document.documentElement;
+
+        if (theme.dark) {
+            root.setAttribute('data-theme-dark', theme.dark);
+        }
+
+        if (theme.primary) {
+            root.setAttribute('data-theme-primary', theme.primary);
+        }
+
+        if (theme.light) {
+            root.setAttribute('data-theme-light', theme.light);
+        }
+
+        if (theme.skin) {
+            root.setAttribute('data-card-skin', theme.skin);
+        }
+    }, [theme.dark, theme.primary, theme.light, theme.skin]);
+
+    // Apply user mode (dark/light/system) on mount and when it changes
+    useEffect(() => {
+        const mode: Mode = (theme.userMode as Mode | undefined) ?? 'system';
+        applyMode(mode);
+
+        if (mode !== 'system') {
+            return;
+        }
+
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        const handler = () => applyMode('system');
+        mq.addEventListener('change', handler);
+
+        return () => mq.removeEventListener('change', handler);
+    }, [theme.userMode]);
 
     return null;
 }
