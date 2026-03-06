@@ -1,5 +1,21 @@
 # Progress Log
 
+## 2026-03-07 - US-024
+- Created `resources/js/components/admin/` directory with 6 admin power-user components.
+- `api-key-manager.tsx`: table of API keys with name/last-used/created-at; inline copy button with show/hide toggle; "Revoke" confirm dialog; "Create New Key" dialog with name input; newly-created key shown once in a success alert with copy button; accepts `keys`, `onCreate`, `onRevoke` props.
+- `session-manager.tsx`: active sessions grouped into "Current Session" and "Other Sessions"; device icon (desktop/mobile/tablet); IP/location/last-active; per-session Revoke button; "Revoke All Other Sessions" bulk action with confirm dialog; accepts `sessions`, `onRevoke`, `onRevokeAll` props.
+- `permission-matrix.tsx`: grid with roles as columns and permissions grouped by resource as rows; each cell is a Checkbox; `readonly` prop disables interaction; `onChange` callback; accepts `roles`, `permissions`, `grants`, `onChange` props.
+- `audit-log-viewer.tsx`: card with search input, action-type Select filter, date range pickers; entries rendered as rows with actor Avatar + status dot + action text + target + timestamp; supports `virtualized` prop (uses `VirtualList` when true); accepts `entries`, `filters`, `onFilterChange`, `actionTypes` props.
+- `import-wizard.tsx`: 4-step Sheet (or Dialog via `variant` prop): (1) FileDropzone for CSV/XLSX; (2) column mapping UI with auto-detect + Select per column; (3) preview of first 10 rows with required-field validation errors highlighted; (4) progress bar + Loader2 while importing, then success/error count cards; client-side CSV parser (no extra library); accepts `targetFields`, `onImport` props.
+- `webhook-config.tsx`: endpoint URL input + optional secret; "Test Webhook" button shows delivery success/failure with HTTP status; event checkboxes grouped by resource with select-all per resource; "Select All"/"Deselect All" header button; accepts `events`, `value`, `onChange`, `onTest`, `lastDelivery` props.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - No `scroll-area.tsx` in the UI library — use `div` with `overflow-auto` instead; do NOT import from `@/components/ui/scroll-area`.
+  - Lucide icon components do NOT accept a `title` prop — use `aria-label` for accessible descriptions instead.
+  - The `admin/` directory is separate from `ui/` and `saas/` — import with `@/components/admin/`.
+  - Client-side CSV parsing with a simple loop (no `papaparse`) is sufficient for the import wizard preview step.
+---
+
 ## 2026-03-07 - US-023
 - Created `resources/js/components/saas/` directory with 8 SaaS-specific components.
 - `trial-banner.tsx`: full-width top banner with `daysRemaining`/`onUpgrade` props; color shifts to destructive when ≤3 days; dismissible via localStorage; hidden when `daysRemaining` is null.
