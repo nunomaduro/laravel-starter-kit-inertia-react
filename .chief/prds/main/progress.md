@@ -38,6 +38,21 @@
   - The `@theme` block in tailux.css maps `--color-{name}` to Tailwind utilities (`bg-info`, `text-error`, etc.) in Tailwind v4.
 ---
 
+## 2026-03-07 - US-006
+- Created `database/migrations/2026_03_07_000003_add_theme_mode_to_users_table.php` — adds `theme_mode` (string, default `'system'`) to users table
+- Added `@property string $theme_mode` to User model docblock and `'theme_mode' => 'string'` to `casts()`
+- Created `app/Actions/UpdateUserThemeMode.php` — sets `$user->theme_mode` directly and calls `save()` (no mass assignment)
+- Created `app/Http/Controllers/UserPreferencesController.php` — PATCH validates `theme_mode in:dark,light,system` and calls action; returns `back()`
+- Added `Route::patch('user/preferences', ...)` named `user.preferences.update` to auth middleware group in `routes/web.php`
+- Created `resources/js/components/ui/mode-toggle.tsx` — reads initial mode from `usePage().props.theme.userMode`, applies `.dark` class immediately on change, persists via `router.patch` with `preserveState/preserveScroll`, and adds `matchMedia` listener for 'system' mode
+- Updated `resources/js/pages/appearance/update.tsx` to use `ModeToggle` instead of `AppearanceTabs`
+- **Learnings for future iterations:**
+  - User model has no `$fillable` — use `$model->field = value; $model->save()` pattern instead of mass assignment for direct User model updates
+  - `router.patch('/url', data, { preserveState: true, preserveScroll: true })` sends a background Inertia request without navigation; server returns `back()` (303 redirect)
+  - The `theme.userMode` prop (added by US-005 in HandleInertiaRequests) feeds the initial value to ModeToggle — choice survives page reload because it comes from DB
+  - docs:sync --check requires the manifest to have `"documented": true` entries; update `docs/.manifest.json` directly when artisan sync doesn't auto-detect new doc files
+---
+
 ## Codebase Patterns
 - Settings fields that should NOT be orgOverridable: add to the Settings class but do NOT add to OVERLAY_MAP. Access via `app(SettingsClass::class)->field`. Fields not in the `map` array are still valid settings fields (e.g., `maintenance_mode` in AppSettings).
 - `ThemeSettings` has `orgOverridable: true` — any field added to its `map` in OVERLAY_MAP becomes org-overridable. Add system-wide-only fields to ThemeSettings class directly without adding them to OVERLAY_MAP.
