@@ -134,6 +134,19 @@
   - When the PRD JSON has `"inProgress": true` set by ralph-tui, remove it together with flipping `passes` to avoid stale metadata
 ---
 
+## 2026-03-07 - US-016
+- Created `resources/js/components/shells/app-shell.tsx`: collapsible sidebar + top header + main content area + optional right panel slot; includes `<SkipToContent />` and `id="main-content"` on `<main>`.
+- Created `resources/js/components/shells/master-detail.tsx`: left list + right detail; stacks on mobile, uses `react-resizable-panels` (Group+Panel+Separator) side-by-side on desktop.
+- Created `resources/js/components/shells/split-view.tsx`: horizontal or vertical two-pane split with draggable resizer via `react-resizable-panels`.
+- Created `resources/js/components/shells/marketing-layout.tsx`: centered max-width layout with optional sticky nav and footer slots.
+- Created `resources/js/components/shells/dashboard-layout.tsx`: stat cards row + main chart area + optional sidebar widgets column.
+- All shells accept `className` and slot props; all include `<SkipToContent />` and `id="main-content"`.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `react-resizable-panels` v4 exports `Group`, `Panel`, `Separator` — NOT `PanelGroup`/`PanelResizeHandle`. Use `Group` with `orientation` prop (not `direction`).
+  - Shells live in `resources/js/components/shells/` (separate from `ui/`) — import with `@/components/shells/app-shell`.
+---
+
 ## Codebase Patterns
 - Settings fields that should NOT be orgOverridable: add to the Settings class but do NOT add to OVERLAY_MAP. Access via `app(SettingsClass::class)->field`. Fields not in the `map` array are still valid settings fields (e.g., `maintenance_mode` in AppSettings).
 - `ThemeSettings` has `orgOverridable: true` — any field added to its `map` in OVERLAY_MAP becomes org-overridable. Add system-wide-only fields to ThemeSettings class directly without adding them to OVERLAY_MAP.
