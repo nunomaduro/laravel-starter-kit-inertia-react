@@ -441,8 +441,7 @@
         "`npx tsc --noEmit` passes"
       ],
       "priority": 30,
-      "passes": true,
-      "inProgress": true
+      "passes": true
     },
     {
       "id": "US-031",
@@ -461,7 +460,8 @@
         "`npx tsc --noEmit` passes"
       ],
       "priority": 31,
-      "passes": false
+      "passes": true,
+      "inProgress": true
     },
     {
       "id": "US-032",
