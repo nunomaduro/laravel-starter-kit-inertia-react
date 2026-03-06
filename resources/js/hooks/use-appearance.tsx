@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export type Appearance = 'light' | 'dark' | 'system';
+export type ThemePreset = 'default' | 'vega' | 'nova';
+
+const THEME_PRESET_KEY = 'theme-preset';
 
 const prefersDark = () => {
     if (typeof window === 'undefined') {
@@ -80,4 +83,22 @@ export function useAppearance() {
     }, [updateAppearance]);
 
     return { appearance, updateAppearance } as const;
+}
+
+export function useThemePreset() {
+    const [preset, setPreset] = useState<ThemePreset>('default');
+
+    const updatePreset = useCallback((value: ThemePreset) => {
+        // eslint-disable-next-line @eslint-react/hooks-extra/no-direct-set-state-in-use-effect -- sync from localStorage when called from useEffect on mount
+        setPreset(value);
+        localStorage.setItem(THEME_PRESET_KEY, value);
+        document.documentElement.setAttribute('data-theme', value);
+    }, []);
+
+    useEffect(() => {
+        const saved = (localStorage.getItem(THEME_PRESET_KEY) as ThemePreset) ?? 'default';
+        setPreset(saved);
+    }, []);
+
+    return { preset, updatePreset } as const;
 }

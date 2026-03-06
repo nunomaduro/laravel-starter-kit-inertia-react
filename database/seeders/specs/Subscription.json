@@ -3,7 +3,7 @@
     "table": "subscriptions",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -13,17 +13,17 @@
             "default": null
         },
         "subscriber_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "plan_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "name": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
@@ -33,7 +33,7 @@
             "default": null
         },
         "description": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
@@ -102,6 +102,26 @@
         "name": {
             "type": "name",
             "example": "John Doe"
+        },
+        "trial_ends_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        },
+        "starts_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        },
+        "ends_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        },
+        "canceled_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        },
+        "deleted_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
         }
     },
     "scenarios": []

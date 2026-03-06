@@ -1,7 +1,7 @@
 import '../css/app.css';
 import './echo';
 
-import { createInertiaApp } from '@inertiajs/react';
+import { createInertiaApp, router } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -12,7 +12,7 @@ import { ThemeFromProps } from './components/theme-from-props';
 import { initializeTheme } from './hooks/use-appearance';
 import { QueryProvider } from './providers/query-provider';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'App';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -52,3 +52,11 @@ createInertiaApp({
 
 // This will set light / dark mode on load...
 initializeTheme();
+
+// Page transition animation triggers
+router.on('start', () =>
+    document.documentElement.classList.add('page-transitioning'),
+);
+router.on('finish', () =>
+    document.documentElement.classList.remove('page-transitioning'),
+);

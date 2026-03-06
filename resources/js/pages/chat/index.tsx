@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
-import type { SharedData } from '@/types';
+import type { BreadcrumbItem, SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import type { UIMessage } from '@tanstack/ai-client';
 import { fetchHttpStream } from '@tanstack/ai-client';
@@ -59,6 +59,8 @@ function getCsrfToken(): string {
         return raw;
     }
 }
+
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Chat', href: '/chat' }];
 
 export default function ChatPage() {
     const { auth } = usePage<SharedData>().props;
@@ -272,7 +274,7 @@ export default function ChatPage() {
     );
 
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
             <Head title="Chat" />
             <div className="flex h-[calc(100vh-4rem)] flex-1 gap-4 overflow-hidden p-4">
                 {isMobile ? (

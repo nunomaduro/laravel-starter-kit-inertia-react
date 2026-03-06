@@ -210,12 +210,16 @@ export default function UsersTablePage({
                     partialReloadKey="tableData"
                     rowLink={(row) => `/users/${row.id}`}
                     emptyState={
-                        <div className="flex flex-col items-center justify-center gap-2 py-8 text-muted-foreground">
-                            <Users className="size-10" />
-                            <p className="font-medium">No users found</p>
-                            <p className="text-sm">
-                                Try adjusting your search or filters.
-                            </p>
+                        <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+                            <div className="rounded-full bg-muted p-4">
+                                <Users className="size-8 text-muted-foreground" />
+                            </div>
+                            <div>
+                                <p className="font-medium">No users found</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Try adjusting your search or filters.
+                                </p>
+                            </div>
                         </div>
                     }
                     actions={rowActions}
@@ -317,13 +321,7 @@ export default function UsersTablePage({
                                 </Dialog>
                             </div>
                         ),
-                        beforeTable: (
-                            <p className="px-2 py-1 text-xs text-muted-foreground">
-                                Full usage example: filters, density,
-                                select-all, row actions with confirm and groups,
-                                slots, translations.
-                            </p>
-                        ),
+                        beforeTable: undefined,
                     }}
                     mobileBreakpoint={768}
                     translations={{

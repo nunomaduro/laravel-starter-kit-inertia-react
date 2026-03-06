@@ -150,3 +150,30 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* Respect OS reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Page transition animation */
+@media (prefers-reduced-motion: no-preference) {
+    .page-transitioning main {
+        animation: page-enter 200ms ease-out;
+    }
+
+    @keyframes page-enter {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

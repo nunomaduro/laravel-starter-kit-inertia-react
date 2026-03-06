@@ -124,12 +124,14 @@ const footerNavItems: NavItem[] = [
         href: 'https://github.com/laravel/react-starter-kit',
         icon: Folder,
         dataPan: 'nav-repository',
+        superAdminOnly: true,
     },
     {
         title: 'Documentation',
         href: 'https://laravel.com/docs/starter-kits#react',
         icon: BookOpen,
         dataPan: 'nav-documentation',
+        superAdminOnly: true,
     },
 ];
 
@@ -140,7 +142,11 @@ function canShowNavItem(
     canBypass: boolean,
     features: SharedData['features'],
     tenancyEnabled: boolean,
+    isSuperAdmin: boolean,
 ): boolean {
+    if (item.superAdminOnly && !isSuperAdmin) {
+        return false;
+    }
     if (item.tenancyRequired && !tenancyEnabled) {
         return false;
     }
@@ -162,6 +168,7 @@ export function AppSidebar() {
     const canBypass = auth.can_bypass ?? false;
     const resolvedFeatures = features ?? {};
     const tenancyEnabled = auth.tenancy_enabled ?? true;
+    const isSuperAdmin = auth.roles?.includes('super-admin') ?? false;
 
     const visibleMainNavItems = useMemo(
         () =>
@@ -172,9 +179,10 @@ export function AppSidebar() {
                     canBypass,
                     resolvedFeatures,
                     tenancyEnabled,
+                    isSuperAdmin,
                 ),
             ),
-        [permissions, canBypass, resolvedFeatures, tenancyEnabled],
+        [permissions, canBypass, resolvedFeatures, tenancyEnabled, isSuperAdmin],
     );
     const visibleFooterNavItems = useMemo(
         () =>
@@ -185,9 +193,10 @@ export function AppSidebar() {
                     canBypass,
                     resolvedFeatures,
                     tenancyEnabled,
+                    isSuperAdmin,
                 ),
             ),
-        [permissions, canBypass, resolvedFeatures, tenancyEnabled],
+        [permissions, canBypass, resolvedFeatures, tenancyEnabled, isSuperAdmin],
     );
 
     return (

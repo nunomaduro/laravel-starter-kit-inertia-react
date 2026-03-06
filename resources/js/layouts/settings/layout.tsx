@@ -14,7 +14,11 @@ import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { type PropsWithChildren, useMemo } from 'react';
 
-const sidebarNavItems: (NavItem & { feature?: string; dataPan: string })[] = [
+const sidebarNavItems: (NavItem & {
+    feature?: string;
+    dataPan: string;
+    requiresOrgAdmin?: boolean;
+})[] = [
     {
         title: 'Profile',
         href: edit(),
@@ -46,6 +50,7 @@ const sidebarNavItems: (NavItem & { feature?: string; dataPan: string })[] = [
         href: editBranding(),
         icon: null,
         dataPan: 'settings-nav-branding',
+        requiresOrgAdmin: true,
     },
     {
         title: 'Data export',
@@ -71,24 +76,27 @@ const sidebarNavItems: (NavItem & { feature?: string; dataPan: string })[] = [
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
-    const { features } = usePage<SharedData>().props;
+    const { features, auth } = usePage<SharedData>().props;
+    const currentUrl = usePage<SharedData>().url.split('?')[0];
+
+    const isOrgAdmin =
+        auth.current_organization != null &&
+        (auth.can_bypass || (auth.roles?.includes('admin') ?? false));
 
     const visibleNavItems = useMemo(() => {
         const f = features ?? {};
         return sidebarNavItems.filter((item) => {
-            if (!item.feature) return true;
+            if (item.requiresOrgAdmin && !isOrgAdmin) {
+                return false;
+            }
+            if (!item.feature) {
+                return true;
+            }
             const value = f[item.feature];
-            // Fail closed: only show when feature is explicitly active (true or 1)
-            return value === true || value === 1;
+            // Fail closed: only show when feature is explicitly active
+            return value === true;
         });
-    }, [features]);
-
-    // When server-side rendering, we only render the layout on the client...
-    if (typeof window === 'undefined') {
-        return null;
-    }
-
-    const currentPath = window.location.pathname;
+    }, [features, isOrgAdmin]);
 
     return (
         <div className="px-4 py-6">
@@ -113,7 +121,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                 data-pan={item.dataPan}
                                 className={cn('w-full justify-start', {
                                     'bg-muted':
-                                        currentPath ===
+                                        currentUrl ===
                                         (typeof item.href === 'string'
                                             ? item.href
                                             : item.href.url),

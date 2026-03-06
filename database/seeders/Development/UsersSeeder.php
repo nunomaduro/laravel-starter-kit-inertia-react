@@ -46,10 +46,20 @@ final class UsersSeeder extends Seeder
                         $userData['email_verified_at'] = now();
                     }
 
+                    // Prevent personal org creation for super-admins (role assigned after event fires).
+                    $willBeSuperAdmin = ($role === 'super-admin') || in_array('super-admin', $roles, true);
+                    if ($willBeSuperAdmin) {
+                        config(['tenancy.auto_create_personal_organization' => false]);
+                    }
+
                     $user = User::query()->updateOrCreate(
                         ['email' => $userData['email']],
                         $userData
                     );
+
+                    if ($willBeSuperAdmin) {
+                        config(['tenancy.auto_create_personal_organization' => true]);
+                    }
 
                     if ($role !== null) {
                         $user->syncRoles([$role]);
@@ -79,22 +89,28 @@ final class UsersSeeder extends Seeder
 
     private function seedFromFactory(): void
     {
+        $defaultRole = config('permission.default_role', 'user');
+
+        // Admin users: skip onboarding so they can log in directly.
         $adminUsers = User::factory()
             ->admin()
             ->count(2)
-            ->create();
+            ->create(['onboarding_completed' => true]);
 
         foreach ($adminUsers as $user) {
-            $user->assignRole('admin');
+            $user->syncRoles(['admin', $defaultRole]);
         }
 
+        // Regular and unverified factory users — assign default role so permissions work.
         User::factory()
             ->count(5)
-            ->create();
+            ->create()
+            ->each(fn (User $user) => $user->assignRole($defaultRole));
 
         User::factory()
             ->unverified()
             ->count(2)
-            ->create();
+            ->create()
+            ->each(fn (User $user) => $user->assignRole($defaultRole));
     }
 }

@@ -22,7 +22,8 @@ export function ThemeFromProps() {
 
     useEffect(() => {
         const root = document.documentElement;
-        const preset = branding?.themePreset ?? theme.preset ?? 'default';
+        const userPreset = localStorage.getItem('theme-preset');
+        const preset = branding?.themePreset ?? userPreset ?? theme.preset ?? 'default';
         const radius = branding?.themeRadius ?? theme.radius ?? 'default';
         const font = branding?.themeFont ?? theme.font ?? 'instrument-sans';
         const baseColor = theme.base_color ?? 'neutral';

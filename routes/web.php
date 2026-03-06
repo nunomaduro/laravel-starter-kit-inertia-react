@@ -18,6 +18,7 @@ use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\Changelog\ChangelogController;
 use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\CookieConsentController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnterpriseInquiryController;
 use App\Http\Controllers\HelpCenter\HelpCenterController;
 use App\Http\Controllers\HelpCenter\RateHelpArticleController;
@@ -132,7 +133,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('terms/accept', [TermsAcceptController::class, 'show'])->name('terms.accept');
     Route::post('terms/accept', [TermsAcceptController::class, 'store'])->name('terms.accept.store');
 
-    Route::get('dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
 

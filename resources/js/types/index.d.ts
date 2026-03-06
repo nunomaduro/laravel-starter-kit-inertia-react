@@ -46,6 +46,8 @@ export interface NavItem {
     tenancyRequired?: boolean;
     /** Pan product analytics name (letters, numbers, dashes, underscores). Must be whitelisted in AppServiceProvider. */
     dataPan?: string;
+    /** When true, item is only visible to super-admin users. */
+    superAdminOnly?: boolean;
 }
 
 /** Pennant feature flags shared to the frontend (key => active for current user/guest default). */

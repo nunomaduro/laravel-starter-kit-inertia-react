@@ -1,7 +1,7 @@
 import organizations from '@/routes/organizations';
 import { type SharedData } from '@/types';
-import { Form, usePage } from '@inertiajs/react';
-import { Building2, Check, ChevronsUpDown } from 'lucide-react';
+import { Form, Link, usePage } from '@inertiajs/react';
+import { Building2, Check, ChevronsUpDown, Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,11 +13,24 @@ import {
 
 export function OrganizationSwitcher() {
     const { auth } = usePage<SharedData>().props;
+    const isSuperAdmin = auth.roles?.includes('super-admin') ?? false;
     const userOrganizations = auth.organizations ?? [];
     const current = auth.current_organization;
 
-    if (userOrganizations.length === 0) {
+    if (isSuperAdmin) {
         return null;
+    }
+
+    if (userOrganizations.length === 0) {
+        return (
+            <Link
+                href={organizations.create.url()}
+                className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            >
+                <Plus className="size-4 shrink-0" />
+                <span className="truncate">Create organization</span>
+            </Link>
+        );
     }
 
     return (

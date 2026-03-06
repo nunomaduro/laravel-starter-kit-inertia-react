@@ -1,11 +1,14 @@
 import { CreditCard } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { Link } from '@inertiajs/react';
 
 interface Props {
     activePlan: { id: number; name: string } | null;
@@ -25,6 +28,13 @@ export default function CurrentPlanCard({ activePlan, isOnTrial }: Props) {
                     {isOnTrial && ' (Trial)'}
                 </CardDescription>
             </CardHeader>
+            {!activePlan && !isOnTrial && (
+                <CardFooter>
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href="/pricing">View plans</Link>
+                    </Button>
+                </CardFooter>
+            )}
         </Card>
     );
 }

@@ -3,12 +3,12 @@
     "table": "credits",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -18,7 +18,7 @@
             "default": null
         },
         "creditable_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -43,7 +43,7 @@
             "default": null
         },
         "metadata": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
