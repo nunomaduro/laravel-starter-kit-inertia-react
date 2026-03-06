@@ -71,6 +71,7 @@ import {
     Upload,
     X,
 } from 'lucide-react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Filters } from '../filters/filters';
 import type { FilterColumn } from '../filters/types';
@@ -130,7 +131,7 @@ function buildExportUrl(
     return exportUrl.toString();
 }
 
-function CopyableCell({
+export function CopyableCell({
     valueToCopy,
     children,
 }: {
@@ -152,6 +153,33 @@ function CopyableCell({
             >
                 <Copy className="h-3 w-3" />
             </Button>
+        </span>
+    );
+}
+
+export function HighlightableCell({
+    value,
+    highlight,
+}: {
+    value: string;
+    highlight?: string;
+}) {
+    if (!highlight || highlight.trim() === '') {
+        return <span>{value}</span>;
+    }
+    const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const parts = value.split(regex);
+    return (
+        <span>
+            {parts.map((part, i) =>
+                regex.test(part) ? (
+                    <mark key={i} className="rounded-sm bg-yellow-200 px-0.5 text-yellow-900 dark:bg-yellow-800 dark:text-yellow-100">
+                        {part}
+                    </mark>
+                ) : (
+                    <span key={i}>{part}</span>
+                ),
+            )}
         </span>
     );
 }
@@ -691,7 +719,14 @@ export function DataTable<TData extends object>({
     const [confirmingBulkAction, setConfirmingBulkAction] =
         useState<DataTableBulkAction<TData> | null>(null);
     const importInputRef = useRef<HTMLInputElement>(null);
+    const tableContainerRef = useRef<HTMLDivElement>(null);
     const detailDisplay = tableData.config?.detailDisplay ?? 'inline';
+    const virtualScrollingOption = optionsOverride?.virtualScrolling;
+    const isVirtualScrolling = Boolean(virtualScrollingOption);
+    const virtualScrollHeight =
+        typeof virtualScrollingOption === 'number'
+            ? virtualScrollingOption
+            : 400;
 
     const columnDefs = useMemo<ColumnDef<TData>[]>(() => {
         const toggleUrl = tableData.toggleUrl ?? null;
@@ -1117,6 +1152,17 @@ export function DataTable<TData extends object>({
         spacious: 'py-3',
     }[density];
 
+    const allRows = table.getRowModel().rows;
+    const virtualizer = useVirtualizer({
+        count: allRows.length,
+        getScrollElement: () => tableContainerRef.current,
+        estimateSize: () => (density === 'compact' ? 36 : density === 'spacious' ? 60 : 48),
+        overscan: 10,
+        enabled: isVirtualScrolling,
+    });
+    const virtualItems = virtualizer.getVirtualItems();
+    const totalVirtualSize = virtualizer.getTotalSize();
+
     const paginationKeys = useMemo(
         () =>
             new Set([
@@ -1344,10 +1390,13 @@ export function DataTable<TData extends object>({
                 </div>
             )}
             <div
+                ref={tableContainerRef}
                 className={cn(
                     'overflow-x-auto rounded-md border border-x-0',
+                    isVirtualScrolling && 'overflow-y-auto',
                     className,
                 )}
+                style={isVirtualScrolling ? { height: virtualScrollHeight } : undefined}
             >
                 {slots?.beforeTable}
                 <Table>
@@ -1473,8 +1522,12 @@ export function DataTable<TData extends object>({
                             })}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows.length > 0 ? (
-                            table.getRowModel().rows.flatMap((row, index) => {
+                        {allRows.length > 0 ? (
+                            <>
+                            {isVirtualScrolling && totalVirtualSize > 0 && (
+                                <tr style={{ height: virtualItems[0]?.start ?? 0 }} />
+                            )}
+                            {(isVirtualScrolling ? virtualItems.map((vi) => allRows[vi.index]).filter(Boolean) : allRows).flatMap((row, index) => {
                                 const rowId = (row.original as { id?: unknown })
                                     .id;
                                 const isExpanded =
@@ -1587,7 +1640,11 @@ export function DataTable<TData extends object>({
                                           ]
                                         : []),
                                 ];
-                            })
+                            })}
+                            {isVirtualScrolling && totalVirtualSize > 0 && virtualItems.length > 0 && (
+                                <tr style={{ height: totalVirtualSize - (virtualItems[virtualItems.length - 1]?.end ?? 0) }} />
+                            )}
+                            </>
                         ) : (
                             <TableRow>
                                 <TableCell

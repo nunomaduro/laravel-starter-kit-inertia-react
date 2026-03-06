@@ -3,10 +3,13 @@ import {
     type ColumnDef,
     type ColumnFiltersState,
     type ColumnOrderState,
+    type GroupingState,
     type RowSelectionState,
     type SortingState,
     type VisibilityState,
     getCoreRowModel,
+    getExpandedRowModel,
+    getGroupedRowModel,
     useReactTable,
 } from '@tanstack/react-table';
 import { useCallback, useEffect, useState } from 'react';
@@ -68,6 +71,8 @@ interface UseDataTableOptions<TData> {
     tableName: string;
     columnDefs: ColumnDef<TData>[];
     prefix?: string;
+    /** Column IDs to group rows by (client-side grouping). */
+    groupBy?: string[];
 }
 
 function getSearchParam(prefix?: string): string {
@@ -81,6 +86,7 @@ export function useDataTable<TData>({
     tableName,
     columnDefs,
     prefix,
+    groupBy,
 }: UseDataTableOptions<TData>) {
     const { meta } = tableData;
     const searchKey = prefix ? `${prefix}_search` : 'search';
@@ -99,6 +105,8 @@ export function useDataTable<TData>({
 
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const [grouping, setGrouping] = useState<GroupingState>(groupBy ?? []);
+    const [expanded, setExpanded] = useState({});
 
     const navigate = useCallback((params: Record<string, unknown>) => {
         const currentUrl = new URL(window.location.href);
@@ -220,8 +228,12 @@ export function useDataTable<TData>({
         onColumnVisibilityChange: setColumnVisibility,
         onColumnOrderChange: setColumnOrder,
         onRowSelectionChange: setRowSelection,
+        onGroupingChange: setGrouping,
+        onExpandedChange: setExpanded,
         enableRowSelection: true,
         getCoreRowModel: getCoreRowModel(),
+        getGroupedRowModel: getGroupedRowModel(),
+        getExpandedRowModel: getExpandedRowModel(),
         initialState: {
             columnPinning: {
                 left: columnDefs.some((c) => c.id === '_select')
@@ -238,6 +250,8 @@ export function useDataTable<TData>({
             columnVisibility,
             columnOrder,
             rowSelection,
+            grouping,
+            expanded,
             pagination: {
                 pageIndex: meta.currentPage - 1,
                 pageSize: meta.perPage,
@@ -275,6 +289,8 @@ export function useDataTable<TData>({
         setColumnOrder,
         rowSelection,
         setRowSelection,
+        grouping,
+        setGrouping,
         applyColumns,
         handleSort,
         handlePageChange,

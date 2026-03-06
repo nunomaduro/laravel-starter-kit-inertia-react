@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 
-export type FilterType = 'text' | 'number' | 'date' | 'option' | 'boolean';
+export type FilterType = 'text' | 'number' | 'date' | 'option' | 'boolean' | 'range' | 'radio';
 
 export interface FilterColumn {
     id: string;
@@ -25,6 +25,8 @@ export interface OperatorDef {
 }
 
 export const OPERATORS: Record<FilterType, OperatorDef[]> = {
+    range: [{ value: 'between', label: 'between', multi: true }],
+    radio: [{ value: 'eq', label: 'is', multi: false }],
     text: [
         { value: 'contains', label: 'contient', multi: false },
         { value: 'eq', label: 'est exactement', multi: false },
@@ -57,4 +59,6 @@ export const DEFAULT_OPERATOR: Record<FilterType, string> = {
     date: 'eq',
     option: 'in',
     boolean: 'eq',
+    range: 'between',
+    radio: 'eq',
 };

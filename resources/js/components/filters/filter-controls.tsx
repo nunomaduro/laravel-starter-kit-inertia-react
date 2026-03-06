@@ -325,6 +325,91 @@ const BOOL_OPTIONS = [
     { label: 'Non', value: '0' },
 ];
 
+/** A standalone min/max range filter without an operator dropdown. */
+export function RangeFilter({ value, onSubmit }: FilterControlProps) {
+    const [min, setMin] = useState(value?.values[0] ?? '');
+    const [max, setMax] = useState(value?.values[1] ?? '');
+
+    function submit(nextMin: string, nextMax: string) {
+        const values: string[] = [];
+        if (nextMin !== '') values.push(nextMin);
+        if (nextMax !== '') values.push(nextMax);
+        onSubmit('between', values);
+    }
+
+    function handleKeyDown(e: React.KeyboardEvent) {
+        if (e.key === 'Enter') submit(min, max);
+    }
+
+    return (
+        <div className="flex w-[260px] flex-col gap-2 p-2">
+            <div className="grid grid-cols-2 gap-2">
+                <Input
+                    type="number"
+                    placeholder="Min"
+                    value={min}
+                    onChange={(e) => setMin(e.target.value)}
+                    onBlur={() => submit(min, max)}
+                    onKeyDown={handleKeyDown}
+                    autoFocus
+                    className="h-8 text-sm"
+                />
+                <Input
+                    type="number"
+                    placeholder="Max"
+                    value={max}
+                    onChange={(e) => setMax(e.target.value)}
+                    onBlur={() => submit(min, max)}
+                    onKeyDown={handleKeyDown}
+                    className="h-8 text-sm"
+                />
+            </div>
+        </div>
+    );
+}
+
+/** Single-select radio filter for option columns. */
+export function RadioFilter({
+    column,
+    value,
+    onSubmit,
+}: FilterControlProps) {
+    const selected = value?.values[0] ?? '';
+    const options = column.options ?? [];
+
+    function handleChange(optionValue: string) {
+        if (selected === optionValue) {
+            onSubmit('eq', []);
+        } else {
+            onSubmit('eq', [optionValue]);
+        }
+    }
+
+    return (
+        <div className="flex w-[260px] flex-col gap-0.5 p-2">
+            {options.map((opt) => (
+                <label
+                    key={opt.value}
+                    className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-accent"
+                >
+                    <input
+                        type="radio"
+                        name={`radio-filter-${column.id}`}
+                        value={opt.value}
+                        checked={selected === opt.value}
+                        onChange={() => handleChange(opt.value)}
+                        className="h-4 w-4 accent-primary"
+                    />
+                    {opt.label}
+                </label>
+            ))}
+            {options.length === 0 && (
+                <p className="px-2 py-1 text-sm text-muted-foreground">No options.</p>
+            )}
+        </div>
+    );
+}
+
 export function FilterControl({
     column,
     value,
@@ -380,6 +465,22 @@ export function FilterControl({
                     value={value}
                     onSubmit={onSubmit}
                     hideOperator={hideOperator}
+                />
+            );
+        case 'range':
+            return (
+                <RangeFilter
+                    column={column}
+                    value={value}
+                    onSubmit={onSubmit}
+                />
+            );
+        case 'radio':
+            return (
+                <RadioFilter
+                    column={column}
+                    value={value}
+                    onSubmit={onSubmit}
                 />
             );
         default:

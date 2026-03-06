@@ -88,6 +88,8 @@ export interface DataTableOptions {
     shortcutsOverlay?: boolean;
     exportProgress?: boolean;
     emptyStateIllustration?: boolean;
+    /** Enable virtual scrolling. Pass a number for the container height in px (default 400). */
+    virtualScrolling?: boolean | number;
 }
 
 export interface DataTableConfig {
