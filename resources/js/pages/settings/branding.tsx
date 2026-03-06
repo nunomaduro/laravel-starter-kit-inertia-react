@@ -1,9 +1,10 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { ThemeCustomizerInline } from '@/components/ui/theme-customizer';
 import {
     Select,
     SelectContent,
@@ -18,7 +19,7 @@ import {
     edit as editBranding,
     update as updateBranding,
 } from '@/routes/settings/branding';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type SharedData } from '@/types';
 
 interface BrandingProps {
     logoUrl: string | null;
@@ -45,6 +46,7 @@ export default function Branding({
     radiusOptions,
     fontOptions,
 }: Props) {
+    const { props } = usePage<SharedData>();
     const { data, setData, put, processing, errors } = useForm({
         logo: null as File | null,
         theme_preset: branding.themePreset ?? '',
@@ -71,6 +73,10 @@ export default function Branding({
                         title="Organization branding"
                         description="Logo and theme overrides for your organization"
                     />
+
+                    {props.theme?.canCustomize && (
+                        <ThemeCustomizerInline />
+                    )}
 
                     <form
                         onSubmit={handleSubmit}
