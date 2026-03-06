@@ -1,7 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 
-import AppearanceTabs from '@/components/appearance-tabs';
 import HeadingSmall from '@/components/heading-small';
+import { ModeToggle } from '@/components/ui/mode-toggle';
 import { cn } from '@/lib/utils';
 import { type ThemePreset, useThemePreset } from '@/hooks/use-appearance';
 import { type BreadcrumbItem, type SharedData } from '@/types';
@@ -103,7 +103,7 @@ export default function Update() {
                             </div>
                             <div className="space-y-2">
                                 <p className="text-sm font-medium">Mode</p>
-                                <AppearanceTabs />
+                                <ModeToggle />
                             </div>
                         </div>
                     )}

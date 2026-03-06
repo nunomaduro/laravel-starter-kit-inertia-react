@@ -41,6 +41,7 @@ use App\Http\Controllers\UserEmailResetNotificationController;
 use App\Http\Controllers\UserEmailVerificationController;
 use App\Http\Controllers\UserEmailVerificationNotificationController;
 use App\Http\Controllers\UserPasswordController;
+use App\Http\Controllers\UserPreferencesController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UsersTableController;
 use App\Http\Controllers\UserTwoFactorAuthenticationController;
@@ -201,6 +202,8 @@ Route::middleware('auth')->group(function (): void {
     Route::personalDataExports('personal-data-exports');
 
     Route::delete('user', [UserController::class, 'destroy'])->name('user.destroy');
+
+    Route::patch('user/preferences', [UserPreferencesController::class, 'update'])->name('user.preferences.update');
 
     Route::redirect('settings', '/settings/profile')->name('settings');
     Route::get('settings/profile', [UserProfileController::class, 'edit'])->name('user-profile.edit');

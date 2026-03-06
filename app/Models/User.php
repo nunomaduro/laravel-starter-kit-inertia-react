@@ -58,6 +58,7 @@ use Spatie\Tags\HasTags;
  * @property-read CarbonInterface|null $two_factor_confirmed_at
  * @property bool $onboarding_completed
  * @property array<string>|null $onboarding_steps_completed
+ * @property string $theme_mode
  * @property-read CarbonInterface $created_at
  * @property-read CarbonInterface $updated_at
  * @property-read CarbonInterface|null $deleted_at
@@ -372,6 +373,7 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
             'two_factor_confirmed_at' => 'datetime',
             'onboarding_completed' => 'boolean',
             'onboarding_steps_completed' => 'array',
+            'theme_mode' => 'string',
         ];
     }
 
