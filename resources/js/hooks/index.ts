@@ -7,3 +7,4 @@ export { useIsMobile } from './use-mobile';
 export { useMobileNavigation } from './use-mobile-navigation';
 export { useReducedMotion } from './use-reduced-motion';
 export { useTwoFactorAuth } from './use-two-factor-auth';
+export { useKeyboardShortcut } from '@/lib/keyboard-shortcuts';
