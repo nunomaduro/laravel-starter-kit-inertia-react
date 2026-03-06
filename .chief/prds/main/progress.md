@@ -53,6 +53,17 @@
   - docs:sync --check requires the manifest to have `"documented": true` entries; update `docs/.manifest.json` directly when artisan sync doesn't auto-detect new doc files
 ---
 
+## 2026-03-07 - US-007
+- Extended `resources/js/components/theme-from-props.tsx` to set `data-theme-dark`, `data-theme-primary`, `data-theme-light`, `data-card-skin` on `document.documentElement` from `usePage().props.theme` Tailux fields (`dark`, `primary`, `light`, `skin`)
+- Added user mode application on mount: reads `theme.userMode` ('dark'|'light'|'system'), applies/removes `.dark` class and sets `colorScheme` style; adds `matchMedia` listener for system mode changes
+- Migrated component to use `usePage<SharedData>()` typed import for proper TypeScript support
+- Existing `data-theme`, `data-radius`, `data-font`, `data-base-color` behavior fully preserved (backward-compatible)
+- **Learnings for future iterations:**
+  - `theme-from-props.tsx` has its own local `ThemeProps` interface; updated to use shared `SharedData` type from `@/types` instead to stay in sync
+  - The `applyMode` helper in ModeToggle and ThemeFromProps are now duplicated — future refactor could extract to `@/lib/theme-utils.ts`
+  - `data-card-skin` is the attribute name (not `data-skin`) — matches the CSS selectors in themes.css
+---
+
 ## Codebase Patterns
 - Settings fields that should NOT be orgOverridable: add to the Settings class but do NOT add to OVERLAY_MAP. Access via `app(SettingsClass::class)->field`. Fields not in the `map` array are still valid settings fields (e.g., `maintenance_mode` in AppSettings).
 - `ThemeSettings` has `orgOverridable: true` — any field added to its `map` in OVERLAY_MAP becomes org-overridable. Add system-wide-only fields to ThemeSettings class directly without adding them to OVERLAY_MAP.
