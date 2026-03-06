@@ -1,5 +1,19 @@
 # Progress Log
 
+## 2026-03-07 - US-015
+- Created `resources/js/lib/keyboard-shortcuts.ts`: module-level Map registry; exports `registerShortcut`, `unregisterShortcut`, `getShortcuts`, `subscribeToShortcuts`, and `useKeyboardShortcut` hook; handles modifier keys (mod/ctrl/cmd/shift/alt); prevents firing in editable elements for single-char shortcuts.
+- Created `resources/js/components/ui/kbd.tsx`: simple styled `<kbd>` element for displaying key hints.
+- Created `resources/js/components/ui/keyboard-shortcut-display.tsx`: Sheet panel listing all registered shortcuts grouped by scope; `?` key toggles the panel via `useKeyboardShortcut`; subscribes to registry changes for live updates.
+- Updated `resources/js/app.tsx`: added `<KeyboardShortcutDisplay />` to the per-page wrapper alongside ThemeFromProps/Toaster.
+- Updated `resources/js/hooks/index.ts`: re-exports `useKeyboardShortcut` from `@/lib/keyboard-shortcuts`.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - The keyboard shortcuts registry is a module-level singleton (not React context) — works across component boundaries; `subscribeToShortcuts` lets components re-render when the registry changes.
+  - Single-char shortcuts (like `?`) must be guarded to not fire when typing in inputs/textareas; modifier shortcuts (Mod+K) can fire anywhere.
+  - The `KeyboardShortcutDisplay` component self-registers the `?` shortcut when mounted in `app.tsx`; no separate registration step needed.
+  - `Kbd` component was created in `ui/kbd.tsx` for this story; US-020 also lists `kbd.tsx` — it already exists now.
+---
+
 ## 2026-03-07 - US-014
 - Created `resources/js/hooks/use-reduced-motion.ts`: reads `matchMedia('(prefers-reduced-motion: reduce)')` on init and subscribes to changes; returns boolean.
 - Created `resources/js/hooks/use-focus-trap.ts`: traps Tab/Shift+Tab within a given `RefObject<HTMLElement>`; focuses first focusable element on activation; accepts `enabled` flag to toggle.
