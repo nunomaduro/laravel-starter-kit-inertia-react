@@ -68,3 +68,16 @@
   - Fields in Settings classes not listed in OVERLAY_MAP are not orgOverridable and not accessible via config() — access them directly via `app(SettingsClass::class)->field`
   - Filament Toggle uses `Filament\Forms\Components\Toggle`, not a generic form field
 ---
+
+## 2026-03-07 - US-005
+- Extended `resolveTheme()` in `HandleInertiaRequests.php` to accept `Request` and return 5 new Tailux fields: `dark` (from `dark_color_scheme`), `primary` (from `primary_color`), `light` (from `light_color_scheme`), `skin` (from `card_skin`), `radius` (from `border_radius`)
+- Added `canCustomize` boolean: true if user `isOrganizationAdmin()` OR `allow_user_theme_customization` is true in DB settings
+- Added `userMode` string: reads `user->theme_mode` with try/catch fallback to `'system'` (column not yet added — US-006 will add it)
+- Updated `ThemeProps` in `resources/js/types/index.d.ts` to include `dark`, `primary`, `light`, `skin`, `canCustomize`, `userMode` fields
+- `npx tsc --noEmit` ✓ | `vendor/bin/pint` ✓
+- **Learnings for future iterations:**
+  - `HasOrganizationPermissions` trait provides `isOrganizationAdmin()` on the User model — use this for admin checks
+  - When reading a DB column that may not exist yet (added in a future story), wrap in try/catch to handle gracefully
+  - `ThemeProps` in `index.d.ts` is the canonical TS type; `theme-from-props.tsx` has its own local interface (doesn't import from types), so changing the central type won't break that component
+  - `border_radius` and `radius` are two separate ThemeSettings fields: `radius` is legacy shadcn/UI, `border_radius` is the new Tailux one
+---
