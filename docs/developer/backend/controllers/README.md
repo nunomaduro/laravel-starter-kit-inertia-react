@@ -44,5 +44,7 @@ All Controllers:
 | [UsersTableController](./UsersTableController.md) | N/A | ✅ |
 | [SearchController](docs/developer/backend/controllers/SearchController.md) | N/A | ✅ |
 | [DashboardController](./dashboardcontroller.md) | N/A | ✅ |
+| [UserPreferencesController](docs/developer/backend/controllers/UserPreferencesController.md) | N/A | ✅ |
+| OrgThemeController | N/A | ❌ |
 
 

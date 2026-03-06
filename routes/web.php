@@ -28,6 +28,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationInvitationController;
 use App\Http\Controllers\OrganizationMemberController;
 use App\Http\Controllers\OrganizationSwitchController;
+use App\Http\Controllers\OrgThemeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\PersonalDataExportController;
@@ -204,6 +205,11 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('user', [UserController::class, 'destroy'])->name('user.destroy');
 
     Route::patch('user/preferences', [UserPreferencesController::class, 'update'])->name('user.preferences.update');
+
+    Route::middleware('tenant')->group(function (): void {
+        Route::post('org/theme', [OrgThemeController::class, 'save'])->name('org.theme.save');
+        Route::delete('org/theme', [OrgThemeController::class, 'reset'])->name('org.theme.reset');
+    });
 
     Route::redirect('settings', '/settings/profile')->name('settings');
     Route::get('settings/profile', [UserProfileController::class, 'edit'])->name('user-profile.edit');
