@@ -68,8 +68,13 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
                 'radius' => 'theme.radius',
                 'font' => 'theme.font',
                 'default_appearance' => 'theme.default_appearance',
+                'dark_color_scheme' => 'theme.dark_color_scheme',
+                'primary_color' => 'theme.primary_color',
+                'light_color_scheme' => 'theme.light_color_scheme',
+                'card_skin' => 'theme.card_skin',
+                'border_radius' => 'theme.border_radius',
             ],
-            'orgOverridable' => false,
+            'orgOverridable' => true,
         ],
 
         BillingSettings::class => [
