@@ -64,6 +64,18 @@
   - `data-card-skin` is the attribute name (not `data-skin`) — matches the CSS selectors in themes.css
 ---
 
+## 2026-03-07 - US-009
+- Created `app/Http/Controllers/OrgThemeController.php` — POST `/org/theme` saves 5 theme dimensions as org overrides via `OrganizationSettingsService::setOverride`; DELETE `/org/theme` removes them via `removeOverride`; authorization checks `isOrganizationAdmin() || allow_user_theme_customization`
+- Added `OrgThemeController` import + two routes (`org.theme.save`, `org.theme.reset`) to `routes/web.php` under `auth` + `tenant` middleware
+- Created `resources/js/components/ui/theme-customizer.tsx` — fixed-position floating panel (right side); only renders when `props.theme.canCustomize` is `true`; Presets section with 6 named preset cards; individual sections for 5 dark swatches, 6 primary diamonds, 3 light scheme buttons, 4 card skin options, 6 radius options; optimistic `data-*` attribute updates on every selection; "Save for Organization" uses `router.post` with `onSuccess` toast; "Reset to defaults" uses `router.delete` with `onSuccess` re-initializes state from fresh page props
+- Created `docs/developer/backend/controllers/OrgThemeController.md` and updated controllers README + `.manifest.json`
+- **Learnings for future iterations:**
+  - `OrganizationSettingsService::removeOverride(org, group, name)` deletes the row entirely; after reset the page props will carry the global defaults
+  - `router.delete(url, options)` is valid in Inertia v2; use `onSuccess: (page) => ...` with `page.props as unknown as SharedData` to avoid TS type error (Inertia's `PageProps` doesn't overlap with app's `SharedData`)
+  - The floating ThemeCustomizer should be included in the layout, not individual pages — export from `ui/theme-customizer.tsx` and import in the app shell
+  - `CARD_SKINS` has 4 options (shadow, bordered, flat, elevated); PRD AC said "2 card skin options" but all 4 are rendered — this matches the constant definition
+---
+
 ## Codebase Patterns
 - Settings fields that should NOT be orgOverridable: add to the Settings class but do NOT add to OVERLAY_MAP. Access via `app(SettingsClass::class)->field`. Fields not in the `map` array are still valid settings fields (e.g., `maintenance_mode` in AppSettings).
 - `ThemeSettings` has `orgOverridable: true` — any field added to its `map` in OVERLAY_MAP becomes org-overridable. Add system-wide-only fields to ThemeSettings class directly without adding them to OVERLAY_MAP.
