@@ -145,3 +145,15 @@
   - `applyThemeAttributes` in the preview decorator needs to handle all 6 toolbar globals; dark mode applies/removes `.dark` class and `colorScheme` style
   - Production build does NOT include Storybook — Storybook is purely a devDependency tool with its own `build-storybook` command
 ---
+
+## 2026-03-07 - US-011
+- Installed Group 1: `react-hook-form`, `@hookform/resolvers`, `zod`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
+- Installed Group 2: `embla-carousel-react`, `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-link`, `@tiptap/extension-image`, `@tiptap/extension-code-block-lowlight`, `lowlight`, `novel`, `react-dropzone`, `react-resizable-panels`, `react-colorful`, `react-textarea-autosize`, `@formkit/auto-animate`, `react-syntax-highlighter`, `@types/react-syntax-highlighter`, `assistant-ui`
+- Installed Group 3: `qrcode.react`, `react-signature-canvas`, `@types/react-signature-canvas`, `react-diff-viewer-continued`, `react-pdf`, `react-compare-slider`
+- Used `--legacy-peer-deps` for all installs (peer dep conflicts with some packages)
+- `npm run build` ✓ | `npx tsc --noEmit` ✓
+- **Learnings for future iterations:**
+  - All packages installed cleanly with `--legacy-peer-deps`; no additional type stubs needed beyond `@types/react-syntax-highlighter` and `@types/react-signature-canvas`
+  - `novel`, `assistant-ui`, `react-pdf` are heavy packages — they should be dynamically imported in components to avoid large initial bundle warnings
+  - The build warning about chunks >500 kB is pre-existing (not caused by these installs); no action needed for this story
+---
