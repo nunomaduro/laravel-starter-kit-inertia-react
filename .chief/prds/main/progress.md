@@ -1,5 +1,20 @@
 # Progress Log
 
+## 2026-03-07 - US-018
+- Created `resources/js/components/ui/icon-button.tsx`: wraps `buttonVariants` with `size="icon"` default; requires accessible `label` prop for `aria-label`/`title`; supports `asChild` via Radix Slot.
+- Created `resources/js/components/ui/button-group.tsx`: horizontal/vertical flex wrapper; `attached` prop removes inner border-radii and applies negative margin to visually join buttons.
+- Created `resources/js/components/ui/fab.tsx`: fixed-position FAB with 4 `position` options; optional `actions` array enables speed-dial (shows labeled sub-buttons + animates FAB icon to X when open).
+- Created `resources/js/components/ui/split-button.tsx`: primary `<Button>` + chevron dropdown trigger sharing same variant/size; uses `DropdownMenu` for the action list.
+- Created `resources/js/components/ui/copy-button.tsx`: copies `value` to clipboard; animated CheckIcon fades in (scale) and CopyIcon fades out; reverts after configurable `timeout`; `onCopy` must be omitted from the base HTML interface to avoid conflict with React's native `onCopy: ClipboardEventHandler`.
+- Created `resources/js/components/ui/swap.tsx`: controlled/uncontrolled toggle; `animation` prop supports `rotate`/`flip`/`fade`; uses `aria-pressed` for accessibility.
+- `progress-button.tsx` already existed from US-012.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - React's HTML button props include `onCopy: ClipboardEventHandler` — when adding a custom `onCopy?: (value: string) => void` prop, must `Omit<..., "onCopy">` from the base props to avoid interface extension conflict.
+  - `Swap` component uses `aria-pressed` (not `aria-checked`) because it's a toggle button, not a checkbox.
+  - `Fab` speed-dial shows labels as tooltips via absolutely-positioned text nodes; no extra tooltip library needed.
+---
+
 ## 2026-03-07 - US-017
 - Created layout primitives: `box.tsx` (polymorphic `as` prop via `React.JSX.IntrinsicElements`), `container.tsx` (max-width + padding CVA), `stack.tsx` (VStack/HStack wrappers), `grid.tsx` (Grid + GridItem with span CVA), `divider.tsx` (with optional label slot), `scroll-shadow.tsx` (CSS mask-image fade shadows), `masonry.tsx` (CSS columns with break-inside-avoid), `resizable.tsx` (wraps react-resizable-panels v4 Group/Panel/Separator).
 - Created navigation components: `pagination.tsx` (headless + PaginationControl convenience), `bottom-nav.tsx` (fixed bottom mobile nav with badge), `tree-nav.tsx` (recursive tree with context, expand/select state), `collapsible-search.tsx` (animated expand/collapse search), `toc.tsx` (IntersectionObserver-driven active heading tracker).
