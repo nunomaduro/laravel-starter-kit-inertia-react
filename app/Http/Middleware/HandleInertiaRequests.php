@@ -43,7 +43,7 @@ final class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $theme = $this->resolveTheme();
+        $theme = $this->resolveTheme($request);
         View::share('theme', $theme);
 
         $quote = Inspiring::quotes()->random();
@@ -98,9 +98,9 @@ final class HandleInertiaRequests extends Middleware
      * Resolve theme from DB (settings table) so Manage Theme changes take effect immediately.
      * Bypasses Settings class cache by reading directly. Falls back to config when unavailable.
      *
-     * @return array{preset: string, base_color: string, radius: string, font: string, default_appearance: string}
+     * @return array{preset: string, base_color: string, radius: string, font: string, default_appearance: string, dark: string, primary: string, light: string, skin: string, canCustomize: bool, userMode: string}
      */
-    private function resolveTheme(): array
+    private function resolveTheme(Request $request): array
     {
         $defaults = [
             'preset' => config('theme.preset', 'default'),
@@ -108,25 +108,48 @@ final class HandleInertiaRequests extends Middleware
             'radius' => config('theme.radius', 'default'),
             'font' => config('theme.font', 'instrument-sans'),
             'default_appearance' => config('theme.default_appearance', 'system'),
+            'dark' => 'navy',
+            'primary' => 'indigo',
+            'light' => 'slate',
+            'skin' => 'shadow',
+            'canCustomize' => false,
+            'userMode' => 'system',
         ];
+
+        $user = $request->user();
 
         try {
             $rows = DB::table('settings')->where('group', 'theme')->get(['name', 'payload']);
-            if ($rows->isEmpty()) {
-                return $defaults;
-            }
 
             $db = [];
             foreach ($rows as $row) {
                 $db[$row->name] = is_string($row->payload) ? json_decode($row->payload, true) : $row->payload;
             }
 
+            $allowUserCustomization = (bool) ($db['allow_user_theme_customization'] ?? false);
+            $canCustomize = $user !== null && ($user->isOrganizationAdmin() || $allowUserCustomization);
+
+            $userMode = 'system';
+            if ($user !== null) {
+                try {
+                    $userMode = $user->theme_mode ?? 'system';
+                } catch (Throwable) {
+                    $userMode = 'system';
+                }
+            }
+
             return [
                 'preset' => $db['preset'] ?? $defaults['preset'],
                 'base_color' => $db['base_color'] ?? $defaults['base_color'],
-                'radius' => $db['radius'] ?? $defaults['radius'],
+                'radius' => $db['border_radius'] ?? $db['radius'] ?? $defaults['radius'],
                 'font' => $db['font'] ?? $defaults['font'],
                 'default_appearance' => $db['default_appearance'] ?? $defaults['default_appearance'],
+                'dark' => $db['dark_color_scheme'] ?? $defaults['dark'],
+                'primary' => $db['primary_color'] ?? $defaults['primary'],
+                'light' => $db['light_color_scheme'] ?? $defaults['light'],
+                'skin' => $db['card_skin'] ?? $defaults['skin'],
+                'canCustomize' => $canCustomize,
+                'userMode' => $userMode,
             ];
         } catch (Throwable) {
             return $defaults;

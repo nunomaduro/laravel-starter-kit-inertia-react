@@ -76,6 +76,18 @@ export interface ThemeProps {
     radius?: string;
     font?: string;
     default_appearance?: string;
+    /** Tailux dark color scheme (e.g. 'navy', 'mirage', 'mint', 'black', 'cinder') */
+    dark?: string;
+    /** Tailux primary color (e.g. 'indigo', 'blue', 'green', 'amber', 'purple', 'rose') */
+    primary?: string;
+    /** Tailux light color scheme (e.g. 'slate', 'gray', 'neutral') */
+    light?: string;
+    /** Tailux card skin (e.g. 'shadow', 'bordered') */
+    skin?: string;
+    /** True when the current user may customize their personal theme. */
+    canCustomize?: boolean;
+    /** The authenticated user's personal dark/light/system mode preference. */
+    userMode?: 'dark' | 'light' | 'system';
 }
 
 export interface BrandingProps {
