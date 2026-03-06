@@ -1,5 +1,29 @@
 # Progress Log
 
+## 2026-03-07 - US-026
+- Created `resources/js/components/charts/` directory with 12 typed recharts wrappers + 1 shared utility.
+- `chart-colors.ts`: shared `CHART_COLORS` array using CSS custom properties (`var(--primary)`, `var(--color-info)`, etc.) for theme-aware theming.
+- `area-chart.tsx`: `AreaChart` with `ResponsiveContainer`; `dataKeys`, `xKey`, `stacked`, `showGrid`/`showLegend`/`showTooltip`, `skeleton`, `height` props; dark-mode via CSS vars on all axis/tooltip/grid elements; `isAnimationActive={!reducedMotion}`.
+- `bar-chart.tsx`: `BarChart` supporting `horizontal` (vertical layout) and `stacked` modes; same dark-mode and animation pattern.
+- `line-chart.tsx`: `LineChart` with `curved`/`showDots` options.
+- `pie-chart.tsx`: `PieChart` with `donut` mode (innerRadius `55%`) and per-datum optional `color` field.
+- `scatter-chart.tsx`: `ScatterChart` with typed `xKey`/`yKey` and axis label props.
+- `radar-chart.tsx`: `RadarChart` with `PolarGrid`/`PolarAngleAxis`/`PolarRadiusAxis`; multiple `dataKeys` each get their own `Radar` series.
+- `sparkline.tsx`: 40px inline chart (default height); `variant` prop selects `line` or `area`; no axes/grid.
+- `gauge-chart.tsx`: SVG arc gauge (240° sweep); `polarToCartesian` math for arc paths; `label`/`sublabel`/`showValue` text slots; `size` prop scales everything proportionally.
+- `heatmap-chart.tsx`: CSS grid-based heatmap; `color-mix(in oklch, var(--primary) N%, transparent)` for opacity scaling; fixed-position DOM tooltip on hover; no recharts dependency.
+- `funnel-chart.tsx`: recharts `FunnelChart` + `Funnel` + `LabelList` with per-datum fill colors from `CHART_COLORS`.
+- `treemap-chart.tsx`: recharts `Treemap` with custom SVG `content` render prop (`TreemapContent`); added `[key: string]: unknown` index signature to `TreemapDatum` to satisfy recharts `TreemapDataType` constraint.
+- `progress-ring.tsx`: SVG circular ring; `color` prop maps to CSS vars via `colorMap`; text label rendered via absolutely-positioned overlay div (avoids SVG rotation affecting text); `role="progressbar"`.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - recharts `Treemap` requires `data` items to have an index signature (`[key: string]: unknown`) — add it to the datum interface to satisfy `TreemapDataType`.
+  - `color-mix(in oklch, var(--primary) N%, transparent)` is a clean way to vary opacity of a CSS variable color without needing JS.
+  - For gauge charts, SVG arc math: `polarToCartesian(angle)` converts degrees (from 12 o'clock = -90 in standard math) to `(cx + r*cos, cy + r*sin)`; the arc sweep of 240° starts at -120° from top.
+  - recharts tooltip `contentStyle` accepts CSS property strings including `var(--...)` — this is the cleanest way to theme tooltips without custom components.
+  - Charts live in `resources/js/components/charts/` (separate from `ui/`) — import with `@/components/charts/area-chart`.
+---
+
 ## 2026-03-07 - US-024
 - Created `resources/js/components/admin/` directory with 6 admin power-user components.
 - `api-key-manager.tsx`: table of API keys with name/last-used/created-at; inline copy button with show/hide toggle; "Revoke" confirm dialog; "Create New Key" dialog with name input; newly-created key shown once in a success alert with copy button; accepts `keys`, `onCreate`, `onRevoke` props.
