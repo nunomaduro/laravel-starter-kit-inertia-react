@@ -1,5 +1,17 @@
 # Progress Log
 
+## 2026-03-07 - US-022
+- `confirm-dialog.tsx` and `credenza.tsx` already existed from earlier stories.
+- Created `responsive-modal.tsx`: re-export alias mapping `Credenza*` exports to `ResponsiveModal*` names.
+- Created `lightbox.tsx`: fullscreen dialog-based image lightbox; `images: LightboxImage[]` array with `src/alt/caption`; keyboard navigation (ArrowLeft/Right); zoom in/out (+/-) with 0.5x–4x range; prev/next buttons; caption + counter display at bottom; uses `Dialog` from `radix-ui`.
+- Created `context-menu.tsx`: Radix UI ContextMenu primitive wrapper; mirrors `dropdown-menu.tsx` API exactly; exports `ContextMenu`, `ContextMenuTrigger`, `ContextMenuContent`, `ContextMenuItem`, `ContextMenuCheckboxItem`, `ContextMenuRadioGroup`, `ContextMenuRadioItem`, `ContextMenuLabel`, `ContextMenuSeparator`, `ContextMenuShortcut`, `ContextMenuSub`, `ContextMenuSubTrigger`, `ContextMenuSubContent`.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `ContextMenu` is available from the `radix-ui` umbrella package (re-exports `@radix-ui/react-context-menu`) — no separate install needed.
+  - `responsive-modal.tsx` can simply re-export with renamed aliases; no logic duplication needed.
+  - Lightbox zoom with `transform: scale(zoom)` on the `<img>` works without extra libraries; wrapping in `overflow-auto` allows panning when zoomed in.
+---
+
 ## 2026-03-07 - US-021
 - `progress.tsx` and `spinner.tsx` already existed from earlier stories.
 - Created `progress-circle.tsx`: SVG-based circular progress indicator; `value`/`max` props; `showValue` displays percentage text in center; CVA `size` (xs–xl) and `color` (default/success/warning/error/info) variants; `strokeWidth` prop; accessible `role="progressbar"` with `aria-valuenow/min/max`.
