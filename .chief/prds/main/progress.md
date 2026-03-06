@@ -76,6 +76,16 @@
   - `CARD_SKINS` has 4 options (shadow, bordered, flat, elevated); PRD AC said "2 card skin options" but all 4 are rendered — this matches the constant definition
 ---
 
+## 2026-03-07 - US-010
+- Refactored `resources/js/components/ui/theme-customizer.tsx`: extracted `useThemeCustomizerState` hook and `ThemeCustomizerBody` component; `ThemeCustomizerPanel` now uses both; added new `ThemeCustomizerInline` export that renders the same body in an inline card (no floating button/backdrop/drawer)
+- Updated `resources/js/pages/settings/branding.tsx`: imported `ThemeCustomizerInline`, `usePage`, `SharedData`; renders `<ThemeCustomizerInline />` above the branding form when `props.theme?.canCustomize` is true
+- `npx tsc --noEmit` ✓ | `npm run build` ✓ | `vendor/bin/pint` ✓
+- **Learnings for future iterations:**
+  - Extracting a `use*State` hook from a component makes it easy to share state logic between a floating variant and an inline variant without duplication
+  - `ThemeCustomizerInline` does not need its own `canCustomize` guard at the component level — the page decides whether to render it; the floating `ThemeCustomizer` still self-guards
+  - When the PRD JSON has `"inProgress": true` set by ralph-tui, remove it together with flipping `passes` to avoid stale metadata
+---
+
 ## Codebase Patterns
 - Settings fields that should NOT be orgOverridable: add to the Settings class but do NOT add to OVERLAY_MAP. Access via `app(SettingsClass::class)->field`. Fields not in the `map` array are still valid settings fields (e.g., `maintenance_mode` in AppSettings).
 - `ThemeSettings` has `orgOverridable: true` — any field added to its `map` in OVERLAY_MAP becomes org-overridable. Add system-wide-only fields to ThemeSettings class directly without adding them to OVERLAY_MAP.
