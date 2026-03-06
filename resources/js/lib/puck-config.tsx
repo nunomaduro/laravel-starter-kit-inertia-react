@@ -14,6 +14,7 @@ import {
 } from '@/components/puck-blocks/features';
 import { HeroBlock, type HeroBlockProps } from '@/components/puck-blocks/hero';
 import type { Config } from '@measured/puck';
+import type { ElementType } from 'react';
 
 export interface HeadingProps {
     text: string;
@@ -25,7 +26,7 @@ export interface TextProps {
 }
 
 function HeadingBlock({ text, level: Level }: HeadingProps) {
-    const Tag = `h${Level}` as keyof JSX.IntrinsicElements;
+    const Tag = `h${Level}` as ElementType;
     return <Tag className="font-semibold">{text}</Tag>;
 }
 

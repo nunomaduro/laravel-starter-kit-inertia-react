@@ -15,6 +15,7 @@ export default defineConfig({
         tailwindcss(),
         wayfinder({
             formVariants: true,
+            command: '/opt/homebrew/opt/php@8.5/bin/php -d memory_limit=512M artisan wayfinder:generate',
         }),
     ],
     esbuild: {

@@ -22,7 +22,7 @@ export default function PageShow({ page }: Props) {
         page.puck_json?.root !== undefined
             ? page.puck_json
             : { root: {}, content: [] }
-    ) as { root: Record<string, unknown>; content: unknown[] };
+    ) as { root: Record<string, unknown>; content: Record<string, unknown>[] };
 
     const description = page.meta_description ?? undefined;
     const image = page.meta_image ?? undefined;
@@ -40,7 +40,8 @@ export default function PageShow({ page }: Props) {
                 {image && <meta property="og:image" content={image} />}
             </Head>
             <div className="container py-8">
-                <Render config={puckConfig} data={data} />
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <Render config={puckConfig} data={data as any} />
             </div>
         </PageViewLayout>
     );

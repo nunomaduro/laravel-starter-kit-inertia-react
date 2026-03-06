@@ -33,7 +33,7 @@ function CalendarChevron({
   orientation,
   ...props
 }: React.ComponentProps<typeof ChevronLeftIcon> & {
-  orientation?: "left" | "right" | "down"
+  orientation?: "left" | "right" | "down" | "up"
 }) {
   if (orientation === "left") {
     return (

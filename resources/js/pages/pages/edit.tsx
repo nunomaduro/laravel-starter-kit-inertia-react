@@ -39,16 +39,16 @@ interface PageRecord {
 interface TemplateOption {
     key: string;
     label: string;
-    data: { root: Record<string, unknown>; content: unknown[] };
+    data: { root: Record<string, unknown>; content: Record<string, unknown>[] };
 }
 
 interface Props {
     page: PageRecord | null;
-    puckJson: { root: Record<string, unknown>; content: unknown[] };
+    puckJson: { root: Record<string, unknown>; content: Record<string, unknown>[] };
     templates?: TemplateOption[];
 }
 
-const emptyPuckData = { root: {}, content: [] };
+const emptyPuckData: { root: Record<string, unknown>; content: Record<string, unknown>[] } = { root: {}, content: [] };
 
 export default function PageEdit({ page, puckJson, templates = [] }: Props) {
     const isCreate = page === null;
@@ -57,10 +57,8 @@ export default function PageEdit({ page, puckJson, templates = [] }: Props) {
     const { data, setData, post, put, processing, errors } = useForm({
         name: page?.name ?? '',
         slug: page?.slug ?? '',
-        puck_json: initialData as {
-            root: Record<string, unknown>;
-            content: unknown[];
-        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        puck_json: initialData as any,
         is_published: page?.is_published ?? false,
         meta_description: page?.meta_description ?? '',
         meta_image: page?.meta_image ?? '',

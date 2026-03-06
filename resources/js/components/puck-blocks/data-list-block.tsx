@@ -1,16 +1,18 @@
-import type { ReactNode } from 'react';
+import React from 'react';
+
+import type { JSX } from 'react';
 
 export interface DataListBlockProps {
     dataSource: string;
     title?: string;
     limit?: number;
-    data?: unknown[];
+    data?: Record<string, unknown>[];
 }
 
 export function DataListBlock({
     title,
     data = [],
-}: DataListBlockProps): ReactNode {
+}: DataListBlockProps): React.JSX.Element {
     const items = Array.isArray(data) ? data : [];
     return (
         <section className="container py-8">
@@ -25,7 +27,7 @@ export function DataListBlock({
                 </p>
             ) : (
                 <ul className="space-y-2 rounded-lg border bg-card p-4">
-                    {items.map((item: Record<string, unknown>, i: number) => (
+                    {items.map((item, i) => (
                         <li
                             key={(item.id as string) ?? i}
                             className="flex justify-between text-sm"
@@ -35,7 +37,7 @@ export function DataListBlock({
                                     item.name ?? item.number ?? item.id ?? i,
                                 )}
                             </span>
-                            {item.email && (
+                            {item.email !== undefined && item.email !== null && (
                                 <span className="text-muted-foreground">
                                     {String(item.email)}
                                 </span>

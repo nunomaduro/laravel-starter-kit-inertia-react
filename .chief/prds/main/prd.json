@@ -1,295 +1,575 @@
 {
-  "project": "Starter Kit Completeness — Final Gaps",
-  "description": "This PRD addresses the remaining gaps in the Laravel starter kit to bring it to production-ready, ship-quality completeness. Seven workstreams close the remaining gaps: MCP route verification, CI enforcement of code style/static analysis, example durable workflows, global search UI backed by Scout, billing webhook test coverage, Paddle/Lemon Squeezy documentation, and a single-page auth feature checklist.",
+  "project": "Complete Component Library + Per-Org Theme Switcher + Storybook",
+  "description": "Build a comprehensive, AI-first, maximally-reusable component library covering 100% of Tailux's component vocabulary (and beyond), with a bold per-organization theme switcher that stores each org's visual identity in settings. Uses shadcn registry first, npm packages second, custom code only where needed. Storybook serves as the internal dev catalog. Delivers 4 main deliverables: full component library (150+ typed components), per-org live theme customizer with named presets, SaaS-specific feature components, and Storybook with theme toolbar.",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Verify MCP route registration",
-      "description": "As a developer, I need to confirm that the MCP endpoint at /mcp/api is reachable so that AI assistants can connect to the application's MCP server.",
+      "title": "Tailux CSS design token foundation",
+      "description": "As a developer, I need the Tailux CSS variable system installed so all subsequent components and theme switching work correctly.",
       "acceptanceCriteria": [
-        "routes/ai.php is loaded (either by the laravel/mcp package auto-discovery or explicit registration in bootstrap/app.php)",
-        "php artisan route:list --path=mcp shows the MCP route",
-        "A feature test confirms POST /mcp/api returns a valid MCP response when authenticated via Sanctum",
-        "If manual registration is needed, add it to bootstrap/app.php with a comment explaining why",
-        "Documentation updated in docs/developer/backend/ if any changes were made",
-        "vendor/bin/pint --dirty --format agent passes",
-        "php artisan test --compact --filter=Mcp passes"
+        "`resources/css/tailux.css` created with `@theme` block containing all custom tokens: `--text-tiny`, `--text-xs-plus`, `--text-sm-plus`, `--shadow-soft`, `--shadow-soft-dark`, `--ease-elastic`, `--color-surface-1/2/3`, `--color-secondary`, `--color-info`, `--color-success`, `--color-warning`, `--color-error`",
+        "`resources/css/app.css` contains `@import './tailux.css'`",
+        "`resources/css/themes.css` extended with 5 dark theme blocks: `[data-theme-dark=\"navy|mirage|mint|black|cinder\"]`",
+        "`resources/css/themes.css` extended with 6 primary color blocks: `[data-theme-primary=\"indigo|blue|green|amber|purple|rose\"]`",
+        "`resources/css/themes.css` extended with 3 light scheme blocks: `[data-theme-light=\"slate|gray|neutral\"]`",
+        "`npm run build` passes with no errors",
+        "`npx tsc --noEmit` passes"
       ],
       "priority": 1,
       "passes": true
     },
     {
       "id": "US-002",
-      "title": "Add Pint code style check to CI",
-      "description": "As a developer, I want CI to enforce code style via Laravel Pint so that style regressions are caught before merge.",
+      "title": "Shared TypeScript theme constants",
+      "description": "As a developer, I need typed constants for all theme options and named presets so components and settings can reference them without magic strings.",
       "acceptanceCriteria": [
-        ".github/workflows/tests.yml includes a step that runs vendor/bin/pint --test",
-        "The step runs before the test suite (fail fast on style)",
-        "If Pint fails, the workflow fails with a clear error message",
-        "The step name is descriptive (e.g. \"Check code style (Pint)\")",
-        "Verified by pushing a deliberately mis-styled file and confirming CI catches it"
+        "`resources/js/lib/tailux-themes.ts` created with `DARK_THEMES`, `PRIMARY_COLORS`, `LIGHT_THEMES`, `CARD_SKINS`, `RADIUS_OPTIONS` as const arrays with exported types",
+        "`THEME_PRESETS` array defined in the same file, each preset having a name (e.g. `\"Corporate\"`, `\"Midnight\"`, `\"Sunset\"`, `\"Forest\"`, `\"Ocean\"`, `\"Candy\"`) and values for all 5 theme dimensions",
+        "`resources/js/lib/color-variants.ts` created with `colorVariants` CVA definitions for `filled`, `soft`, `outlined` variants across 7 semantic colors (primary, secondary, info, success, warning, error, neutral)",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 1,
-      "passes": true
+      "priority": 2,
+      "passes": false
     },
     {
       "id": "US-003",
-      "title": "Add Rector dry-run to CI (optional but recommended)",
-      "description": "As a developer, I want CI to run Rector in dry-run mode so that automated refactoring regressions are detected.",
+      "title": "ThemeSettings backend — add Tailux theme fields",
+      "description": "As an admin, I need the system to store the org's dark theme, primary color, light scheme, card skin, and border radius in the database so visual identity persists.",
       "acceptanceCriteria": [
-        ".github/workflows/tests.yml includes a step that runs vendor/bin/rector --dry-run",
-        "The step runs after Pint and before tests",
-        "If Rector finds changes, the workflow fails with a clear diff",
-        "The step name is descriptive (e.g. \"Check refactoring rules (Rector)\")",
-        "Rector config (rector.php) is confirmed to exist and be valid"
+        "`app/Settings/ThemeSettings.php` extended with 5 new public fields: `dark_color_scheme` (default: `'navy'`), `primary_color` (default: `'indigo'`), `light_color_scheme` (default: `'slate'`), `card_skin` (default: `'shadow'`), `border_radius` (default: `'default'`)",
+        "New settings migration created in `database/settings/` for the 5 new fields",
+        "`php artisan migrate` completes successfully",
+        "`SettingsOverlayServiceProvider::OVERLAY_MAP` updated with theme field mappings, `orgOverridable: true`",
+        "`php artisan settings:cache` completes successfully",
+        "`vendor/bin/pint --dirty --format agent` passes"
       ],
-      "priority": 2,
-      "passes": true
+      "priority": 3,
+      "passes": false
     },
     {
       "id": "US-004",
-      "title": "Create user onboarding workflow",
-      "description": "As a developer using this starter kit, I want a reference onboarding workflow so I can understand how to build durable workflows with laravel-workflow.",
+      "title": "System setting — allow users to customize their own theme",
+      "description": "As a system admin, I want a global toggle \"Allow users to customize their own theme\" so I can decide whether regular (non-admin) users in any organization can use the theme customizer to change their personal theme preferences.",
       "acceptanceCriteria": [
-        "app/Workflows/OnboardingWorkflow.php created extending Workflow",
-        "Activities: SendWelcomeEmailActivity, SetupDefaultOrganizationActivity, SendOnboardingCompleteNotificationActivity",
-        "Each activity class lives in app/Workflows/Activities/",
-        "Workflow is triggerable via an Artisan command: php artisan workflow:onboarding {userId}",
-        "Workflow appears in Waterline UI at /waterline when run",
-        "Feature test verifies the workflow completes successfully with all activities executed",
-        "vendor/bin/pint --dirty --format agent passes",
-        "Documentation created at docs/developer/backend/durable-workflow.md (or updated if exists) with usage examples"
+        "A new boolean field `allow_user_theme_customization` (default: `false`) added to an appropriate existing Settings class (e.g. `GeneralSettings`) or a new class if none fits",
+        "A new settings migration in `database/settings/` adds the field",
+        "`php artisan migrate` completes successfully",
+        "The field is NOT `orgOverridable` — it is a system-wide toggle only the system admin controls",
+        "A Filament settings page exposes this as a labeled toggle: \"Allow users to customize their own theme\" with helper text: \"When enabled, all authenticated users can use the theme customizer. When disabled, only organization admins can.\"",
+        "`php artisan settings:cache` completes successfully",
+        "`vendor/bin/pint --dirty --format agent` passes"
       ],
-      "priority": 3,
+      "priority": 4,
       "passes": false
     },
     {
       "id": "US-005",
-      "title": "Create approval workflow",
-      "description": "As a developer, I want a reference approval workflow demonstrating submit/review/approve/reject patterns.",
+      "title": "Share theme data and permissions via Inertia",
+      "description": "As a developer, I need the current org's theme settings, the user's personal mode preference, and customization permissions all passed to the frontend on every page load.",
       "acceptanceCriteria": [
-        "app/Workflows/ApprovalWorkflow.php created extending Workflow",
-        "Activities: SubmitForReviewActivity, NotifyReviewerActivity, ProcessDecisionActivity",
-        "Workflow accepts a decision signal (approve/reject) to proceed",
-        "Rejection loops back or terminates with appropriate status",
-        "Approval completes the workflow with a success status",
-        "Workflow is triggerable via Artisan command: php artisan workflow:approval {modelType} {modelId}",
-        "Feature test verifies both approve and reject paths",
-        "vendor/bin/pint --dirty --format agent passes"
+        "`app/Http/Middleware/HandleInertiaRequests.php` `share()` method includes a `'theme'` key with: `dark`, `primary`, `light`, `skin`, `radius` (from `ThemeSettings`); `canCustomize` boolean — `true` if current user is an org admin OR `allow_user_theme_customization` is `true`; `userMode` — the authenticated user's personal preference (`'dark'`, `'light'`, or `'system'`, default `'system'`) read from `user_preferences` or a users table column",
+        "Frontend `usePage().props.theme` is typed correctly in the project's types file",
+        "`npx tsc --noEmit` passes",
+        "`vendor/bin/pint --dirty --format agent` passes"
       ],
-      "priority": 3,
+      "priority": 5,
       "passes": false
     },
     {
       "id": "US-006",
-      "title": "Create AI pipeline workflow",
-      "description": "As a developer, I want a reference AI pipeline workflow demonstrating how to orchestrate multi-step AI tasks using laravel-workflow and laravel/ai.",
+      "title": "Per-user dark/light/system mode preference",
+      "description": "As a user, I want to choose whether the app uses dark mode, light mode, or follows my operating system preference, independently of the org's chosen color palette.",
       "acceptanceCriteria": [
-        "app/Workflows/AiPipelineWorkflow.php created extending Workflow",
-        "Activities: GenerateContentActivity, ReviewContentActivity, PublishContentActivity",
-        "GenerateContentActivity uses laravel/ai SDK to generate text content",
-        "ReviewContentActivity uses laravel/ai to review/score the generated content",
-        "PublishContentActivity stores the final result (e.g. to a model or log)",
-        "Workflow is triggerable via Artisan command: php artisan workflow:ai-pipeline {prompt}",
-        "Graceful failure handling: if AI generation fails, workflow retries or fails with a clear status",
-        "Feature test verifies the pipeline completes (using mocked AI responses)",
-        "vendor/bin/pint --dirty --format agent passes"
+        "Users table (or a `user_preferences` table) gains a `theme_mode` column: `'dark' | 'light' | 'system'` (default `'system'`)",
+        "Migration created and `php artisan migrate` passes",
+        "A mode toggle component (`resources/js/components/ui/mode-toggle.tsx`) renders 3 options: Dark / Light / System (with OS icon), placed in the existing user settings or app header",
+        "Selecting a mode: (1) immediately applies `.dark` class or removes it from `document.documentElement` based on selection; (2) persists the choice via PATCH to a `/user/preferences` route; (3) choice survives page reload",
+        "\"System\" mode respects `prefers-color-scheme` via a `matchMedia` listener that updates the class reactively if the OS preference changes",
+        "`vendor/bin/pint --dirty --format agent` passes",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 3,
+      "priority": 6,
       "passes": false
     },
     {
       "id": "US-007",
-      "title": "Document Typesense setup for production",
-      "description": "As a developer deploying to production, I need clear documentation on how to configure Scout with Typesense so full-text search works beyond the default collection driver.",
+      "title": "Apply Tailux theme attributes on page load",
+      "description": "As a user, I want the page to load with my organization's correct dark theme, primary color, card skin, and my personal mode preference already applied so there is no flash of incorrect styling.",
       "acceptanceCriteria": [
-        "docs/developer/backend/scout-typesense.md updated (or created) with: Required environment variables (SCOUT_DRIVER=typesense, TYPESENSE_API_KEY, TYPESENSE_HOST, TYPESENSE_PORT)",
-        "Herd-specific setup instructions (TYPESENSE_API_KEY=LARAVEL-HERD, localhost)",
-        "Production Typesense Cloud setup instructions",
-        "How to add new searchable models (trait, toSearchableArray(), config/scout.php schema)",
-        "How to index existing data (php artisan scout:import)",
-        "List of currently searchable models: User, Post, HelpArticle, ChangelogEntry",
-        "Documentation manifest updated"
+        "`resources/js/components/theme-from-props.tsx` extended to set `data-theme-dark`, `data-theme-primary`, `data-theme-light`, `data-card-skin`, `data-radius` on `document.documentElement` from `usePage().props.theme`",
+        "`theme-from-props.tsx` also applies user mode on mount: if `userMode = 'dark'` → add `.dark`; if `userMode = 'light'` → remove `.dark`; if `userMode = 'system'` → apply based on `matchMedia('(prefers-color-scheme: dark)')`",
+        "Existing `data-theme`, `data-radius`, `data-font` behavior is unchanged (backward-compatible)",
+        "Setting `dark_color_scheme = 'cinder'` in DB → page loads with Cinder palette applied",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 2,
-      "passes": true
+      "priority": 7,
+      "passes": false
     },
     {
       "id": "US-008",
-      "title": "Create global search API endpoint",
-      "description": "As the frontend search component, I need a backend API endpoint that searches across all searchable models and returns unified results.",
+      "title": "Storybook setup with Tailux theme toolbar",
+      "description": "As a developer, I need Storybook running with a theme toolbar so I can visually catalog and test every component across all theme combinations without running the Laravel backend.",
       "acceptanceCriteria": [
-        "SearchController created with a single __invoke method",
-        "Route: GET /search (authenticated, under tenant middleware) accepting q (query string) and optional type filter",
-        "Searches across User, Post, HelpArticle, ChangelogEntry (respecting feature flags for blog, changelog, help)",
-        "Results respect organization scope (tenant context)",
-        "Results respect visibility and permissions (user can only see what they have access to)",
-        "Returns JSON with grouped results: { users: [...], posts: [...], help_articles: [...], changelog_entries: [...] }",
-        "Each result includes: id, title (or name), subtitle (secondary text), url (link to the item), type",
-        "Maximum 5 results per category, 20 total",
-        "Feature test covers: authenticated search, empty query, filtered by type, respects tenant scope",
-        "vendor/bin/pint --dirty --format agent passes"
+        "Storybook devDependencies installed: `storybook`, `@storybook/react-vite`, `@storybook/addon-docs`, `@storybook/addon-themes`, `@storybook/addon-a11y`, `@storybook/blocks`",
+        "`.storybook/main.ts` created; stories glob points to `resources/js/stories/**/*.stories.@(ts|tsx)`; framework is `@storybook/react-vite`",
+        "`.storybook/preview.tsx` created with: mock stubs for `usePage`, `Link`, `router`, `useForm` from `@inertiajs/react`; toolbar globals for `darkMode`, `darkTheme`, `primaryColor`, `lightTheme`, `cardSkin`, `radius` that apply corresponding data attributes",
+        "`npm run storybook` starts on port 6006 with no errors, without requiring Laravel to be running",
+        "All 5 dark themes, all 6 primary colors, and dark/light/system mode switch via toolbar",
+        "`npm run build` does not include Storybook in production bundle"
       ],
-      "priority": 2,
-      "passes": true
+      "priority": 8,
+      "passes": false
     },
     {
       "id": "US-009",
-      "title": "Build global search command palette UI",
-      "description": "As a user, I want to press Cmd+K (or click the search icon in the header) to open a search dialog that searches across the entire application so I can quickly find what I need.",
+      "title": "Theme Customizer component with presets",
+      "description": "As an admin (or permitted user), I want a floating theme panel where I can apply a named preset in one click or fine-tune individual dimensions, then save for the organization.",
       "acceptanceCriteria": [
-        "Existing command-dialog.tsx extended (or replaced) with a search-enabled version",
-        "Search input at top of dialog with debounced (300ms) queries to the /search endpoint",
-        "Results grouped by category (Users, Posts, Help Articles, Changelog Entries) with icons per category",
-        "Each result shows title, subtitle, and a type badge",
-        "Clicking a result navigates to that item's page via router.visit()",
-        "Arrow keys navigate results, Enter selects, Escape closes",
-        "Empty state: shows navigation shortcuts (existing command palette items) when no query entered",
-        "Loading state: shows skeleton/spinner while fetching",
-        "No results state: shows \"No results found for {query}\"",
-        "Search button in app-header.tsx (currently a placeholder) triggers the dialog",
-        "Keyboard shortcut Cmd+K / Ctrl+K opens the dialog (already wired)",
-        "data-pan=\"global-search\" added to the search trigger button; Pan analytics name registered in AppServiceProvider::configurePan()",
-        "Typecheck passes (npx tsc --noEmit or equivalent)"
+        "`resources/js/components/ui/theme-customizer.tsx` created as a fixed-position floating panel (right side of screen)",
+        "The floating button is only rendered when `usePage().props.theme.canCustomize` is `true`",
+        "Panel has a \"Presets\" section at the top showing named preset cards (e.g. Corporate, Midnight, Sunset, Forest, Ocean, Candy); clicking a preset applies all 5 dimensions at once",
+        "Panel also has individual sections for: 5 dark theme swatches; 6 primary color diamonds; 3 light scheme previews; 2 card skin options; 6 border radius options",
+        "Selecting any option immediately updates the corresponding `data-*` attribute on `document.documentElement` (optimistic UI, no page reload)",
+        "\"Save for Organization\" button POSTs the current selections to the settings API and shows a success toast",
+        "\"Reset to defaults\" link reverts all attributes and clears saved org overrides",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 2,
-      "passes": true
+      "priority": 9,
+      "passes": false
     },
     {
       "id": "US-010",
-      "title": "Add search result highlighting",
-      "description": "As a user, I want to see my search term highlighted in the results so I can quickly identify why each result matched.",
+      "title": "Embed ThemeCustomizer in branding settings page",
+      "description": "As an admin, I want the theme customizer available inline on the branding settings page alongside a live dashboard mockup preview.",
       "acceptanceCriteria": [
-        "Matched text in result titles and subtitles is visually highlighted (bold or background color)",
-        "Highlighting is case-insensitive",
-        "Special characters in the search query are escaped to prevent XSS",
-        "Typecheck passes"
+        "`resources/js/pages/settings/branding.tsx` updated to embed `ThemeCustomizer` as an inline panel (not floating)",
+        "Existing branding fields remain unchanged and functional",
+        "Theme changes apply the same live preview as the floating version",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 4,
+      "priority": 10,
       "passes": false
     },
     {
       "id": "US-011",
-      "title": "Add Stripe webhook integration tests",
-      "description": "As a developer, I need tests that verify Stripe webhook handling so that subscription and invoice events are processed correctly.",
+      "title": "Install npm component dependencies",
+      "description": "As a developer, I need all required npm packages installed so complex UI components can be built without low-level implementations.",
       "acceptanceCriteria": [
-        "Test file: tests/Feature/Billing/StripeWebhookTest.php",
-        "Tests cover: customer.subscription.created, customer.subscription.updated, customer.subscription.deleted, invoice.paid, invoice.payment_failed",
-        "Each test POSTs a realistic payload to /webhooks/stripe",
-        "Asserts correct database side effects (subscription created/updated/cancelled, invoice recorded)",
-        "Asserts webhook is logged to WebhookLog table",
-        "Tests signature validation (rejects unsigned payloads when signing secret is configured)",
-        "vendor/bin/pint --dirty --format agent passes",
-        "php artisan test --compact --filter=StripeWebhook passes"
+        "Installed (confirmed NOT in package.json): `react-hook-form`, `@hookform/resolvers`, `zod`, `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`",
+        "Installed: `embla-carousel-react`, `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-link`, `@tiptap/extension-image`, `@tiptap/extension-code-block-lowlight`, `lowlight`, `novel`, `react-dropzone`, `react-resizable-panels`, `react-colorful`, `react-textarea-autosize`, `@formkit/auto-animate`, `react-syntax-highlighter`, `@types/react-syntax-highlighter`, `assistant-ui`",
+        "Installed: `qrcode.react`, `react-signature-canvas`, `@types/react-signature-canvas`, `react-diff-viewer-continued`, `react-pdf`, `react-compare-slider`",
+        "`npm run build` passes after all installs",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 2,
-      "passes": true
+      "priority": 11,
+      "passes": false
     },
     {
       "id": "US-012",
-      "title": "Add Paddle webhook integration tests",
-      "description": "As a developer, I need tests that verify Paddle webhook handling so that transaction and subscription events are processed correctly.",
+      "title": "Pull shadcn registry components",
+      "description": "As a developer, I need the shadcn registry components installed so complex components don't require low-level implementations from scratch.",
       "acceptanceCriteria": [
-        "Test file: tests/Feature/Billing/PaddleWebhookTest.php",
-        "Tests cover the events handled by PaddleWebhookController",
-        "Each test POSTs a realistic payload to /webhooks/paddle",
-        "Asserts correct database side effects",
-        "Asserts webhook is logged to WebhookLog table",
-        "vendor/bin/pint --dirty --format agent passes",
-        "php artisan test --compact --filter=PaddleWebhook passes"
+        "All registry components successfully pulled via `npx shadcn@latest add [name]`: `shadcn-stepper`, `shadcn-tree-view`, `shadcn-timeline`, `shadcn-phone-input`, `shadcn-multi-select-component`, `emblor`, `date-range-picker-for-shadcn`, `date-time-picker-shadcn`, `auto-form`, `shadcn-number-scrubber`, `shadcn-country-dropdown`, `shadcn-color-picker`, `shadcn-image-cropper`, `image-upload-shadcn`, `file-uploader`, `carouselcn`, `shadcn-event-calendar`, `shadcn-calendar-heatmap`, `roadmap-ui`, `audio/ui`, `shadcn-chat`, `confirm-dialog`, `credenza`, `progress-button`, `fancy-switch`, `animated-tabs`, `react-dnd-kit-tailwind-shadcn-ui`, `sortable`, `shadcn-spinner`, `shadcn-cookies`, `mindmapcn`",
+        "`npm run build` passes",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 2,
-      "passes": true
+      "priority": 12,
+      "passes": false
     },
     {
       "id": "US-013",
-      "title": "Add Lemon Squeezy webhook integration tests",
-      "description": "As a developer, I need tests that verify Lemon Squeezy webhook handling so that credit purchases via one-time orders are processed correctly.",
+      "title": "Enhance existing ui/ components with new variants",
+      "description": "As a developer, I want existing ui/ components enhanced with new variants so the design system is more expressive without breaking any existing usage.",
       "acceptanceCriteria": [
-        "Test file: tests/Feature/Billing/LemonSqueezyWebhookTest.php",
-        "Tests cover: order_created event dispatching OrderCreated and triggering AddCreditsFromLemonSqueezyOrder listener",
-        "Test verifies credits are added to the correct organization based on custom metadata (billable_type, billable_id, credits, credit_pack_id)",
-        "Test verifies fallback credit calculation: totalCents / centsPerCredit when no explicit credits in metadata",
-        "Test verifies order_refunded event handling (if implemented)",
-        "Test verifies signature validation rejection (when signing secret is set)",
-        "vendor/bin/pint --dirty --format agent passes",
-        "php artisan test --compact --filter=LemonSqueezy passes"
+        "`button.tsx`: adds `filled`/`soft`/`flat` variants; `color` prop (7 semantic colors); `isLoading` prop; `leftIcon`/`rightIcon` props",
+        "`badge.tsx`: adds `soft`/`outlined`/`filled` + semantic colors + `glow` prop",
+        "`card.tsx`: adds `skin` prop (`shadow`/`bordered`/`flat`/`elevated`); `hoverable` bool; respects `data-card-skin`",
+        "`input.tsx`: adds `variant` (`outlined`/`filled`/`soft`); `size` (`xs`/`sm`/`md`/`lg`); `startContent`/`endContent` slots",
+        "`textarea.tsx`: wraps `react-textarea-autosize`; same variants as input",
+        "`alert.tsx`: adds `soft`/`outlined`/`filled` + semantic colors",
+        "`tabs.tsx`: adds `variant` (`underline`/`pill`/`card`/`lifted`)",
+        "`avatar.tsx`: adds `indicator` slot (status dot); exports `AvatarGroup`; auto-color from name",
+        "`skeleton.tsx`: adds `shimmer`/`wave`/`pulse` animation variants",
+        "`tooltip.tsx`: adds `rich` variant (title + description + arrow)",
+        "`dialog.tsx`: adds `size` prop (`xs`/`sm`/`md`/`lg`/`xl`/`fullscreen`)",
+        "`sheet.tsx`: adds `size` prop (`quarter`/`half`/`full`); optional backdrop blur",
+        "All existing prop interfaces unchanged (backward-compatible, additions only)",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 2,
-      "passes": true
+      "priority": 13,
+      "passes": false
     },
     {
       "id": "US-014",
-      "title": "Add AddCreditsFromLemonSqueezyOrder listener unit test",
-      "description": "As a developer, I need a unit test for the AddCreditsFromLemonSqueezyOrder listener so the credit calculation logic is verified in isolation.",
+      "title": "Accessibility infrastructure",
+      "description": "As a developer, I need accessibility utilities baked into the component system so WCAG compliance is easy by default rather than an afterthought.",
       "acceptanceCriteria": [
-        "Test file: tests/Unit/Listeners/AddCreditsFromLemonSqueezyOrderTest.php",
-        "Tests: credits from explicit metadata, credits from amount calculation, missing organization handling, zero-amount handling",
-        "vendor/bin/pint --dirty --format agent passes",
-        "php artisan test --compact --filter=AddCreditsFromLemonSqueezyOrder passes"
+        "`resources/js/components/ui/skip-to-content.tsx` created: renders a visually-hidden link at the top of every layout that becomes visible on focus and jumps to `#main-content`; must be included in all app shell templates (US-025)",
+        "`resources/js/hooks/use-focus-trap.ts` created: custom hook that traps keyboard focus within a given ref container (for custom overlays that don't use Radix); exported from `resources/js/hooks/index.ts`",
+        "`resources/js/hooks/use-reduced-motion.ts` created: returns `boolean` from `matchMedia('(prefers-reduced-motion: reduce)')`; all animated components (`skeleton.tsx`, `feed.tsx`, `streaming-text.tsx`, etc.) must consult this hook and disable/reduce animations when `true`",
+        "All three utilities have TypeScript types",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 2,
-      "passes": true
+      "priority": 14,
+      "passes": false
     },
     {
       "id": "US-015",
-      "title": "Document supported billing providers",
-      "description": "As a developer setting up billing, I need a clear reference documenting which billing providers are supported, what each one handles, and how to configure them.",
+      "title": "Keyboard shortcut system",
+      "description": "As a developer, I need a central keyboard shortcut registry so app-wide shortcuts are registered, discoverable, and documented consistently.",
       "acceptanceCriteria": [
-        "docs/developer/backend/billing-providers.md created (or billing-and-tenancy.md updated) with: Overview stating this starter supports Stripe (subscriptions + invoices), Paddle (subscriptions + transactions), and Lemon Squeezy (one-time credit purchases)",
-        "Provider comparison table: what each handles (subscriptions vs one-time), webhook URLs, required env vars",
-        "Stripe setup: env vars, webhook URL (/webhooks/stripe), handled events",
-        "Paddle setup: env vars, webhook URL (/webhooks/paddle), handled events, note that it's optional",
-        "Lemon Squeezy setup: env vars, webhook URL (/lemon-squeezy/webhook — vendor-managed), handled events, credit calculation logic",
-        "How to disable a provider you don't need (env vars, removing routes)",
-        "Per-org override instructions (reference organization_settings and ApplyOrganizationSettings middleware)",
-        "Documentation manifest updated"
+        "`resources/js/lib/keyboard-shortcuts.ts` created: exports `registerShortcut({ keys, description, action, scope? })`, `unregisterShortcut(keys)`, `getShortcuts()`, and a `useKeyboardShortcut(keys, handler)` hook",
+        "Shortcuts registered globally (e.g. `Cmd+K` for command bar, `?` for help) in the app root, cleaned up on unmount",
+        "`resources/js/components/ui/keyboard-shortcut-display.tsx` created: a Sheet/Dialog listing all registered shortcuts grouped by scope, triggered by pressing `?` or via a help button; shows keys as `\u003cKbd\u003e` components",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 3,
+      "priority": 15,
       "passes": false
     },
     {
       "id": "US-016",
-      "title": "Create auth feature checklist documentation",
-      "description": "As a developer, I need a single-page reference listing every authentication feature, its current status, and how to toggle it so I can quickly configure auth for my needs.",
+      "title": "Layout shell templates",
+      "description": "As a developer, I need pre-built page shell compositions so I can assemble new pages from established layout patterns rather than composing primitives from scratch every time.",
       "acceptanceCriteria": [
-        "docs/developer/backend/auth/auth-features-checklist.md created with: Table listing every auth feature: Login, Registration, Password Reset, Email Verification, Two-Factor Authentication (2FA), Password Confirmation, Profile Update",
-        "For each feature: current status (enabled/disabled), where it's configured (config/fortify.php, Pennant feature flag, middleware), how to enable/disable",
-        "Note that registration is controlled by a Pennant feature flag (not Fortify's Features::registration())",
-        "Note that only 2FA is enabled in config/fortify.php currently",
-        "Guard configuration: web guard, email as username field, lowercase usernames enabled",
-        "Reference to the Inertia React pages that implement each auth flow",
-        "Reference to relevant Fortify Actions in app/Actions/Fortify/",
-        "Documentation manifest updated"
+        "Created in `resources/js/components/shells/`: `app-shell.tsx` — sidebar (collapsible) + top header + main content area + optional right panel slot; includes `SkipToContent` and `id=\"main-content\"` on `\u003cmain\u003e`",
+        "Created: `master-detail.tsx` — left list panel + right detail panel (responsive: stacks on mobile, side-by-side on desktop); uses `react-resizable-panels` for desktop split",
+        "Created: `split-view.tsx` — horizontal or vertical split of two arbitrary content areas with resizable divider",
+        "Created: `marketing-layout.tsx` — centered max-width content with optional top nav and footer slots; for auth/landing pages",
+        "Created: `dashboard-layout.tsx` — grid of slots: header stat cards row + main chart area + sidebar widget area",
+        "All shells accept `className` and children slot props",
+        "All shells include `\u003cSkipToContent /\u003e` from US-014",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 3,
+      "priority": 16,
       "passes": false
     },
     {
       "id": "US-017",
-      "title": "Add inline comments to config/fortify.php",
-      "description": "As a developer reading the Fortify config, I want clear inline comments explaining each feature toggle and its implications.",
+      "title": "New layout and navigation ui/ components",
+      "description": "As a developer, I need layout primitives and navigation components so complex layouts can be built consistently.",
       "acceptanceCriteria": [
-        "config/fortify.php features section has a comment block listing all available Fortify features and their current on/off status",
-        "Each commented-out feature has a note explaining why it's disabled (e.g. \"Registration is managed by Pennant feature flag instead\")",
-        "vendor/bin/pint --dirty --format agent passes"
+        "Created in `resources/js/components/ui/`: `box.tsx`, `container.tsx`, `stack.tsx` (VStack + HStack), `grid.tsx`, `divider.tsx`, `scroll-shadow.tsx`, `masonry.tsx`, `resizable.tsx`",
+        "Created: `stepper.tsx`, `pagination.tsx`, `animated-tabs.tsx`, `bottom-nav.tsx`, `tree-nav.tsx`, `collapsible-search.tsx`, `toc.tsx`",
+        "`mode-toggle.tsx` (from US-006) included here if not already created",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 4,
+      "priority": 17,
       "passes": false
     },
     {
       "id": "US-018",
-      "title": "Verify all changes pass existing test suite",
-      "description": "As a developer, I need to confirm that all additions from this PRD do not break any existing tests.",
+      "title": "New button/action ui/ components",
+      "description": "As a developer, I need specialized action components for FABs, copy buttons, and progress patterns.",
       "acceptanceCriteria": [
-        "composer test:full passes with no regressions",
-        "vendor/bin/pint --test passes",
-        "vendor/bin/rector --dry-run passes (if Rector is configured)",
-        "php artisan docs:sync --check passes",
-        "All new test files pass individually",
-        "CI workflow (if modified) runs successfully on a test push"
+        "Created in `resources/js/components/ui/`: `icon-button.tsx`, `button-group.tsx`, `fab.tsx` (optional speed-dial), `split-button.tsx`, `copy-button.tsx` (clipboard + animated tick), `progress-button.tsx`, `swap.tsx`",
+        "`npx tsc --noEmit` passes"
       ],
-      "priority": 1,
+      "priority": 18,
+      "passes": false
+    },
+    {
+      "id": "US-019",
+      "title": "New form ui/ components",
+      "description": "As a developer, I need a complete set of typed form components covering all input types, including auto-save indicator, translatable fields, and timezone selector.",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/ui/`: `radio.tsx`, `radio-group.tsx`, `checkbox-group.tsx`, `multi-select.tsx`, `tags-input.tsx`, `tag.tsx`, `date-range-picker.tsx`, `datetime-picker.tsx`, `phone-input.tsx`, `color-picker.tsx`, `file-dropzone.tsx`, `image-upload.tsx`, `image-cropper.tsx`, `number-input.tsx`, `number-scrubber.tsx`, `password-input.tsx`, `search-input.tsx`, `country-select.tsx`, `rich-text-editor.tsx` (Tiptap), `novel-editor.tsx` (novel + Laravel AI SDK), `auto-form.tsx`, `fancy-switch.tsx`, `rating.tsx`, `range-slider.tsx`, `listbox.tsx`, `combobox.tsx`, `input-group.tsx`, `form-field.tsx`, `form-section.tsx`, `contextual-help.tsx`",
+        "`autosave-indicator.tsx` created: shows `Saving...` / `Saved ✓` / `Error` status badge; accepts `status: 'idle' | 'saving' | 'saved' | 'error'` prop; intended for use with debounced form auto-save patterns",
+        "`translatable-field.tsx` created: wraps any input with a tab row of configured locale codes (e.g. `en`, `fr`, `ar`); each tab shows the input for that locale; value is `Record\u003cstring, string\u003e`; locale list configurable via prop",
+        "`timezone-select.tsx` created: searchable combobox backed by the IANA timezone list; displays current UTC offset alongside each option; groups by region",
+        "`novel-editor.tsx` connects AI suggestions to Laravel AI SDK backend via configurable `aiEndpoint` prop (default `/ai/complete`)",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 19,
+      "passes": false
+    },
+    {
+      "id": "US-020",
+      "title": "New data display ui/ components",
+      "description": "As a developer, I need data display components for timelines, kanban, calendars, feeds, media, and developer-oriented views.",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/ui/`: `timeline.tsx`, `tree.tsx`, `kanban.tsx`, `sortable-list.tsx`, `carousel.tsx`, `event-calendar.tsx`, `calendar-heatmap.tsx`, `roadmap.tsx`, `mind-map.tsx`, `audio-player.tsx`, `gallery.tsx`, `stat-card.tsx`, `list.tsx` + `list-item.tsx`, `description-list.tsx`, `feed.tsx` + `feed-item.tsx`, `file-item.tsx` + `file-item-square.tsx`, `kbd.tsx`, `highlight.tsx`",
+        "`virtual-list.tsx` created: standalone infinite-scroll / virtualized list component using `@tanstack/react-virtual`; accepts `items`, `renderItem`, `fetchNextPage`, `hasNextPage`, `isFetchingNextPage` props; shows a skeleton loader row while fetching",
+        "`json-viewer.tsx` created: collapsible, syntax-highlighted JSON tree; accepts any `value` prop; nodes are collapsible; strings/numbers/booleans/nulls rendered with distinct colors matching the active theme; copy-to-clipboard button on hover",
+        "`diff-viewer.tsx` created: side-by-side (desktop) or unified (mobile) diff display using `react-diff-viewer-continued`; accepts `oldValue`, `newValue`, `language` props; syntax highlighted; theme-aware",
+        "`pdf-viewer.tsx` created: embedded PDF display using `react-pdf`; shows page count, prev/next page controls, zoom in/out; accepts `url` or `file` prop; shows skeleton while loading",
+        "`video-player.tsx` created: HTML5 `\u003cvideo\u003e` wrapper with custom controls (play/pause, scrubber, volume, fullscreen, speed selector); accepts `src`, `poster`, `autoPlay`, `loop` props; respects `useReducedMotion` for autoPlay",
+        "`image-comparison.tsx` created: before/after drag-to-reveal slider using `react-compare-slider`; accepts `before`, `after` (img src or ReactNode) and `orientation` (horizontal/vertical) props",
+        "`qr-code.tsx` created: renders a QR code using `qrcode.react`; accepts `value`, `size`, `level` (error correction), `includeMargin` props; includes a download-as-PNG button",
+        "`signature-pad.tsx` created: canvas-based signature capture using `react-signature-canvas`; accepts `onSave(dataUrl)`, `onClear` props; shows \"Clear\" and \"Save\" buttons",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 20,
+      "passes": false
+    },
+    {
+      "id": "US-021",
+      "title": "New feedback ui/ components",
+      "description": "As a developer, I need feedback and state components for async flows, empty screens, and loading states.",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/ui/`: `progress.tsx`, `progress-circle.tsx`, `spinner.tsx`, `empty-state.tsx`, `error-state.tsx`, `loading-state.tsx`, `upload-progress.tsx`, `splash-screen.tsx`, `loadable.tsx`",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 21,
+      "passes": false
+    },
+    {
+      "id": "US-022",
+      "title": "New overlay ui/ components",
+      "description": "As a developer, I need overlay components for common interaction patterns including confirm dialogs, responsive modals, lightbox, and context menus.",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/ui/`: `confirm-dialog.tsx`, `responsive-modal.tsx` (credenza), `lightbox.tsx`, `context-menu.tsx`",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 22,
+      "passes": false
+    },
+    {
+      "id": "US-023",
+      "title": "SaaS feature components",
+      "description": "As a developer building SaaS features, I need billing-related, activation, and system status UI components that are common across every SaaS application so I don't build them from scratch.",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/saas/`: `trial-banner.tsx` — full-width top banner: \"Your trial ends in N days. Upgrade now →\"; accepts `daysRemaining`, `onUpgrade` props; hidden when `daysRemaining` is null; dismissible with auto-hide after dismiss stored in `localStorage`",
+        "`feature-gate.tsx` — wrapper component: renders `children` if `hasAccess` prop is `true`; otherwise renders a centered upgrade prompt card with title, description, and a CTA button; accepts `feature`, `title`, `description`, `ctaLabel`, `onUpgrade` props",
+        "`usage-meter.tsx` — progress bar + label showing current/max usage (e.g. \"8/10 seats used\"); accepts `used`, `limit`, `label`, `unit` props; color shifts to warning at 80%, error at 100%",
+        "`onboarding-checklist.tsx` — floating or inline checklist of setup tasks with checkboxes, progress bar, and completion percentage; accepts `steps: { id, label, completed, href? }[]` prop; collapses when all steps are done",
+        "`whats-new-modal.tsx` — Dialog shown automatically on first login after a new deploy; accepts `version`, `items: { title, description, badge? }[]`; \"Got it\" button dismisses and stores seen version in `localStorage`",
+        "`impersonation-banner.tsx` — sticky top bar rendered when `usePage().props.auth.impersonating` is true; shows \"You are viewing as [User Name]\" with a \"Stop Impersonating\" button that calls the existing impersonation exit route",
+        "`maintenance-banner.tsx` — dismissible top banner for scheduled maintenance notices; accepts `message`, `scheduledAt?` props; reads from Inertia shared props key `maintenance`",
+        "`setup-wizard.tsx` — multi-step full-page onboarding shell for new organizations; uses `Stepper` + `Card` + step slot props; tracks current step in URL param; shows completion progress",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 23,
+      "passes": false
+    },
+    {
+      "id": "US-024",
+      "title": "Admin power-user components",
+      "description": "As a developer building admin features, I need ready-made UI components for API key management, session management, permission matrices, audit logs, CSV import, and webhook configuration.",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/admin/`: `api-key-manager.tsx` — table of API keys with name, last-used, created-at columns; inline \"Copy\" button (shows key once on creation, then masked); \"Revoke\" confirm dialog; \"Create New Key\" button with name input; accepts `keys`, `onCreate`, `onRevoke` props",
+        "`session-manager.tsx` — list of active sessions with device icon, IP address, last-active timestamp, current session badge; \"Revoke\" button per session and \"Revoke All Other Sessions\" bulk action; accepts `sessions`, `onRevoke`, `onRevokeAll` props",
+        "`permission-matrix.tsx` — visual grid: rows = roles, columns = permissions grouped by resource; each cell is a checkbox; read-only or editable mode via `readonly` prop; accepts `roles`, `permissions`, `grants`, `onChange` props",
+        "`audit-log-viewer.tsx` — composes `Timeline` + date/type filters + user filter + search; each entry shows actor avatar, action verb, target resource, timestamp; accepts `entries`, `filters`, `onFilterChange` props; virtualized via `VirtualList`",
+        "`import-wizard.tsx` — 4-step Sheet/Dialog: (1) upload CSV/XLSX via `FileDropzone`; (2) column mapping UI (detected columns → target fields dropdown per column); (3) preview of first 10 rows with validation errors highlighted; (4) import progress with success/error counts; accepts `targetFields`, `onImport` props",
+        "`webhook-config.tsx` — form for webhook endpoint URL + event checkboxes grouped by resource; \"Test Webhook\" button that sends a ping; shows last delivery status; accepts `events`, `value`, `onChange`, `onTest` props",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 24,
+      "passes": false
+    },
+    {
+      "id": "US-025",
+      "title": "Global search",
+      "description": "As a user, I want a fast, keyboard-driven global search that queries the existing Typesense/Scout backend and returns grouped results across multiple resource types.",
+      "acceptanceCriteria": [
+        "`resources/js/components/ui/global-search.tsx` created: a full-screen modal (triggered by `Cmd+K` via keyboard shortcut registry) with a text input, result groups (e.g. Users, Organizations, Records), keyboard navigation (arrow keys + Enter), and recent searches list when empty",
+        "Results are fetched from a backend route `/search?q=...` that routes through Laravel Scout/Typesense; the route returns grouped results with `type`, `id`, `title`, `subtitle`, `url` per item",
+        "Backend: a `GlobalSearchController` (or action) created that queries Scout across configured models and returns the JSON structure expected by the frontend component",
+        "`Cmd+K` (and `Ctrl+K` on Windows) registered in the keyboard shortcut registry (US-015) and opens the global search modal",
+        "Empty state shows recent searches (stored in `localStorage`, max 10)",
+        "Result items are navigable via Inertia `router.visit()` when clicked or when Enter is pressed",
+        "`vendor/bin/pint --dirty --format agent` passes",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 25,
+      "passes": false
+    },
+    {
+      "id": "US-026",
+      "title": "Chart components",
+      "description": "As a developer, I need clean typed recharts wrappers for all common chart types.",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/charts/`: `area-chart.tsx`, `bar-chart.tsx`, `line-chart.tsx`, `pie-chart.tsx`, `scatter-chart.tsx`, `radar-chart.tsx`, `sparkline.tsx` (inline 40px), `gauge-chart.tsx`, `heatmap-chart.tsx`, `funnel-chart.tsx`, `treemap-chart.tsx`, `progress-ring.tsx`",
+        "All charts: responsive container, dark-mode via CSS vars, primary color theming, skeleton state prop, `useReducedMotion` disables entry animations when true",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 26,
+      "passes": false
+    },
+    {
+      "id": "US-027",
+      "title": "Map components",
+      "description": "As a developer, I need MapLibre/mapcn map wrappers for common geospatial visualizations that work without an API key.",
+      "acceptanceCriteria": [
+        "mapcn installed via `npx shadcn@latest add @mapcn/map`",
+        "Created in `resources/js/components/maps/`: `base-map.tsx`, `markers-map.tsx`, `clusters-map.tsx`, `routes-map.tsx`, `analytics-map.tsx`, `tracking-map.tsx`, `location-picker.tsx`",
+        "All maps render with mock data using OpenFreeMap tiles (no API key required)",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 27,
+      "passes": false
+    },
+    {
+      "id": "US-028",
+      "title": "AI components",
+      "description": "As a developer, I need AI-specific UI components for chat, streaming, agent status, and tool calls connected to the Laravel AI SDK backend.",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/ai/`: `AssistantThread`, `AssistantModal`, `AssistantSidebar`, `AssistantRuntimeProvider` (connects to Laravel AI SDK backend, not mocked)",
+        "Created custom: `streaming-text.tsx`, `thinking-indicator.tsx` (3 variants), `tool-call-card.tsx`, `ai-response-card.tsx`, `markdown-response.tsx`, `code-block.tsx`, `confidence-score.tsx`, `ai-insight-card.tsx`, `entity-highlight.tsx`, `ai-summary-card.tsx`, `prediction-widget.tsx`, `anomaly-alert.tsx`, `model-selector.tsx`, `prompt-input.tsx`, `voice-input.tsx`, `token-usage.tsx`, `agent-status.tsx`, `context-drawer.tsx`",
+        "All animated components (`streaming-text`, `thinking-indicator`) consult `useReducedMotion` and disable/reduce animations when true",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 28,
+      "passes": false
+    },
+    {
+      "id": "US-029",
+      "title": "DataTable enhancements",
+      "description": "As a developer, I need the existing DataTable enhanced with grouping, expandable rows, column pinning, virtual scrolling, bulk actions, and CSV export.",
+      "acceptanceCriteria": [
+        "DataTable supports TanStack row grouping, expandable rows, and column pinning APIs",
+        "Virtual scrolling via `@tanstack/react-virtual` (already installed)",
+        "Bulk action toolbar appears when rows are selected",
+        "CSV export button available",
+        "New cell types: `CopyableCell`, `HighlightableCell`",
+        "`ItemViewTypeSelect` toggle (grid/list/table)",
+        "Additional filters: `RangeFilter`, `RadioFilter`, `DateFilter`",
+        "Table density toggle: Compact / Comfortable / Spacious (applies row padding via data attribute)",
+        "Column visibility toggle: show/hide individual columns via a popover menu",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 29,
+      "passes": false
+    },
+    {
+      "id": "US-030",
+      "title": "Composed components",
+      "description": "As a developer, I need high-level composed components for complex pages (dashboards, file managers, command bars).",
+      "acceptanceCriteria": [
+        "Created in `resources/js/components/composed/`: `data-view.tsx`, `form-wizard.tsx`, `command-bar.tsx` (cmdk + AI prompt + registered shortcuts), `notification-center.tsx`, `file-manager.tsx`, `metric-dashboard.tsx`, `activity-log.tsx`, `user-card.tsx`, `pricing-card.tsx`, `kanban-board.tsx`, `location-dashboard.tsx`, `right-sidebar.tsx`",
+        "`command-bar.tsx` is wired to the keyboard shortcut registry (US-015) and lists registered shortcuts in a dedicated section",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 30,
+      "passes": false
+    },
+    {
+      "id": "US-031",
+      "title": "In-app component showcase page",
+      "description": "As a developer or designer, I want an in-app kitchen-sink page that renders all components with the real app theme so I can visually review the full library, test theme switching live, and share it with clients or stakeholders without needing Storybook running.",
+      "acceptanceCriteria": [
+        "A new Inertia page created at `resources/js/pages/dev/components.tsx` rendered by a `ComponentShowcaseController`",
+        "Route registered at `/dev/components` (GET), named `dev.components`; the route is gated by a Pennant feature flag `component-showcase` (default: enabled in local/staging environments, disabled in production)",
+        "The page uses `app-shell.tsx` (from US-016) with a sticky left sidebar nav listing all component categories; clicking a category smooth-scrolls to that section",
+        "Component categories rendered: Foundation (color swatches, typography, spacing, shadow tokens), Layout, Shells, Navigation, Buttons \u0026 Actions, Forms, Data Display, Feedback, Overlay, Charts, Maps, AI, SaaS, Admin, Composed, Accessibility",
+        "`ThemeCustomizer` floating button is always visible on this page regardless of `canCustomize` (hardcoded `true` for the showcase route) so theme switching can be tested live",
+        "`KeyboardShortcutDisplay` help modal (press `?`) works on this page showing all registered shortcuts",
+        "A sticky top bar on the page shows the current active theme dimensions (dark palette name, primary color, radius, skin) updating live as the customizer changes them",
+        "The route is excluded from `php artisan route:list` output in production (handled by the Pennant gate or a `App::isLocal()` check on the route registration)",
+        "`vendor/bin/pint --dirty --format agent` passes",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 31,
+      "passes": false
+    },
+    {
+      "id": "US-032",
+      "title": "Storybook stories for all components",
+      "description": "As a developer, I need a Storybook story for every component so the full library is documented and browsable without running the Laravel backend.",
+      "acceptanceCriteria": [
+        "Stories directory structure includes: `foundation/`, `layout/`, `shells/`, `navigation/`, `forms/`, `data-display/`, `feedback/`, `overlay/`, `charts/`, `maps/`, `ai/`, `saas/`, `admin/`, `ThemeSwitcher/`, `composed/`",
+        "`Foundation/` stories: Colors, Typography, Icons, Tailux Tokens, Theme Presets, Theme Preview",
+        "Every component has at least one CSF3 story with `argTypes`, `autodocs`, and realistic mock data",
+        "`saas/` stories: each SaaS component with realistic props (e.g. `trial-banner` with `daysRemaining=5`, `feature-gate` in both `hasAccess=true` and `hasAccess=false` states)",
+        "`admin/` stories: each admin component with mock data",
+        "`shells/` stories: each shell layout shown with placeholder content inside each slot",
+        "All stories respect the Storybook theme toolbar (dark/light, palette, radius, skin)",
+        "`ThemeCustomizer` story renders with `canCustomize: true` (mocked)",
+        "`GlobalSearch` story uses mock search results (no real backend call)",
+        "`npm run storybook` runs all stories with 0 errors"
+      ],
+      "priority": 32,
+      "passes": false
+    },
+    {
+      "id": "US-033",
+      "title": "ThemeSettings backend — sidebar layout, font, menu color, menu accent",
+      "description": "As an admin, I need additional theme dimensions (sidebar layout variant, font choice, menu background color, and menu accent style) stored in the database so the full visual identity of the app can be configured per organization.",
+      "acceptanceCriteria": [
+        "`app/Settings/ThemeSettings.php` extended with 4 new fields: `sidebar_layout` (default: `'main'`, options: `main|sideblock`), `font` (default: `'inter'`, options: `inter|geist|poppins|outfit|plus-jakarta-sans`), `menu_color` (default: `'default'`, options: `default|primary|muted`), `menu_accent` (default: `'subtle'`, options: `subtle|strong|bordered`)",
+        "New settings migration in `database/settings/` for the 4 new fields",
+        "`php artisan migrate` completes successfully",
+        "All 4 fields added to `SettingsOverlayServiceProvider::OVERLAY_MAP` with `orgOverridable: true`",
+        "`HandleInertiaRequests` `share()` updated — `theme` key now includes `layout`, `font`, `menuColor`, `menuAccent` alongside existing fields",
+        "`theme-from-props.tsx` extended to apply `data-sidebar-layout`, `data-font` (already exists — verify), `data-menu-color`, `data-menu-accent` on `document.documentElement`",
+        "`resources/css/themes.css` extended with CSS blocks for each new dimension: `[data-sidebar-layout=\"sideblock\"]`, `[data-menu-color=\"primary|muted\"]`, `[data-menu-accent=\"strong|bordered\"]`",
+        "Frontend types updated in `resources/js/types/index.d.ts`",
+        "`php artisan settings:cache` completes successfully",
+        "`vendor/bin/pint --dirty --format agent` passes",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 33,
+      "passes": false
+    },
+    {
+      "id": "US-034",
+      "title": "ThemeCustomizer UX — compact panel, Try Random, all dimensions",
+      "description": "As an admin, I want the ThemeCustomizer panel to match the UX quality of shadcn/ui create — a compact property list where each row shows the current value and expands inline, plus a \"Try Random\" shuffle button and the ability to export/import the theme as JSON.",
+      "acceptanceCriteria": [
+        "`theme-customizer.tsx` redesigned as a compact vertical list panel (inspired by shadcn/ui create's right panel): each theme dimension is a single row showing `Property Name / Current Value + icon`; clicking a row expands an inline option picker below it; only one row expanded at a time",
+        "Panel sections cover all theme dimensions in order: Theme Mode, Preset, Layout, Style/Dark Palette, Primary Color, Base Color/Light Scheme, Font, Menu Color, Menu Accent, Card Skin, Radius",
+        "\"Try Random\" button at the top of the panel (keyboard shortcut `R` while panel is open): randomizes all theme dimensions to a valid random combination and applies them immediately",
+        "\"Export theme\" button: copies the current 9 theme dimensions as a JSON blob to the clipboard; shows \"Copied!\" toast",
+        "\"Import theme\" action: a small textarea that appears when clicking \"Import\"; pasting valid theme JSON and clicking \"Apply\" applies all dimensions at once; invalid JSON shows an inline error",
+        "\"Reset to defaults\" link at the bottom reverts all attributes to system defaults and clears saved org overrides",
+        "\"Save for Organization\" button POSTs all dimensions (including new ones from US-033) to the settings API",
+        "All dimension changes still apply immediately via `data-*` attributes on `document.documentElement` (optimistic UI, no page reload)",
+        "Hover over a preset card or color swatch shows a live preview instantly (mouse-enter applies the change; mouse-leave reverts to current saved state; click commits the selection)",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 34,
+      "passes": false
+    },
+    {
+      "id": "US-035",
+      "title": "Hooks library",
+      "description": "As a developer, I need a collection of commonly-needed React hooks available in `resources/js/hooks/` so I don't reinvent them in every component.",
+      "acceptanceCriteria": [
+        "`resources/js/hooks/` directory created with an `index.ts` barrel file that re-exports all hooks",
+        "`useDebounce\u003cT\u003e(value: T, delay: number): T` implemented — returns a debounced version of the value; updates after `delay` ms of no changes",
+        "`useLocalStorage\u003cT\u003e(key: string, initialValue: T): [T, Setter, () =\u003e void]` implemented — synced localStorage state; third return value clears the key",
+        "`useMediaQuery(query: string): boolean` implemented — reactive to viewport changes",
+        "`useIntersectionObserver(ref, options?): IntersectionObserverEntry | null` implemented — triggers when the element enters/exits the viewport",
+        "`useClickOutside(ref, handler)` implemented — calls `handler` when a click occurs outside the given ref",
+        "`useEventListener(eventName, handler, element?)` implemented — typed `addEventListener`/`removeEventListener` with cleanup",
+        "`usePrevious\u003cT\u003e(value: T): T | undefined` implemented — returns the previous render's value",
+        "`useWindowSize(): { width: number; height: number }` implemented — reactive window dimensions",
+        "`useCopyToClipboard(): [boolean, (text: string) =\u003e void]` implemented — `copied` is `true` for 2 seconds after copying",
+        "`useOnline(): boolean` implemented — returns `true` when browser has network access; reactive to `online`/`offline` events",
+        "`useToggle(initial?: boolean): [boolean, () =\u003e void, (v: boolean) =\u003e void]` implemented — boolean toggle with optional force-set",
+        "`useInterval(callback, delay: number | null)` implemented — safe `setInterval` with cleanup; pass `null` to pause",
+        "`useReducedMotion` (already created in US-014) moved here and re-exported from `hooks/index.ts`",
+        "`useFocusTrap` (already created in US-014) moved here and re-exported from `hooks/index.ts`",
+        "`useKeyboardShortcut` (from US-015) re-exported from `hooks/index.ts`",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 35,
+      "passes": false
+    },
+    {
+      "id": "US-036",
+      "title": "Utilities library, Error Boundary, and Offline banner",
+      "description": "As a developer, I need a shared utility function library, a React Error Boundary component with a custom fallback, and an offline detection banner so these foundational patterns don't get reinvented per feature.",
+      "acceptanceCriteria": [
+        "`resources/js/lib/utils/` directory created; new utilities in separate files re-exported from `resources/js/lib/utils/index.ts`; existing `cn()` function in `resources/js/lib/utils.ts` must not be modified or moved",
+        "`formatDate(date: Date | string, format?: string): string` implemented — locale-aware; default format is `MMM D, YYYY`; wraps `date-fns`",
+        "`formatRelativeTime(date: Date | string): string` implemented — e.g. `\"2 hours ago\"`, `\"just now\"`, `\"in 3 days\"`; uses `date-fns/formatDistanceToNow`",
+        "`formatCurrency(amount: number, currency?: string, locale?: string): string` implemented — defaults to USD + user's browser locale",
+        "`formatNumber(n: number, options?: Intl.NumberFormatOptions): string` implemented — compact notation: `1200` → `\"1.2K\"`, `3_400_000` → `\"3.4M\"`",
+        "`formatBytes(bytes: number, decimals?: number): string` implemented — `2_400_000` → `\"2.4 MB\"`",
+        "`truncate(str: string, length: number, suffix?: string): string` implemented — appends `\"…\"` by default",
+        "`slugify(str: string): string` implemented — `\"Hello World!\"` → `\"hello-world\"`",
+        "`initials(name: string, maxChars?: number): string` implemented — `\"John Doe\"` → `\"JD\"`",
+        "`groupBy\u003cT\u003e(array: T[], key: keyof T): Record\u003cstring, T[]\u003e` implemented",
+        "`clamp(value: number, min: number, max: number): number` implemented",
+        "`randomItem\u003cT\u003e(array: T[]): T` implemented — picks a random element",
+        "`randomTheme(): ThemeConfig` implemented — picks a random valid combination of all theme dimensions from `tailux-themes.ts` constants",
+        "`resources/js/components/ui/error-boundary.tsx` created: class-based React Error Boundary; accepts `fallback` prop (ReactNode or render-prop `(error, reset) =\u003e ReactNode`); default fallback renders an `ErrorState` component with a \"Try again\" button that calls `reset()`",
+        "`resources/js/components/ui/offline-banner.tsx` created: uses `useOnline()` hook; renders a fixed top banner when offline; auto-dismisses 3 seconds after connection is restored; manual close button available; respects `useReducedMotion`",
+        "All utility functions have JSDoc with input/output examples",
+        "`npx tsc --noEmit` passes"
+      ],
+      "priority": 36,
       "passes": false
     }
   ]

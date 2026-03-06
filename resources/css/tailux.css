@@ -1,0 +1,57 @@
+/*
+ * Tailux CSS Design Token Foundation
+ * Extends the base shadcn/Tailwind theme with Tailux-specific tokens.
+ * Imported by app.css before the main @theme block.
+ */
+
+@theme {
+    /* Extended text size tokens */
+    --text-tiny: 0.625rem; /* 10px */
+    --text-xs-plus: 0.8125rem; /* 13px — between xs (12px) and sm (14px) */
+    --text-sm-plus: 0.9375rem; /* 15px — between sm (14px) and base (16px) */
+
+    /* Shadow tokens */
+    --shadow-soft: 0 1px 3px 0 oklch(0 0 0 / 0.08), 0 1px 2px -1px oklch(0 0 0 / 0.06);
+    --shadow-soft-dark: 0 1px 3px 0 oklch(0 0 0 / 0.3), 0 1px 2px -1px oklch(0 0 0 / 0.2);
+
+    /* Easing token */
+    --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* Surface color tokens (neutral layered backgrounds) */
+    --color-surface-1: var(--surface-1);
+    --color-surface-2: var(--surface-2);
+    --color-surface-3: var(--surface-3);
+
+    /* Semantic status color tokens */
+    --color-secondary: var(--tailux-secondary);
+    --color-info: var(--tailux-info);
+    --color-success: var(--tailux-success);
+    --color-warning: var(--tailux-warning);
+    --color-error: var(--tailux-error);
+}
+
+/* Surface and semantic color raw values — light mode */
+:root {
+    --surface-1: oklch(0.985 0 0);
+    --surface-2: oklch(0.97 0 0);
+    --surface-3: oklch(0.94 0 0);
+
+    --tailux-secondary: oklch(0.5 0.12 255);
+    --tailux-info: oklch(0.5 0.16 240);
+    --tailux-success: oklch(0.5 0.16 145);
+    --tailux-warning: oklch(0.6 0.18 75);
+    --tailux-error: oklch(0.52 0.22 27);
+}
+
+/* Surface and semantic color raw values — dark mode */
+.dark {
+    --surface-1: oklch(0.18 0 0);
+    --surface-2: oklch(0.22 0 0);
+    --surface-3: oklch(0.26 0 0);
+
+    --tailux-secondary: oklch(0.68 0.1 255);
+    --tailux-info: oklch(0.68 0.14 240);
+    --tailux-success: oklch(0.68 0.14 145);
+    --tailux-warning: oklch(0.78 0.16 75);
+    --tailux-error: oklch(0.68 0.2 27);
+}

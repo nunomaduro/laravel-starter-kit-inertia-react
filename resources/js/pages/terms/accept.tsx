@@ -67,10 +67,6 @@ export default function TermsAccept({
                     <Form
                         {...TermsAcceptController.store.form()}
                         className="space-y-6"
-                        data={{
-                            accepted_ids: acceptedIds,
-                            intended,
-                        }}
                     >
                         <input type="hidden" name="intended" value={intended} />
                         {acceptedIds.map((id) => (
@@ -130,13 +126,7 @@ export default function TermsAccept({
                                 disabled={!allAccepted}
                                 className="min-w-[120px]"
                             >
-                                {({ processing }) =>
-                                    processing ? (
-                                        <LoaderCircle className="size-4 animate-spin" />
-                                    ) : (
-                                        'I accept'
-                                    )
-                                }
+                                I accept
                             </Button>
                         </div>
                     </Form>

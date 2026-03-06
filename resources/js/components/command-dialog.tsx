@@ -18,7 +18,7 @@ import organizations from '@/routes/organizations';
 import { edit as editUserProfile } from '@/routes/user-profile';
 import { type NavItem, type SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import { getHotkeyManager } from '@tanstack/hotkeys';
+import { getHotkeyManager, type RegisterableHotkey } from '@tanstack/hotkeys';
 import {
     Building2,
     CreditCard,
@@ -153,7 +153,7 @@ export function CommandPalette(): React.ReactElement {
 
     useEffect(() => {
         const manager = getHotkeyManager();
-        const handle = manager.register('Mod+k', () => setOpen((o) => !o));
+        const handle = manager.register('Mod+k' as RegisterableHotkey, () => setOpen((o) => !o));
         return () => handle.unregister();
     }, []);
 
@@ -227,7 +227,7 @@ export function CommandPalette(): React.ReactElement {
         }
     }, []);
 
-    const logoutUrl = logout();
+    const logoutUrl = logout().url;
     const isSearchMode = query.length > 0;
     const hasResults =
         results && Object.values(results).some((arr) => arr.length > 0);
@@ -310,7 +310,7 @@ export function CommandPalette(): React.ReactElement {
                                 const href =
                                     typeof item.href === 'string'
                                         ? item.href
-                                        : (item.href.url ?? item.href.url());
+                                        : item.href.url;
                                 return (
                                     <CommandItem
                                         key={item.title}
@@ -326,7 +326,7 @@ export function CommandPalette(): React.ReactElement {
                         <CommandGroup heading="Account">
                             <CommandItem
                                 value="Settings"
-                                onSelect={() => run(editUserProfile())}
+                                onSelect={() => run(editUserProfile().url)}
                             >
                                 <Settings className="size-4" />
                                 Settings

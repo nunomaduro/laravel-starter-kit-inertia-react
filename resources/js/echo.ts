@@ -13,7 +13,8 @@ import Pusher from 'pusher-js';
 
 declare global {
     interface Window {
-        Echo?: Echo;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Echo?: Echo<any>;
         Pusher?: typeof Pusher;
     }
 }

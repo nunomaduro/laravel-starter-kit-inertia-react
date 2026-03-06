@@ -17,7 +17,7 @@ interface SharedProps {
  * Only renders when honeypot is enabled and data is available from shared props.
  */
 function HoneypotFields() {
-    const { honeypot } = usePage().props as SharedProps;
+    const { honeypot } = usePage().props as unknown as SharedProps;
 
     if (!honeypot?.enabled) {
         return null;

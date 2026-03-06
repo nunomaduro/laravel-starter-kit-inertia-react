@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './themes.css';
+@import './tailux.css';
 
 @plugin 'tailwindcss-animate';
 

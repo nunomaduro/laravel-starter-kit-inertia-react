@@ -400,3 +400,320 @@
     --sidebar-border: oklch(0.28 0.02 85);
     --sidebar-ring: oklch(0.5 0.02 85);
 }
+
+/*
+ * ============================================================
+ * Tailux dark theme palette blocks
+ * Applied as .dark[data-theme-dark="..."] on documentElement.
+ * Controls the dark mode background/surface palette independently
+ * of the primary color and light scheme.
+ * data-theme-dark = "navy" | "mirage" | "mint" | "black" | "cinder"
+ * ============================================================
+ */
+
+.dark[data-theme-dark='navy'] {
+    --background: oklch(0.13 0.035 240);
+    --foreground: oklch(0.96 0.005 240);
+    --card: oklch(0.17 0.03 240);
+    --card-foreground: oklch(0.96 0.005 240);
+    --popover: oklch(0.17 0.03 240);
+    --popover-foreground: oklch(0.96 0.005 240);
+    --secondary: oklch(0.25 0.03 240);
+    --secondary-foreground: oklch(0.96 0.005 240);
+    --muted: oklch(0.25 0.03 240);
+    --muted-foreground: oklch(0.65 0.015 240);
+    --accent: oklch(0.25 0.03 240);
+    --accent-foreground: oklch(0.96 0.005 240);
+    --border: oklch(0.25 0.03 240);
+    --input: oklch(0.25 0.03 240);
+    --ring: oklch(0.55 0.025 240);
+    --sidebar: oklch(0.155 0.032 240);
+    --sidebar-foreground: oklch(0.96 0.005 240);
+    --sidebar-accent: oklch(0.22 0.03 240);
+    --sidebar-accent-foreground: oklch(0.96 0.005 240);
+    --sidebar-border: oklch(0.22 0.03 240);
+    --sidebar-ring: oklch(0.55 0.025 240);
+}
+
+.dark[data-theme-dark='mirage'] {
+    --background: oklch(0.145 0.01 220);
+    --foreground: oklch(0.965 0.005 220);
+    --card: oklch(0.195 0.01 220);
+    --card-foreground: oklch(0.965 0.005 220);
+    --popover: oklch(0.195 0.01 220);
+    --popover-foreground: oklch(0.965 0.005 220);
+    --secondary: oklch(0.275 0.01 220);
+    --secondary-foreground: oklch(0.965 0.005 220);
+    --muted: oklch(0.275 0.01 220);
+    --muted-foreground: oklch(0.655 0.01 220);
+    --accent: oklch(0.275 0.01 220);
+    --accent-foreground: oklch(0.965 0.005 220);
+    --border: oklch(0.275 0.01 220);
+    --input: oklch(0.275 0.01 220);
+    --ring: oklch(0.45 0.01 220);
+    --sidebar: oklch(0.175 0.01 220);
+    --sidebar-foreground: oklch(0.965 0.005 220);
+    --sidebar-accent: oklch(0.24 0.01 220);
+    --sidebar-accent-foreground: oklch(0.965 0.005 220);
+    --sidebar-border: oklch(0.24 0.01 220);
+    --sidebar-ring: oklch(0.45 0.01 220);
+}
+
+.dark[data-theme-dark='mint'] {
+    --background: oklch(0.14 0.025 160);
+    --foreground: oklch(0.965 0.008 160);
+    --card: oklch(0.185 0.02 160);
+    --card-foreground: oklch(0.965 0.008 160);
+    --popover: oklch(0.185 0.02 160);
+    --popover-foreground: oklch(0.965 0.008 160);
+    --secondary: oklch(0.265 0.02 160);
+    --secondary-foreground: oklch(0.965 0.008 160);
+    --muted: oklch(0.265 0.02 160);
+    --muted-foreground: oklch(0.645 0.012 160);
+    --accent: oklch(0.265 0.02 160);
+    --accent-foreground: oklch(0.965 0.008 160);
+    --border: oklch(0.265 0.02 160);
+    --input: oklch(0.265 0.02 160);
+    --ring: oklch(0.45 0.02 160);
+    --sidebar: oklch(0.165 0.022 160);
+    --sidebar-foreground: oklch(0.965 0.008 160);
+    --sidebar-accent: oklch(0.23 0.02 160);
+    --sidebar-accent-foreground: oklch(0.965 0.008 160);
+    --sidebar-border: oklch(0.23 0.02 160);
+    --sidebar-ring: oklch(0.45 0.02 160);
+}
+
+.dark[data-theme-dark='black'] {
+    --background: oklch(0.07 0 0);
+    --foreground: oklch(0.97 0 0);
+    --card: oklch(0.11 0 0);
+    --card-foreground: oklch(0.97 0 0);
+    --popover: oklch(0.11 0 0);
+    --popover-foreground: oklch(0.97 0 0);
+    --secondary: oklch(0.18 0 0);
+    --secondary-foreground: oklch(0.97 0 0);
+    --muted: oklch(0.18 0 0);
+    --muted-foreground: oklch(0.62 0 0);
+    --accent: oklch(0.18 0 0);
+    --accent-foreground: oklch(0.97 0 0);
+    --border: oklch(0.18 0 0);
+    --input: oklch(0.18 0 0);
+    --ring: oklch(0.38 0 0);
+    --sidebar: oklch(0.09 0 0);
+    --sidebar-foreground: oklch(0.97 0 0);
+    --sidebar-accent: oklch(0.15 0 0);
+    --sidebar-accent-foreground: oklch(0.97 0 0);
+    --sidebar-border: oklch(0.15 0 0);
+    --sidebar-ring: oklch(0.38 0 0);
+}
+
+.dark[data-theme-dark='cinder'] {
+    --background: oklch(0.155 0.006 30);
+    --foreground: oklch(0.965 0.005 30);
+    --card: oklch(0.205 0.006 30);
+    --card-foreground: oklch(0.965 0.005 30);
+    --popover: oklch(0.205 0.006 30);
+    --popover-foreground: oklch(0.965 0.005 30);
+    --secondary: oklch(0.285 0.006 30);
+    --secondary-foreground: oklch(0.965 0.005 30);
+    --muted: oklch(0.285 0.006 30);
+    --muted-foreground: oklch(0.655 0.005 30);
+    --accent: oklch(0.285 0.006 30);
+    --accent-foreground: oklch(0.965 0.005 30);
+    --border: oklch(0.285 0.006 30);
+    --input: oklch(0.285 0.006 30);
+    --ring: oklch(0.45 0.006 30);
+    --sidebar: oklch(0.18 0.006 30);
+    --sidebar-foreground: oklch(0.965 0.005 30);
+    --sidebar-accent: oklch(0.25 0.006 30);
+    --sidebar-accent-foreground: oklch(0.965 0.005 30);
+    --sidebar-border: oklch(0.25 0.006 30);
+    --sidebar-ring: oklch(0.45 0.006 30);
+}
+
+/*
+ * ============================================================
+ * Tailux primary color blocks
+ * Applied as [data-theme-primary="..."] on documentElement.
+ * Controls the brand accent color in both light and dark mode.
+ * data-theme-primary = "indigo" | "blue" | "green" | "amber" | "purple" | "rose"
+ * ============================================================
+ */
+
+[data-theme-primary='indigo'] {
+    --primary: oklch(0.45 0.18 265);
+    --primary-foreground: oklch(0.985 0 0);
+    --ring: oklch(0.45 0.18 265);
+    --sidebar-primary: oklch(0.45 0.18 265);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-ring: oklch(0.45 0.18 265);
+}
+.dark[data-theme-primary='indigo'] {
+    --primary: oklch(0.75 0.14 265);
+    --primary-foreground: oklch(0.15 0.05 265);
+    --ring: oklch(0.75 0.14 265);
+    --sidebar-primary: oklch(0.75 0.14 265);
+    --sidebar-primary-foreground: oklch(0.15 0.05 265);
+    --sidebar-ring: oklch(0.75 0.14 265);
+}
+
+[data-theme-primary='blue'] {
+    --primary: oklch(0.45 0.18 240);
+    --primary-foreground: oklch(0.985 0 0);
+    --ring: oklch(0.45 0.18 240);
+    --sidebar-primary: oklch(0.45 0.18 240);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-ring: oklch(0.45 0.18 240);
+}
+.dark[data-theme-primary='blue'] {
+    --primary: oklch(0.72 0.15 240);
+    --primary-foreground: oklch(0.15 0.04 240);
+    --ring: oklch(0.72 0.15 240);
+    --sidebar-primary: oklch(0.72 0.15 240);
+    --sidebar-primary-foreground: oklch(0.15 0.04 240);
+    --sidebar-ring: oklch(0.72 0.15 240);
+}
+
+[data-theme-primary='green'] {
+    --primary: oklch(0.45 0.16 145);
+    --primary-foreground: oklch(0.985 0 0);
+    --ring: oklch(0.45 0.16 145);
+    --sidebar-primary: oklch(0.45 0.16 145);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-ring: oklch(0.45 0.16 145);
+}
+.dark[data-theme-primary='green'] {
+    --primary: oklch(0.72 0.16 145);
+    --primary-foreground: oklch(0.15 0.04 145);
+    --ring: oklch(0.72 0.16 145);
+    --sidebar-primary: oklch(0.72 0.16 145);
+    --sidebar-primary-foreground: oklch(0.15 0.04 145);
+    --sidebar-ring: oklch(0.72 0.16 145);
+}
+
+[data-theme-primary='amber'] {
+    --primary: oklch(0.6 0.18 75);
+    --primary-foreground: oklch(0.15 0.04 75);
+    --ring: oklch(0.6 0.18 75);
+    --sidebar-primary: oklch(0.6 0.18 75);
+    --sidebar-primary-foreground: oklch(0.15 0.04 75);
+    --sidebar-ring: oklch(0.6 0.18 75);
+}
+.dark[data-theme-primary='amber'] {
+    --primary: oklch(0.78 0.18 75);
+    --primary-foreground: oklch(0.15 0.04 75);
+    --ring: oklch(0.78 0.18 75);
+    --sidebar-primary: oklch(0.78 0.18 75);
+    --sidebar-primary-foreground: oklch(0.15 0.04 75);
+    --sidebar-ring: oklch(0.78 0.18 75);
+}
+
+[data-theme-primary='purple'] {
+    --primary: oklch(0.45 0.2 295);
+    --primary-foreground: oklch(0.985 0 0);
+    --ring: oklch(0.45 0.2 295);
+    --sidebar-primary: oklch(0.45 0.2 295);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-ring: oklch(0.45 0.2 295);
+}
+.dark[data-theme-primary='purple'] {
+    --primary: oklch(0.72 0.18 295);
+    --primary-foreground: oklch(0.15 0.05 295);
+    --ring: oklch(0.72 0.18 295);
+    --sidebar-primary: oklch(0.72 0.18 295);
+    --sidebar-primary-foreground: oklch(0.15 0.05 295);
+    --sidebar-ring: oklch(0.72 0.18 295);
+}
+
+[data-theme-primary='rose'] {
+    --primary: oklch(0.52 0.22 15);
+    --primary-foreground: oklch(0.985 0 0);
+    --ring: oklch(0.52 0.22 15);
+    --sidebar-primary: oklch(0.52 0.22 15);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-ring: oklch(0.52 0.22 15);
+}
+.dark[data-theme-primary='rose'] {
+    --primary: oklch(0.72 0.2 15);
+    --primary-foreground: oklch(0.15 0.05 15);
+    --ring: oklch(0.72 0.2 15);
+    --sidebar-primary: oklch(0.72 0.2 15);
+    --sidebar-primary-foreground: oklch(0.15 0.05 15);
+    --sidebar-ring: oklch(0.72 0.2 15);
+}
+
+/*
+ * ============================================================
+ * Tailux light scheme blocks
+ * Applied as [data-theme-light="..."] on documentElement.
+ * Controls the light mode neutral palette independently
+ * of the primary color.
+ * data-theme-light = "slate" | "gray" | "neutral"
+ * ============================================================
+ */
+
+[data-theme-light='slate'] {
+    --background: oklch(0.985 0.003 255);
+    --foreground: oklch(0.2 0.02 255);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.2 0.02 255);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.2 0.02 255);
+    --secondary: oklch(0.97 0.008 255);
+    --secondary-foreground: oklch(0.32 0.02 255);
+    --muted: oklch(0.97 0.008 255);
+    --muted-foreground: oklch(0.48 0.02 255);
+    --accent: oklch(0.97 0.008 255);
+    --accent-foreground: oklch(0.32 0.02 255);
+    --border: oklch(0.918 0.01 255);
+    --input: oklch(0.918 0.01 255);
+    --sidebar: oklch(0.982 0.004 255);
+    --sidebar-foreground: oklch(0.2 0.02 255);
+    --sidebar-accent: oklch(0.97 0.008 255);
+    --sidebar-accent-foreground: oklch(0.32 0.02 255);
+    --sidebar-border: oklch(0.918 0.01 255);
+}
+
+[data-theme-light='gray'] {
+    --background: oklch(0.985 0.002 250);
+    --foreground: oklch(0.205 0.02 250);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.205 0.02 250);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.205 0.02 250);
+    --secondary: oklch(0.97 0.006 250);
+    --secondary-foreground: oklch(0.35 0.02 250);
+    --muted: oklch(0.97 0.006 250);
+    --muted-foreground: oklch(0.45 0.02 250);
+    --accent: oklch(0.97 0.006 250);
+    --accent-foreground: oklch(0.35 0.02 250);
+    --border: oklch(0.91 0.008 250);
+    --input: oklch(0.91 0.008 250);
+    --sidebar: oklch(0.98 0.003 250);
+    --sidebar-foreground: oklch(0.205 0.02 250);
+    --sidebar-accent: oklch(0.97 0.006 250);
+    --sidebar-accent-foreground: oklch(0.35 0.02 250);
+    --sidebar-border: oklch(0.91 0.008 250);
+}
+
+[data-theme-light='neutral'] {
+    --background: oklch(0.985 0 0);
+    --foreground: oklch(0.2 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.2 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.2 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.33 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.46 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.33 0 0);
+    --border: oklch(0.91 0 0);
+    --input: oklch(0.91 0 0);
+    --sidebar: oklch(0.98 0 0);
+    --sidebar-foreground: oklch(0.2 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.33 0 0);
+    --sidebar-border: oklch(0.91 0 0);
+}

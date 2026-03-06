@@ -43,5 +43,6 @@ All Controllers:
 | [PageViewController](./pageviewcontroller.md) | N/A | ✅ |
 | [UsersTableController](./UsersTableController.md) | N/A | ✅ |
 | [SearchController](docs/developer/backend/controllers/SearchController.md) | N/A | ✅ |
+| [DashboardController](./dashboardcontroller.md) | N/A | ✅ |
 
 

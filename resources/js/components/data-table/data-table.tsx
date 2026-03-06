@@ -1062,7 +1062,7 @@ export function DataTable<TData extends object>({
     useEffect(() => {
         if (pollingInterval <= 0 || !partialReloadKey) return;
         const id = setInterval(() => {
-            router.reload({ only: [partialReloadKey], preserveState: true });
+            router.reload({ only: [partialReloadKey] });
         }, pollingInterval * 1000);
         return () => clearInterval(id);
     }, [pollingInterval, partialReloadKey]);
