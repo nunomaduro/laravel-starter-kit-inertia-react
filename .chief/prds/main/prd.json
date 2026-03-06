@@ -429,7 +429,7 @@
         "`npx tsc --noEmit` passes"
       ],
       "priority": 29,
-      "passes": false
+      "passes": true
     },
     {
       "id": "US-030",

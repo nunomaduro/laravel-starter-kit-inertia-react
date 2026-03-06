@@ -473,3 +473,22 @@
   - Both `CommandPalette` (via `@tanstack/hotkeys`) and `GlobalSearch` (via shortcut registry) bind `Mod+K` — they coexist without visible conflict because CommandPalette is mounted inside layouts while GlobalSearch is in the root; the shortcut registry fires first via `window.addEventListener` order.
   - `flatIdx` is computed at render time by keeping a running counter across category groups; this ensures arrow key index maps correctly to flat item array position.
 ---
+
+## 2026-03-07 - US-029
+- Enhanced DataTable with all missing features from acceptance criteria.
+- `HighlightableCell` exported from `data-table.tsx`: highlights regex matches in a string with `<mark>` tags; safe-escapes the search term.
+- `CopyableCell` was already implemented, now exported.
+- Virtual scrolling: added `useVirtualizer` from `@tanstack/react-virtual`; enabled via `options.virtualScrolling` (boolean or number for height in px); adds a `tableContainerRef` div with fixed height and `overflow-y-auto`; uses spacer `<tr>` rows above/below virtual items.
+- `ItemViewTypeSelect`: new component at `data-table/item-view-type-select.tsx`; shows Table2/LayoutGrid/List icon buttons in a bordered row; `views` prop controls which options appear; `aria-pressed` for accessibility.
+- `RangeFilter`: standalone min/max number inputs without operator dropdown; calls `onSubmit('between', [min, max])` on blur/Enter; added to `filter-controls.tsx`.
+- `RadioFilter`: single-select radio buttons for option columns; clicking selected option deselects it; added to `filter-controls.tsx`.
+- `DateFilter` was already exported from `filter-controls.tsx`.
+- Added 'range' and 'radio' to `FilterType` union and `OPERATORS`/`DEFAULT_OPERATOR` records in `filters/types.ts`.
+- Row grouping: added `getGroupedRowModel` + `getExpandedRowModel` + `GroupingState` to `use-data-table.ts`; accepts optional `groupBy` param; exposes `grouping`/`setGrouping`.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `useVirtualizer` from `@tanstack/react-virtual` v3 requires `enabled` option (default true); pass `enabled: false` to disable without conditional hook call.
+  - Spacer rows above/below virtual items: top spacer = `virtualItems[0]?.start ?? 0`, bottom spacer = `totalSize - (virtualItems.at(-1)?.end ?? 0)`.
+  - `getGroupedRowModel`/`getExpandedRowModel` can be added to `useReactTable` without breaking existing server-side pagination — they operate client-side on loaded rows only.
+  - Filter types 'range' and 'radio' are now valid `FilterType` values — use in `filterColumns` array to render the new filter UIs.
+---
