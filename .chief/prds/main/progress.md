@@ -1,5 +1,27 @@
 # Progress Log
 
+## 2026-03-07 - US-030
+- Created `resources/js/components/composed/` with 12 high-level composed components.
+- `data-view.tsx`: table/grid/list mode switcher; `columns` for table, `renderGridItem`/`renderListItem` render-props; search + sort toolbar.
+- `form-wizard.tsx`: multi-step Card wizard; step indicator with completed check; async `onValidate` per step; prev/next/finish; progress bar.
+- `command-bar.tsx`: `CommandDialog` (cmdk) opened by `Mod+K`; lists registered shortcuts from `keyboard-shortcuts.ts` in a dedicated "Shortcuts" section; AI prompt section when `onAiPrompt` prop provided; wires `registerShortcut`/`unregisterShortcut` in effect.
+- `notification-center.tsx`: bell `Button` with unread `Badge`; `Popover` with notification list; mark-read, delete, mark-all-read, clear-all; type-colored dot indicators.
+- `file-manager.tsx`: breadcrumb nav; list/grid toggle; search; new-folder inline input; rename-in-place Input on rows/grid tiles; `DropdownMenu` for per-file actions; accepts `onUpload`/`onDelete`/`onRename`/`onCreateFolder` callbacks.
+- `metric-dashboard.tsx`: `StatCard` grid (2/3/4 columns) + `AreaChart`/`BarChart` via `chartType` prop; period `Tabs` switcher.
+- `activity-log.tsx`: timeline with actor `Avatar` + connector line; optional search/type filter toolbar; `formatTimestamp` relative helper; `metadata` key-value chips.
+- `user-card.tsx`: three variants — compact (inline row), default (Card), detailed (Card with gradient header, bio, stats grid); status dot; follow/message/email action buttons.
+- `pricing-card.tsx`: feature list with check/minus icons; popular/current badges; custom price; yearly price footnote; `ctaVariant` prop.
+- `kanban-board.tsx`: wraps `Kanban` from `@/components/ui/kanban`; `allowAddColumn` / `allowAddCard` with inline Input forms; card count summary header.
+- `location-dashboard.tsx`: `MarkersMap` (left) + searchable location list (right) in responsive 2-col grid; selected location highlighted on map and in list; star rating display.
+- `right-sidebar.tsx`: `Sheet` with configurable `sections[]`, each optionally collapsible; `headerActions` slot; `footer` slot.
+- `npx tsc --noEmit` ✓
+- **Learnings for future iterations:**
+  - `MarkersMap` does not accept a `style` prop — wrap in a `<div style={{ height }}>` instead.
+  - `command-bar.tsx` must call `registerShortcut` + `unregisterShortcut` in a `useEffect` to avoid memory leaks across hot reloads.
+  - Composed components live in `resources/js/components/composed/` — import with `@/components/composed/`.
+  - `SheetDescription` must be rendered inside `SheetHeader` for accessibility; if you hide the description, use `sr-only` class or the `Dialog` a11y pattern.
+---
+
 ## 2026-03-07 - US-028
 - Created `resources/js/components/ai/` with 22 components covering full AI UI vocabulary.
 - `assistant-runtime-provider.tsx`: React context provider managing message state and streaming SSE/JSON connection to Laravel AI SDK backend endpoint; exposes `append`, `stop`, `clear`, `setConfig`.
