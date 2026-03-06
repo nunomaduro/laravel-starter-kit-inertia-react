@@ -157,3 +157,14 @@
   - `novel`, `assistant-ui`, `react-pdf` are heavy packages — they should be dynamically imported in components to avoid large initial bundle warnings
   - The build warning about chunks >500 kB is pre-existing (not caused by these installs); no action needed for this story
 ---
+
+## 2026-03-07 - US-012
+- None of the 31 registry component names (shadcn-stepper, emblor, credenza, etc.) exist in the standard `ui.shadcn.com` registry — they are all community/third-party registry components. `npx shadcn@latest add [name]` returns 404 for all of them.
+- Created 31 proper TypeScript implementations as `resources/js/components/ui/` files, leveraging installed packages: `react-colorful` (color-picker), `embla-carousel-react` (carouselcn), `@dnd-kit/*` (dnd-list, sortable), `react-dropzone` (file-uploader, image-upload), `react-day-picker` (date-range-picker, date-time-picker), `react-hook-form` + `zod` (auto-form), `date-fns` (calendars)
+- Also created `progress.tsx` (Radix Progress primitive) required by file-uploader
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - Community shadcn registry components are NOT in `ui.shadcn.com` — they live in third-party domains and typically require full URL-based `npx shadcn@latest add https://...` invocations that are unpredictable/unreliable. Creating implementations directly is more reliable.
+  - The `ZodObject` generic type in zod accepts at most 2 type args — use `ZodObject<ZodRawShape>` not `ZodObject<ZodRawShape, any, any, any, any>` for TypeScript compatibility.
+  - `react-hook-form`'s `useForm<any>` with `resolver: zodResolver(schema)` is the simplest escape hatch for generic zod-driven forms; casting onSubmit handler with `as (data: any) => void` avoids complex generic constraints.
+---
