@@ -9,6 +9,7 @@ import { Toaster } from 'sonner';
 import { CookieConsentBanner } from './components/cookie-consent-banner';
 import { FlashListener } from './components/flash-listener';
 import { ThemeFromProps } from './components/theme-from-props';
+import { GlobalSearch } from './components/ui/global-search';
 import { KeyboardShortcutDisplay } from './components/ui/keyboard-shortcut-display';
 import { initializeTheme } from './hooks/use-appearance';
 import { QueryProvider } from './providers/query-provider';
@@ -31,6 +32,7 @@ createInertiaApp({
                         <ThemeFromProps />
                         <CookieConsentBanner />
                         <FlashListener />
+                        <GlobalSearch />
                         <KeyboardShortcutDisplay />
                         <Page {...props} />
                         <Toaster richColors position="top-right" />
