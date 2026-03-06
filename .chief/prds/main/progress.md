@@ -38,6 +38,13 @@
   - The `@theme` block in tailux.css maps `--color-{name}` to Tailwind utilities (`bg-info`, `text-error`, etc.) in Tailwind v4.
 ---
 
+## Codebase Patterns
+- Settings fields that should NOT be orgOverridable: add to the Settings class but do NOT add to OVERLAY_MAP. Access via `app(SettingsClass::class)->field`. Fields not in the `map` array are still valid settings fields (e.g., `maintenance_mode` in AppSettings).
+- `ThemeSettings` has `orgOverridable: true` — any field added to its `map` in OVERLAY_MAP becomes org-overridable. Add system-wide-only fields to ThemeSettings class directly without adding them to OVERLAY_MAP.
+- Settings migrations must be uniquely named and sortable; use `YYYY_MM_DD_NNNNNN_description.php` format.
+- After adding settings fields: run `php artisan migrate` then `php artisan settings:cache`.
+- Filament SettingsPage uses `Filament\Forms\Components\Toggle` for boolean fields, with `->helperText()` for descriptive text.
+
 ## 2026-03-07 - US-003
 - Extended `app/Settings/ThemeSettings.php` with 5 new public fields: `dark_color_scheme` (default: `'navy'`), `primary_color` (default: `'indigo'`), `light_color_scheme` (default: `'slate'`), `card_skin` (default: `'shadow'`), `border_radius` (default: `'default'`)
 - Created `database/settings/2026_03_07_000001_add_tailux_theme_fields.php` migration that adds the 5 new settings fields to the `theme` group
@@ -49,4 +56,15 @@
   - Settings migration filenames must be unique and sortable; use `YYYY_MM_DD_NNNNNN_description.php` format.
   - The `SettingsOverlayServiceProvider::OVERLAY_MAP` drives both config overlay AND the org-override system — setting `orgOverridable: true` makes the new fields overridable per-org via `organization_settings` table.
   - When adding fields to an existing Settings class, both the PHP class and the DB migration must be updated — and `settings:cache` must be re-run.
+---
+
+## 2026-03-07 - US-004
+- Added `allow_user_theme_customization: bool = false` to `app/Settings/ThemeSettings.php`
+- Created `database/settings/2026_03_07_000002_add_allow_user_theme_customization.php` migration
+- Added `Toggle` component to `app/Filament/Pages/ManageTheme.php` with label and helper text
+- Field intentionally NOT added to OVERLAY_MAP (system-wide, not orgOverridable; accessed via `app(ThemeSettings::class)->allow_user_theme_customization`)
+- `php artisan migrate` ✓ | `php artisan settings:cache` ✓ | `vendor/bin/pint` ✓
+- **Learnings for future iterations:**
+  - Fields in Settings classes not listed in OVERLAY_MAP are not orgOverridable and not accessible via config() — access them directly via `app(SettingsClass::class)->field`
+  - Filament Toggle uses `Filament\Forms\Components\Toggle`, not a generic form field
 ---

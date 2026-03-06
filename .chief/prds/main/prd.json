@@ -60,7 +60,7 @@
         "`vendor/bin/pint --dirty --format agent` passes"
       ],
       "priority": 4,
-      "passes": false
+      "passes": true
     },
     {
       "id": "US-005",
