@@ -107,3 +107,19 @@
   - `ThemeProps` in `index.d.ts` is the canonical TS type; `theme-from-props.tsx` has its own local interface (doesn't import from types), so changing the central type won't break that component
   - `border_radius` and `radius` are two separate ThemeSettings fields: `radius` is legacy shadcn/UI, `border_radius` is the new Tailux one
 ---
+
+## 2026-03-07 - US-008
+- Installed Storybook devDependencies (storybook, @storybook/react-vite, @storybook/addon-docs, @storybook/addon-themes, @storybook/addon-a11y, @storybook/blocks) at ^8.6.0 with --legacy-peer-deps
+- Also installed `react-is` (required by recharts, was missing and breaking `npm run build`)
+- Created `.storybook/main.ts` — framework: @storybook/react-vite; stories glob: `resources/js/stories/**/*.stories.@(ts|tsx)`; addons: docs, themes, a11y
+- Created `.storybook/preview.tsx` — imports `resources/css/app.css`; mock stubs for `usePage`, `router`, `useForm`, `Link` from @inertiajs/react; 6 toolbar globals (darkMode, darkTheme, primaryColor, lightTheme, cardSkin, radius) that apply data-* attributes to `document.documentElement`; decorator calls `applyThemeAttributes` on every story render
+- Added `storybook` (port 6006) and `build-storybook` scripts to `package.json`
+- Created `resources/js/stories/Button.stories.tsx` as a sample story verifying setup
+- **Learnings for future iterations:**
+  - Storybook peer deps conflict with the latest `storybook@8.6.18` — pin to `^8.6.0` and use `--legacy-peer-deps` to resolve
+  - `recharts` requires `react-is` as a peer dep; it was missing — installing it fixes the production `vite build`
+  - The `.storybook/` directory is outside `resources/js/` so the root `tsconfig.json` does NOT type-check it; that's fine since Storybook uses its own internal compilation
+  - To mock `@inertiajs/react` for Storybook: mutate `require('@inertiajs/react')` directly in `preview.tsx` (CJS interop works with `type: module` + `@storybook/react-vite`)
+  - `applyThemeAttributes` in the preview decorator needs to handle all 6 toolbar globals; dark mode applies/removes `.dark` class and `colorScheme` style
+  - Production build does NOT include Storybook — Storybook is purely a devDependency tool with its own `build-storybook` command
+---

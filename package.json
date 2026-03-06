@@ -5,6 +5,8 @@
         "build": "vite build",
         "build:ssr": "vite build && vite build --ssr",
         "dev": "vite",
+        "storybook": "storybook dev --port 6006",
+        "build-storybook": "storybook build",
         "lint": "eslint . --fix && prettier --write resources/",
         "test:lint": "eslint . && prettier --check resources/",
         "test:types": "tsc --noEmit"
@@ -13,6 +15,11 @@
         "@eslint-react/eslint-plugin": "^2.13.0",
         "@eslint/js": "^10.0.1",
         "@laravel/vite-plugin-wayfinder": "^0.1.7",
+        "@storybook/addon-a11y": "^8.6.18",
+        "@storybook/addon-docs": "^8.6.18",
+        "@storybook/addon-themes": "^8.6.18",
+        "@storybook/blocks": "^8.6.18",
+        "@storybook/react-vite": "^8.6.18",
         "@tanstack/devtools": "^0.10.10",
         "@tanstack/hotkeys": "^0.3.1",
         "@tanstack/react-query-devtools": "^5.91.3",
@@ -24,6 +31,7 @@
         "prettier": "^3.8.1",
         "prettier-plugin-organize-imports": "^4.3.0",
         "prettier-plugin-tailwindcss": "^0.7.2",
+        "storybook": "^8.6.18",
         "typescript-eslint": "^8.56.1"
     },
     "dependencies": {
@@ -73,6 +81,7 @@
         "react": "^19.2.4",
         "react-day-picker": "^9.14.0",
         "react-dom": "^19.2.4",
+        "react-is": "^19.2.4",
         "react-markdown": "^10.1.0",
         "recharts": "^3.7.0",
         "remark-gfm": "^4.0.1",
