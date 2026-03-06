@@ -1,5 +1,25 @@
 # Progress Log
 
+## 2026-03-07 - US-027
+- Installed `@mapcn/map` via `npx shadcn@latest add @mapcn/map --yes` — installs `maplibre-gl ^5.19.0` and creates `resources/js/components/ui/map.tsx` (shadcn placed it at wrong root path, moved manually to `resources/js/`).
+- Created `resources/js/components/maps/` with 7 components using OpenFreeMap tiles (`https://tiles.openfreemap.org/styles/liberty` / `dark`).
+- `base-map.tsx`: base wrapper exporting `OPEN_FREE_MAP_STYLES` constant reused by all other maps; `Map + MapControls`.
+- `markers-map.tsx`: clickable markers with `MapMarker + MarkerTooltip + MarkerPopup`; mock NYC landmarks; selected marker shows popup.
+- `clusters-map.tsx`: 80 synthetic points clustered via `MapClusterLayer`; GeoJSON typed as `FeatureCollection<Point>` (not `Geometry`) to satisfy type.
+- `routes-map.tsx`: two mock routes via `MapRoute`; start/end `MapMarker`s; `flatMap` to avoid React fragment key issue.
+- `analytics-map.tsx`: bubble map with sized/colored circles via `MapMarker + MarkerContent`; legend overlay.
+- `tracking-map.tsx`: simulated real-time asset tracking; interval-driven position updates; trail lines via `MapRoute`.
+- `location-picker.tsx`: click-to-pick with `useMap()` inner component (`ClickListener`) using `useEffect` to register/cleanup click handler.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `npx shadcn@latest add @mapcn/map` places file at `components/ui/map.tsx` in project root (NOT `resources/js/`) — move it manually.
+  - `MapMarker` requires `children: ReactNode` (not optional) — pass `{null}` for marker-only usage without tooltips.
+  - `MapClusterLayer` `data` prop type is `FeatureCollection<Point>` not `FeatureCollection<Geometry>` — cast with `as const` on `"Point"` in toGeoJSON helper.
+  - To listen to map events from a child: use `useMap()` inside a separate inner component rendered within `<Map>`, then use `useEffect` with `map.on/off`.
+  - OpenFreeMap tile styles: `https://tiles.openfreemap.org/styles/liberty` (light) and `https://tiles.openfreemap.org/styles/dark` — free, no API key needed.
+  - `OPEN_FREE_MAP_STYLES` constant is exported from `base-map.tsx` and reused across all other map components.
+---
+
 ## 2026-03-07 - US-026
 - Created `resources/js/components/charts/` directory with 12 typed recharts wrappers + 1 shared utility.
 - `chart-colors.ts`: shared `CHART_COLORS` array using CSS custom properties (`var(--primary)`, `var(--color-info)`, etc.) for theme-aware theming.
