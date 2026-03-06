@@ -1,5 +1,37 @@
 # Progress Log
 
+## 2026-03-07 - US-019
+- Created `radio.tsx` and `radio-group.tsx`: Radix RadioGroup primitive wrappers; `RadioGroupWithOptions` convenience component accepts `options[]` with value/label/description/disabled.
+- Created `checkbox-group.tsx`: controlled/uncontrolled group of Checkbox items; `orientation` prop for horizontal or vertical layout.
+- Created `tag.tsx`: chip-style inline element with optional remove button; CVA variants (default, secondary, outline, destructive).
+- Created `tags-input.tsx`: keyboard-driven (Enter/Backspace/paste) tags input; controlled/uncontrolled; `delimiter`, `maxTags`, `allowDuplicates` props.
+- Created `datetime-picker.tsx`: re-export alias for existing `date-time-picker.tsx`.
+- Created `file-dropzone.tsx`: `react-dropzone` wrapper with drag-active / drag-reject visual states; passes through all `DropzoneOptions`.
+- Created `number-input.tsx`: +/- button controls; `min`/`max`/`step`/`precision`/`allowNegative`/`prefix`/`suffix`; `showControls` toggleable.
+- Created `password-input.tsx`: password input with Eye/EyeOff toggle; shares Input visual style.
+- Created `search-input.tsx`: search input with magnifier icon, clear button, and loading spinner; controlled/uncontrolled.
+- Created `country-select.tsx`: re-export alias for existing `CountryDropdown` as `CountrySelect`.
+- Created `timezone-select.tsx`: searchable combobox using `Intl.supportedValuesOf("timeZone")`; shows UTC offset; groups by region.
+- Created `combobox.tsx`: generic single/multi combobox with flat options or grouped; uses Command + Popover pattern.
+- Created `listbox.tsx`: scrollable selectable list; single or multi-select; keyboard-accessible with `role="listbox"`.
+- Created `range-slider.tsx`: dual-thumb slider wrapping Radix Slider; typed as `[number, number]`; optional formatted value display.
+- Created `rating.tsx`: star rating; half-star precision; hover preview; readOnly mode; custom icon support.
+- Created `rich-text-editor.tsx`: full Tiptap editor with floating toolbar (headings, bold, italic, strike, code, link, lists, blockquote, hr, undo/redo).
+- Created `novel-editor.tsx`: wraps Novel's `EditorRoot` + `EditorContent`; `aiEndpoint` prop routes completions to Laravel AI SDK backend.
+- Created `input-group.tsx`: joins adjacent Input/Button/Select visually; `InputGroupAddon` for prefix/suffix text.
+- Created `form-field.tsx`: label + description + error + hint wrapper; `horizontal` layout mode.
+- Created `form-section.tsx`: titled section with separator, optional actions slot, and collapsible toggle.
+- Created `contextual-help.tsx`: `hover` (Tooltip) or `click` (Popover) help icon with title + content.
+- Created `autosave-indicator.tsx`: status badge for `idle | saving | saved | error` with animated spinner and check icon.
+- Created `translatable-field.tsx`: tab row of locale codes; shows filled indicator dot per locale; `renderInput` render-prop pattern.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `novel` package exports `EditorRoot`, `EditorContent`, `EditorBubble`, etc. (NOT a default `Editor` component). Use `EditorRoot` as wrapper and `EditorContent` for the editable area.
+  - Tiptap v3 `editor.commands.setContent(html, parseOptions)` — the second arg is `SetContentOptions` (object), not a boolean. Use `{ emitUpdate: false }` to suppress re-trigger.
+  - `Intl.supportedValuesOf("timeZone")` returns the full IANA list in modern browsers; wrap in try/catch or `?? []` for older environments.
+  - `RadioGroup` from `radix-ui` — the correct import is `import { RadioGroup as RadioGroupPrimitive } from "radix-ui"`, same pattern as Checkbox/Switch.
+---
+
 ## 2026-03-07 - US-018
 - Created `resources/js/components/ui/icon-button.tsx`: wraps `buttonVariants` with `size="icon"` default; requires accessible `label` prop for `aria-label`/`title`; supports `asChild` via Radix Slot.
 - Created `resources/js/components/ui/button-group.tsx`: horizontal/vertical flex wrapper; `attached` prop removes inner border-radii and applies negative margin to visually join buttons.
