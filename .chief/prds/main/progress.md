@@ -1,5 +1,17 @@
 # Progress Log
 
+## 2026-03-07 - US-017
+- Created layout primitives: `box.tsx` (polymorphic `as` prop via `React.JSX.IntrinsicElements`), `container.tsx` (max-width + padding CVA), `stack.tsx` (VStack/HStack wrappers), `grid.tsx` (Grid + GridItem with span CVA), `divider.tsx` (with optional label slot), `scroll-shadow.tsx` (CSS mask-image fade shadows), `masonry.tsx` (CSS columns with break-inside-avoid), `resizable.tsx` (wraps react-resizable-panels v4 Group/Panel/Separator).
+- Created navigation components: `pagination.tsx` (headless + PaginationControl convenience), `bottom-nav.tsx` (fixed bottom mobile nav with badge), `tree-nav.tsx` (recursive tree with context, expand/select state), `collapsible-search.tsx` (animated expand/collapse search), `toc.tsx` (IntersectionObserver-driven active heading tracker).
+- `stepper.tsx`, `animated-tabs.tsx`, `mode-toggle.tsx` already existed from earlier stories.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `Box` polymorphic component: use `keyof React.JSX.IntrinsicElements` (not `JSX.IntrinsicElements`) for the tag type, and `React.ComponentPropsWithoutRef<T>` to get the right HTML props.
+  - `TreeNavProps`: must use `Omit<React.HTMLAttributes<HTMLElement>, "onSelect">` because `onSelect` conflicts with the native HTML event handler signature.
+  - `react-resizable-panels` v4 exports are `Group`, `Panel`, `Separator` (not `PanelGroup`/`PanelResizeHandle`). The `Separator` component takes `data-panel-group-direction` and works with CSS attribute selectors.
+  - Masonry layout with CSS `columns` + `break-inside-avoid` is the simplest pure-CSS approach; wrapping children in a `<div className="break-inside-avoid mb-4">` prevents column splits.
+---
+
 ## 2026-03-07 - US-015
 - Created `resources/js/lib/keyboard-shortcuts.ts`: module-level Map registry; exports `registerShortcut`, `unregisterShortcut`, `getShortcuts`, `subscribeToShortcuts`, and `useKeyboardShortcut` hook; handles modifier keys (mod/ctrl/cmd/shift/alt); prevents firing in editable elements for single-char shortcuts.
 - Created `resources/js/components/ui/kbd.tsx`: simple styled `<kbd>` element for displaying key hints.
