@@ -381,3 +381,19 @@
   - The `ZodObject` generic type in zod accepts at most 2 type args — use `ZodObject<ZodRawShape>` not `ZodObject<ZodRawShape, any, any, any, any>` for TypeScript compatibility.
   - `react-hook-form`'s `useForm<any>` with `resolver: zodResolver(schema)` is the simplest escape hatch for generic zod-driven forms; casting onSubmit handler with `as (data: any) => void` avoids complex generic constraints.
 ---
+
+## 2026-03-07 - US-025
+- Created `resources/js/components/ui/global-search.tsx`: full-screen backdrop modal triggered by `mod+k` via keyboard shortcut registry.
+- Registers `mod+k` shortcut via `registerShortcut` from `@/lib/keyboard-shortcuts`; unregisters on unmount.
+- Text input with debounced 300ms fetch to `/search?q=...` (existing SearchController); shows animated spinner while loading.
+- Results displayed in category groups (Users, Posts, Help Articles, Changelog) with type icons; keyboard navigation via ArrowUp/ArrowDown + Enter.
+- Empty state shows recent searches list from `localStorage` (`global_search_recent`, max 10); clicking a recent query fills input; per-item remove button.
+- Result items and Enter key use `router.visit(url)` for Inertia navigation; successful navigation saves query to recent searches.
+- Mounted globally in `resources/js/app.tsx` alongside ThemeFromProps and other app-wide components.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓ | `vendor/bin/pint` ✓
+- **Learnings for future iterations:**
+  - The backend `/search` route and `SearchController` already existed — no backend changes needed for this story.
+  - `GlobalSearch` is rendered as `null` when closed (not hidden with CSS) to avoid unnecessary DOM nodes; `useEffect` timers/listeners still cleanup on unmount.
+  - Both `CommandPalette` (via `@tanstack/hotkeys`) and `GlobalSearch` (via shortcut registry) bind `Mod+K` — they coexist without visible conflict because CommandPalette is mounted inside layouts while GlobalSearch is in the root; the shortcut registry fires first via `window.addEventListener` order.
+  - `flatIdx` is computed at render time by keeping a running counter across category groups; this ensures arrow key index maps correctly to flat item array position.
+---
