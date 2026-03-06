@@ -1,5 +1,25 @@
 # Progress Log
 
+## 2026-03-07 - US-023
+- Created `resources/js/components/saas/` directory with 8 SaaS-specific components.
+- `trial-banner.tsx`: full-width top banner with `daysRemaining`/`onUpgrade` props; color shifts to destructive when ≤3 days; dismissible via localStorage; hidden when `daysRemaining` is null.
+- `feature-gate.tsx`: renders `children` when `hasAccess=true`; otherwise shows a centered Card with lock icon, title, description, and optional CTA button.
+- `usage-meter.tsx`: `Progress` bar + label showing `used`/`limit`; warning color at ≥80%, error color at 100%.
+- `onboarding-checklist.tsx`: floating or inline checklist with collapsible toggle, progress bar, completion percentage; collapses to "Setup complete!" when all steps done; links incomplete steps via Inertia `<Link>`.
+- `whats-new-modal.tsx`: Dialog auto-shown on mount unless seen version matches localStorage; "Got it" persists the version; renders items with optional badge.
+- `impersonation-banner.tsx`: reads `auth.impersonating` from `usePage().props` (cast through `unknown`); shows impersonated user name and "Stop Impersonating" link; `leaveUrl` prop defaults to `/admin/impersonate/leave`.
+- `maintenance-banner.tsx`: reads `usePage().props.maintenance` (`MaintenanceInfo | null`); dismissible; formats `scheduledAt` with `Intl.DateTimeFormat`.
+- `setup-wizard.tsx`: multi-step wizard using `Stepper` + `Card`; tracks current step in URL param via `router.visit({ replace: true })`; progress bar shows overall completion.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `Auth` type has no index signature — cast through `unknown` first (`auth as unknown as Record<string, unknown>`) before accessing dynamic keys.
+  - `Checkbox` from shadcn/radix has no `readOnly` prop — use `className="pointer-events-none"` to visually disable interaction.
+  - `router.replace(url, options)` does NOT accept a second argument in Inertia v2 — use `router.visit(url, { replace: true, ... })` instead.
+  - Ziggy is NOT installed; never use `route()` in frontend components. Use hardcoded URLs or accept URL as a prop.
+  - SaaS components live in `resources/js/components/saas/` (separate from `ui/`).
+---
+
+
 ## 2026-03-07 - US-022
 - `confirm-dialog.tsx` and `credenza.tsx` already existed from earlier stories.
 - Created `responsive-modal.tsx`: re-export alias mapping `Credenza*` exports to `ResponsiveModal*` names.
