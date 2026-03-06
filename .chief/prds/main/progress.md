@@ -1,5 +1,34 @@
 # Progress Log
 
+## 2026-03-07 - US-020
+- Created `tree.tsx`: generic collapsible tree with controlled/uncontrolled expanded state; keyboard accessible (`role="tree"`/`role="treeitem"`); depth-based indent via inline paddingLeft.
+- Created `kanban.tsx`: drag-and-drop kanban board using `@dnd-kit`; supports cross-column card movement via `onDragOver`; `renderCard` render-prop for custom card content.
+- Created `sortable-list.tsx`: simple sortable list with drag handles; `renderItem` render-prop; wraps `@dnd-kit/core` + `@dnd-kit/sortable`.
+- Created `carousel.tsx`: Embla Carousel wrapper; `CarouselContent`/`CarouselItem`/`CarouselPrevious`/`CarouselNext` primitives; optional dots navigation; horizontal/vertical orientation.
+- Created `gallery.tsx`: image grid/masonry/columns layouts with lightbox dialog; keyboard arrow navigation; `renderImage` render-prop; `ZoomInIcon` hover overlay.
+- Created `stat-card.tsx`: metric card with trend indicator (up/down/neutral), badge, icon, loading skeleton.
+- Created `list.tsx` + `list-item.tsx`: `List` is a `<ul>` wrapper with `divided`/`bordered`/`compact`/`flush` props; `ListItem` supports `leading`/`trailing` slots, href/onClick for interactive variant.
+- Created `description-list.tsx`: `stacked`/`inline`/`grid` layouts; `items` array or `DescriptionList.Row` JSX children.
+- Created `feed.tsx` + `feed-item.tsx`: activity feed with actor avatar or custom icon; timeline connector lines; optional content block.
+- Created `file-item.tsx` + `file-item-square.tsx`: file row and square thumbnail variants; MIME-type to icon mapping; download/delete actions.
+- Created `highlight.tsx`: `react-syntax-highlighter` (atomOneDark) wrapper; copy button; optional filename header; max height scroll.
+- Created `virtual-list.tsx`: `@tanstack/react-virtual` based; infinite scroll via `fetchNextPage`/`hasNextPage`/`isFetchingNextPage`; skeleton loader row.
+- Created `json-viewer.tsx`: recursive collapsible JSON tree; type-colored primitives (null=orange, bool=purple, number=green, string=amber); copy-to-clipboard.
+- Created `diff-viewer.tsx`: `react-diff-viewer-continued` wrapper; auto split/unified by viewport width; dark-mode aware via `document.documentElement.classList`.
+- Created `pdf-viewer.tsx`: `react-pdf` wrapper; page navigation; zoom 50%–300%; skeleton while loading; web worker configured via `new URL(...)`.
+- Created `video-player.tsx`: custom HTML5 video controls (play/pause, scrubber, volume, speed cycle, fullscreen); controls auto-hide on inactivity; respects `useReducedMotion` for autoPlay.
+- Created `image-comparison.tsx`: `react-compare-slider` wrapper; `before`/`after` accept string URL or ReactNode; horizontal/vertical orientation.
+- Created `qr-code.tsx`: `qrcode.react` QRCodeCanvas with download-as-PNG button.
+- Created `signature-pad.tsx`: `react-signature-canvas` wrapper; responsive width via ResizeObserver; Clear/Save buttons; dashed baseline guide.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `FilePdfIcon` does NOT exist in lucide-react — use `FileTextIcon` for PDFs.
+  - `react-pdf` worker must be configured via `pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()` at module level.
+  - When extending `LiHTMLAttributes<HTMLLIElement>` with a custom `title?: ReactNode`, must use `Omit<..., 'title'>` because the base interface defines `title?: string`.
+  - `FeedItemProps` interface in `feed-item.tsx` was not exported — avoid re-exporting types that aren't exported from their source module.
+  - `ReactCompareSliderImage` requires an `alt` prop (not optional).
+---
+
 ## 2026-03-07 - US-019
 - Created `radio.tsx` and `radio-group.tsx`: Radix RadioGroup primitive wrappers; `RadioGroupWithOptions` convenience component accepts `options[]` with value/label/description/disabled.
 - Created `checkbox-group.tsx`: controlled/uncontrolled group of Checkbox items; `orientation` prop for horizontal or vertical layout.
