@@ -19,6 +19,7 @@ use App\Http\Controllers\Changelog\ChangelogController;
 use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Dev\ComponentShowcaseController;
 use App\Http\Controllers\EnterpriseInquiryController;
 use App\Http\Controllers\HelpCenter\HelpCenterController;
 use App\Http\Controllers\HelpCenter\RateHelpArticleController;
@@ -56,6 +57,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Honeypot\ProtectAgainstSpam;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
+if (app()->environment(['local', 'staging'])) {
+    Route::get('dev/components', ComponentShowcaseController::class)
+        ->middleware(['auth', 'feature:component_showcase'])
+        ->name('dev.components');
+}
 
 Route::get('/favicon.ico', function (): BinaryFileResponse|RedirectResponse {
     $path = public_path('favicon.ico');

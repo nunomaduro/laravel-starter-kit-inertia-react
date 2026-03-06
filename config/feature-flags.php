@@ -6,6 +6,7 @@ use App\Features\ApiAccessFeature;
 use App\Features\AppearanceSettingsFeature;
 use App\Features\BlogFeature;
 use App\Features\ChangelogFeature;
+use App\Features\ComponentShowcaseFeature;
 use App\Features\ContactFeature;
 use App\Features\CookieConsentFeature;
 use App\Features\GamificationFeature;
@@ -66,5 +67,6 @@ return [
         'profile_pdf_export' => ProfilePdfExportFeature::class,
         'scramble_api_docs' => ScrambleApiDocsFeature::class,
         'two_factor_auth' => TwoFactorAuthFeature::class,
+        'component_showcase' => ComponentShowcaseFeature::class,
     ],
 ];

@@ -338,7 +338,7 @@ function ThemeCustomizerBody({ state, saving, resetting, update, applyPreset, ha
     );
 }
 
-function ThemeCustomizerPanel() {
+export function ThemeCustomizerPanel() {
     const [open, setOpen] = useState(false);
     const { state, saving, resetting, update, applyPreset, handleSave, handleReset } = useThemeCustomizerState();
 
