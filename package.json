@@ -91,6 +91,7 @@
         "laravel-vite-plugin": "^2.1.0",
         "lowlight": "^3.3.0",
         "lucide-react": "^0.577.0",
+        "maplibre-gl": "^5.19.0",
         "novel": "^1.0.2",
         "pusher-js": "^8.4.0",
         "qrcode.react": "^4.2.0",
