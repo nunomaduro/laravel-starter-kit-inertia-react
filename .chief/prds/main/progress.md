@@ -1,5 +1,37 @@
 # Progress Log
 
+## 2026-03-07 - US-028
+- Created `resources/js/components/ai/` with 22 components covering full AI UI vocabulary.
+- `assistant-runtime-provider.tsx`: React context provider managing message state and streaming SSE/JSON connection to Laravel AI SDK backend endpoint; exposes `append`, `stop`, `clear`, `setConfig`.
+- `assistant-thread.tsx`: Full chat thread UI (user bubbles + assistant cards + prompt input), must be nested in provider.
+- `assistant-modal.tsx`: Modal dialog wrapping runtime + thread.
+- `assistant-sidebar.tsx`: Sheet slide-over wrapping runtime + thread.
+- `streaming-text.tsx`: Character-reveal animation with cursor; respects `useReducedMotion`.
+- `thinking-indicator.tsx`: 3 variants (dots, pulse, bars); all disable animations on reduced motion.
+- `code-block.tsx`: Prism syntax highlighting via `react-syntax-highlighter`; copy-to-clipboard button.
+- `markdown-response.tsx`: `react-markdown` + `remark-gfm`; delegates fenced code to `CodeBlock`.
+- `tool-call-card.tsx`: Collapsible card showing tool name, status, JSON input/output.
+- `ai-response-card.tsx`: Avatar + tool calls + streaming content.
+- `confidence-score.tsx`: Progress bar with color transitions (red → amber → green).
+- `ai-insight-card.tsx`: Insight card with trend, severity badge, confidence, tags.
+- `entity-highlight.tsx`: Segments text, wraps entity spans with type-colored chips + tooltips.
+- `ai-summary-card.tsx`: Summary + key points + skeleton state.
+- `prediction-widget.tsx`: Predicted vs current value + direction badge + confidence.
+- `anomaly-alert.tsx`: Severity-styled alert with metric comparison, acknowledge/dismiss.
+- `token-usage.tsx`: prompt/completion/total badges + optional context window progress bar.
+- `agent-status.tsx`: State icon + badge + steps breakdown; `AgentStatusInline` for inline use.
+- `model-selector.tsx`: Combobox grouped by provider with context window info.
+- `prompt-input.tsx`: Auto-resize textarea, Enter to submit, Shift+Enter newline, optional attachment.
+- `voice-input.tsx`: Web Speech API button with pulsing ring; typed with custom `SpeechRecognitionLike` interface to avoid TS issues.
+- `context-drawer.tsx`: Sheet for managing context items (documents, URLs, text, images).
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - No `scroll-area` shadcn component in this project — use `overflow-y-auto` on a plain div instead.
+  - `SpeechRecognition` browser type alias pattern `typeof window extends { SpeechRecognition: infer T }` resolves to `never` in TS — use a custom interface instead with `(window as any).SpeechRecognition`.
+  - `assistant-ui` package (v0.0.82) is a CLI scaffolding tool, NOT a React component library — build components from scratch.
+  - Packages `react-markdown`, `remark-gfm`, `react-syntax-highlighter` are pre-installed; use `Prism` from `react-syntax-highlighter/dist/cjs/styles/prism` for dark theme.
+---
+
 ## 2026-03-07 - US-027
 - Installed `@mapcn/map` via `npx shadcn@latest add @mapcn/map --yes` — installs `maplibre-gl ^5.19.0` and creates `resources/js/components/ui/map.tsx` (shadcn placed it at wrong root path, moved manually to `resources/js/`).
 - Created `resources/js/components/maps/` with 7 components using OpenFreeMap tiles (`https://tiles.openfreemap.org/styles/liberty` / `dark`).
