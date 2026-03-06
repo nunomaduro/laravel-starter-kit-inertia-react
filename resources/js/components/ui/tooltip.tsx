@@ -56,4 +56,40 @@ function TooltipContent({
   )
 }
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+function TooltipRichContent({
+  className,
+  sideOffset = 4,
+  title,
+  description,
+  children,
+  ...props
+}: React.ComponentProps<typeof TooltipPrimitive.Content> & {
+  title?: React.ReactNode
+  description?: React.ReactNode
+}) {
+  return (
+    <TooltipPrimitive.Portal>
+      <TooltipPrimitive.Content
+        data-slot="tooltip-content"
+        data-variant="rich"
+        sideOffset={sideOffset}
+        className={cn(
+          "bg-popover text-popover-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-w-xs rounded-lg border p-3 shadow-md",
+          className
+        )}
+        {...props}
+      >
+        {title && (
+          <p className="mb-1 text-sm font-semibold">{title}</p>
+        )}
+        {description && (
+          <p className="text-muted-foreground text-xs">{description}</p>
+        )}
+        {children}
+        <TooltipPrimitive.Arrow className="fill-border z-50 size-3" />
+      </TooltipPrimitive.Content>
+    </TooltipPrimitive.Portal>
+  )
+}
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipRichContent, TooltipProvider }

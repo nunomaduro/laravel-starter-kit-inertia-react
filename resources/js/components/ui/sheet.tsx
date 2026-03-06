@@ -26,15 +26,44 @@ function SheetPortal({
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
 }
 
+type SheetSize = "quarter" | "half" | "full"
+
+const sheetSizeClasses: Record<"top" | "right" | "bottom" | "left", Record<SheetSize, string>> = {
+  right: {
+    quarter: "w-[25vw] sm:max-w-none",
+    half: "w-[50vw] sm:max-w-none",
+    full: "w-screen sm:max-w-none",
+  },
+  left: {
+    quarter: "w-[25vw] sm:max-w-none",
+    half: "w-[50vw] sm:max-w-none",
+    full: "w-screen sm:max-w-none",
+  },
+  top: {
+    quarter: "h-[25vh]",
+    half: "h-[50vh]",
+    full: "h-screen",
+  },
+  bottom: {
+    quarter: "h-[25vh]",
+    half: "h-[50vh]",
+    full: "h-screen",
+  },
+}
+
 function SheetOverlay({
   className,
+  backdropBlur = false,
   ...props
-}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+}: React.ComponentProps<typeof SheetPrimitive.Overlay> & {
+  backdropBlur?: boolean
+}) {
   return (
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80",
+        backdropBlur && "backdrop-blur-sm bg-black/50",
         className
       )}
       {...props}
@@ -46,13 +75,17 @@ function SheetContent({
   className,
   children,
   side = "right",
+  size,
+  backdropBlur = false,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left"
+  size?: SheetSize
+  backdropBlur?: boolean
 }) {
   return (
     <SheetPortal>
-      <SheetOverlay />
+      <SheetOverlay backdropBlur={backdropBlur} />
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
@@ -65,6 +98,7 @@ function SheetContent({
             "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 h-auto border-b",
           side === "bottom" &&
             "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
+          size && sheetSizeClasses[side][size],
           className
         )}
         {...props}
