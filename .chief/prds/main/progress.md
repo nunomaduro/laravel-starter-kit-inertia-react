@@ -1,5 +1,21 @@
 # Progress Log
 
+## 2026-03-07 - US-021
+- `progress.tsx` and `spinner.tsx` already existed from earlier stories.
+- Created `progress-circle.tsx`: SVG-based circular progress indicator; `value`/`max` props; `showValue` displays percentage text in center; CVA `size` (xs–xl) and `color` (default/success/warning/error/info) variants; `strokeWidth` prop; accessible `role="progressbar"` with `aria-valuenow/min/max`.
+- Created `empty-state.tsx`: centered empty state with optional `icon`, `title`, `description`, `action`, `secondaryAction`; `bordered` prop adds dashed border.
+- Created `error-state.tsx`: error state with destructive icon slot, `title`, `description`, `error` (Error|string), `onRetry` callback (renders RefreshCw button), custom `action`; `bordered` prop.
+- Created `loading-state.tsx`: four `variant` options — `spinner` (Spinner component), `dots` (CSS bouncing dots), `pulse` (ping animation), `skeleton` (N Skeleton rows via `skeletonRows` prop); `role="status"` + `aria-label`.
+- Created `upload-progress.tsx`: `UploadFile` type with `id/name/size/progress/status/error`; `UploadProgressItem` renders single file row with Progress bar, status icon, retry link; `UploadProgress` wraps a list with overall progress bar and success count.
+- Created `splash-screen.tsx`: fixed full-screen overlay with optional `logo`, `showSpinner`, `message`, and `progress` bar at bottom; mounts/unmounts with 300ms opacity transition via `useEffect`; `aria-live="polite"` + `aria-busy`.
+- Created `loadable.tsx`: generic `Loadable<T>` component; shows `LoadingState` → `ErrorState` → `EmptyState` → `children(data)` based on `isLoading`/`error`/data state; `isEmpty` predicate prop for custom empty detection; all slot props forwarded to sub-components.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `ProgressCircle` uses `strokeDashoffset` on a rotated SVG circle — the SVG is rotated `-90deg` so progress starts at 12 o'clock; `strokeDasharray` = full circumference, `strokeDashoffset` = circumference × (1 - pct/100).
+  - CSS `animate-bounce` with `animationDelay` via inline style produces the staggered dots effect without extra libraries.
+  - Generic components (`Loadable<T>`) compile fine in TSX with the `<T>` syntax as long as JSX-disambiguating comma `<T,>` or constraint is used when the type param could be mistaken for a JSX tag — here using function declaration avoids ambiguity.
+---
+
 ## 2026-03-07 - US-020
 - Created `tree.tsx`: generic collapsible tree with controlled/uncontrolled expanded state; keyboard accessible (`role="tree"`/`role="treeitem"`); depth-based indent via inline paddingLeft.
 - Created `kanban.tsx`: drag-and-drop kanban board using `@dnd-kit`; supports cross-column card movement via `onDragOver`; `renderCard` render-prop for custom card content.
