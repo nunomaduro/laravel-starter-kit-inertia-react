@@ -108,7 +108,7 @@ final readonly class DocumentationPrismGenerator
             return null;
         }
 
-        $outputPath = base_path("docs/developer/frontend/pages/{$pagePath}.md");
+        $outputPath = base_path(sprintf('docs/developer/frontend/pages/%s.md', $pagePath));
         File::ensureDirectoryExists(dirname($outputPath));
         File::put($outputPath, $this->normalizeMarkdown($markdown));
 

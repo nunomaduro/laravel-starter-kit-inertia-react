@@ -49,15 +49,19 @@ final readonly class DocumentationSuggestionService
         if ($suggestions['userGuide']) {
             $prompt .= "- User guide documentation needed\n";
         }
+
         if ($suggestions['developerGuide']) {
             $prompt .= "- Developer guide documentation needed\n";
         }
+
         if (! empty($suggestions['examples'])) {
             $prompt .= '- Examples needed: '.implode(', ', $suggestions['examples'])."\n";
         }
+
         if (! empty($suggestions['faqs'])) {
             $prompt .= '- Potential FAQs: '.implode(', ', $suggestions['faqs'])."\n";
         }
+
         if (! empty($suggestions['relatedDocs'])) {
             $prompt .= '- Related documentation: '.implode(', ', $suggestions['relatedDocs'])."\n";
         }

@@ -26,6 +26,7 @@ use App\Services\PaymentGateway\PaymentGatewayManager;
 use App\Services\PrismService;
 use App\Settings\SeoSettings;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\DB;
@@ -43,6 +44,7 @@ use Machour\DataTable\Http\Controllers\DataTableSelectAllController;
 use Machour\DataTable\Http\Controllers\DataTableToggleController;
 use Pan\PanConfiguration;
 use Spatie\Activitylog\ActivitylogServiceProvider;
+use Spatie\Activitylog\CauserResolver as ActivitylogCauserResolver;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use STS\FilamentImpersonate\Events\EnterImpersonation;
@@ -75,6 +77,7 @@ final class AppServiceProvider extends ServiceProvider
 
         $this->registerSeoViewComposer();
         $this->registerActivityLogTaps();
+        $this->registerActivityLogImpersonationCauser();
 
         Gate::policy(Shareable::class, ShareablePolicy::class);
 
@@ -82,9 +85,11 @@ final class AppServiceProvider extends ServiceProvider
             if (! $user) {
                 return null;
             }
+
             if (! $this->userHasBypassPermissions($user)) {
                 return null;
             }
+
             if ($this->isUserModelDangerousOperation($ability, $arguments)) {
                 return null;
             }
@@ -143,6 +148,7 @@ final class AppServiceProvider extends ServiceProvider
         if (! in_array($ability, ['delete', 'forceDelete'], true)) {
             return false;
         }
+
         $model = $arguments[0] ?? null;
 
         return $model instanceof User;
@@ -206,6 +212,7 @@ final class AppServiceProvider extends ServiceProvider
             'chat-mobile-menu',
             'chat-send-message',
             'dashboard-chart',
+            'admin-org-switcher',
             'users-table',
             'pages-index',
             'pages-create',
@@ -235,6 +242,7 @@ final class AppServiceProvider extends ServiceProvider
                     'app_url' => mb_rtrim(config('app.url'), '/'),
                 ];
             }
+
             $seo['current_url'] = request()->url();
             $view->with('seo', $seo);
         });
@@ -253,5 +261,48 @@ final class AppServiceProvider extends ServiceProvider
 
         Role::observe(RoleActivityObserver::class);
         Permission::observe(PermissionActivityObserver::class);
+    }
+
+    /**
+     * When impersonating, use the impersonator as activity log causer so the real actor is recorded.
+     */
+    private function registerActivityLogImpersonationCauser(): void
+    {
+        if (! class_exists(\STS\FilamentImpersonate\Facades\Impersonation::class)) {
+            return;
+        }
+
+        $resolver = $this->app->make(ActivitylogCauserResolver::class);
+        $resolver->resolveUsing(function (Model|int|string|null $subject): ?Model {
+            if ($subject instanceof Model) {
+                if (\STS\FilamentImpersonate\Facades\Impersonation::isImpersonating()) {
+                    $current = $this->app->make(\Illuminate\Contracts\Auth\Factory::class)->guard(config('activitylog.default_auth_driver'))->user();
+                    if ($current instanceof Model && $subject->is($current)) {
+                        $impersonator = \STS\FilamentImpersonate\Facades\Impersonation::getImpersonator();
+
+                        return $impersonator instanceof Model ? $impersonator : $subject;
+                    }
+                }
+
+                return $subject;
+            }
+
+            if (is_int($subject) || is_string($subject)) {
+                $driver = config('activitylog.default_auth_driver');
+                $guard = $this->app->make(\Illuminate\Contracts\Auth\Factory::class)->guard($driver);
+                $provider = $guard->getProvider();
+                $model = $provider?->retrieveById($subject);
+
+                return $model instanceof Model ? $model : null;
+            }
+
+            if (\STS\FilamentImpersonate\Facades\Impersonation::isImpersonating()) {
+                $impersonator = \STS\FilamentImpersonate\Facades\Impersonation::getImpersonator();
+
+                return $impersonator instanceof Model ? $impersonator : null;
+            }
+
+            return $this->app->make(\Illuminate\Contracts\Auth\Factory::class)->guard(config('activitylog.default_auth_driver'))->user();
+        });
     }
 }

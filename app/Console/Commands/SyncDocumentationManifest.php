@@ -10,6 +10,7 @@ use App\Services\DocumentationPromptGenerator;
 use App\Services\DocumentationTemplateSelector;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -18,12 +19,14 @@ use ReflectionParameter;
 
 final class SyncDocumentationManifest extends Command
 {
+    #[Override]
     protected $signature = 'docs:sync
                             {--check : Only check for undocumented items, do not update manifest}
                             {--generate : Generate documentation stubs for undocumented items}
                             {--ai : Use AI (Prism) to generate full documentation}
                             {--auto : Call Prism to generate and write docs (requires --ai); without --auto only writes prompts to docs/.ai-prompts/}';
 
+    #[Override]
     protected $description = 'Sync documentation manifest with actual codebase';
 
     public function __construct(
@@ -286,6 +289,7 @@ final class SyncDocumentationManifest extends Command
                 if ($reflection->isAbstract()) {
                     continue;
                 }
+
                 $methods = [];
 
                 foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
@@ -335,6 +339,7 @@ final class SyncDocumentationManifest extends Command
                 if (str_contains($relativePath, '/_components/')) {
                     continue;
                 }
+
                 $pagePath = str_replace('.tsx', '', $relativePath);
                 $filePath = $file->getPathname();
 
@@ -364,26 +369,26 @@ final class SyncDocumentationManifest extends Command
             return;
         }
 
-        $this->warn("Found {$total} undocumented item(s):");
+        $this->warn(sprintf('Found %d undocumented item(s):', $total));
 
         if (! empty($undocumented['actions'])) {
             $this->line('  Actions:');
             foreach ($undocumented['actions'] as $action) {
-                $this->line("    - {$action}");
+                $this->line('    - '.$action);
             }
         }
 
         if (! empty($undocumented['controllers'])) {
             $this->line('  Controllers:');
             foreach ($undocumented['controllers'] as $controller) {
-                $this->line("    - {$controller}");
+                $this->line('    - '.$controller);
             }
         }
 
         if (! empty($undocumented['pages'])) {
             $this->line('  Pages:');
             foreach ($undocumented['pages'] as $page) {
-                $this->line("    - {$page}");
+                $this->line('    - '.$page);
             }
         }
     }
@@ -420,14 +425,17 @@ final class SyncDocumentationManifest extends Command
             $manifest['actions'][$actionName]['documented'] = true;
             $manifest['actions'][$actionName]['path'] = './'.mb_strtolower($actionName).'.md';
         }
+
         foreach ($undocumented['controllers'] ?? [] as $controllerName) {
             $manifest['controllers'][$controllerName]['documented'] = true;
             $manifest['controllers'][$controllerName]['path'] = './'.mb_strtolower($controllerName).'.md';
         }
+
         foreach ($undocumented['pages'] ?? [] as $pagePath) {
             $manifest['pages'][$pagePath]['documented'] = true;
-            $manifest['pages'][$pagePath]['developerGuide'] = "./{$pagePath}.md";
+            $manifest['pages'][$pagePath]['developerGuide'] = sprintf('./%s.md', $pagePath);
         }
+
         File::put($manifestPath, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."\n");
         $this->updateIndexFiles($manifest);
     }
@@ -438,7 +446,7 @@ final class SyncDocumentationManifest extends Command
         $outputPath = base_path('docs/developer/backend/actions/'.mb_strtolower($action).'.md');
 
         if (! File::exists($templatePath)) {
-            $this->warn("Template not found: {$templatePath}");
+            $this->warn('Template not found: '.$templatePath);
 
             return;
         }
@@ -449,7 +457,7 @@ final class SyncDocumentationManifest extends Command
         File::ensureDirectoryExists(dirname($outputPath));
         File::put($outputPath, $content);
 
-        $this->line("  ✓ Generated: {$outputPath}");
+        $this->line('  ✓ Generated: '.$outputPath);
     }
 
     private function generateControllerStub(string $controller): void
@@ -458,7 +466,7 @@ final class SyncDocumentationManifest extends Command
         $outputPath = base_path('docs/developer/backend/controllers/'.mb_strtolower($controller).'.md');
 
         if (! File::exists($templatePath)) {
-            $this->warn("Template not found: {$templatePath}");
+            $this->warn('Template not found: '.$templatePath);
 
             return;
         }
@@ -469,17 +477,17 @@ final class SyncDocumentationManifest extends Command
         File::ensureDirectoryExists(dirname($outputPath));
         File::put($outputPath, $content);
 
-        $this->line("  ✓ Generated: {$outputPath}");
+        $this->line('  ✓ Generated: '.$outputPath);
     }
 
     private function generatePageStub(string $page): void
     {
         $templatePath = base_path('docs/.templates/page.md');
         $pageName = basename($page);
-        $outputPath = base_path("docs/developer/frontend/pages/{$page}.md");
+        $outputPath = base_path(sprintf('docs/developer/frontend/pages/%s.md', $page));
 
         if (! File::exists($templatePath)) {
-            $this->warn("Template not found: {$templatePath}");
+            $this->warn('Template not found: '.$templatePath);
 
             return;
         }
@@ -490,7 +498,7 @@ final class SyncDocumentationManifest extends Command
         File::ensureDirectoryExists(dirname($outputPath));
         File::put($outputPath, $content);
 
-        $this->line("  ✓ Generated: {$outputPath}");
+        $this->line('  ✓ Generated: '.$outputPath);
     }
 
     /**
@@ -742,7 +750,7 @@ final class SyncDocumentationManifest extends Command
 
         $className = $classMatch[1];
 
-        return "{$namespace}\\{$className}";
+        return sprintf('%s\%s', $namespace, $className);
     }
 
     private function extractJSDocDescription(string $jsDoc): ?string
@@ -756,6 +764,7 @@ final class SyncDocumentationManifest extends Command
             if (empty($line)) {
                 continue;
             }
+
             if (str_starts_with((string) $line, '@')) {
                 continue;
             }
@@ -779,9 +788,11 @@ final class SyncDocumentationManifest extends Command
             if ($line === '') {
                 continue;
             }
+
             if ($line === '0') {
                 continue;
             }
+
             if (str_starts_with($line, '//')) {
                 continue;
             }
@@ -892,7 +903,7 @@ final class SyncDocumentationManifest extends Command
             }
 
             $status = $documented ? '✅' : '❌';
-            $link = $path ? "[{$actionName}]({$path})" : $actionName;
+            $link = $path ? sprintf('[%s](%s)', $actionName, $path) : $actionName;
 
             $table .= "| {$link} | {$purpose} | {$status} |\n";
         }
@@ -945,7 +956,7 @@ final class SyncDocumentationManifest extends Command
             }
 
             $status = $documented ? '✅' : '❌';
-            $link = $path ? "[{$controllerName}]({$path})" : $controllerName;
+            $link = $path ? sprintf('[%s](%s)', $controllerName, $path) : $controllerName;
 
             $table .= "| {$link} | {$purpose} | {$status} |\n";
         }
@@ -984,7 +995,7 @@ final class SyncDocumentationManifest extends Command
             $routeDisplay = empty($routes) ? 'N/A' : implode(', ', array_slice($routes, 0, 2));
 
             $status = $documented ? '✅' : '❌';
-            $link = $developerGuide ? "[{$pagePath}]({$developerGuide})" : $pagePath;
+            $link = $developerGuide ? sprintf('[%s](%s)', $pagePath, $developerGuide) : $pagePath;
 
             $table .= "| {$link} | {$routeDisplay} | {$status} |\n";
         }
@@ -1037,9 +1048,9 @@ final class SyncDocumentationManifest extends Command
                 $relativePath = str_replace(base_path().'/', '', $written);
                 $manifest['actions'][$actionName]['documented'] = true;
                 $manifest['actions'][$actionName]['path'] = $relativePath;
-                $this->line("  ✓ Generated: {$relativePath}");
+                $this->line('  ✓ Generated: '.$relativePath);
             } else {
-                $this->warn("  ✗ Failed: {$actionName}");
+                $this->warn('  ✗ Failed: '.$actionName);
             }
         }
 
@@ -1058,9 +1069,9 @@ final class SyncDocumentationManifest extends Command
                 $relativePath = str_replace(base_path().'/', '', $written);
                 $manifest['controllers'][$controllerName]['documented'] = true;
                 $manifest['controllers'][$controllerName]['path'] = $relativePath;
-                $this->line("  ✓ Generated: {$relativePath}");
+                $this->line('  ✓ Generated: '.$relativePath);
             } else {
-                $this->warn("  ✗ Failed: {$controllerName}");
+                $this->warn('  ✗ Failed: '.$controllerName);
             }
         }
 
@@ -1079,9 +1090,9 @@ final class SyncDocumentationManifest extends Command
                 $relativePath = str_replace(base_path().'/', '', $written);
                 $manifest['pages'][$pagePath]['documented'] = true;
                 $manifest['pages'][$pagePath]['developerGuide'] = $relativePath;
-                $this->line("  ✓ Generated: {$relativePath}");
+                $this->line('  ✓ Generated: '.$relativePath);
             } else {
-                $this->warn("  ✗ Failed: {$pagePath}");
+                $this->warn('  ✗ Failed: '.$pagePath);
             }
         }
 
@@ -1126,11 +1137,11 @@ final class SyncDocumentationManifest extends Command
 
             $prompt = $this->promptGenerator->generateActionPrompt($actionInfo, $relationships, $templatePath);
 
-            $promptFile = "{$promptsDir}/action-{$actionName}.txt";
+            $promptFile = sprintf('%s/action-%s.txt', $promptsDir, $actionName);
             File::put($promptFile, $prompt);
 
-            $this->line("  ✓ Generated prompt: {$promptFile}");
-            $this->line("    Use this prompt with an AI agent to generate documentation for {$actionName}");
+            $this->line('  ✓ Generated prompt: '.$promptFile);
+            $this->line('    Use this prompt with an AI agent to generate documentation for '.$actionName);
         }
 
         foreach ($undocumented['controllers'] as $controllerName) {
@@ -1145,10 +1156,10 @@ final class SyncDocumentationManifest extends Command
 
             $prompt = $this->promptGenerator->generateControllerPrompt($controllerInfo, $relationships, $templatePath);
 
-            $promptFile = "{$promptsDir}/controller-{$controllerName}.txt";
+            $promptFile = sprintf('%s/controller-%s.txt', $promptsDir, $controllerName);
             File::put($promptFile, $prompt);
 
-            $this->line("  ✓ Generated prompt: {$promptFile}");
+            $this->line('  ✓ Generated prompt: '.$promptFile);
         }
 
         foreach ($undocumented['pages'] as $pagePath) {
@@ -1164,10 +1175,10 @@ final class SyncDocumentationManifest extends Command
             $prompt = $this->promptGenerator->generatePagePrompt($pageInfo, $relationships, $templatePath);
 
             $safePageName = str_replace('/', '-', $pagePath);
-            $promptFile = "{$promptsDir}/page-{$safePageName}.txt";
+            $promptFile = sprintf('%s/page-%s.txt', $promptsDir, $safePageName);
             File::put($promptFile, $prompt);
 
-            $this->line("  ✓ Generated prompt: {$promptFile}");
+            $this->line('  ✓ Generated prompt: '.$promptFile);
         }
 
         $this->info('AI prompts generated!');

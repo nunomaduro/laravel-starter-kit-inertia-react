@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
+use Override;
 
 /**
  * A record of a shareable item shared with a target (Organization or User).
@@ -50,6 +51,7 @@ final class Shareable extends Model
     /**
      * @var list<string>
      */
+    #[Override]
     protected $fillable = [
         'shareable_type',
         'shareable_id',

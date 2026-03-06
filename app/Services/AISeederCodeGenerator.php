@@ -59,23 +59,26 @@ final readonly class AISeederCodeGenerator
                 continue;
             }
 
-            $prompt .= "  - {$field}: {$fieldSpec['type']}";
+            $prompt .= sprintf('  - %s: %s', $field, $fieldSpec['type']);
             if (! $fieldSpec['nullable']) {
                 $prompt .= ' (required)';
             }
+
             if ($fieldSpec['default'] !== null) {
-                $prompt .= " (default: {$fieldSpec['default']})";
+                $prompt .= sprintf(' (default: %s)', $fieldSpec['default']);
             }
+
             $prompt .= "\n";
         }
 
         if ($relationships !== []) {
             $prompt .= "\nRelationships:\n";
             foreach ($relationships as $relName => $rel) {
-                $prompt .= "  - {$relName}: {$rel['type']}";
+                $prompt .= sprintf('  - %s: %s', $relName, $rel['type']);
                 if ($rel['model'] !== null) {
-                    $prompt .= " -> {$rel['model']}";
+                    $prompt .= ' -> '.$rel['model'];
                 }
+
                 $prompt .= "\n";
             }
         }
@@ -130,7 +133,7 @@ final readonly class AISeederCodeGenerator
     private function generateTraditionalSeederCode(string $modelName, array $spec, array $relationships): string
     {
         $jsonKey = Str::snake(Str::plural($modelName));
-        $jsonFileName = "{$jsonKey}.json";
+        $jsonFileName = $jsonKey.'.json';
 
         // Generate relationship code using enhanced analyzer
         $enhancedAnalyzer = resolve(EnhancedRelationshipAnalyzer::class);
@@ -232,7 +235,7 @@ PHP;
             return 'false';
         }
 
-        return "isset(\$itemData['{$uniqueField}']) && !empty(\$itemData['{$uniqueField}'])";
+        return sprintf("isset(\$itemData['%s']) && !empty(\$itemData['%s'])", $uniqueField, $uniqueField);
     }
 
     /**
@@ -244,6 +247,6 @@ PHP;
             return "'id'";
         }
 
-        return "'{$uniqueField}'";
+        return sprintf("'%s'", $uniqueField);
     }
 }

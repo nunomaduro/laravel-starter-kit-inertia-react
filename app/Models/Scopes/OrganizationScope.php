@@ -35,6 +35,7 @@ final class OrganizationScope implements Scope
         if (! session($key, false)) {
             return false;
         }
+
         $user = auth()->user();
 
         return $user instanceof User && $user->isSuperAdmin();

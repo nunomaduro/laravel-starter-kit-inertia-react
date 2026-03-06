@@ -45,6 +45,7 @@ final class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             if ($id === null) {
                 return null;
             }
+
             $user = User::query()->find($id);
 
             return $user?->avatar;

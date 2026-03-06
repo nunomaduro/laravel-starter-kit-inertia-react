@@ -59,6 +59,7 @@ final readonly class EnsureTermsAccepted
         if ($currentRoute && in_array($currentRoute, self::EXCLUDED_ROUTES, true)) {
             return $next($request);
         }
+
         if ($request->is('terms/accept') || $request->is('legal/terms') || $request->is('legal/privacy')) {
             return $next($request);
         }

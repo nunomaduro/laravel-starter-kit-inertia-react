@@ -21,18 +21,24 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Override;
 use UnitEnum;
 
 final class PostResource extends Resource
 {
+    #[Override]
     protected static ?string $model = Post::class;
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
+    #[Override]
     protected static ?string $recordTitleAttribute = 'title';
 
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
+    #[Override]
     protected static ?int $navigationSort = 10;
 
     /** @return array<string> */
@@ -70,7 +76,7 @@ final class PostResource extends Resource
     {
         $user = auth()->user();
 
-        return $user && FeatureHelper::isActiveForClass(BlogFeature::class, $user) && parent::canAccess();
+        return $user && filament()->getCurrentPanel()?->getId() === 'admin' && FeatureHelper::isActiveForClass(BlogFeature::class, $user) && parent::canAccess();
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

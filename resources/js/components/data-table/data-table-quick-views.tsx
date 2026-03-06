@@ -78,7 +78,9 @@ function SavePreview({
                     {sortParam
                         .split(',')
                         .map((s) =>
-                            s.startsWith('-') ? `${s.slice(1)} \u2193` : `${s} \u2191`,
+                            s.startsWith('-')
+                                ? `${s.slice(1)} \u2193`
+                                : `${s} \u2191`,
                         )
                         .join(', ')}
                 </div>

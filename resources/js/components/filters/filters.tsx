@@ -294,11 +294,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                                 column={selectedColumn}
                                 value={activeFilters[selectedColumn.id]}
                                 onSubmit={(op, vals) =>
-                                    setFilter(
-                                        selectedColumn.id,
-                                        op,
-                                        vals,
-                                    )
+                                    setFilter(selectedColumn.id, op, vals)
                                 }
                             />
                         </div>
@@ -394,9 +390,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                                             );
 
                                             return (
-                                                <Fragment
-                                                    key={`qs-${col.id}`}
-                                                >
+                                                <Fragment key={`qs-${col.id}`}>
                                                     {col.options!.map((opt) => {
                                                         const checked =
                                                             currentValues.has(
@@ -476,9 +470,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                             clearFilter(columnId);
                             closeAll();
                         }}
-                        onSubmit={(op, vals) =>
-                            setFilter(columnId, op, vals)
-                        }
+                        onSubmit={(op, vals) => setFilter(columnId, op, vals)}
                     />
                 );
             })}

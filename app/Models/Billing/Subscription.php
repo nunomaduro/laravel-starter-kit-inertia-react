@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Billing;
 
 use Laravelcm\Subscriptions\Models\Subscription as BaseSubscription;
+use Override;
 
 /**
  * @property-read string|null $gateway_subscription_id
@@ -12,6 +13,7 @@ use Laravelcm\Subscriptions\Models\Subscription as BaseSubscription;
  */
 final class Subscription extends BaseSubscription
 {
+    #[Override]
     protected $fillable = [
         'subscriber_id',
         'subscriber_type',
@@ -27,17 +29,6 @@ final class Subscription extends BaseSubscription
         'canceled_at',
     ];
 
-    protected $casts = [
-        'subscriber_type' => 'string',
-        'slug' => 'string',
-        'quantity' => 'integer',
-        'trial_ends_at' => 'datetime',
-        'starts_at' => 'datetime',
-        'ends_at' => 'datetime',
-        'canceled_at' => 'datetime',
-        'deleted_at' => 'datetime',
-    ];
-
     public function isPerSeat(): bool
     {
         $plan = $this->plan;
@@ -48,5 +39,19 @@ final class Subscription extends BaseSubscription
     public function seatCount(): int
     {
         return (int) ($this->quantity ?? 1);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'subscriber_type' => 'string',
+            'slug' => 'string',
+            'quantity' => 'integer',
+            'trial_ends_at' => 'datetime',
+            'starts_at' => 'datetime',
+            'ends_at' => 'datetime',
+            'canceled_at' => 'datetime',
+            'deleted_at' => 'datetime',
+        ];
     }
 }

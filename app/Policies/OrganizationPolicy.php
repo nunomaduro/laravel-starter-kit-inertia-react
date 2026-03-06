@@ -19,7 +19,11 @@ final class OrganizationPolicy
 
     public function view(User $user, Organization $organization): bool
     {
-        return $user->belongsToOrganization($organization->id) || $user->isSuperAdmin();
+        if ($user->belongsToOrganization($organization->id)) {
+            return true;
+        }
+
+        return $user->isSuperAdmin();
     }
 
     public function create(): bool
@@ -35,12 +39,20 @@ final class OrganizationPolicy
 
     public function delete(User $user, Organization $organization): bool
     {
-        return $organization->isOwner($user) || $user->isSuperAdmin();
+        if ($organization->isOwner($user)) {
+            return true;
+        }
+
+        return $user->isSuperAdmin();
     }
 
     public function restore(User $user, Organization $organization): bool
     {
-        return $organization->isOwner($user) || $user->isSuperAdmin();
+        if ($organization->isOwner($user)) {
+            return true;
+        }
+
+        return $user->isSuperAdmin();
     }
 
     public function forceDelete(User $user): bool
@@ -55,9 +67,15 @@ final class OrganizationPolicy
 
     private function isOwnerSuperAdminOrRole(User $user, Organization $organization, string $role): bool
     {
-        return $organization->isOwner($user)
-            || $user->isSuperAdmin()
-            || $this->userHasOrgRole($user, $organization, $role);
+        if ($organization->isOwner($user)) {
+            return true;
+        }
+
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->userHasOrgRole($user, $organization, $role);
     }
 
     private function userHasOrgRole(User $user, Organization $organization, string $role): bool

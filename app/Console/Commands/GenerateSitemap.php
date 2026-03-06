@@ -7,13 +7,16 @@ namespace App\Console\Commands;
 use App\Models\Page;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Route;
+use Override;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
 final class GenerateSitemap extends Command
 {
+    #[Override]
     protected $signature = 'sitemap:generate';
 
+    #[Override]
     protected $description = 'Generate the sitemap (static and public routes).';
 
     public function handle(): int
@@ -29,15 +32,19 @@ final class GenerateSitemap extends Command
         if (Route::has('legal.terms')) {
             $sitemap->add(Url::create($base.'/legal/terms')->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY)->setPriority(0.3));
         }
+
         if (Route::has('legal.privacy')) {
             $sitemap->add(Url::create($base.'/legal/privacy')->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY)->setPriority(0.3));
         }
+
         if (Route::has('blog.index')) {
             $sitemap->add(Url::create($base.'/blog')->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)->setPriority(0.7));
         }
+
         if (Route::has('changelog.index')) {
             $sitemap->add(Url::create($base.'/changelog')->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)->setPriority(0.6));
         }
+
         if (Route::has('help.index')) {
             $sitemap->add(Url::create($base.'/help')->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)->setPriority(0.7));
         }
@@ -62,12 +69,14 @@ final class GenerateSitemap extends Command
                     if (! $primaryDomain) {
                         $primaryDomain = $org->domains()->where('is_verified', true)->first();
                     }
+
                     if ($primaryDomain) {
                         $pageBase = $scheme.'://'.mb_rtrim($primaryDomain->domain, '/');
                     } elseif ($tenancyDomain && $org->slug) {
                         $pageBase = $scheme.'://'.mb_strtolower($org->slug).'.'.mb_strtolower((string) $tenancyDomain);
                     }
                 }
+
                 $sitemap->add(
                     Url::create($pageBase.'/p/'.$page->slug)
                         ->setLastModification($page->updated_at)

@@ -7,12 +7,15 @@ namespace App\Console\Commands;
 use App\Models\Organization;
 use App\Services\OrganizationSettingsService;
 use Illuminate\Console\Command;
+use Override;
 
 final class SettingsClearCacheCommand extends Command
 {
+    #[Override]
     protected $signature = 'settings:clear-cache
                             {--org= : Clear cache for a specific organization ID only}';
 
+    #[Override]
     protected $description = 'Clear the organization settings cache';
 
     public function handle(OrganizationSettingsService $service): int
@@ -23,13 +26,13 @@ final class SettingsClearCacheCommand extends Command
             $organization = Organization::query()->find((int) $orgId);
 
             if (! $organization instanceof Organization) {
-                $this->components->error("Organization #{$orgId} not found.");
+                $this->components->error(sprintf('Organization #%s not found.', $orgId));
 
                 return self::FAILURE;
             }
 
             $service->clearCache($organization);
-            $this->components->info("Cleared settings cache for organization #{$orgId}.");
+            $this->components->info(sprintf('Cleared settings cache for organization #%s.', $orgId));
 
             return self::SUCCESS;
         }
@@ -45,7 +48,7 @@ final class SettingsClearCacheCommand extends Command
                 }
             });
 
-        $this->components->info("Cleared settings cache for {$count} organization(s).");
+        $this->components->info(sprintf('Cleared settings cache for %d organization(s).', $count));
 
         return self::SUCCESS;
     }

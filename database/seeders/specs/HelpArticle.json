@@ -3,7 +3,7 @@
     "table": "help_articles",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -63,12 +63,12 @@
             "default": null
         },
         "created_by": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "updated_by": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -88,7 +88,7 @@
             "default": null
         },
         "organization_id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         }

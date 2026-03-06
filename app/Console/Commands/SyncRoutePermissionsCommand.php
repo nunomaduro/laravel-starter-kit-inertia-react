@@ -8,16 +8,19 @@ use Closure;
 use Illuminate\Console\Command;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Route as RouteFacade;
+use Override;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
 final class SyncRoutePermissionsCommand extends Command
 {
+    #[Override]
     protected $signature = 'permission:sync-routes
                             {--dry-run : List permissions that would be created or removed without making changes}
                             {--prune : Remove permissions that no longer match any route}
                             {--silent : Suppress output}';
 
+    #[Override]
     protected $description = 'Create or update permissions from named application routes';
 
     public function handle(): int
@@ -95,15 +98,19 @@ final class SyncRoutePermissionsCommand extends Command
             if (! is_string($name)) {
                 continue;
             }
+
             if ($name === '') {
                 continue;
             }
+
             if (! $this->isApplicationRoute($route)) {
                 continue;
             }
+
             if ($this->matchesSkipPatterns($name, $skipPatterns)) {
                 continue;
             }
+
             $permissions[$name] = true;
         }
 
@@ -185,7 +192,7 @@ final class SyncRoutePermissionsCommand extends Command
             Permission::query()->where('name', $name)->delete();
             $count++;
             if (! $silent) {
-                $this->warn("Pruned: {$name}");
+                $this->warn('Pruned: '.$name);
             }
         }
 
@@ -204,6 +211,7 @@ final class SyncRoutePermissionsCommand extends Command
         if ($this->option('silent')) {
             return;
         }
+
         $this->warn('Dry run — no changes made.');
         $this->table(['Permission (route name)'], array_map(fn (string $p): array => [$p], $routePermissions));
     }

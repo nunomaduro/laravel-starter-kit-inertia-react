@@ -90,6 +90,7 @@ function actsAsFilamentAdmin(TestCase $test, string $role = 'admin'): User
         'password' => Hash::make('password'),
     ]);
     $user->assignRole($role);
+
     $test->actingAs($user);
 
     return $user;
@@ -114,6 +115,7 @@ function assertActivityLogged(string $description, ?string $subjectType = null, 
     if ($subjectType !== null) {
         $query->where('subject_type', $subjectType);
     }
+
     if ($subjectId !== null) {
         $query->where('subject_id', $subjectId);
     }
@@ -121,6 +123,6 @@ function assertActivityLogged(string $description, ?string $subjectType = null, 
     $activity = $query->first();
     PHPUnit\Framework\Assert::assertNotNull(
         $activity,
-        "Expected activity '{$description}' to be logged."
+        sprintf("Expected activity '%s' to be logged.", $description)
     );
 }

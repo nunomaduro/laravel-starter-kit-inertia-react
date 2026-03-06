@@ -15,19 +15,30 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Override;
 use UnitEnum;
 
 final class CreditPackResource extends Resource
 {
+    #[Override]
     protected static ?string $model = CreditPack::class;
 
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Billing';
 
+    #[Override]
     protected static ?int $navigationSort = 20;
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGift;
 
+    #[Override]
     protected static ?string $recordTitleAttribute = 'name';
+
+    public static function canAccess(): bool
+    {
+        return filament()->getCurrentPanel()?->getId() === 'system';
+    }
 
     /** @return array<string> */
     public static function getGloballySearchableAttributes(): array

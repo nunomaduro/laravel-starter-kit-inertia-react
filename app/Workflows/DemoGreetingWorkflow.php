@@ -17,8 +17,6 @@ final class DemoGreetingWorkflow extends Workflow
 {
     public function execute(string $name)
     {
-        $result = yield activity(DemoGreetingActivity::class, $name);
-
-        return $result;
+        return yield activity(DemoGreetingActivity::class, $name);
     }
 }

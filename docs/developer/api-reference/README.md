@@ -25,6 +25,28 @@ List endpoints (index, search) return Laravel API Resource format: `{ "data": [ 
 
 For the complete list of routes, see [Routes Documentation](./routes.md).
 
+### API routes summary
+
+| Method | URI | Name | Auth |
+|--------|-----|------|------|
+| GET | `api` | api | — |
+| POST | `api/chat` | api.chat | Sanctum |
+| GET | `api/chat/memories` | chat.memories | Sanctum |
+| GET | `api/conversations` | conversations.index | Sanctum |
+| GET | `api/conversations/{id}` | conversations.show | Sanctum |
+| PATCH | `api/conversations/{id}` | conversations.update | Sanctum |
+| DELETE | `api/conversations/{id}` | conversations.destroy | Sanctum |
+| GET | `api/v1` | api.v1.info | — |
+| GET | `api/v1/users` | api.v1.users.index | Sanctum, feature:api_access |
+| POST | `api/v1/users/batch` | api.v1.users.batch | Sanctum, feature:api_access |
+| POST | `api/v1/users/search` | api.v1.users.search | Sanctum, feature:api_access |
+| GET | `api/v1/users/{user}` | api.v1.users.show | Sanctum, feature:api_access |
+| POST | `api/v1/users` | api.v1.users.store | Sanctum, feature:api_access |
+| PUT/PATCH | `api/v1/users/{user}` | api.v1.users.update | Sanctum, feature:api_access |
+| DELETE | `api/v1/users/{user}` | api.v1.users.destroy | Sanctum, feature:api_access |
+
+All `/api` and `/api/v1/*` routes use the `api` middleware group. V1 routes are throttled at 60 requests per minute per client. Interactive API docs: `/docs/api`.
+
 ## Filter, sort, include, and fields (v1 list endpoints)
 
 List endpoints that use **spatie/laravel-query-builder** support:

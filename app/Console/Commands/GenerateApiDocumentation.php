@@ -7,15 +7,18 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionType;
 
 final class GenerateApiDocumentation extends Command
 {
+    #[Override]
     protected $signature = 'docs:api
                             {--format=markdown : Output format (markdown, openapi)}';
 
+    #[Override]
     protected $description = 'Generate API documentation from routes and controllers';
 
     public function handle(): int
@@ -36,7 +39,7 @@ final class GenerateApiDocumentation extends Command
         File::ensureDirectoryExists(dirname($outputPath));
         File::put($outputPath, $content);
 
-        $this->info("API documentation generated: {$outputPath}");
+        $this->info('API documentation generated: '.$outputPath);
 
         return self::SUCCESS;
     }
@@ -134,6 +137,7 @@ final class GenerateApiDocumentation extends Command
                         foreach ($route['uriParameters'] as $param) {
                             $content .= "- `{$param}`\n";
                         }
+
                         $content .= "\n";
                     }
 
@@ -146,6 +150,7 @@ final class GenerateApiDocumentation extends Command
                         foreach ($route['parameters'] as $param) {
                             $content .= "- `{$param['name']}`: `{$param['type']}`\n";
                         }
+
                         $content .= "\n";
                     }
                 }

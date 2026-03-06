@@ -9,16 +9,19 @@ use App\Services\SeedSpecGenerator;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Override;
 use Prism\Prism\Enums\Provider;
 
 final class SeedsFromProseCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:from-prose
                             {description : Natural language description of the model/domain}
                             {--model= : Model name to generate spec for}
                             {--dry-run : Show generated spec without saving}
                             {--provider= : AI provider (openai, anthropic, local)}';
 
+    #[Override]
     protected $description = 'Generate seed spec from natural language description';
 
     public function handle(SeedSpecGenerator $specGenerator, PrismService $prismService): int
@@ -59,13 +62,13 @@ final class SeedsFromProseCommand extends Command
             }
 
             if ($spec !== null) {
-                $modelClass = "App\\Models\\{$modelName}";
+                $modelClass = 'App\Models\\'.$modelName;
 
                 if (class_exists($modelClass)) {
                     $specGenerator->saveSpec($modelClass, $spec);
-                    $this->info("Seed spec generated for {$modelName}");
+                    $this->info('Seed spec generated for '.$modelName);
                 } else {
-                    $this->warn("Model {$modelName} does not exist. Spec would be generated when model is created.");
+                    $this->warn(sprintf('Model %s does not exist. Spec would be generated when model is created.', $modelName));
                 }
             } else {
                 $this->error('Failed to generate spec from description.');
@@ -78,7 +81,7 @@ final class SeedsFromProseCommand extends Command
     private function buildProsePrompt(string $description, string $modelName): string
     {
         $prompt = "Convert this natural language description into a seed spec JSON structure:\n\n";
-        $prompt .= "Description: {$description}\n";
+        $prompt .= sprintf('Description: %s%s', $description, PHP_EOL);
         $prompt .= "Model Name: {$modelName}\n\n";
         $prompt .= "Generate a JSON seed spec with:\n";
         $prompt .= "- fields: array of field definitions (name, type, nullable, default)\n";
@@ -111,7 +114,7 @@ final class SeedsFromProseCommand extends Command
             'relationships' => [],
             'value_hints' => [],
             'scenarios' => ['basic_demo'],
-            '_note' => "Basic spec generated from description: {$description}. Run seeds:spec-sync to populate from actual model/migration.",
+            '_note' => sprintf('Basic spec generated from description: %s. Run seeds:spec-sync to populate from actual model/migration.', $description),
         ];
     }
 
@@ -167,7 +170,7 @@ final class SeedsFromProseCommand extends Command
 
             try {
                 $jsonData = $prismService->generateStructured($prompt, $schema, $model);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 // Fallback to text parsing
                 $this->line('  Using text output (structured not available)');
                 $response = $prismService->using($prismProvider, $model)
@@ -197,8 +200,8 @@ final class SeedsFromProseCommand extends Command
             $jsonData['table'] ??= Str::snake(Str::plural($modelName));
 
             return $jsonData;
-        } catch (Exception $e) {
-            $this->warn('AI call failed: '.$e->getMessage());
+        } catch (Exception $exception) {
+            $this->warn('AI call failed: '.$exception->getMessage());
             $this->info('Falling back to basic spec structure');
 
             return $this->generateBasicSpec($modelName, '');

@@ -164,11 +164,29 @@ export function AppSidebar() {
     const tenancyEnabled = auth.tenancy_enabled ?? true;
 
     const visibleMainNavItems = useMemo(
-        () => mainNavItems.filter((item) => canShowNavItem(item, permissions, canBypass, resolvedFeatures, tenancyEnabled)),
+        () =>
+            mainNavItems.filter((item) =>
+                canShowNavItem(
+                    item,
+                    permissions,
+                    canBypass,
+                    resolvedFeatures,
+                    tenancyEnabled,
+                ),
+            ),
         [permissions, canBypass, resolvedFeatures, tenancyEnabled],
     );
     const visibleFooterNavItems = useMemo(
-        () => footerNavItems.filter((item) => canShowNavItem(item, permissions, canBypass, resolvedFeatures, tenancyEnabled)),
+        () =>
+            footerNavItems.filter((item) =>
+                canShowNavItem(
+                    item,
+                    permissions,
+                    canBypass,
+                    resolvedFeatures,
+                    tenancyEnabled,
+                ),
+            ),
         [permissions, canBypass, resolvedFeatures, tenancyEnabled],
     );
 

@@ -12,14 +12,17 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Override;
 
 final class SeedsRegenerateCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:regenerate
                             {--check : Check mode - only report what would change}
                             {--model= : Regenerate specific model only}
                             {--force : Force regeneration even if custom code exists}';
 
+    #[Override]
     protected $description = 'Regenerate seeder and JSON files from seed specs';
 
     public function handle(SeedSpecGenerator $generator, ModelRegistry $registry): int
@@ -29,7 +32,7 @@ final class SeedsRegenerateCommand extends Command
         $force = $this->option('force');
 
         $models = $specificModel
-            ? ["App\\Models\\{$specificModel}"]
+            ? ['App\Models\\'.$specificModel]
             : $registry->getAllModels();
 
         if ($models === []) {
@@ -48,7 +51,7 @@ final class SeedsRegenerateCommand extends Command
             $spec = $generator->loadSpec($modelClass);
 
             if ($spec === null) {
-                $this->warn("  {$modelName}: No spec found (run seeds:spec-sync first)");
+                $this->warn(sprintf('  %s: No spec found (run seeds:spec-sync first)', $modelName));
 
                 continue;
             }
@@ -63,10 +66,10 @@ final class SeedsRegenerateCommand extends Command
                 if ($jsonChanges || $seederChanges) {
                     $hasChanges = true;
                 } else {
-                    $this->line("  {$modelName}: Up to date");
+                    $this->line(sprintf('  %s: Up to date', $modelName));
                 }
             } catch (Exception $e) {
-                $this->error("  {$modelName}: Error - {$e->getMessage()}");
+                $this->error(sprintf('  %s: Error - %s', $modelName, $e->getMessage()));
             }
         }
 
@@ -86,7 +89,7 @@ final class SeedsRegenerateCommand extends Command
     private function regenerateJson(string $modelName, array $spec, bool $checkMode): bool
     {
         $jsonKey = Str::snake(Str::plural($modelName));
-        $jsonPath = database_path("seeders/data/{$jsonKey}.json");
+        $jsonPath = database_path(sprintf('seeders/data/%s.json', $jsonKey));
 
         $fields = $spec['fields'] ?? [];
         $existingData = [];
@@ -131,10 +134,10 @@ final class SeedsRegenerateCommand extends Command
 
         if ($newContent !== $existingContent) {
             if ($checkMode) {
-                $this->warn("  {$modelName}: JSON would be updated");
+                $this->warn(sprintf('  %s: JSON would be updated', $modelName));
             } else {
                 File::put($jsonPath, $newContent);
-                $this->info("  {$modelName}: JSON regenerated");
+                $this->info(sprintf('  %s: JSON regenerated', $modelName));
             }
 
             return true;
@@ -150,7 +153,7 @@ final class SeedsRegenerateCommand extends Command
         $category = null;
 
         foreach ($categories as $cat) {
-            $path = database_path("seeders/{$cat}/{$modelName}Seeder.php");
+            $path = database_path(sprintf('seeders/%s/%sSeeder.php', $cat, $modelName));
 
             if (File::exists($path)) {
                 $seederPath = $path;
@@ -174,16 +177,16 @@ final class SeedsRegenerateCommand extends Command
 
             if ($newContent !== $content) {
                 if ($checkMode) {
-                    $this->warn("  {$modelName}: Seeder would be updated");
+                    $this->warn(sprintf('  %s: Seeder would be updated', $modelName));
                 } else {
                     File::put($seederPath, $newContent);
-                    $this->info("  {$modelName}: Seeder regenerated");
+                    $this->info(sprintf('  %s: Seeder regenerated', $modelName));
                 }
 
                 return true;
             }
         } elseif ($force) {
-            $this->warn("  {$modelName}: Seeder has no protected regions - skipping (use --force to overwrite)");
+            $this->warn(sprintf('  %s: Seeder has no protected regions - skipping (use --force to overwrite)', $modelName));
         }
 
         return false;
@@ -191,7 +194,7 @@ final class SeedsRegenerateCommand extends Command
 
     private function generateSeederCode(string $modelName, array $spec, string $category): string
     {
-        $modelClass = "App\\Models\\{$modelName}";
+        $modelClass = 'App\Models\\'.$modelName;
         $enhancedAnalyzer = resolve(EnhancedRelationshipAnalyzer::class);
         $relationships = class_exists($modelClass)
             ? $enhancedAnalyzer->analyzeModel($modelClass)

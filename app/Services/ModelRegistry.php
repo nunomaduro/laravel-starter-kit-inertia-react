@@ -27,12 +27,24 @@ final class ModelRegistry
 
         foreach (File::allFiles($modelsPath) as $file) {
             $className = $this->getClassNameFromFile($file->getPathname());
-            if ($className === null || ! class_exists($className)) {
+            if ($className === null) {
+                continue;
+            }
+
+            if (! class_exists($className)) {
                 continue;
             }
 
             $reflection = new ReflectionClass($className);
-            if ($reflection->isAbstract() || $reflection->isInterface() || ! $reflection->isSubclassOf(Model::class)) {
+            if ($reflection->isAbstract()) {
+                continue;
+            }
+
+            if ($reflection->isInterface()) {
+                continue;
+            }
+
+            if (! $reflection->isSubclassOf(Model::class)) {
                 continue;
             }
 
@@ -48,7 +60,7 @@ final class ModelRegistry
     public function hasFactory(string $modelClass): bool
     {
         $modelName = class_basename($modelClass);
-        $factoryPath = database_path("factories/{$modelName}Factory.php");
+        $factoryPath = database_path(sprintf('factories/%sFactory.php', $modelName));
 
         return File::exists($factoryPath);
     }
@@ -61,12 +73,12 @@ final class ModelRegistry
     public function hasSeeder(string $modelClass): array
     {
         $modelName = class_basename($modelClass);
-        $seederName = "{$modelName}Seeder";
+        $seederName = $modelName.'Seeder';
 
         $categories = ['essential', 'development', 'production'];
 
         foreach ($categories as $category) {
-            $seederPath = database_path("seeders/{$category}/{$seederName}.php");
+            $seederPath = database_path(sprintf('seeders/%s/%s.php', $category, $seederName));
 
             if (File::exists($seederPath)) {
                 return ['exists' => true, 'category' => $category];
@@ -112,6 +124,6 @@ final class ModelRegistry
         $namespace = $namespaceMatch[1];
         $className = basename($filePath, '.php');
 
-        return "{$namespace}\\{$className}";
+        return sprintf('%s\%s', $namespace, $className);
     }
 }

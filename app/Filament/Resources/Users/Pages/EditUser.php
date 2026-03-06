@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Users\Pages;
 
-use App\Features\ImpersonationFeature;
 use App\Filament\Resources\Users\UserResource;
 use App\Services\ActivityLogRbac;
-use App\Support\FeatureHelper;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Validation\ValidationException;
+use Override;
 use Spatie\Permission\Models\Role;
 use STS\FilamentImpersonate\Actions\Impersonate;
 
 final class EditUser extends EditRecord
 {
+    #[Override]
     protected static string $resource = UserResource::class;
 
     /**
@@ -46,8 +46,7 @@ final class EditUser extends EditRecord
             ViewAction::make(),
             Impersonate::make()
                 ->record($this->getRecord())
-                ->visible(fn (): bool => auth()->user()?->hasRole('super-admin') === true
-                    && FeatureHelper::isActiveForClass(ImpersonationFeature::class, auth()->user())),
+                ->visible(fn (): bool => auth()->user()?->canImpersonate() === true),
             DeleteAction::make(),
         ];
     }
@@ -94,6 +93,7 @@ final class EditUser extends EditRecord
     {
         $this->record->syncTags($this->pendingTagNames);
         $this->record->load('roles');
+
         resolve(ActivityLogRbac::class)->logRolesUpdated(
             $this->record,
             $this->previousRoleNames,

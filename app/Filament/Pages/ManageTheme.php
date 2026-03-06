@@ -10,25 +10,31 @@ use Filament\Forms\Components\Select;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Override;
 use UnitEnum;
 
 final class ManageTheme extends SettingsPage
 {
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPaintBrush;
 
+    #[Override]
     protected static ?string $navigationLabel = 'Theme';
 
+    #[Override]
     protected static ?int $navigationSort = 30;
 
+    #[Override]
     protected static string $settings = ThemeSettings::class;
 
     public static function canAccess(): bool
     {
         $user = auth()->user();
 
-        return $user !== null && $user->isSuperAdmin();
+        return filament()->getCurrentPanel()?->getId() === 'system' && $user !== null && $user->isSuperAdmin();
     }
 
     public function form(Schema $schema): Schema

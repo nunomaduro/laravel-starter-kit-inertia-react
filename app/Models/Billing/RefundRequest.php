@@ -9,6 +9,7 @@ use App\Models\Concerns\BelongsToOrganization;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Override;
 
 /**
  * @property int $id
@@ -25,6 +26,7 @@ final class RefundRequest extends Model
     use BelongsToOrganization;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
+    #[Override]
     protected $fillable = [
         'invoice_id',
         'amount',

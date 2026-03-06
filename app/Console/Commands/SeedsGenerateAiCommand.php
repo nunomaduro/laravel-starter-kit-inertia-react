@@ -13,10 +13,12 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Override;
 use Prism\Prism\Enums\Provider;
 
 final class SeedsGenerateAiCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:generate-ai
                             {--model= : Generate for specific model only}
                             {--scenario=basic_demo : Scenario to generate (basic_demo, edge_cases, performance, i18n)}
@@ -24,6 +26,7 @@ final class SeedsGenerateAiCommand extends Command
                             {--api-key= : API key for AI provider}
                             {--dry-run : Show prompts without calling AI}';
 
+    #[Override]
     protected $description = 'Generate seed JSON data using AI (offline, curated)';
 
     public function handle(
@@ -39,7 +42,7 @@ final class SeedsGenerateAiCommand extends Command
         $dryRun = $this->option('dry-run');
 
         $models = $specificModel
-            ? ["App\\Models\\{$specificModel}"]
+            ? ['App\Models\\'.$specificModel]
             : $registry->getAllModels();
 
         if ($models === []) {
@@ -48,7 +51,7 @@ final class SeedsGenerateAiCommand extends Command
             return self::SUCCESS;
         }
 
-        $this->info("Generating AI seed data (scenario: {$scenario})...");
+        $this->info(sprintf('Generating AI seed data (scenario: %s)...', $scenario));
         $this->newLine();
 
         if ($dryRun) {
@@ -63,7 +66,7 @@ final class SeedsGenerateAiCommand extends Command
                 $spec = $specGenerator->loadSpec($modelClass);
 
                 if ($spec === null) {
-                    $this->warn("  {$modelName}: No spec found (run seeds:spec-sync first)");
+                    $this->warn(sprintf('  %s: No spec found (run seeds:spec-sync first)', $modelName));
 
                     continue;
                 }
@@ -74,13 +77,13 @@ final class SeedsGenerateAiCommand extends Command
                     // Generate profile from spec
                     $profile = $aiGenerator->generateProfile($modelClass, $spec);
                     $aiGenerator->saveProfile($modelClass, $profile);
-                    $this->info("  {$modelName}: Created AI profile");
+                    $this->info(sprintf('  %s: Created AI profile', $modelName));
                 }
 
                 $prompt = $aiGenerator->buildPrompt($spec, $profile, $scenario);
 
                 if ($dryRun) {
-                    $this->line("  {$modelName} Prompt:");
+                    $this->line(sprintf('  %s Prompt:', $modelName));
                     $this->line('  '.str_repeat('-', 60));
                     $this->line($prompt);
                     $this->line('  '.str_repeat('-', 60));
@@ -91,31 +94,31 @@ final class SeedsGenerateAiCommand extends Command
                     $useAI = $prismService->isAvailable($prismProvider);
 
                     if ($useAI) {
-                        $this->line("  {$modelName}: Using AI generation");
+                        $this->line(sprintf('  %s: Using AI generation', $modelName));
                         $jsonData = $this->callAI($prompt, $provider, $prismService);
 
                         if ($jsonData !== null) {
                             $this->saveGeneratedJson($modelName, $jsonData, $scenario, 'ai');
-                            $this->info("  {$modelName}: Generated JSON data with AI");
+                            $this->info(sprintf('  %s: Generated JSON data with AI', $modelName));
                         } else {
-                            $this->warn("  {$modelName}: AI generation failed, falling back to traditional method");
+                            $this->warn(sprintf('  %s: AI generation failed, falling back to traditional method', $modelName));
                             $jsonData = $this->fallbackToTraditional($spec, $traditionalGenerator);
                             if ($jsonData !== null) {
                                 $this->saveGeneratedJson($modelName, $jsonData, $scenario, 'traditional');
-                                $this->info("  {$modelName}: Generated JSON data with Faker");
+                                $this->info(sprintf('  %s: Generated JSON data with Faker', $modelName));
                             }
                         }
                     } else {
-                        $this->line("  {$modelName}: AI not available, using traditional Faker generation");
+                        $this->line(sprintf('  %s: AI not available, using traditional Faker generation', $modelName));
                         $jsonData = $this->fallbackToTraditional($spec, $traditionalGenerator);
                         if ($jsonData !== null) {
                             $this->saveGeneratedJson($modelName, $jsonData, $scenario, 'traditional');
-                            $this->info("  {$modelName}: Generated JSON data with Faker");
+                            $this->info(sprintf('  %s: Generated JSON data with Faker', $modelName));
                         }
                     }
                 }
             } catch (Exception $e) {
-                $this->error("  {$modelName}: Error - {$e->getMessage()}");
+                $this->error(sprintf('  %s: Error - %s', $modelName, $e->getMessage()));
             }
         }
 
@@ -162,7 +165,7 @@ final class SeedsGenerateAiCommand extends Command
                 $jsonData = $prismService->generateStructured($prompt, $schema, $model);
 
                 throw_unless(is_array($jsonData), Exception::class, 'Structured output did not return array');
-            } catch (Exception $e) {
+            } catch (Exception) {
                 $this->line('  Using text output (structured not available)');
                 $response = $prismService->using($prismProvider, $model)
                     ->withPrompt($prompt)
@@ -199,8 +202,8 @@ final class SeedsGenerateAiCommand extends Command
             }
 
             return null;
-        } catch (Exception $e) {
-            $this->error('AI call failed: '.$e->getMessage());
+        } catch (Exception $exception) {
+            $this->error('AI call failed: '.$exception->getMessage());
 
             return null;
         }
@@ -214,8 +217,8 @@ final class SeedsGenerateAiCommand extends Command
     {
         try {
             return $generator->generate($spec, 5);
-        } catch (Exception $e) {
-            $this->error('Traditional generation failed: '.$e->getMessage());
+        } catch (Exception $exception) {
+            $this->error('Traditional generation failed: '.$exception->getMessage());
 
             return null;
         }
@@ -227,7 +230,7 @@ final class SeedsGenerateAiCommand extends Command
     private function saveGeneratedJson(string $modelName, array $jsonData, string $scenario, string $source = 'ai'): void
     {
         $jsonKey = Str::snake(Str::plural($modelName));
-        $jsonPath = database_path("seeders/data/{$jsonKey}.json");
+        $jsonPath = database_path(sprintf('seeders/data/%s.json', $jsonKey));
 
         $existingData = [];
 

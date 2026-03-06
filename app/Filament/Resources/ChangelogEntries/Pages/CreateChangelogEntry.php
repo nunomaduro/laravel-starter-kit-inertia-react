@@ -6,9 +6,11 @@ namespace App\Filament\Resources\ChangelogEntries\Pages;
 
 use App\Filament\Resources\ChangelogEntries\ChangelogEntryResource;
 use Filament\Resources\Pages\CreateRecord;
+use Override;
 
 final class CreateChangelogEntry extends CreateRecord
 {
+    #[Override]
     protected static string $resource = ChangelogEntryResource::class;
 
     /**

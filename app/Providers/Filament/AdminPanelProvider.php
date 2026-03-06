@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use A909M\FilamentStateFusion\FilamentStateFusionPlugin;
-use AlizHarb\ActivityLog\ActivityLogPlugin;
 use App\Http\Middleware\EnsureSetupComplete;
+use App\Http\Middleware\FlashOrganizationSwitchNotification;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -17,15 +17,16 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Stephenjude\FilamentFeatureFlag\FeatureFlagPlugin;
 
 final class AdminPanelProvider extends PanelProvider
 {
@@ -69,12 +70,6 @@ final class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentStateFusionPlugin::make(),
-                FeatureFlagPlugin::make(),
-                ActivityLogPlugin::make()
-                    ->label('Log')
-                    ->pluralLabel('Logs')
-                    ->navigationGroup('System')
-                    ->navigationSort(110),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -96,10 +91,12 @@ final class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                FlashOrganizationSwitchNotification::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
                 EnsureSetupComplete::class,
-            ]);
+            ])
+            ->renderHook(PanelsRenderHook::SIDEBAR_LOGO_AFTER, fn (): View => view('filament.components.organization-switcher'));
     }
 }

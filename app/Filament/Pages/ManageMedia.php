@@ -11,19 +11,30 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Override;
 use UnitEnum;
 
 final class ManageMedia extends SettingsPage
 {
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'System';
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
+    #[Override]
     protected static ?string $navigationLabel = 'Media';
 
+    #[Override]
     protected static ?int $navigationSort = 30;
 
+    #[Override]
     protected static string $settings = MediaSettings::class;
+
+    public static function canAccess(): bool
+    {
+        return filament()->getCurrentPanel()?->getId() === 'system';
+    }
 
     public function form(Schema $schema): Schema
     {

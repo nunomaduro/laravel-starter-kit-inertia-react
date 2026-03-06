@@ -252,7 +252,7 @@ final readonly class DocumentationCrossReference
         $routes = [];
         $allRoutes = Route::getRoutes();
 
-        $fullControllerName = "App\\Http\\Controllers\\{$controllerName}";
+        $fullControllerName = 'App\Http\Controllers\\'.$controllerName;
 
         foreach ($allRoutes as $route) {
             $action = $route->getAction();
@@ -316,7 +316,7 @@ final readonly class DocumentationCrossReference
 
             // Check if page is rendered in controller
             $escapedPagePath = preg_quote($pagePath, '/');
-            if (preg_match("/Inertia::render\(['\"]{$escapedPagePath}['\"]/", $content)) {
+            if (preg_match(sprintf("/Inertia::render\\(['\"]%s['\"]/", $escapedPagePath), $content)) {
                 $controllers[] = $file->getFilenameWithoutExtension();
             }
         }
@@ -348,7 +348,7 @@ final readonly class DocumentationCrossReference
 
                         // Check if page is rendered in controller
                         $escapedPagePath = preg_quote($pagePath, '/');
-                        if (preg_match("/Inertia::render\(['\"]{$escapedPagePath}['\"]/", $content)) {
+                        if (preg_match(sprintf("/Inertia::render\\(['\"]%s['\"]/", $escapedPagePath), $content)) {
                             $routeName = $route->getName();
                             if ($routeName !== null) {
                                 $routes[] = $routeName;
@@ -367,7 +367,7 @@ final readonly class DocumentationCrossReference
                 if (File::exists($routesFile)) {
                     $routesContent = File::get($routesFile);
                     $escapedPagePath = preg_quote($pagePath, '/');
-                    if (preg_match("/Inertia::render\(['\"]{$escapedPagePath}['\"]/", $routesContent)) {
+                    if (preg_match(sprintf("/Inertia::render\\(['\"]%s['\"]/", $escapedPagePath), $routesContent)) {
                         $routeName = $route->getName();
                         if ($routeName !== null) {
                             $routes[] = $routeName;
@@ -405,6 +405,6 @@ final readonly class DocumentationCrossReference
 
         $className = $classMatch[1];
 
-        return "{$namespace}\\{$className}";
+        return sprintf('%s\%s', $namespace, $className);
     }
 }

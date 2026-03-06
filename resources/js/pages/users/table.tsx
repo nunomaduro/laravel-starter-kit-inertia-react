@@ -45,13 +45,21 @@ export default function UsersTablePage({
     searchableColumns = [],
 }: Props) {
     const [shortcutsOpen, setShortcutsOpen] = useState(false);
-    const [messageDialog, setMessageDialog] = useState<{ row: UsersTableRow; subject: string; body: string } | null>(null);
+    const [messageDialog, setMessageDialog] = useState<{
+        row: UsersTableRow;
+        subject: string;
+        body: string;
+    } | null>(null);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.altKey) {
                 const target = e.target as HTMLElement;
-                if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && !target.isContentEditable) {
+                if (
+                    target.tagName !== 'INPUT' &&
+                    target.tagName !== 'TEXTAREA' &&
+                    !target.isContentEditable
+                ) {
                     setShortcutsOpen((v) => !v);
                     e.preventDefault();
                 }
@@ -68,7 +76,11 @@ export default function UsersTablePage({
         {
             label: 'Duplicate',
             onClick: (row) => {
-                router.post(`/users/${row.id}/duplicate`, {}, { preserveScroll: true, only: ['tableData', 'flash'] });
+                router.post(
+                    `/users/${row.id}/duplicate`,
+                    {},
+                    { preserveScroll: true, only: ['tableData', 'flash'] },
+                );
             },
         },
         {
@@ -100,7 +112,8 @@ export default function UsersTablePage({
             variant: 'destructive',
             confirm: {
                 title: 'Deactivate user?',
-                description: 'They will no longer be able to sign in until reactivated.',
+                description:
+                    'They will no longer be able to sign in until reactivated.',
                 confirmLabel: 'Deactivate',
                 cancelLabel: 'Cancel',
                 variant: 'destructive',
@@ -128,16 +141,21 @@ export default function UsersTablePage({
             variant: 'destructive',
             confirm: {
                 title: 'Delete selected users?',
-                description: 'Users will be soft-deleted and can be restored from the "Only trashed" view.',
+                description:
+                    'Users will be soft-deleted and can be restored from the "Only trashed" view.',
                 confirmLabel: 'Delete',
                 cancelLabel: 'Cancel',
                 variant: 'destructive',
             },
             onClick: (rows) => {
-                router.post('/users/bulk-soft-delete', { ids: rows.map((r) => r.id) }, {
-                    preserveScroll: true,
-                    only: ['tableData', 'flash'],
-                });
+                router.post(
+                    '/users/bulk-soft-delete',
+                    { ids: rows.map((r) => r.id) },
+                    {
+                        preserveScroll: true,
+                        only: ['tableData', 'flash'],
+                    },
+                );
             },
         },
     ];
@@ -155,9 +173,14 @@ export default function UsersTablePage({
         return (
             <AppSidebarLayout>
                 <Head title="Users" />
-                <div className="flex h-full flex-1 flex-col gap-4 p-4" data-pan="users-table">
+                <div
+                    className="flex h-full flex-1 flex-col gap-4 p-4"
+                    data-pan="users-table"
+                >
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Users</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">
+                            Users
+                        </h1>
                         <Skeleton className="mt-1 h-5 w-24" />
                     </div>
                     <Skeleton className="h-[400px] w-full rounded-md" />
@@ -202,19 +225,25 @@ export default function UsersTablePage({
                         <div className="grid grid-cols-2 gap-4 p-4 text-sm">
                             {detail?.email_verified_at != null && (
                                 <div>
-                                    <span className="font-medium text-muted-foreground">Email verified</span>
+                                    <span className="font-medium text-muted-foreground">
+                                        Email verified
+                                    </span>
                                     <p>{String(detail.email_verified_at)}</p>
                                 </div>
                             )}
                             {detail?.updated_at != null && (
                                 <div>
-                                    <span className="font-medium text-muted-foreground">Last updated</span>
+                                    <span className="font-medium text-muted-foreground">
+                                        Last updated
+                                    </span>
                                     <p>{String(detail.updated_at)}</p>
                                 </div>
                             )}
                             {detail?.organizations_count != null && (
                                 <div>
-                                    <span className="font-medium text-muted-foreground">Organizations</span>
+                                    <span className="font-medium text-muted-foreground">
+                                        Organizations
+                                    </span>
                                     <p>{String(detail.organizations_count)}</p>
                                 </div>
                             )}
@@ -250,19 +279,39 @@ export default function UsersTablePage({
                     slots={{
                         toolbar: (
                             <div className="flex justify-end px-2">
-                                <Dialog open={shortcutsOpen} onOpenChange={setShortcutsOpen}>
+                                <Dialog
+                                    open={shortcutsOpen}
+                                    onOpenChange={setShortcutsOpen}
+                                >
                                     <DialogTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8" title="Keyboard shortcuts">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8"
+                                            title="Keyboard shortcuts"
+                                        >
                                             <Keyboard className="h-4 w-4" />
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>Keyboard shortcuts</DialogTitle>
+                                            <DialogTitle>
+                                                Keyboard shortcuts
+                                            </DialogTitle>
                                         </DialogHeader>
                                         <ul className="list-inside list-disc space-y-1 text-sm text-muted-foreground">
-                                            <li><kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-xs">?</kbd> Show this help</li>
-                                            <li><kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-xs">Ctrl</kbd> + click row to open in new tab</li>
+                                            <li>
+                                                <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-xs">
+                                                    ?
+                                                </kbd>{' '}
+                                                Show this help
+                                            </li>
+                                            <li>
+                                                <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-xs">
+                                                    Ctrl
+                                                </kbd>{' '}
+                                                + click row to open in new tab
+                                            </li>
                                         </ul>
                                     </DialogContent>
                                 </Dialog>
@@ -270,7 +319,9 @@ export default function UsersTablePage({
                         ),
                         beforeTable: (
                             <p className="px-2 py-1 text-xs text-muted-foreground">
-                                Full usage example: filters, density, select-all, row actions with confirm and groups, slots, translations.
+                                Full usage example: filters, density,
+                                select-all, row actions with confirm and groups,
+                                slots, translations.
                             </p>
                         ),
                     }}
@@ -280,13 +331,17 @@ export default function UsersTablePage({
                         search: 'Search users',
                         clearFilters: 'Clear all filters',
                         density: 'Row density',
-                        selectAllMatching: (count) => `Select all ${count} users`,
+                        selectAllMatching: (count) =>
+                            `Select all ${count} users`,
                     }}
                 />
             </div>
 
             {/* Send message dialog (form-in-action demo) */}
-            <Dialog open={!!messageDialog} onOpenChange={(open) => !open && setMessageDialog(null)}>
+            <Dialog
+                open={!!messageDialog}
+                onOpenChange={(open) => !open && setMessageDialog(null)}
+            >
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Send message</DialogTitle>
@@ -302,13 +357,23 @@ export default function UsersTablePage({
                                 setMessageDialog(null);
                             }}
                         >
-                            <p className="text-sm text-muted-foreground">To: {messageDialog.row.email}</p>
+                            <p className="text-sm text-muted-foreground">
+                                To: {messageDialog.row.email}
+                            </p>
                             <div className="grid gap-2">
                                 <Label htmlFor="msg-subject">Subject</Label>
                                 <Input
                                     id="msg-subject"
                                     value={messageDialog.subject}
-                                    onChange={(e) => setMessageDialog((d) => d && { ...d, subject: e.target.value })}
+                                    onChange={(e) =>
+                                        setMessageDialog(
+                                            (d) =>
+                                                d && {
+                                                    ...d,
+                                                    subject: e.target.value,
+                                                },
+                                        )
+                                    }
                                     placeholder="Subject"
                                 />
                             </div>
@@ -317,16 +382,30 @@ export default function UsersTablePage({
                                 <Textarea
                                     id="msg-body"
                                     value={messageDialog.body}
-                                    onChange={(e) => setMessageDialog((d) => d && { ...d, body: e.target.value })}
+                                    onChange={(e) =>
+                                        setMessageDialog(
+                                            (d) =>
+                                                d && {
+                                                    ...d,
+                                                    body: e.target.value,
+                                                },
+                                        )
+                                    }
                                     placeholder="Message body"
                                     rows={4}
                                 />
                             </div>
                             <div className="flex justify-end gap-2">
-                                <Button type="button" variant="outline" onClick={() => setMessageDialog(null)}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setMessageDialog(null)}
+                                >
                                     Cancel
                                 </Button>
-                                <Button type="submit">Open in email client</Button>
+                                <Button type="submit">
+                                    Open in email client
+                                </Button>
                             </div>
                         </form>
                     )}

@@ -77,7 +77,7 @@ final class RelationshipAnalyzer
             $filename = $file->getFilename();
 
             // Extract timestamp
-            if ((Str::contains($filename, "create_{$tableName}_table") || Str::contains($filename, "create_{$tableName}s_table")) && preg_match('/^(\d{4}_\d{2}_\d{2}_\d{6})/', $filename, $matches)) {
+            if ((Str::contains($filename, sprintf('create_%s_table', $tableName)) || Str::contains($filename, sprintf('create_%ss_table', $tableName))) && preg_match('/^(\d{4}_\d{2}_\d{2}_\d{6})/', $filename, $matches)) {
                 $timestamp = str_replace('_', '', $matches[1]);
                 if ($timestamp > $latestTimestamp) {
                     $latestTimestamp = $timestamp;
@@ -105,7 +105,7 @@ final class RelationshipAnalyzer
         foreach ($relationships as $foreignKey => $relationship) {
             if ($relationship['type'] === 'belongsTo' && isset($relationship['model'])) {
                 $relatedModel = $relationship['model'];
-                $code .= "        // Ensure {$relatedModel} exists for {$foreignKey}\n";
+                $code .= sprintf('        // Ensure %s exists for %s%s', $relatedModel, $foreignKey, PHP_EOL);
                 $code .= "        if (\\App\\Models\\{$relatedModel}::query()->count() === 0) {\n";
                 $code .= "            \\App\\Models\\{$relatedModel}::factory()->count(5)->create();\n";
                 $code .= "        }\n\n";

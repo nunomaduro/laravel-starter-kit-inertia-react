@@ -56,6 +56,7 @@ final class PaddleGateway implements PaymentGatewayInterface
             if (! $priceId) {
                 continue;
             }
+
             $items[] = [
                 'price_id' => $priceId,
                 'quantity' => (int) ($item['quantity'] ?? 1),

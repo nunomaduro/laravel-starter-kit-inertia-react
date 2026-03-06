@@ -49,7 +49,7 @@ function paddleSignature(string $payload, string $secret): string
     $signed = $timestamp.':'.$payload;
     $hash = hash_hmac('sha256', $signed, $secret);
 
-    return "ts={$timestamp};h1={$hash}";
+    return sprintf('ts=%s;h1=%s', $timestamp, $hash);
 }
 
 function postPaddleWebhook(object $test, string $payload, string $signature): Illuminate\Testing\TestResponse
@@ -105,6 +105,7 @@ it('rejects webhooks with an invalid signature', function (): void {
     $response = postPaddleWebhook($this, $payload, 'invalid_signature');
 
     $response->assertStatus(400);
+
     expect(WebhookLog::query()->count())->toBe(1);
     expect(WebhookLog::query()->first())
         ->gateway->toBe('paddle')

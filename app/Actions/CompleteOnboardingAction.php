@@ -24,6 +24,7 @@ final readonly class CompleteOnboardingAction
         if ($achievement === null) {
             return;
         }
+
         if ($user->allAchievements()->where('achievements.id', $achievement->id)->exists()) {
             return;
         }

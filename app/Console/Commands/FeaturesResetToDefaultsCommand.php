@@ -7,12 +7,15 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Laravel\Pennant\Feature;
+use Override;
 
 final class FeaturesResetToDefaultsCommand extends Command
 {
+    #[Override]
     protected $signature = 'features:reset-to-defaults
                             {--force : Skip confirmation}';
 
+    #[Override]
     protected $description = 'Clear stored feature state and segments so all features use class defaults (on). Run after setup so gamification and others are visible for everyone; adjust later in Filament → Manage Features & Segments.';
 
     public function handle(): int
@@ -27,7 +30,7 @@ final class FeaturesResetToDefaultsCommand extends Command
         $segmentTable = 'feature_segments';
         if (DB::getSchemaBuilder()->hasTable($segmentTable)) {
             $deleted = DB::table($segmentTable)->delete();
-            $this->info("Purged Pennant feature storage and removed {$deleted} feature segment(s).");
+            $this->info(sprintf('Purged Pennant feature storage and removed %d feature segment(s).', $deleted));
         } else {
             $this->info('Purged Pennant feature storage. No feature_segments table found.');
         }

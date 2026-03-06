@@ -10,13 +10,17 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
+use Override;
 
 final class UsersIndexTool extends Tool
 {
+    #[Override]
     protected string $name = 'users_index';
 
+    #[Override]
     protected string $title = 'List users';
 
+    #[Override]
     protected string $description = <<<'MARKDOWN'
         List users with optional filters (name, email), sort, per_page, and include (e.g. roles).
     MARKDOWN;
@@ -28,14 +32,17 @@ final class UsersIndexTool extends Tool
         if ($request->get('filter_name') !== null) {
             $query->where('name', 'like', '%'.($request->get('filter_name')).'%');
         }
+
         if ($request->get('filter_email') !== null) {
             $query->where('email', 'like', '%'.($request->get('filter_email')).'%');
         }
+
         $sort = $request->get('sort');
         if (is_string($sort) && $sort !== '') {
             $direction = str_starts_with($sort, '-') ? 'desc' : 'asc';
             $query->orderBy(mb_ltrim($sort, '-'), $direction);
         }
+
         $include = $request->get('include');
         if (is_string($include) && $include !== '') {
             $query->with(array_map(trim(...), explode(',', $include)));

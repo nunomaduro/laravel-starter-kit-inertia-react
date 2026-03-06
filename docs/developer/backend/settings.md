@@ -57,7 +57,7 @@ Infrastructure needed before the DB is available: `APP_KEY`, `APP_ENV`, `APP_DEB
 | `ImpersonateSettings` | impersonate | `filament-impersonate.*` | No | Settings > Impersonate |
 | `BackupSettings` | backup | `backup.*` | No | Settings > Backup |
 | `MediaSettings` | media | `media-library.*` | No | Settings > Media |
-| `SetupWizardSettings` | setup-wizard | — | No | Settings > Setup Wizard |
+| `SetupWizardSettings` | setup-wizard | — | No | Internal (setup completion state) |
 
 ## Key components
 
@@ -178,9 +178,9 @@ it('applies org override', function () {
 
 Trait methods: `fakeSettings(string $class, array $overrides)`, `setOrgOverride(...)`, `clearOrgOverrides(Organization $org)`.
 
-## Setup Wizard
+## Initial setup (setup_completed)
 
-A guided onboarding flow that redirects super-admins to configure essential settings on first login.
+When setup has not been completed, super-admins are redirected to the **App** settings page to configure app identity (site name, timezone, locale). All other configuration (mail, billing, AI, etc.) is done from the Settings menu.
 
 ### Architecture
 
@@ -192,15 +192,11 @@ SetupWizardSettings (group: setup-wizard)
 EnsureSetupComplete middleware (Filament auth middleware)
     ├── Only intercepts authenticated super-admin users
     ├── Checks SetupWizardSettings::setup_completed
-    ├── Excludes the wizard page itself + logout routes
-    └── Redirects to /admin/setup-wizard if not complete
+    ├── Excludes the App settings page + logout routes
+    └── Redirects to /admin/manage-app if not complete
 
-SetupWizard Filament Page (5-step Wizard component)
-    ├── Step 1: App Basics → AppSettings
-    ├── Step 2: Mail → MailSettings
-    ├── Step 3: Billing (optional) → BillingSettings + StripeSettings
-    ├── Step 4: AI (optional) → PrismSettings + AiSettings
-    └── Step 5: Complete → sets setup_completed=true, applies overlay
+ManageApp (Settings > Platform > App)
+    └── On first save when setup not complete: sets setup_completed=true, applies overlay
 ```
 
 ### Key files
@@ -209,21 +205,19 @@ SetupWizard Filament Page (5-step Wizard component)
 |------|---------|
 | `app/Settings/SetupWizardSettings.php` | Tracks setup completion state |
 | `database/settings/2026_02_23_100000_create_setup_wizard_settings.php` | Seeds defaults |
-| `app/Http/Middleware/EnsureSetupComplete.php` | Redirects super-admins to wizard |
-| `app/Filament/Pages/SetupWizard.php` | Multi-step wizard page |
-| `resources/views/filament/pages/setup-wizard.blade.php` | Blade template |
+| `app/Http/Middleware/EnsureSetupComplete.php` | Redirects super-admins to App settings page |
+| `app/Filament/Pages/ManageApp.php` | App settings; afterSave() marks setup complete on first save |
 
 ### Middleware
 
 `EnsureSetupComplete` is registered in `AdminPanelProvider->authMiddleware()`, scoped to the Filament panel only. It wraps settings resolution in a `try/catch` so fresh installs (where the `settings` table doesn't exist yet) skip the check gracefully.
 
-### Wizard behaviour
+### Behaviour
 
-- Each step saves its settings immediately via `afterValidation()`, so progress is preserved even if the user navigates away.
-- Step progress persists in the query string (`?step=`).
-- On final submit, `completeSetup()` saves all settings, marks setup complete, calls `SettingsOverlayServiceProvider::applyOverlay()`, and redirects to the dashboard.
-- The wizard remains accessible from the Settings navigation group for reconfiguration.
-- Only super-admins can access the wizard (`canAccess()` checks `isSuperAdmin()`).
+- When `setup_completed` is false, super-admins are sent to **Settings > App** (`/admin/manage-app`).
+- Saving the App settings page sets `setup_completed = true` and applies the config overlay; the super-admin can then use the panel normally.
+- All other settings (Mail, Billing, AI, etc.) are configured from the Settings menu; there is no multi-step wizard in the main flow.
+- The legacy Setup Wizard page (`/admin/setup-wizard`) still exists but is hidden from navigation (`shouldRegisterNavigation = false`).
 
 ### Env slimming
 

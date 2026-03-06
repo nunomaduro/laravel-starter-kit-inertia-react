@@ -8,6 +8,7 @@ use Database\Factories\Billing\CreditPackFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Override;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\HasSlug;
@@ -38,6 +39,7 @@ final class CreditPack extends Model implements Sortable
         'order_column_name' => 'sort_order',
     ];
 
+    #[Override]
     protected $fillable = [
         'name',
         'slug',

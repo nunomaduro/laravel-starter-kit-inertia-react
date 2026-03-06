@@ -78,11 +78,13 @@ final class TenantContext
             if (! $user instanceof User) {
                 return;
             }
+
             if (! $user->belongsToOrganization((int) $organizationId)) {
                 session()->forget('current_organization_id');
 
                 return;
             }
+
             $organization = Organization::query()->find($organizationId);
             self::$current = $organization;
         }

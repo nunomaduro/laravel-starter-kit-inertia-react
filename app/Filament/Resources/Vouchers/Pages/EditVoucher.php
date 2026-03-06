@@ -7,9 +7,11 @@ namespace App\Filament\Resources\Vouchers\Pages;
 use App\Filament\Resources\Vouchers\VoucherResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Override;
 
 final class EditVoucher extends EditRecord
 {
+    #[Override]
     protected static string $resource = VoucherResource::class;
 
     protected function getHeaderActions(): array

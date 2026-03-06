@@ -83,6 +83,7 @@ test('search returns paginated users with filters', function (): void {
 
     $response->assertOk();
     $response->assertJsonStructure(['data', 'links', 'meta']);
+
     $data = $response->json('data');
     expect($data)->toBeArray();
     expect(collect($data)->pluck('name')->toArray())->toContain('Alice Smith');

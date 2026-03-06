@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -17,7 +18,6 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
     Popover,
@@ -240,60 +240,70 @@ function DataTableToolbar<TData>({
     densityLabel?: string;
 }) {
     return (
-                <div className="flex flex-wrap items-center gap-2 px-4">
-                    {headerActions?.map((action, i) => {
-                        const Icon = action.icon;
-                        return (
-                            <Button
-                                key={i}
-                                variant={action.variant ?? 'default'}
-                                size="sm"
-                                className="h-8"
-                                onClick={action.onClick}
-                            >
-                                {Icon && <Icon className="mr-1.5 h-4 w-4" />}
-                                {action.label}
-                            </Button>
-                        );
-                    })}
-                    {importUrl && importInputRef && (
-                        <>
-                            <input
-                                ref={importInputRef}
-                                type="file"
-                                accept=".csv,.xlsx,.xls"
-                                className="hidden"
-                                onChange={async (e) => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-                                    const form = new FormData();
-                                    form.append('file', file);
-                                    try {
-                                        const csrf = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '';
-                                        await fetch(importUrl, {
-                                            method: 'POST',
-                                            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
-                                            body: form,
-                                        });
-                                        router.reload(partialReloadKey ? { only: [partialReloadKey] } : undefined);
-                                    } finally {
-                                        e.target.value = '';
-                                    }
-                                }}
-                            />
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8"
-                                onClick={() => importInputRef.current?.click()}
-                            >
-                                <Upload className="mr-1.5 h-4 w-4" />
-                                Import
-                            </Button>
-                        </>
-                    )}
-                    {(resolvedOptions.quickViews ||
-                        resolvedOptions.customQuickViews) && (
+        <div className="flex flex-wrap items-center gap-2 px-4">
+            {headerActions?.map((action) => {
+                const Icon = action.icon;
+                return (
+                    <Button
+                        key={action.label}
+                        variant={action.variant ?? 'default'}
+                        size="sm"
+                        className="h-8"
+                        onClick={action.onClick}
+                    >
+                        {Icon && <Icon className="mr-1.5 h-4 w-4" />}
+                        {action.label}
+                    </Button>
+                );
+            })}
+            {importUrl && importInputRef && (
+                <>
+                    <input
+                        ref={importInputRef}
+                        type="file"
+                        accept=".csv,.xlsx,.xls"
+                        className="hidden"
+                        onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const form = new FormData();
+                            form.append('file', file);
+                            try {
+                                const csrf =
+                                    document.querySelector<HTMLMetaElement>(
+                                        'meta[name="csrf-token"]',
+                                    )?.content ?? '';
+                                await fetch(importUrl, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': csrf,
+                                        Accept: 'application/json',
+                                    },
+                                    body: form,
+                                });
+                                router.reload(
+                                    partialReloadKey
+                                        ? { only: [partialReloadKey] }
+                                        : undefined,
+                                );
+                            } finally {
+                                e.target.value = '';
+                            }
+                        }}
+                    />
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8"
+                        onClick={() => importInputRef.current?.click()}
+                    >
+                        <Upload className="mr-1.5 h-4 w-4" />
+                        Import
+                    </Button>
+                </>
+            )}
+            {(resolvedOptions.quickViews ||
+                resolvedOptions.customQuickViews) && (
                 <DataTableQuickViews
                     quickViews={
                         resolvedOptions.quickViews ? tableData.quickViews : []
@@ -309,38 +319,50 @@ function DataTableToolbar<TData>({
                     enableCustom={resolvedOptions.customQuickViews}
                 />
             )}
-                            {onDensityChange && (
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" size="sm" className="h-8">
-                                            <List className="mr-1.5 h-4 w-4" />
-                                            {densityLabel}
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => onDensityChange('compact')}>
-                                            {density === 'compact' && <Check className="mr-2 h-4 w-4" />}
-                                            Compact
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => onDensityChange('comfortable')}>
-                                            {density === 'comfortable' && <Check className="mr-2 h-4 w-4" />}
-                                            Comfortable
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => onDensityChange('spacious')}>
-                                            {density === 'spacious' && <Check className="mr-2 h-4 w-4" />}
-                                            Spacious
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+            {onDensityChange && (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="h-8">
+                            <List className="mr-1.5 h-4 w-4" />
+                            {densityLabel}
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                            onClick={() => onDensityChange('compact')}
+                        >
+                            {density === 'compact' && (
+                                <Check className="mr-2 h-4 w-4" />
                             )}
-                            {resolvedOptions.exports && tableData.exportUrl && (
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" size="sm" className="h-8">
-                                            <Download className="h-4 w-4" />
-                                            Export
-                                        </Button>
-                                    </DropdownMenuTrigger>
+                            Compact
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => onDensityChange('comfortable')}
+                        >
+                            {density === 'comfortable' && (
+                                <Check className="mr-2 h-4 w-4" />
+                            )}
+                            Comfortable
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => onDensityChange('spacious')}
+                        >
+                            {density === 'spacious' && (
+                                <Check className="mr-2 h-4 w-4" />
+                            )}
+                            Spacious
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )}
+            {resolvedOptions.exports && tableData.exportUrl && (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="h-8">
+                            <Download className="h-4 w-4" />
+                            Export
+                        </Button>
+                    </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Export format</DropdownMenuLabel>
                         <DropdownMenuSeparator />
@@ -629,11 +651,7 @@ export function DataTable<TData extends object>({
     rowClassName,
     groupClassName,
     options: optionsOverride,
-    onInlineEdit,
-    onReorder,
-    onStateChange,
     slots,
-    mobileBreakpoint = 0,
     translations: translationsOverride,
 }: DataTableProps<TData>) {
     const t = useMemo(
@@ -663,11 +681,15 @@ export function DataTable<TData extends object>({
     const detailRowEnabled =
         tableData.config?.detailRowEnabled === true && renderDetailRow != null;
     const [expandedRowId, setExpandedRowId] = useState<unknown>(null);
-    const [detailCache, setDetailCache] = useState<Record<string, Record<string, unknown>>>({});
-    const [detailOverlayRow, setDetailOverlayRow] = useState<{ id: unknown; data: TData } | null>(null);
-    const [confirmingBulkAction, setConfirmingBulkAction] = useState<
-        DataTableBulkAction<TData> | null
-    >(null);
+    const [detailCache, setDetailCache] = useState<
+        Record<string, Record<string, unknown>>
+    >({});
+    const [detailOverlayRow, setDetailOverlayRow] = useState<{
+        id: unknown;
+        data: TData;
+    } | null>(null);
+    const [confirmingBulkAction, setConfirmingBulkAction] =
+        useState<DataTableBulkAction<TData> | null>(null);
     const importInputRef = useRef<HTMLInputElement>(null);
     const detailDisplay = tableData.config?.detailDisplay ?? 'inline';
 
@@ -691,32 +713,65 @@ export function DataTable<TData extends object>({
                         if (custom !== undefined) {
                             cellContent = custom;
                             return copyCell ? (
-                                <CopyableCell valueToCopy={value != null ? String(value) : ''}>
+                                <CopyableCell
+                                    valueToCopy={
+                                        value != null ? String(value) : ''
+                                    }
+                                >
                                     {cellContent}
                                 </CopyableCell>
-                            ) : cellContent;
+                            ) : (
+                                cellContent
+                            );
                         }
                     }
-                    if ((value === null || value === undefined) && !col.toggleable) {
-                        cellContent = <span className="text-muted-foreground">—</span>;
+                    if (
+                        (value === null || value === undefined) &&
+                        !col.toggleable
+                    ) {
+                        cellContent = (
+                            <span className="text-muted-foreground">—</span>
+                        );
                         return cellContent;
                     }
-                    if (col.toggleable && toggleUrl && typeof value === 'boolean') {
+                    if (
+                        col.toggleable &&
+                        toggleUrl &&
+                        typeof value === 'boolean'
+                    ) {
                         const rowId = (row.original as { id?: unknown }).id;
-                        if (rowId == null) return <span className="text-muted-foreground">—</span>;
+                        if (rowId == null)
+                            return (
+                                <span className="text-muted-foreground">—</span>
+                            );
                         const url = `${toggleUrl}/${String(rowId)}`;
                         return (
                             <Switch
                                 checked={value}
                                 onCheckedChange={async (checked) => {
                                     try {
-                                        const csrf = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '';
+                                        const csrf =
+                                            document.querySelector<HTMLMetaElement>(
+                                                'meta[name="csrf-token"]',
+                                            )?.content ?? '';
                                         await fetch(url, {
                                             method: 'PATCH',
-                                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
-                                            body: JSON.stringify({ column: col.id, value: !!checked }),
+                                            headers: {
+                                                'Content-Type':
+                                                    'application/json',
+                                                'X-CSRF-TOKEN': csrf,
+                                                Accept: 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                column: col.id,
+                                                value: !!checked,
+                                            }),
                                         });
-                                        router.reload(partialReloadKey ? { only: [partialReloadKey] } : undefined);
+                                        router.reload(
+                                            partialReloadKey
+                                                ? { only: [partialReloadKey] }
+                                                : undefined,
+                                        );
                                     } catch {
                                         // ignore
                                     }
@@ -737,8 +792,12 @@ export function DataTable<TData extends object>({
                             </X>
                         );
                         return copyCell ? (
-                            <CopyableCell valueToCopy={value ? 'Yes' : 'No'}>{cellContent}</CopyableCell>
-                        ) : cellContent;
+                            <CopyableCell valueToCopy={value ? 'Yes' : 'No'}>
+                                {cellContent}
+                            </CopyableCell>
+                        ) : (
+                            cellContent
+                        );
                     }
                     if (col.type === 'image' && typeof value === 'string') {
                         return (
@@ -756,8 +815,12 @@ export function DataTable<TData extends object>({
                             </span>
                         );
                         return copyCell ? (
-                            <CopyableCell valueToCopy={String(value)}>{cellContent}</CopyableCell>
-                        ) : cellContent;
+                            <CopyableCell valueToCopy={String(value)}>
+                                {cellContent}
+                            </CopyableCell>
+                        ) : (
+                            cellContent
+                        );
                     }
                     if (col.type === 'email' && typeof value === 'string') {
                         cellContent = (
@@ -770,27 +833,47 @@ export function DataTable<TData extends object>({
                             </a>
                         );
                         return copyCell ? (
-                            <CopyableCell valueToCopy={value}>{cellContent}</CopyableCell>
-                        ) : cellContent;
+                            <CopyableCell valueToCopy={value}>
+                                {cellContent}
+                            </CopyableCell>
+                        ) : (
+                            cellContent
+                        );
                     }
-                    if (col.type === 'badge' && (typeof value === 'string' || typeof value === 'number')) {
+                    if (
+                        col.type === 'badge' &&
+                        (typeof value === 'string' || typeof value === 'number')
+                    ) {
                         const opt = col.options?.find(
                             (o) => String(o.value) === String(value),
                         );
-                        const variant = (opt?.variant as 'default' | 'secondary' | 'destructive' | 'outline') ?? 'secondary';
+                        const variant =
+                            (opt?.variant as
+                                | 'default'
+                                | 'secondary'
+                                | 'destructive'
+                                | 'outline') ?? 'secondary';
                         cellContent = (
                             <Badge variant={variant} className="capitalize">
                                 {opt?.label ?? String(value)}
                             </Badge>
                         );
                         return copyCell ? (
-                            <CopyableCell valueToCopy={String(value)}>{cellContent}</CopyableCell>
-                        ) : cellContent;
+                            <CopyableCell valueToCopy={String(value)}>
+                                {cellContent}
+                            </CopyableCell>
+                        ) : (
+                            cellContent
+                        );
                     }
                     cellContent = String(value);
                     return copyCell ? (
-                        <CopyableCell valueToCopy={String(value ?? '')}>{cellContent}</CopyableCell>
-                    ) : cellContent;
+                        <CopyableCell valueToCopy={String(value ?? '')}>
+                            {cellContent}
+                        </CopyableCell>
+                    ) : (
+                        cellContent
+                    );
                 },
             };
         }
@@ -824,7 +907,8 @@ export function DataTable<TData extends object>({
         }
 
         if (detailRowEnabled) {
-            const useOverlay = detailDisplay === 'drawer' || detailDisplay === 'modal';
+            const useOverlay =
+                detailDisplay === 'drawer' || detailDisplay === 'modal';
 
             async function fetchDetail(rowId: unknown) {
                 if (rowId == null || detailCache[String(rowId)]) return;
@@ -877,7 +961,10 @@ export function DataTable<TData extends object>({
                                         setDetailOverlayRow(null);
                                         return;
                                     }
-                                    setDetailOverlayRow({ id: rowId, data: row.original });
+                                    setDetailOverlayRow({
+                                        id: rowId,
+                                        data: row.original,
+                                    });
                                     await fetchDetail(rowId);
                                     return;
                                 }
@@ -932,7 +1019,21 @@ export function DataTable<TData extends object>({
         }
 
         return result;
-    }, [tableData.columns, tableData.toggleUrl, tableName, actions, hasBulkActions, renderCell, detailRowEnabled, expandedRowId, detailCache, detailOverlayRow, detailDisplay, partialReloadKey, optionsOverride?.copyCell]);
+    }, [
+        tableData.columns,
+        tableData.toggleUrl,
+        tableName,
+        actions,
+        hasBulkActions,
+        renderCell,
+        detailRowEnabled,
+        expandedRowId,
+        detailCache,
+        detailOverlayRow,
+        detailDisplay,
+        partialReloadKey,
+        optionsOverride?.copyCell,
+    ]);
 
     const {
         table,
@@ -968,7 +1069,7 @@ export function DataTable<TData extends object>({
 
     const [searchInputValue, setSearchInputValue] = useState(currentSearch);
     useEffect(() => {
-        setSearchInputValue(currentSearch);
+        queueMicrotask(() => setSearchInputValue(currentSearch));
     }, [currentSearch]);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     useEffect(() => {
@@ -1005,7 +1106,9 @@ export function DataTable<TData extends object>({
     type Density = (typeof DENSITY_VALUES)[number];
     const [density, setDensity] = useState<Density>(() => {
         const d = optionsOverride?.density;
-        return typeof d === 'string' && DENSITY_VALUES.includes(d as Density) ? (d as Density) : 'comfortable';
+        return typeof d === 'string' && DENSITY_VALUES.includes(d as Density)
+            ? (d as Density)
+            : 'comfortable';
     });
 
     const densityRowClass = {
@@ -1015,7 +1118,13 @@ export function DataTable<TData extends object>({
     }[density];
 
     const paginationKeys = useMemo(
-        () => new Set(['page', 'per_page', 'sort', prefix ? `${prefix}_search` : 'search']),
+        () =>
+            new Set([
+                'page',
+                'per_page',
+                'sort',
+                prefix ? `${prefix}_search` : 'search',
+            ]),
         [prefix],
     );
 
@@ -1032,7 +1141,11 @@ export function DataTable<TData extends object>({
             if (!paginationKeys.has(k)) url.searchParams.delete(k);
         }
         const qs = url.searchParams.toString();
-        router.get(url.pathname + (qs ? `?${qs}` : ''), {}, { preserveScroll: true });
+        router.get(
+            url.pathname + (qs ? `?${qs}` : ''),
+            {},
+            { preserveScroll: true },
+        );
     }, [paginationKeys]);
 
     const [selectingAll, setSelectingAll] = useState(false);
@@ -1043,12 +1156,16 @@ export function DataTable<TData extends object>({
         try {
             const current = new URL(window.location.href);
             const target = new URL(url, window.location.origin);
-            current.searchParams.forEach((v, k) => target.searchParams.set(k, v));
+            current.searchParams.forEach((v, k) =>
+                target.searchParams.set(k, v),
+            );
             const res = await fetch(target.toString());
             const json = (await res.json()) as { ids?: unknown[] };
             const ids = json?.ids ?? [];
             const next: Record<string, boolean> = {};
-            ids.forEach((id) => { next[String(id)] = true; });
+            ids.forEach((id) => {
+                next[String(id)] = true;
+            });
             setRowSelection(next);
         } finally {
             setSelectingAll(false);
@@ -1070,7 +1187,11 @@ export function DataTable<TData extends object>({
                             <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 type="search"
-                                placeholder={typeof t.search === 'string' ? t.search : 'Search…'}
+                                placeholder={
+                                    typeof t.search === 'string'
+                                        ? t.search
+                                        : 'Search…'
+                                }
                                 value={searchInputValue}
                                 onChange={(e) =>
                                     setSearchInputValue(e.target.value)
@@ -1183,7 +1304,10 @@ export function DataTable<TData extends object>({
                             const Icon = action.icon;
                             const isDisabled =
                                 action.disabled?.(selectedRows) ?? false;
-                            const hasConfirm = action.confirm === true || (typeof action.confirm === 'object' && action.confirm !== null);
+                            const hasConfirm =
+                                action.confirm === true ||
+                                (typeof action.confirm === 'object' &&
+                                    action.confirm !== null);
                             return (
                                 <Button
                                     key={action.id}
@@ -1351,12 +1475,21 @@ export function DataTable<TData extends object>({
                     <TableBody>
                         {table.getRowModel().rows.length > 0 ? (
                             table.getRowModel().rows.flatMap((row, index) => {
-                                const rowId = (row.original as { id?: unknown }).id;
-                                const isExpanded = detailRowEnabled && expandedRowId != null && String(expandedRowId) === String(rowId);
-                                const detailContent = isExpanded && renderDetailRow
-                                    ? renderDetailRow(row.original, detailCache[String(rowId)] ?? {})
-                                    : null;
-                                const cols = table.getVisibleLeafColumns().length;
+                                const rowId = (row.original as { id?: unknown })
+                                    .id;
+                                const isExpanded =
+                                    detailRowEnabled &&
+                                    expandedRowId != null &&
+                                    String(expandedRowId) === String(rowId);
+                                const detailContent =
+                                    isExpanded && renderDetailRow
+                                        ? renderDetailRow(
+                                              row.original,
+                                              detailCache[String(rowId)] ?? {},
+                                          )
+                                        : null;
+                                const cols =
+                                    table.getVisibleLeafColumns().length;
                                 return [
                                     <TableRow
                                         key={row.id}
@@ -1368,7 +1501,8 @@ export function DataTable<TData extends object>({
                                         className={cn(
                                             densityRowClass,
                                             index % 2 === 1 && 'bg-muted/40',
-                                            row.getIsSelected() && 'bg-primary/5',
+                                            row.getIsSelected() &&
+                                                'bg-primary/5',
                                             rowLink && 'cursor-pointer',
                                             rowClassName?.(row.original),
                                         )}
@@ -1378,7 +1512,10 @@ export function DataTable<TData extends object>({
                                                       const href = rowLink(
                                                           row.original,
                                                       );
-                                                      if (e.metaKey || e.ctrlKey) {
+                                                      if (
+                                                          e.metaKey ||
+                                                          e.ctrlKey
+                                                      ) {
                                                           window.open(href);
                                                       } else {
                                                           router.visit(href);
@@ -1407,15 +1544,27 @@ export function DataTable<TData extends object>({
                                                         index % 2 === 1 &&
                                                             'bg-muted/40',
                                                         'py-2 whitespace-nowrap',
-                                                        getColumnMeta(cell.column.columnDef).type === 'number' &&
+                                                        getColumnMeta(
+                                                            cell.column
+                                                                .columnDef,
+                                                        ).type === 'number' &&
                                                             'text-right',
-                                                        getColumnMeta(cell.column.columnDef).group &&
-                                                            groupClassName?.[getColumnMeta(cell.column.columnDef).group!],
+                                                        getColumnMeta(
+                                                            cell.column
+                                                                .columnDef,
+                                                        ).group &&
+                                                            groupClassName?.[
+                                                                getColumnMeta(
+                                                                    cell.column
+                                                                        .columnDef,
+                                                                ).group!
+                                                            ],
                                                         pin.className,
                                                     )}
                                                 >
                                                     {flexRender(
-                                                        cell.column.columnDef.cell,
+                                                        cell.column.columnDef
+                                                            .cell,
                                                         cell.getContext(),
                                                     )}
                                                 </TableCell>
@@ -1424,12 +1573,18 @@ export function DataTable<TData extends object>({
                                     </TableRow>,
                                     ...(detailContent
                                         ? [
-                                            <TableRow key={`${row.id}-detail`} className="bg-muted/20">
-                                                <TableCell colSpan={cols} className="p-0">
-                                                    {detailContent}
-                                                </TableCell>
-                                            </TableRow>,
-                                        ]
+                                              <TableRow
+                                                  key={`${row.id}-detail`}
+                                                  className="bg-muted/20"
+                                              >
+                                                  <TableCell
+                                                      colSpan={cols}
+                                                      className="p-0"
+                                                  >
+                                                      {detailContent}
+                                                  </TableCell>
+                                              </TableRow>,
+                                          ]
                                         : []),
                                 ];
                             })
@@ -1465,17 +1620,27 @@ export function DataTable<TData extends object>({
                                     const pin = getColumnPinningProps(col);
                                     let content: React.ReactNode = null;
                                     if (footerValue != null) {
-                                        const custom = renderFooterCell?.(col.id, footerValue);
+                                        const custom = renderFooterCell?.(
+                                            col.id,
+                                            footerValue,
+                                        );
                                         if (custom !== undefined) {
                                             content = custom;
                                         } else {
-                                            content = isNumber && typeof footerValue === 'number'
-                                                ? footerValue.toLocaleString('fr-TN')
-                                                : String(footerValue);
+                                            content =
+                                                isNumber &&
+                                                typeof footerValue === 'number'
+                                                    ? footerValue.toLocaleString(
+                                                          'fr-TN',
+                                                      )
+                                                    : String(footerValue);
                                         }
                                     }
                                     const footerPinnedBg = col.getIsPinned()
-                                        ? { backgroundColor: 'var(--color-background)' }
+                                        ? {
+                                              backgroundColor:
+                                                  'var(--color-background)',
+                                          }
                                         : {};
                                     return (
                                         <TableCell
@@ -1489,7 +1654,9 @@ export function DataTable<TData extends object>({
                                                 isNumber &&
                                                     'text-right tabular-nums',
                                                 meta.group &&
-                                                    groupClassName?.[meta.group],
+                                                    groupClassName?.[
+                                                        meta.group
+                                                    ],
                                                 pin.className,
                                             )}
                                         >
@@ -1500,39 +1667,55 @@ export function DataTable<TData extends object>({
                             </TableRow>
                         </TableFooter>
                     )}
-                    {tableData.summary && Object.keys(tableData.summary).length > 0 && (
-                        <TableFooter>
-                            <TableRow className="bg-muted/30 font-medium">
-                                {[
-                                    ...table.getLeftVisibleLeafColumns(),
-                                    ...table.getCenterVisibleLeafColumns(),
-                                    ...table.getRightVisibleLeafColumns(),
-                                ].map((col) => {
-                                    const summaryValue = tableData.summary?.[col.id];
-                                    const isNumber = getColumnMeta(col.columnDef).type === 'number';
-                                    const pin = getColumnPinningProps(col);
-                                    const content = summaryValue != null
-                                        ? (typeof summaryValue === 'number' && isNumber
-                                            ? summaryValue.toLocaleString('fr-TN')
-                                            : String(summaryValue))
-                                        : null;
-                                    return (
-                                        <TableCell
-                                            key={col.id}
-                                            style={col.getIsPinned() ? { backgroundColor: 'var(--color-background)' } : {}}
-                                            className={cn(
-                                                'py-2 whitespace-nowrap text-muted-foreground',
-                                                isNumber && 'text-right tabular-nums',
-                                                pin.className,
-                                            )}
-                                        >
-                                            {content}
-                                        </TableCell>
-                                    );
-                                })}
-                            </TableRow>
-                        </TableFooter>
-                    )}
+                    {tableData.summary &&
+                        Object.keys(tableData.summary).length > 0 && (
+                            <TableFooter>
+                                <TableRow className="bg-muted/30 font-medium">
+                                    {[
+                                        ...table.getLeftVisibleLeafColumns(),
+                                        ...table.getCenterVisibleLeafColumns(),
+                                        ...table.getRightVisibleLeafColumns(),
+                                    ].map((col) => {
+                                        const summaryValue =
+                                            tableData.summary?.[col.id];
+                                        const isNumber =
+                                            getColumnMeta(col.columnDef)
+                                                .type === 'number';
+                                        const pin = getColumnPinningProps(col);
+                                        const content =
+                                            summaryValue != null
+                                                ? typeof summaryValue ===
+                                                      'number' && isNumber
+                                                    ? summaryValue.toLocaleString(
+                                                          'fr-TN',
+                                                      )
+                                                    : String(summaryValue)
+                                                : null;
+                                        return (
+                                            <TableCell
+                                                key={col.id}
+                                                style={
+                                                    col.getIsPinned()
+                                                        ? {
+                                                              backgroundColor:
+                                                                  'var(--color-background)',
+                                                          }
+                                                        : {}
+                                                }
+                                                className={cn(
+                                                    'py-2 whitespace-nowrap text-muted-foreground',
+                                                    isNumber &&
+                                                        'text-right tabular-nums',
+                                                    pin.className,
+                                                )}
+                                            >
+                                                {content}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            </TableFooter>
+                        )}
                 </Table>
                 {slots?.afterTable}
             </div>
@@ -1541,82 +1724,103 @@ export function DataTable<TData extends object>({
                 onPageChange={handlePageChange}
                 onPerPageChange={handlePerPageChange}
             />
-            {detailRowEnabled && detailOverlayRow && detailDisplay === 'drawer' && (
-                <Sheet
-                    open
-                    onOpenChange={(open) => !open && setDetailOverlayRow(null)}
-                >
-                    <SheetContent className="overflow-y-auto sm:max-w-lg">
-                        <SheetHeader>
-                            <SheetTitle>Details</SheetTitle>
-                        </SheetHeader>
-                        <div className="mt-4">
-                            {renderDetailRow?.(
-                                detailOverlayRow.data,
-                                detailCache[String(detailOverlayRow.id)] ?? {},
-                            )}
-                        </div>
-                    </SheetContent>
-                </Sheet>
-            )}
-            {detailRowEnabled && detailOverlayRow && detailDisplay === 'modal' && (
-                <Dialog
-                    open
-                    onOpenChange={(open) => !open && setDetailOverlayRow(null)}
-                >
-                    <DialogContent className="max-w-lg">
-                        <DialogHeader>
-                            <DialogTitle>Details</DialogTitle>
-                        </DialogHeader>
-                        <div className="mt-4">
-                            {renderDetailRow?.(
-                                detailOverlayRow.data,
-                                detailCache[String(detailOverlayRow.id)] ?? {},
-                            )}
-                        </div>
-                    </DialogContent>
-                </Dialog>
-            )}
-            {confirmingBulkAction && (() => {
-                const opts = getBulkConfirmOptions(
-                    confirmingBulkAction as DataTableBulkAction<unknown>,
-                    `Run "${confirmingBulkAction.label}" on ${selectedRows.length} selected item(s)?`,
-                );
-                return (
+            {detailRowEnabled &&
+                detailOverlayRow &&
+                detailDisplay === 'drawer' && (
+                    <Sheet
+                        open
+                        onOpenChange={(open) =>
+                            !open && setDetailOverlayRow(null)
+                        }
+                    >
+                        <SheetContent className="overflow-y-auto sm:max-w-lg">
+                            <SheetHeader>
+                                <SheetTitle>Details</SheetTitle>
+                            </SheetHeader>
+                            <div className="mt-4">
+                                {renderDetailRow?.(
+                                    detailOverlayRow.data,
+                                    detailCache[String(detailOverlayRow.id)] ??
+                                        {},
+                                )}
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                )}
+            {detailRowEnabled &&
+                detailOverlayRow &&
+                detailDisplay === 'modal' && (
                     <Dialog
                         open
-                        onOpenChange={(open) => !open && setConfirmingBulkAction(null)}
+                        onOpenChange={(open) =>
+                            !open && setDetailOverlayRow(null)
+                        }
                     >
-                        <DialogContent>
+                        <DialogContent className="max-w-lg">
                             <DialogHeader>
-                                <DialogTitle>{opts.title}</DialogTitle>
+                                <DialogTitle>Details</DialogTitle>
                             </DialogHeader>
-                            {opts.description && (
-                                <p className="text-sm text-muted-foreground">
-                                    {opts.description}
-                                </p>
-                            )}
-                            <div className="mt-4 flex justify-end gap-2">
-                                <Button
-                                    variant="outline"
-                                    onClick={() => setConfirmingBulkAction(null)}
-                                >
-                                    {opts.cancelLabel ?? 'Cancel'}
-                                </Button>
-                                <Button
-                                    variant={opts.variant === 'destructive' ? 'destructive' : 'default'}
-                                    onClick={() => {
-                                        confirmingBulkAction.onClick(selectedRows);
-                                        setConfirmingBulkAction(null);
-                                    }}
-                                >
-                                    {opts.confirmLabel ?? 'Confirm'}
-                                </Button>
+                            <div className="mt-4">
+                                {renderDetailRow?.(
+                                    detailOverlayRow.data,
+                                    detailCache[String(detailOverlayRow.id)] ??
+                                        {},
+                                )}
                             </div>
                         </DialogContent>
                     </Dialog>
-                );
-            })()}
+                )}
+            {confirmingBulkAction &&
+                (() => {
+                    const opts = getBulkConfirmOptions(
+                        confirmingBulkAction as DataTableBulkAction<unknown>,
+                        `Run "${confirmingBulkAction.label}" on ${selectedRows.length} selected item(s)?`,
+                    );
+                    return (
+                        <Dialog
+                            open
+                            onOpenChange={(open) =>
+                                !open && setConfirmingBulkAction(null)
+                            }
+                        >
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>{opts.title}</DialogTitle>
+                                </DialogHeader>
+                                {opts.description && (
+                                    <p className="text-sm text-muted-foreground">
+                                        {opts.description}
+                                    </p>
+                                )}
+                                <div className="mt-4 flex justify-end gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() =>
+                                            setConfirmingBulkAction(null)
+                                        }
+                                    >
+                                        {opts.cancelLabel ?? 'Cancel'}
+                                    </Button>
+                                    <Button
+                                        variant={
+                                            opts.variant === 'destructive'
+                                                ? 'destructive'
+                                                : 'default'
+                                        }
+                                        onClick={() => {
+                                            confirmingBulkAction.onClick(
+                                                selectedRows,
+                                            );
+                                            setConfirmingBulkAction(null);
+                                        }}
+                                    >
+                                        {opts.confirmLabel ?? 'Confirm'}
+                                    </Button>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    );
+                })()}
         </div>
     );
 }

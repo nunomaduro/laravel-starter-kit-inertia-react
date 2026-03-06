@@ -136,7 +136,7 @@ it('returns zero credits when cents_per_credit is zero', function (): void {
 
     Log::shouldReceive('warning')
         ->once()
-        ->withArgs(fn (string $message) => str_contains($message, 'no credits to add'));
+        ->withArgs(fn (string $message): bool => str_contains($message, 'no credits to add'));
 
     $payload = orderPayload($this->org->id, [], ['total' => 5000]);
     $event = new OrderCreated($this->org, null, $payload);

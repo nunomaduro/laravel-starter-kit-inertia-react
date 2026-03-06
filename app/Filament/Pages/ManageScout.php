@@ -13,19 +13,30 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Override;
 use UnitEnum;
 
 final class ManageScout extends SettingsPage
 {
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'System';
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentMagnifyingGlass;
 
+    #[Override]
     protected static ?string $navigationLabel = 'Search';
 
+    #[Override]
     protected static ?int $navigationSort = 20;
 
+    #[Override]
     protected static string $settings = ScoutSettings::class;
+
+    public static function canAccess(): bool
+    {
+        return filament()->getCurrentPanel()?->getId() === 'system';
+    }
 
     public function form(Schema $schema): Schema
     {

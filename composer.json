@@ -96,7 +96,7 @@
         "wildside/userstamps": "^3.1.1"
     },
     "require-dev": {
-        "driftingly/rector-laravel": "^2.1.9",
+        "driftingly/rector-laravel": "^2.1.11",
         "fakerphp/faker": "^1.24.1",
         "filament/blueprint": "^2.1.2",
         "larastan/larastan": "^3.9.3",

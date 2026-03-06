@@ -80,6 +80,7 @@ Route::get('up', function (): JsonResponse {
     } catch (Throwable) {
         $checks['database'] = false;
     }
+
     $ok = ! in_array(false, $checks, true);
 
     return response()->json(['status' => $ok ? 'ok' : 'degraded', 'checks' => $checks], $ok ? 200 : 503);
@@ -141,7 +142,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('users/{user}', [UsersTableController::class, 'show'])->name('users.show');
 
     Route::middleware('tenancy.enabled')->group(function (): void {
-        Route::post('organizations/switch', OrganizationSwitchController::class)->name('organizations.switch');
+        Route::post('organizations/switch', OrganizationSwitchController::class)
+            ->middleware('throttle:20,1')
+            ->name('organizations.switch');
         Route::resource('organizations', OrganizationController::class)->except(['edit']);
         Route::get('organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
         Route::get('organizations/{organization}/members', [OrganizationMemberController::class, 'index'])->name('organizations.members.index');
@@ -232,17 +235,19 @@ Route::middleware('guest')->group(function (): void {
         ->middleware('registration.enabled')
         ->name('register');
     Route::post('register', [UserController::class, 'store'])
-        ->middleware(['registration.enabled', ProtectAgainstSpam::class])
+        ->middleware(['registration.enabled', ProtectAgainstSpam::class, 'throttle:registration'])
         ->name('register.store');
 
     Route::get('reset-password/{token}', [UserPasswordController::class, 'create'])
         ->name('password.reset');
     Route::post('reset-password', [UserPasswordController::class, 'store'])
+        ->middleware('throttle:password-reset-submit')
         ->name('password.store');
 
     Route::get('forgot-password', [UserEmailResetNotificationController::class, 'create'])
         ->name('password.request');
     Route::post('forgot-password', [UserEmailResetNotificationController::class, 'store'])
+        ->middleware('throttle:password-reset-request')
         ->name('password.email');
 
     Route::get('login', [SessionController::class, 'create'])

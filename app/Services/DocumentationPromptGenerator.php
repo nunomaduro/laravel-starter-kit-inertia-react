@@ -42,12 +42,14 @@ final readonly class DocumentationPromptGenerator
             if (! empty($method['parameters'])) {
                 $prompt .= "Parameters:\n";
                 foreach ($method['parameters'] as $param) {
-                    $prompt .= "- `{$param['name']}`: `".($param['type'] ?? 'mixed').'`';
+                    $prompt .= sprintf('- `%s`: `', $param['name']).($param['type'] ?? 'mixed').'`';
                     if (isset($param['description'])) {
-                        $prompt .= " - {$param['description']}";
+                        $prompt .= ' - '.$param['description'];
                     }
+
                     $prompt .= "\n";
                 }
+
                 $prompt .= "\n";
             }
         }
@@ -58,6 +60,7 @@ final readonly class DocumentationPromptGenerator
             foreach ($actionInfo['dependencies'] as $dep) {
                 $prompt .= "- `{$dep['type']}`: `{$dep['name']}`\n";
             }
+
             $prompt .= "\n";
         }
 
@@ -67,12 +70,15 @@ final readonly class DocumentationPromptGenerator
             if (! empty($relationships['usedBy'])) {
                 $prompt .= 'Used by Controllers: '.implode(', ', $relationships['usedBy'])."\n";
             }
+
             if (! empty($relationships['usesModels'])) {
                 $prompt .= 'Uses Models: '.implode(', ', $relationships['usesModels'])."\n";
             }
+
             if (! empty($relationships['relatedRoutes'])) {
                 $prompt .= 'Related Routes: '.implode(', ', $relationships['relatedRoutes'])."\n";
             }
+
             $prompt .= "\n";
         }
 
@@ -112,6 +118,7 @@ final readonly class DocumentationPromptGenerator
                 if (! empty($method['parameters'])) {
                     $prompt .= 'Parameters: '.count($method['parameters'])."\n";
                 }
+
                 $prompt .= "\n";
             }
         }
@@ -122,15 +129,19 @@ final readonly class DocumentationPromptGenerator
             if (! empty($relationships['usesActions'])) {
                 $prompt .= 'Uses Actions: '.implode(', ', $relationships['usesActions'])."\n";
             }
+
             if (! empty($relationships['usesFormRequests'])) {
                 $prompt .= 'Uses Form Requests: '.implode(', ', $relationships['usesFormRequests'])."\n";
             }
+
             if (! empty($relationships['relatedRoutes'])) {
                 $prompt .= 'Routes: '.implode(', ', $relationships['relatedRoutes'])."\n";
             }
+
             if (! empty($relationships['rendersPages'])) {
                 $prompt .= 'Renders Pages: '.implode(', ', $relationships['rendersPages'])."\n";
             }
+
             $prompt .= "\n";
         }
 
@@ -162,12 +173,14 @@ final readonly class DocumentationPromptGenerator
         if (! empty($pageInfo['tsDoc']['props'])) {
             $prompt .= "## Props\n\n";
             foreach ($pageInfo['tsDoc']['props'] as $prop) {
-                $prompt .= "- `{$prop['name']}`: `{$prop['type']}`";
+                $prompt .= sprintf('- `%s`: `%s`', $prop['name'], $prop['type']);
                 if ($prop['optional'] ?? false) {
                     $prompt .= ' (optional)';
                 }
+
                 $prompt .= "\n";
             }
+
             $prompt .= "\n";
         }
 
@@ -177,9 +190,11 @@ final readonly class DocumentationPromptGenerator
             if (! empty($relationships['renderedBy'])) {
                 $prompt .= 'Rendered by Controllers: '.implode(', ', $relationships['renderedBy'])."\n";
             }
+
             if (! empty($relationships['relatedRoutes'])) {
                 $prompt .= 'Routes: '.implode(', ', $relationships['relatedRoutes'])."\n";
             }
+
             $prompt .= "\n";
         }
 
@@ -228,18 +243,23 @@ final readonly class DocumentationPromptGenerator
             if (! empty($relationships['usedBy'])) {
                 $parts[] = 'Used by: '.implode(', ', $relationships['usedBy']);
             }
+
             if (! empty($relationships['usesModels'])) {
                 $parts[] = 'Models: '.implode(', ', $relationships['usesModels']);
             }
+
             if (! empty($relationships['relatedRoutes'])) {
                 $parts[] = 'Routes: '.implode(', ', $relationships['relatedRoutes']);
             }
+
             if ($parts !== []) {
                 $prompt .= implode('. ', $parts)."\n\n";
             }
         }
 
-        return $prompt."Output only valid markdown that fills this template (replace placeholders, no code blocks around the doc):\n\n{$template}";
+        return $prompt.('Output only valid markdown that fills this template (replace placeholders, no code blocks around the doc):
+
+'.$template);
     }
 
     /**
@@ -263,6 +283,7 @@ final readonly class DocumentationPromptGenerator
             foreach ($controllerInfo['methods'] as $methodName => $method) {
                 $methodList[] = $methodName.'() → '.($method['returnType'] ?? 'mixed');
             }
+
             $prompt .= implode('; ', $methodList).".\n\n";
         }
 
@@ -271,21 +292,27 @@ final readonly class DocumentationPromptGenerator
             if (! empty($relationships['usesActions'])) {
                 $parts[] = 'Actions: '.implode(', ', $relationships['usesActions']);
             }
+
             if (! empty($relationships['usesFormRequests'])) {
                 $parts[] = 'Form requests: '.implode(', ', $relationships['usesFormRequests']);
             }
+
             if (! empty($relationships['relatedRoutes'])) {
                 $parts[] = 'Routes: '.implode(', ', $relationships['relatedRoutes']);
             }
+
             if (! empty($relationships['rendersPages'])) {
                 $parts[] = 'Pages: '.implode(', ', $relationships['rendersPages']);
             }
+
             if ($parts !== []) {
                 $prompt .= implode('. ', $parts)."\n\n";
             }
         }
 
-        return $prompt."Output only valid markdown that fills this template (replace placeholders, no code blocks around the doc):\n\n{$template}";
+        return $prompt.('Output only valid markdown that fills this template (replace placeholders, no code blocks around the doc):
+
+'.$template);
     }
 
     /**
@@ -314,14 +341,18 @@ final readonly class DocumentationPromptGenerator
             if (! empty($relationships['renderedBy'])) {
                 $parts[] = 'Rendered by: '.implode(', ', $relationships['renderedBy']);
             }
+
             if (! empty($relationships['relatedRoutes'])) {
                 $parts[] = 'Routes: '.implode(', ', $relationships['relatedRoutes']);
             }
+
             if ($parts !== []) {
                 $prompt .= implode('. ', $parts)."\n\n";
             }
         }
 
-        return $prompt."Output only valid markdown that fills this template (replace placeholders, no code blocks around the doc):\n\n{$template}";
+        return $prompt.('Output only valid markdown that fills this template (replace placeholders, no code blocks around the doc):
+
+'.$template);
     }
 }

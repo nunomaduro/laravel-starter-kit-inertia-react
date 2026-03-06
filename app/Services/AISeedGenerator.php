@@ -38,8 +38,8 @@ final class AISeedGenerator
         $relationships = $spec['relationships'] ?? [];
 
         $prompt = "Generate realistic seed data for a {$model} model.\n\n";
-        $prompt .= "Domain: {$profile['domain_description']}\n";
-        $prompt .= "Locale: {$profile['locale']}\n";
+        $prompt .= sprintf('Domain: %s%s', $profile['domain_description'], PHP_EOL);
+        $prompt .= sprintf('Locale: %s%s', $profile['locale'], PHP_EOL);
         $prompt .= "Scenario: {$scenario}\n\n";
 
         $prompt .= "Fields:\n";
@@ -49,18 +49,18 @@ final class AISeedGenerator
                 continue;
             }
 
-            $prompt .= "  - {$field}: {$fieldSpec['type']}";
+            $prompt .= sprintf('  - %s: %s', $field, $fieldSpec['type']);
 
             if (! $fieldSpec['nullable']) {
                 $prompt .= ' (required)';
             }
 
             if ($fieldSpec['default'] !== null) {
-                $prompt .= " (default: {$fieldSpec['default']})";
+                $prompt .= sprintf(' (default: %s)', $fieldSpec['default']);
             }
 
             if (isset($fieldSpec['enum'])) {
-                $prompt .= " (enum: {$fieldSpec['enum']})";
+                $prompt .= sprintf(' (enum: %s)', $fieldSpec['enum']);
             }
 
             $prompt .= "\n";
@@ -70,7 +70,7 @@ final class AISeedGenerator
             $prompt .= "\nRelationships:\n";
 
             foreach ($relationships as $relName => $relSpec) {
-                $prompt .= "  - {$relName}: {$relSpec['type']}\n";
+                $prompt .= sprintf('  - %s: %s%s', $relName, $relSpec['type'], PHP_EOL);
             }
         }
 
@@ -89,7 +89,7 @@ final class AISeedGenerator
             File::makeDirectory($profilesDir, 0755, true);
         }
 
-        $profilePath = "{$profilesDir}/{$modelName}.json";
+        $profilePath = sprintf('%s/%s.json', $profilesDir, $modelName);
 
         File::put($profilePath, json_encode($profile, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
@@ -102,7 +102,7 @@ final class AISeedGenerator
     public function loadProfile(string $modelClass): ?array
     {
         $modelName = class_basename($modelClass);
-        $profilePath = database_path("seeders/profiles/{$modelName}.json");
+        $profilePath = database_path(sprintf('seeders/profiles/%s.json', $modelName));
 
         if (! File::exists($profilePath)) {
             return null;
@@ -120,7 +120,7 @@ final class AISeedGenerator
     {
         $model = $spec['model'] ?? 'Model';
         $relationships = $spec['relationships'] ?? [];
-        $desc = "A {$model}";
+        $desc = 'A '.$model;
 
         if (! empty($relationships)) {
             $relDescs = [];
@@ -128,9 +128,9 @@ final class AISeedGenerator
             foreach ($relationships as $relName => $relSpec) {
                 $type = $relSpec['type'] ?? '';
                 $description = match ($type) {
-                    'belongsTo' => "belongs to {$relName}",
-                    'hasMany' => "has many {$relName}",
-                    'belongsToMany' => "belongs to many {$relName}",
+                    'belongsTo' => 'belongs to '.$relName,
+                    'hasMany' => 'has many '.$relName,
+                    'belongsToMany' => 'belongs to many '.$relName,
                     default => null,
                 };
 

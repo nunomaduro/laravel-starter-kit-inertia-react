@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use NunoMaduro\Collision\Adapters\Laravel\Commands\TestCommand as CollisionTestCommand;
+use Override;
 
 /**
  * Override Collision's test command so "php artisan test" defaults to max speed:
@@ -12,6 +13,7 @@ use NunoMaduro\Collision\Adapters\Laravel\Commands\TestCommand as CollisionTestC
  */
 final class TestCommand extends CollisionTestCommand
 {
+    #[Override]
     protected $signature = 'test
         {--without-tty : Disable output to TTY}
         {--compact : Indicates whether the compact printer should be used (default)}

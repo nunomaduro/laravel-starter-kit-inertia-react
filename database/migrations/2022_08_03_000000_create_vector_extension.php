@@ -16,13 +16,14 @@ return new class extends Migration
 
         try {
             DB::statement('CREATE EXTENSION IF NOT EXISTS vector');
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             // Managed Postgres (e.g. Laravel Cloud) may not allow CREATE EXTENSION for the app user.
             // Skip so deploy succeeds; enable the vector extension at the infrastructure level if needed.
-            if (str_contains($e->getMessage(), 'permission denied') || str_contains($e->getMessage(), '42501')) {
+            if (str_contains($throwable->getMessage(), 'permission denied') || str_contains($throwable->getMessage(), '42501')) {
                 return;
             }
-            throw $e;
+
+            throw $throwable;
         }
     }
 
@@ -34,11 +35,12 @@ return new class extends Migration
 
         try {
             DB::statement('DROP EXTENSION IF EXISTS vector');
-        } catch (Throwable $e) {
-            if (str_contains($e->getMessage(), 'permission denied') || str_contains($e->getMessage(), '42501')) {
+        } catch (Throwable $throwable) {
+            if (str_contains($throwable->getMessage(), 'permission denied') || str_contains($throwable->getMessage(), '42501')) {
                 return;
             }
-            throw $e;
+
+            throw $throwable;
         }
     }
 };

@@ -12,19 +12,30 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Override;
 use UnitEnum;
 
 final class ManageFilesystem extends SettingsPage
 {
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'System';
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolderOpen;
 
+    #[Override]
     protected static ?string $navigationLabel = 'Filesystem';
 
+    #[Override]
     protected static ?int $navigationSort = 40;
 
+    #[Override]
     protected static string $settings = FilesystemSettings::class;
+
+    public static function canAccess(): bool
+    {
+        return filament()->getCurrentPanel()?->getId() === 'system';
+    }
 
     public function form(Schema $schema): Schema
     {

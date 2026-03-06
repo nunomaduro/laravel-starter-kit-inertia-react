@@ -6,13 +6,16 @@ namespace App\Console\Commands;
 
 use App\Services\ModelRegistry;
 use Illuminate\Console\Command;
+use Override;
 
 final class SeedersSyncCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeders:sync
                             {--update : Update existing seeders to new patterns}
                             {--dry-run : Show what would be done without making changes}';
 
+    #[Override]
     protected $description = 'Sync seeders with models and update to latest patterns';
 
     public function handle(ModelRegistry $registry): int
@@ -37,7 +40,7 @@ final class SeedersSyncCommand extends Command
 
             if (! $seederInfo['exists']) {
                 if ($dryRun) {
-                    $this->line("Would create: {$modelName}Seeder");
+                    $this->line(sprintf('Would create: %sSeeder', $modelName));
                 } else {
                     $this->call('make:model:full', [
                         'name' => $modelName,
@@ -48,10 +51,10 @@ final class SeedersSyncCommand extends Command
                 }
             } elseif ($this->option('update')) {
                 if ($dryRun) {
-                    $this->line("Would update: {$modelName}Seeder");
+                    $this->line(sprintf('Would update: %sSeeder', $modelName));
                 } else {
                     // Update seeder to latest patterns
-                    $this->info("Updating {$modelName}Seeder...");
+                    $this->info(sprintf('Updating %sSeeder...', $modelName));
                     $updated++;
                 }
             }
@@ -62,7 +65,7 @@ final class SeedersSyncCommand extends Command
             $this->info('Run without --dry-run to apply changes.');
         } else {
             $this->newLine();
-            $this->info("Sync complete! Created: {$created}, Updated: {$updated}");
+            $this->info(sprintf('Sync complete! Created: %d, Updated: %d', $created, $updated));
         }
 
         return self::SUCCESS;

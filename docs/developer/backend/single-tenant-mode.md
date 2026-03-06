@@ -4,17 +4,10 @@ The application can run in **single-tenant** (internal) or **multi-tenant** (Saa
 
 ## Configuration
 
-Set in `.env`:
+Tenancy is **DB-backed** via **Filament Settings > Tenancy** (`TenancySettings`). The overlay in `SettingsOverlayServiceProvider` writes these values into `config('tenancy.enabled')` (and related keys) at boot. There is no `.env` key for tenancy in this kit—configure it in the admin panel after the app is installed.
 
-```env
-MULTI_ORGANIZATION_ENABLED=false
-```
-
-Or in `config/tenancy.php`:
-
-```php
-'enabled' => env('MULTI_ORGANIZATION_ENABLED', true),
-```
+- **Default** (fresh install): `config/tenancy.php` has `'enabled' => true` until the settings table is migrated and overlay runs; then DB values take over.
+- To run in single-tenant mode: in Filament go to **Settings > Tenancy** and set multi-organization mode to **disabled**.
 
 ## What Changes
 

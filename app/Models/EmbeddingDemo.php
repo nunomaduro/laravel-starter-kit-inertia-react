@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Override;
 use Pgvector\Laravel\HasNeighbors;
 use Pgvector\Laravel\Vector;
 use Spatie\Activitylog\LogOptions;
@@ -16,6 +17,7 @@ final class EmbeddingDemo extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use LogsActivity;
 
+    #[Override]
     protected $fillable = ['content', 'embedding'];
 
     public function getActivitylogOptions(): LogOptions

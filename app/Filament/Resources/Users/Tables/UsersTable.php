@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Users\Tables;
 
-use App\Features\ImpersonationFeature;
 use App\Filament\Concerns\HasStandardExports;
-use App\Support\FeatureHelper;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -23,7 +21,7 @@ final class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->with('tags'))
+            ->modifyQueryUsing(fn ($query) => $query->with(['tags', 'roles']))
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(10)
             ->paginationPageOptions([10, 25, 50])
@@ -68,8 +66,7 @@ final class UsersTable
                 ViewAction::make(),
                 EditAction::make(),
                 Impersonate::make()
-                    ->visible(fn (): bool => auth()->user()?->hasRole('super-admin') === true
-                        && FeatureHelper::isActiveForClass(ImpersonationFeature::class, auth()->user())),
+                    ->visible(fn (): bool => auth()->user()?->canImpersonate() === true),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

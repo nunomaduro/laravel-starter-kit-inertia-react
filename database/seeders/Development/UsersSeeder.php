@@ -67,6 +67,7 @@ final class UsersSeeder extends Seeder
                     if ($factoryState !== null && method_exists($factory, $factoryState)) {
                         $factory = $factory->{$factoryState}();
                     }
+
                     $factory->create($userData);
                 }
             }

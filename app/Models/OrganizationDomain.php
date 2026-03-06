@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Override;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -25,6 +26,7 @@ final class OrganizationDomain extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use LogsActivity;
 
+    #[Override]
     protected $fillable = [
         'organization_id',
         'domain',

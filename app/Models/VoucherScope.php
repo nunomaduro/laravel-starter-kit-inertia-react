@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Override;
 
 /**
  * Scope/owner for vouchers. Used as the morph "model" for global vouchers.
@@ -19,5 +20,6 @@ final class VoucherScope extends Model
 
     public const string GLOBAL_SLUG = 'global';
 
+    #[Override]
     protected $fillable = ['name'];
 }

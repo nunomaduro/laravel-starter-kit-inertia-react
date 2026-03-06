@@ -58,7 +58,8 @@ final class BatchUserRequest extends FormRequest
                     if ($idx === null) {
                         return;
                     }
-                    $id = $this->input("update.{$idx}.id");
+
+                    $id = $this->input(sprintf('update.%s.id', $idx));
                     if (User::query()->where('email', $value)->whereKeyNot($id)->exists()) {
                         $fail(__('validation.unique', ['attribute' => 'email']));
                     }

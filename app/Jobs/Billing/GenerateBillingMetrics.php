@@ -53,14 +53,14 @@ final class GenerateBillingMetrics implements ShouldQueue
                     ->sum(DB::raw('ABS(amount)'));
 
                 $mrr = (int) $subscriptionQuery()
-                    ->join($plansTable, "{$subscriptionsTable}.plan_id", '=', "{$plansTable}.id")
-                    ->whereNull("{$subscriptionsTable}.canceled_at")
-                    ->whereDate("{$subscriptionsTable}.starts_at", '<=', $date)
+                    ->join($plansTable, $subscriptionsTable.'.plan_id', '=', $plansTable.'.id')
+                    ->whereNull($subscriptionsTable.'.canceled_at')
+                    ->whereDate($subscriptionsTable.'.starts_at', '<=', $date)
                     ->where(function ($q) use ($date, $subscriptionsTable): void {
-                        $q->whereNull("{$subscriptionsTable}.ends_at")
-                            ->orWhereDate("{$subscriptionsTable}.ends_at", '>', $date);
+                        $q->whereNull($subscriptionsTable.'.ends_at')
+                            ->orWhereDate($subscriptionsTable.'.ends_at', '>', $date);
                     })
-                    ->sum("{$plansTable}.price");
+                    ->sum($plansTable.'.price');
 
                 $arr = $mrr * 12;
 

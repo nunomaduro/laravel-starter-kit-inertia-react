@@ -14,6 +14,6 @@ final class DemoGreetingActivity extends Activity
 {
     public function execute(string $name): string
     {
-        return "Hello, {$name}!";
+        return sprintf('Hello, %s!', $name);
     }
 }

@@ -56,7 +56,7 @@ final class DatabaseSeeder extends Seeder
             $this->metrics->startSeeder($shortName);
 
             try {
-                $this->command?->info("Running {$shortName}...");
+                $this->command?->info(sprintf('Running %s...', $shortName));
                 $this->call($seeder);
                 $this->metrics->endSeeder($shortName);
             } catch (Exception $e) {
@@ -64,11 +64,12 @@ final class DatabaseSeeder extends Seeder
                 $this->metrics->addError($shortName, $e->getMessage());
 
                 if ($this->strict) {
-                    $this->command?->error("Seeder {$shortName} failed: {$e->getMessage()}");
+                    $this->command?->error(sprintf('Seeder %s failed: %s', $shortName, $e->getMessage()));
                     throw $e;
                 }
-                $this->command?->warn("Seeder {$shortName} had errors: {$e->getMessage()}");
-                Log::warning("Seeder {$shortName} failed", ['error' => $e->getMessage()]);
+
+                $this->command?->warn(sprintf('Seeder %s had errors: %s', $shortName, $e->getMessage()));
+                Log::warning(sprintf('Seeder %s failed', $shortName), ['error' => $e->getMessage()]);
 
             }
         }
@@ -78,10 +79,10 @@ final class DatabaseSeeder extends Seeder
 
         $this->command?->newLine();
         $this->command?->info('Seeding completed.');
-        $this->command?->line("Duration: {$duration}s");
-        $this->command?->line("Records created: {$summary['total_records']}");
-        $this->command?->line("Warnings: {$summary['total_warnings']}");
-        $this->command?->line("Errors: {$summary['total_errors']}");
+        $this->command?->line(sprintf('Duration: %ss', $duration));
+        $this->command?->line('Records created: '.$summary['total_records']);
+        $this->command?->line('Warnings: '.$summary['total_warnings']);
+        $this->command?->line('Errors: '.$summary['total_errors']);
 
         $metricsPath = storage_path('logs/seeding_metrics_'.now()->format('Y-m-d_His').'.json');
         $this->metrics->save($metricsPath);
@@ -124,8 +125,8 @@ final class DatabaseSeeder extends Seeder
         $seeders = [];
 
         foreach ($categories as $category) {
-            $path = database_path("seeders/{$category->value}");
-            $namespace = "Database\\Seeders\\{$category->value}";
+            $path = database_path('seeders/'.$category->value);
+            $namespace = 'Database\Seeders\\'.$category->value;
 
             if (! File::isDirectory($path)) {
                 continue;
@@ -137,12 +138,20 @@ final class DatabaseSeeder extends Seeder
                 }
 
                 $className = $namespace.'\\'.$file->getBasename('.php');
-                if (! class_exists($className) || ! is_subclass_of($className, Seeder::class)) {
+                if (! class_exists($className)) {
+                    continue;
+                }
+
+                if (! is_subclass_of($className, Seeder::class)) {
                     continue;
                 }
 
                 $reflection = new ReflectionClass($className);
-                if ($reflection->isAbstract() || $reflection->isInterface()) {
+                if ($reflection->isAbstract()) {
+                    continue;
+                }
+
+                if ($reflection->isInterface()) {
                     continue;
                 }
 

@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Inertia\Middleware;
+use Override;
 use Spatie\Honeypot\Honeypot;
 use Throwable;
 
@@ -24,6 +25,7 @@ final class HandleInertiaRequests extends Middleware
      *
      * @var string
      */
+    #[Override]
     protected $rootView = 'app';
 
     /**
@@ -113,6 +115,7 @@ final class HandleInertiaRequests extends Middleware
             if ($rows->isEmpty()) {
                 return $defaults;
             }
+
             $db = [];
             foreach ($rows as $row) {
                 $db[$row->name] = is_string($row->payload) ? json_decode($row->payload, true) : $row->payload;

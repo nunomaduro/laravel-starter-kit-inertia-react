@@ -7,9 +7,11 @@ namespace App\Filament\Resources\ContactSubmissions\Pages;
 use App\Filament\Resources\ContactSubmissions\ContactSubmissionResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Override;
 
 final class ListContactSubmissions extends ListRecords
 {
+    #[Override]
     protected static string $resource = ContactSubmissionResource::class;
 
     protected function getHeaderActions(): array

@@ -49,6 +49,7 @@ trait HasVisibility
             if (! in_array('visibility', $this->guarded, true)) {
                 $this->guarded[] = 'visibility';
             }
+
             if (! in_array('organization_id', $this->guarded, true)) {
                 $this->guarded[] = 'organization_id';
             }
@@ -129,9 +130,11 @@ trait HasVisibility
         if ($this->isGlobal()) {
             return true;
         }
+
         if ($this->organization_id && $user->belongsToOrganization($this->organization_id)) {
             return true;
         }
+
         $currentOrg = TenantContext::get();
         if ($currentOrg && $this->isSharedWithOrganization($currentOrg->id)) {
             return true;
@@ -145,15 +148,18 @@ trait HasVisibility
         if ($user->isSuperAdmin()) {
             return true;
         }
+
         if ($this->isGlobal()) {
             return false;
         }
+
         if ($this->organization_id) {
             $organization = $this->organization;
             if ($organization && $organization->hasAdmin($user)) {
                 return true;
             }
         }
+
         $currentOrg = TenantContext::get();
         if ($currentOrg && $this->hasEditPermissionForOrganization($currentOrg->id)) {
             return true;

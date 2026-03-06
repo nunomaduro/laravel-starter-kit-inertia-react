@@ -10,13 +10,17 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
+use Override;
 
 final class UsersShowTool extends Tool
 {
+    #[Override]
     protected string $name = 'users_show';
 
+    #[Override]
     protected string $title = 'Show user';
 
+    #[Override]
     protected string $description = <<<'MARKDOWN'
         Get a single user by ID.
     MARKDOWN;
@@ -30,7 +34,7 @@ final class UsersShowTool extends Tool
 
         $user = User::query()->find($id);
         if ($user === null) {
-            return Response::error("User with id {$id} not found.");
+            return Response::error(sprintf('User with id %s not found.', $id));
         }
 
         $data = new UserResource($user)->response()->getData(true);

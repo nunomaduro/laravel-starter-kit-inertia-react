@@ -190,14 +190,24 @@ export interface DataTableProps<TData extends object> {
         value: unknown,
     ) => React.ReactNode | undefined;
     /** Render expandable detail row content. Requires config.detailRowEnabled. */
-    renderDetailRow?: (row: TData, detail?: Record<string, unknown>) => React.ReactNode;
+    renderDetailRow?: (
+        row: TData,
+        detail?: Record<string, unknown>,
+    ) => React.ReactNode;
     rowClassName?: (row: TData) => string;
     groupClassName?: Record<string, string>;
     options?: Partial<DataTableOptions>;
     /** Callback when a cell is inline-edited. */
-    onInlineEdit?: (row: TData, columnId: string, value: unknown) => void | Promise<void>;
+    onInlineEdit?: (
+        row: TData,
+        columnId: string,
+        value: unknown,
+    ) => void | Promise<void>;
     /** Callback when rows are reordered (ids and new positions). */
-    onReorder?: (ids: unknown[], newPositions: number[]) => void | Promise<void>;
+    onReorder?: (
+        ids: unknown[],
+        newPositions: number[],
+    ) => void | Promise<void>;
     /** Callback when table state changes (sort, filter, page, etc.). */
     onStateChange?: (state: Record<string, unknown>) => void;
     /** Layout slots for full usage examples. */

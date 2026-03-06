@@ -342,7 +342,7 @@ it('handles zero cents_per_credit gracefully', function (): void {
 it('does not reverse credits on OrderRefunded (no listener implemented)', function (): void {
     $this->org->addCredits(100, CreditTransactionType::Purchase, 'Initial purchase');
 
-    OrderRefunded::dispatch($this->org, null, [
+    event(new OrderRefunded($this->org, null, [
         'meta' => ['event_name' => 'order_refunded'],
         'data' => [
             'id' => 'ls_order_test',
@@ -351,7 +351,7 @@ it('does not reverse credits on OrderRefunded (no listener implemented)', functi
                 'refunded_at' => now()->toIso8601String(),
             ],
         ],
-    ]);
+    ]));
 
     expect($this->org->creditBalance())->toBe(100);
     expect(Credit::query()->where('organization_id', $this->org->id)->count())->toBe(1);

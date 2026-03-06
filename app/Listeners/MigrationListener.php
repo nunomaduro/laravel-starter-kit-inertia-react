@@ -27,6 +27,7 @@ final class MigrationListener
         if (! config('seeding.auto_sync_after_migrations', true)) {
             return;
         }
+
         try {
             $schemaWatcher = resolve(SchemaWatcher::class);
             $affectedModels = $schemaWatcher->getAffectedModels();
@@ -111,7 +112,7 @@ final class MigrationListener
             }
 
             $category = $seederInfo['category'] ?? 'development';
-            $seederPath = database_path("seeders/{$category}/{$modelName}Seeder.php");
+            $seederPath = database_path(sprintf('seeders/%s/%sSeeder.php', $category, $modelName));
 
             if (! File::exists($seederPath)) {
                 return;

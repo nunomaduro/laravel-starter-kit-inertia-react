@@ -18,6 +18,7 @@ beforeEach(function (): void {
         $this->org->addMember($this->user, 'admin');
         $this->user->organizations()->updateExistingPivot($this->org->id, ['is_default' => true]);
     }
+
     Artisan::call('permission:sync', ['--silent' => true]);
     $this->session = ['current_organization_id' => $this->org->id];
 });
@@ -58,6 +59,7 @@ it('allows creating a page', function (): void {
         ]);
 
     $response->assertRedirect();
+
     expect(Page::query()->where('slug', 'about-us')->where('organization_id', $this->org->id)->exists())->toBeTrue();
 });
 
@@ -104,6 +106,7 @@ it('allows updating a page and creates revision', function (): void {
         ]);
 
     $response->assertRedirect();
+
     $page->refresh();
     expect($page->name)->toBe('Updated')
         ->and($page->slug)->toBe('updated')
@@ -119,6 +122,7 @@ it('allows duplicating a page', function (): void {
         ->post(route('pages.duplicate', $page));
 
     $response->assertRedirect();
+
     $copy = Page::query()->where('organization_id', $this->org->id)->where('slug', 'copy-of-original')->first();
     expect($copy)->not->toBeNull()
         ->and($copy->is_published)->toBeFalse();
@@ -132,6 +136,7 @@ it('allows deleting a page', function (): void {
         ->delete(route('pages.destroy', $page));
 
     $response->assertRedirect(route('pages.index'));
+
     expect(Page::query()->find($page->id))->toBeNull();
 });
 

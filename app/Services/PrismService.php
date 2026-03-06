@@ -46,7 +46,7 @@ final readonly class PrismService
     {
         $providerName = mb_strtolower($provider->value);
 
-        return config("prism.defaults.models.{$providerName}", $this->defaultModel());
+        return config('prism.defaults.models.'.$providerName, $this->defaultModel());
     }
 
     /**

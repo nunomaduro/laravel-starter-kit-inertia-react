@@ -50,10 +50,10 @@ final class ProcessDunningReminders implements ShouldQueue
                         'last_dunning_sent_at' => now(),
                         'dunning_emails_sent' => $sentCount + 1,
                     ]);
-                } catch (Throwable $e) {
+                } catch (Throwable $throwable) {
                     Log::error('Dunning notification failed', [
                         'attempt_id' => $attempt->id,
-                        'error' => $e->getMessage(),
+                        'error' => $throwable->getMessage(),
                     ]);
                 }
             });

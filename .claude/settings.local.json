@@ -159,7 +159,10 @@
       "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/tests -name \"*Billing*\" -o -name \"*billing*\" -o -name \"*Webhook*\" 2>/dev/null | head -15)",
       "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/resources/js/layouts -type f -name \"*.tsx\" -o -name \"*.jsx\" 2>/dev/null | head -15)",
       "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/tests -name \"*Webhook*\" 2>/dev/null | head -15)",
-      "Bash(grep -n \"use.*Userstamps\" /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/app/Models/*.php)"
+      "Bash(grep -n \"use.*Userstamps\" /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/app/Models/*.php)",
+      "mcp__laravel-boost__get-absolute-url",
+      "Bash(grep -r \"APP_NAME\" /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/.env* --include=\"*.example\" --include=\".env\" 2>/dev/null | head -20)",
+      "Bash(grep -r \"site_name\" /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/app/Settings --include=\"*.php\" 2>/dev/null | head -20)"
     ]
   },
   "enableAllProjectMcpServers": true,

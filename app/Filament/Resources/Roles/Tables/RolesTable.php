@@ -58,6 +58,7 @@ final class RolesTable
                             $name = $baseName.' ('.$counter.')';
                             $counter++;
                         }
+
                         $newRole = Role::query()->create([
                             'name' => $name,
                             'guard_name' => $record->guard_name,
@@ -67,7 +68,7 @@ final class RolesTable
                         resolve(ActivityLogRbac::class)->logPermissionsAssigned($newRole, $permissionNames);
                         Notification::make()
                             ->title('Role duplicated')
-                            ->body("Created \"{$name}\" with same permissions.")
+                            ->body(sprintf('Created "%s" with same permissions.', $name))
                             ->success()
                             ->send();
 

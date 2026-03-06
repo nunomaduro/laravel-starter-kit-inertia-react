@@ -9,14 +9,17 @@ use App\Services\SeedSpecGenerator;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Override;
 
 final class SeedsReplicaCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:replica
                             {--profile= : Path to production profile JSON}
                             {--count=1000 : Number of records to generate}
                             {--force : Force operation in non-dev environments}';
 
+    #[Override]
     protected $description = 'Generate synthetic replica data based on production profiles';
 
     public function handle(SeedSpecGenerator $specGenerator, ModelRegistry $registry): int
@@ -32,13 +35,13 @@ final class SeedsReplicaCommand extends Command
         }
 
         if (! File::exists($profilePath)) {
-            $this->error("Profile file not found: {$profilePath}");
+            $this->error('Profile file not found: '.$profilePath);
             $this->info('Run seeds:profile first to generate profiles.');
 
             return self::FAILURE;
         }
 
-        $this->info("Generating synthetic replica data (count: {$count})...");
+        $this->info(sprintf('Generating synthetic replica data (count: %d)...', $count));
         $this->newLine();
 
         $profiles = json_decode(File::get($profilePath), true);
@@ -62,19 +65,19 @@ final class SeedsReplicaCommand extends Command
             $spec = $specGenerator->loadSpec($modelClass);
 
             if ($spec === null) {
-                $this->warn("  {$modelName}: No spec found");
+                $this->warn(sprintf('  %s: No spec found', $modelName));
 
                 continue;
             }
 
-            $this->line("  {$modelName}: Generating {$count} records...");
+            $this->line(sprintf('  %s: Generating %d records...', $modelName, $count));
 
             try {
                 $factory = $modelClass::factory();
                 $factory->count($count)->create();
-                $this->info("  {$modelName}: Generated");
+                $this->info(sprintf('  %s: Generated', $modelName));
             } catch (Exception $e) {
-                $this->error("  {$modelName}: Error - {$e->getMessage()}");
+                $this->error(sprintf('  %s: Error - %s', $modelName, $e->getMessage()));
             }
         }
 

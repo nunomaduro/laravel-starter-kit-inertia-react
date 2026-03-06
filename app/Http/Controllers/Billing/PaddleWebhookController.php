@@ -72,12 +72,12 @@ final readonly class PaddleWebhookController
                 } else {
                     $webhookLog->update(['event_type' => $eventType]);
                 }
-            } catch (Throwable $e) {
+            } catch (Throwable $throwable) {
                 Log::error('Paddle webhook processing failed', [
                     'event_type' => $eventType,
-                    'error' => $e->getMessage(),
+                    'error' => $throwable->getMessage(),
                 ]);
-                throw $e;
+                throw $throwable;
             }
         });
 

@@ -8,6 +8,7 @@ use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Override;
 
 /**
  * @property int $id
@@ -32,6 +33,7 @@ final class Invoice extends Model
     use BelongsToOrganization;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
+    #[Override]
     protected $fillable = [
         'billable_type',
         'billable_id',

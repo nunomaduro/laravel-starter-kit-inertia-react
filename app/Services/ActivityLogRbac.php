@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Enums\ActivityType;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\CauserResolver;
 
 final readonly class ActivityLogRbac
 {
@@ -70,7 +71,7 @@ final readonly class ActivityLogRbac
 
     private function logActivity(Model $subject, ActivityType $type, array $properties): void
     {
-        $causer = auth()->user();
+        $causer = resolve(CauserResolver::class)->resolve();
         if (! $causer instanceof Authenticatable) {
             return;
         }

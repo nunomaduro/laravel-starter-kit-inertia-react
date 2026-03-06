@@ -65,10 +65,10 @@ final class ProcessTrialEndingReminders implements ShouldQueue
                 'organization_id' => $organization->id,
                 'days_remaining' => $daysRemaining,
             ]);
-        } catch (Throwable $exception) {
+        } catch (Throwable $throwable) {
             Log::error('Failed to send trial ending reminder', [
                 'subscription_id' => $subscription->id,
-                'error' => $exception->getMessage(),
+                'error' => $throwable->getMessage(),
             ]);
         }
     }

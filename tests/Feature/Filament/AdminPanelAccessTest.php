@@ -68,3 +68,37 @@ it('redirects guest to login when visiting admin', function (): void {
 
     $response->assertRedirect('/admin/login');
 });
+
+it('redirects super-admin to manage-app when setup not complete', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    $settings = resolve(SetupWizardSettings::class);
+    $settings->setup_completed = false;
+    $settings->save();
+
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/admin');
+
+    $response->assertRedirect('/admin/manage-app');
+});
+
+it('allows super-admin to access system panel', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/system');
+
+    $response->assertOk();
+});
+
+it('denies non-super-admin access to system panel', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'admin');
+
+    $response = $test->get('/system');
+
+    $response->assertForbidden();
+});

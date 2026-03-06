@@ -11,9 +11,11 @@ use App\Models\Organization;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
+use Override;
 
 final class RevenueOverviewStats extends StatsOverviewWidget
 {
+    #[Override]
     protected ?string $pollingInterval = '60s';
 
     protected function getStats(): array
@@ -76,11 +78,11 @@ final class RevenueOverviewStats extends StatsOverviewWidget
     private function calculateMrr(string $subscriptionsTable, string $plansTable): int
     {
         $result = DB::table($subscriptionsTable)
-            ->join($plansTable, "{$subscriptionsTable}.plan_id", '=', "{$plansTable}.id")
-            ->where("{$subscriptionsTable}.subscriber_type", Organization::class)
-            ->whereNull("{$subscriptionsTable}.canceled_at")
-            ->where(fn ($q) => $q->whereNull("{$subscriptionsTable}.ends_at")->orWhere("{$subscriptionsTable}.ends_at", '>', now()))
-            ->sum("{$plansTable}.price");
+            ->join($plansTable, $subscriptionsTable.'.plan_id', '=', $plansTable.'.id')
+            ->where($subscriptionsTable.'.subscriber_type', Organization::class)
+            ->whereNull($subscriptionsTable.'.canceled_at')
+            ->where(fn ($q) => $q->whereNull($subscriptionsTable.'.ends_at')->orWhere($subscriptionsTable.'.ends_at', '>', now()))
+            ->sum($plansTable.'.price');
 
         return (int) round((float) $result * 100);
     }
@@ -114,11 +116,11 @@ final class RevenueOverviewStats extends StatsOverviewWidget
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subMonths($i)->endOfMonth();
             $mrr = DB::table($subscriptionsTable)
-                ->join($plansTable, "{$subscriptionsTable}.plan_id", '=', "{$plansTable}.id")
-                ->where("{$subscriptionsTable}.subscriber_type", Organization::class)
-                ->where("{$subscriptionsTable}.created_at", '<=', $date)
-                ->where(fn ($q) => $q->whereNull("{$subscriptionsTable}.canceled_at")->orWhere("{$subscriptionsTable}.canceled_at", '>', $date))
-                ->sum("{$plansTable}.price");
+                ->join($plansTable, $subscriptionsTable.'.plan_id', '=', $plansTable.'.id')
+                ->where($subscriptionsTable.'.subscriber_type', Organization::class)
+                ->where($subscriptionsTable.'.created_at', '<=', $date)
+                ->where(fn ($q) => $q->whereNull($subscriptionsTable.'.canceled_at')->orWhere($subscriptionsTable.'.canceled_at', '>', $date))
+                ->sum($plansTable.'.price');
             $data[] = (int) round((float) $mrr * 100);
         }
 

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Override;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Throwable;
@@ -48,6 +49,7 @@ final class OrganizationInvitation extends Model
     /**
      * @var list<string>
      */
+    #[Override]
     protected $fillable = [
         'organization_id',
         'email',
@@ -59,6 +61,7 @@ final class OrganizationInvitation extends Model
     /**
      * @var list<string>
      */
+    #[Override]
     protected $guarded = [
         'token',
         'status',
@@ -163,6 +166,7 @@ final class OrganizationInvitation extends Model
         if (! $this->isPending()) {
             return $this;
         }
+
         $this->token = Str::random(64);
         $days = (int) config('tenancy.invitations.expires_in_days', 7);
         $this->expires_at = now()->addDays($days);
@@ -190,9 +194,11 @@ final class OrganizationInvitation extends Model
             if (empty($invitation->token)) {
                 $invitation->token = Str::random(64);
             }
+
             if (empty($invitation->status)) {
                 $invitation->status = self::STATUS_PENDING;
             }
+
             if (empty($invitation->expires_at)) {
                 $days = (int) config('tenancy.invitations.expires_in_days', 7);
                 $invitation->expires_at = now()->addDays($days);

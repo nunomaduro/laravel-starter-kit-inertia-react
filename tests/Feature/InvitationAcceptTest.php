@@ -10,6 +10,7 @@ it('shows accept invitation page for valid token', function (): void {
     $user = User::factory()->withoutTwoFactor()->create();
     $org = Organization::factory()->create();
     $org->addMember($user, 'admin');
+
     $invitation = OrganizationInvitation::factory()->create([
         'organization_id' => $org->id,
         'email' => $user->email,
@@ -37,5 +38,6 @@ it('accepts invitation for authenticated user', function (): void {
     $response = $this->actingAs($user)->post(route('invitations.accept', ['token' => $invitation->token]));
 
     $response->assertRedirect();
+
     expect($user->belongsToOrganization($org->id))->toBeTrue();
 });

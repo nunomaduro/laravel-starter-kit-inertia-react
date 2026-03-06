@@ -160,14 +160,17 @@ export function CommandPalette(): React.ReactElement {
     useEffect(() => {
         const handler = () => setOpen(true);
         window.addEventListener('open-command-palette', handler);
-        return () => window.removeEventListener('open-command-palette', handler);
+        return () =>
+            window.removeEventListener('open-command-palette', handler);
     }, []);
 
     useEffect(() => {
         if (!open) {
-            setQuery('');
-            setResults(null);
-            setIsSearching(false);
+            queueMicrotask(() => {
+                setQuery('');
+                setResults(null);
+                setIsSearching(false);
+            });
         }
     }, [open]);
 
@@ -176,12 +179,14 @@ export function CommandPalette(): React.ReactElement {
         if (abortRef.current) abortRef.current.abort();
 
         if (query.length === 0) {
-            setResults(null);
-            setIsSearching(false);
+            queueMicrotask(() => {
+                setResults(null);
+                setIsSearching(false);
+            });
             return;
         }
 
-        setIsSearching(true);
+        queueMicrotask(() => setIsSearching(true));
 
         debounceRef.current = setTimeout(() => {
             const controller = new AbortController();
@@ -202,10 +207,7 @@ export function CommandPalette(): React.ReactElement {
                     }
                 })
                 .catch((error: unknown) => {
-                    if (
-                        error instanceof Error &&
-                        error.name !== 'AbortError'
-                    ) {
+                    if (error instanceof Error && error.name !== 'AbortError') {
                         setIsSearching(false);
                     }
                 });
@@ -228,8 +230,7 @@ export function CommandPalette(): React.ReactElement {
     const logoutUrl = logout();
     const isSearchMode = query.length > 0;
     const hasResults =
-        results &&
-        Object.values(results).some((arr) => arr.length > 0);
+        results && Object.values(results).some((arr) => arr.length > 0);
 
     return (
         <CommandDialog
@@ -256,46 +257,49 @@ export function CommandPalette(): React.ReactElement {
                         )}
                         {!isSearching &&
                             results &&
-                            (
-                                Object.keys(CATEGORY_CONFIG) as CategoryKey[]
-                            ).map((key) => {
-                                const config = CATEGORY_CONFIG[key];
-                                const items = results[key];
-                                if (!items || items.length === 0) return null;
-                                const Icon = config.icon;
-                                return (
-                                    <CommandGroup
-                                        key={key}
-                                        heading={config.label}
-                                    >
-                                        {items.map((item) => (
-                                            <CommandItem
-                                                key={`${item.type}-${item.id}`}
-                                                value={`${item.type}-${item.id}-${item.title}`}
-                                                onSelect={() => run(item.url)}
-                                            >
-                                                <Icon className="size-4 shrink-0" />
-                                                <div className="flex min-w-0 flex-1 flex-col">
-                                                    <span className="truncate">
-                                                        {item.title}
-                                                    </span>
-                                                    {item.subtitle && (
-                                                        <span className="truncate text-xs text-muted-foreground">
-                                                            {item.subtitle}
+                            (Object.keys(CATEGORY_CONFIG) as CategoryKey[]).map(
+                                (key) => {
+                                    const config = CATEGORY_CONFIG[key];
+                                    const items = results[key];
+                                    if (!items || items.length === 0)
+                                        return null;
+                                    const Icon = config.icon;
+                                    return (
+                                        <CommandGroup
+                                            key={key}
+                                            heading={config.label}
+                                        >
+                                            {items.map((item) => (
+                                                <CommandItem
+                                                    key={`${item.type}-${item.id}`}
+                                                    value={`${item.type}-${item.id}-${item.title}`}
+                                                    onSelect={() =>
+                                                        run(item.url)
+                                                    }
+                                                >
+                                                    <Icon className="size-4 shrink-0" />
+                                                    <div className="flex min-w-0 flex-1 flex-col">
+                                                        <span className="truncate">
+                                                            {item.title}
                                                         </span>
-                                                    )}
-                                                </div>
-                                                <span className="ml-auto shrink-0 text-xs text-muted-foreground capitalize">
-                                                    {item.type.replace(
-                                                        '_',
-                                                        ' ',
-                                                    )}
-                                                </span>
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                );
-                            })}
+                                                        {item.subtitle && (
+                                                            <span className="truncate text-xs text-muted-foreground">
+                                                                {item.subtitle}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <span className="ml-auto shrink-0 text-xs text-muted-foreground capitalize">
+                                                        {item.type.replace(
+                                                            '_',
+                                                            ' ',
+                                                        )}
+                                                    </span>
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    );
+                                },
+                            )}
                     </>
                 ) : (
                     <>
@@ -313,9 +317,7 @@ export function CommandPalette(): React.ReactElement {
                                         value={item.title}
                                         onSelect={() => run(href)}
                                     >
-                                        {Icon && (
-                                            <Icon className="size-4" />
-                                        )}
+                                        {Icon && <Icon className="size-4" />}
                                         {item.title}
                                     </CommandItem>
                                 );

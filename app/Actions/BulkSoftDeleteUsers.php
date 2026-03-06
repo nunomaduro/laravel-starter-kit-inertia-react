@@ -20,7 +20,7 @@ final readonly class BulkSoftDeleteUsers
         return DB::transaction(function () use ($ids, $currentUser): int {
             $query = User::query()->whereIn('id', $ids);
 
-            if ($currentUser) {
+            if ($currentUser instanceof User) {
                 $query->where('id', '!=', $currentUser->id);
             }
 

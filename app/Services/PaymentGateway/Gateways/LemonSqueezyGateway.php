@@ -48,6 +48,7 @@ final class LemonSqueezyGateway implements PaymentGatewayInterface
         if (isset($first['credits']) && $first['credits'] > 0) {
             $customData['credits'] = (int) $first['credits'];
         }
+
         if (isset($first['credit_pack_id'])) {
             $customData['credit_pack_id'] = (int) $first['credit_pack_id'];
         }
@@ -165,7 +166,7 @@ final class LemonSqueezyGateway implements PaymentGatewayInterface
             }
         }
 
-        return config("services.lemon_squeezy.{$key}", $default);
+        return config('services.lemon_squeezy.'.$key, $default);
     }
 
     private function applyLemonSqueezyConfig(): void

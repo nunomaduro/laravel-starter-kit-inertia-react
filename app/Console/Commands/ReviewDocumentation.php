@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -13,10 +14,12 @@ use ReflectionType;
 
 final class ReviewDocumentation extends Command
 {
+    #[Override]
     protected $signature = 'docs:review
                             {--component= : Review specific component (action, controller, page)}
                             {--name= : Name of specific component to review}';
 
+    #[Override]
     protected $description = 'Review documentation quality and completeness';
 
     public function handle(): int
@@ -55,7 +58,7 @@ final class ReviewDocumentation extends Command
 
         $this->warn('Found '.count($issues).' issue(s):');
         foreach ($issues as $issue) {
-            $this->line("  - {$issue}");
+            $this->line('  - '.$issue);
         }
 
         return self::FAILURE;
@@ -77,15 +80,15 @@ final class ReviewDocumentation extends Command
             $docPath = $actionInfo['path'] ?? null;
             $resolvedDocPath = $docPath !== null ? $this->resolveDocPath($docPath, 'action') : null;
             if ($docPath === null || $resolvedDocPath === null || ! File::exists($resolvedDocPath)) {
-                $issues[] = "Action {$actionName}: Documentation file not found";
+                $issues[] = sprintf('Action %s: Documentation file not found', $actionName);
 
                 continue;
             }
 
             // Check if code file exists
-            $codePath = app_path("Actions/{$actionName}.php");
+            $codePath = app_path(sprintf('Actions/%s.php', $actionName));
             if (! File::exists($codePath)) {
-                $issues[] = "Action {$actionName}: Code file not found";
+                $issues[] = sprintf('Action %s: Code file not found', $actionName);
 
                 continue;
             }
@@ -113,15 +116,15 @@ final class ReviewDocumentation extends Command
             $docPath = $controllerInfo['path'] ?? null;
             $resolvedDocPath = $docPath !== null ? $this->resolveDocPath($docPath, 'controller') : null;
             if ($docPath === null || $resolvedDocPath === null || ! File::exists($resolvedDocPath)) {
-                $issues[] = "Controller {$controllerName}: Documentation file not found";
+                $issues[] = sprintf('Controller %s: Documentation file not found', $controllerName);
 
                 continue;
             }
 
             // Check if code file exists
-            $codePath = app_path("Http/Controllers/{$controllerName}.php");
+            $codePath = app_path(sprintf('Http/Controllers/%s.php', $controllerName));
             if (! File::exists($codePath)) {
-                $issues[] = "Controller {$controllerName}: Code file not found";
+                $issues[] = sprintf('Controller %s: Code file not found', $controllerName);
 
                 continue;
             }
@@ -149,15 +152,15 @@ final class ReviewDocumentation extends Command
             $docPath = $pageInfo['developerGuide'] ?? null;
             $resolvedDocPath = $docPath !== null ? $this->resolveDocPath($docPath, 'page') : null;
             if ($docPath === null || $resolvedDocPath === null || ! File::exists($resolvedDocPath)) {
-                $issues[] = "Page {$pagePath}: Documentation file not found";
+                $issues[] = sprintf('Page %s: Documentation file not found', $pagePath);
 
                 continue;
             }
 
             // Check if code file exists
-            $codePath = resource_path("js/pages/{$pagePath}.tsx");
+            $codePath = resource_path(sprintf('js/pages/%s.tsx', $pagePath));
             if (! File::exists($codePath)) {
-                $issues[] = "Page {$pagePath}: Code file not found";
+                $issues[] = sprintf('Page %s: Code file not found', $pagePath);
 
                 continue;
             }
@@ -191,7 +194,7 @@ final class ReviewDocumentation extends Command
 
             // Check if return type is documented
             if (! str_contains($docContent, $returnType) && $returnType !== 'mixed') {
-                $issues[] = "Action {$actionName}: Return type mismatch (code: {$returnType})";
+                $issues[] = sprintf('Action %s: Return type mismatch (code: %s)', $actionName, $returnType);
             }
 
             // Check parameter count
@@ -199,10 +202,10 @@ final class ReviewDocumentation extends Command
             $docParamCount = mb_substr_count($docContent, '| Parameter |');
 
             if ($docParamCount < $paramCount) {
-                $issues[] = "Action {$actionName}: Missing parameter documentation ({$paramCount} params, {$docParamCount} documented)";
+                $issues[] = sprintf('Action %s: Missing parameter documentation (%d params, %d documented)', $actionName, $paramCount, $docParamCount);
             }
         } catch (ReflectionException) {
-            $issues[] = "Action {$actionName}: Could not verify signature";
+            $issues[] = sprintf('Action %s: Could not verify signature', $actionName);
         }
 
         return $issues;
@@ -231,10 +234,10 @@ final class ReviewDocumentation extends Command
             $docMethodCount = mb_substr_count($docContent, '| Method |');
 
             if ($docMethodCount < $methodCount) {
-                $issues[] = "Controller {$controllerName}: Missing method documentation ({$methodCount} methods, {$docMethodCount} documented)";
+                $issues[] = sprintf('Controller %s: Missing method documentation (%d methods, %d documented)', $controllerName, $methodCount, $docMethodCount);
             }
         } catch (ReflectionException) {
-            $issues[] = "Controller {$controllerName}: Could not verify methods";
+            $issues[] = sprintf('Controller %s: Could not verify methods', $controllerName);
         }
 
         return $issues;
@@ -285,6 +288,6 @@ final class ReviewDocumentation extends Command
 
         $className = $classMatch[1];
 
-        return "{$namespace}\\{$className}";
+        return sprintf('%s\%s', $namespace, $className);
     }
 }

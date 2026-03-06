@@ -7,9 +7,11 @@ namespace App\Filament\Resources\OrganizationInvitations\Pages;
 use App\Filament\Resources\OrganizationInvitations\OrganizationInvitationResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Override;
 
 final class ListOrganizationInvitations extends ListRecords
 {
+    #[Override]
     protected static string $resource = OrganizationInvitationResource::class;
 
     protected function getHeaderActions(): array

@@ -32,6 +32,7 @@ final readonly class CreateUser
             if ($causer instanceof Model) {
                 $logger->causedBy($causer);
             }
+
             $logger->log(ActivityType::RolesAssigned->value);
         }
 

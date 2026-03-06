@@ -15,19 +15,30 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Override;
 use UnitEnum;
 
 final class AffiliateResource extends Resource
 {
+    #[Override]
     protected static ?string $model = Affiliate::class;
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
+    #[Override]
     protected static ?string $recordTitleAttribute = 'affiliate_code';
 
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Billing';
 
+    #[Override]
     protected static ?int $navigationSort = 40;
+
+    public static function canAccess(): bool
+    {
+        return filament()->getCurrentPanel()?->getId() === 'system';
+    }
 
     /** @return array<string> */
     public static function getGloballySearchableAttributes(): array

@@ -30,6 +30,7 @@ return new class extends Migration
         } elseif ($driver === 'pgsql') {
             DB::statement('CREATE UNIQUE INDEX organization_user_unique_default ON organization_user(user_id) WHERE is_default = true');
         }
+
         // MySQL: no partial unique index; application logic ensures only one default per user
     }
 
@@ -47,6 +48,7 @@ return new class extends Migration
         } catch (Throwable) {
             // Index may not exist
         }
+
         Schema::dropIfExists('organization_user');
     }
 };

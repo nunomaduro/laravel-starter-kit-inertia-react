@@ -43,7 +43,7 @@ final class SearchController
                 ))
                 ->take($perCategory)
                 ->get()
-                ->map(fn (User $user) => [
+                ->map(fn (User $user): array => [
                     'id' => $user->id,
                     'title' => $user->name,
                     'subtitle' => $user->email,
@@ -62,7 +62,7 @@ final class SearchController
                 ->query(fn (Builder $builder) => $builder->published())
                 ->take($remaining)
                 ->get()
-                ->map(fn (Post $post) => [
+                ->map(fn (Post $post): array => [
                     'id' => $post->id,
                     'title' => $post->title,
                     'subtitle' => $post->excerpt ?? '',
@@ -81,7 +81,7 @@ final class SearchController
                 ->query(fn (Builder $builder) => $builder->published())
                 ->take($remaining)
                 ->get()
-                ->map(fn (HelpArticle $article) => [
+                ->map(fn (HelpArticle $article): array => [
                     'id' => $article->id,
                     'title' => $article->title,
                     'subtitle' => $article->excerpt ?? '',
@@ -100,10 +100,10 @@ final class SearchController
                 ->query(fn (Builder $builder) => $builder->published())
                 ->take($remaining)
                 ->get()
-                ->map(fn (ChangelogEntry $entry) => [
+                ->map(fn (ChangelogEntry $entry): array => [
                     'id' => $entry->id,
                     'title' => $entry->title,
-                    'subtitle' => $entry->version ? "v{$entry->version}" : '',
+                    'subtitle' => $entry->version ? 'v'.$entry->version : '',
                     'url' => route('changelog.index'),
                     'type' => 'changelog_entry',
                 ]);

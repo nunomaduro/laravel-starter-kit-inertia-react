@@ -30,7 +30,7 @@ final class PostSeeder extends Seeder
             $author = User::query()->where('email', $postData['author_email'])->first();
 
             if (! $author) {
-                $this->command?->warn("Author not found: {$postData['author_email']}");
+                $this->command?->warn('Author not found: '.$postData['author_email']);
 
                 continue;
             }

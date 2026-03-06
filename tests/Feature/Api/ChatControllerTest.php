@@ -33,6 +33,7 @@ test('api chat accepts TanStack UIMessage format with parts instead of content',
                     'usage' => ['prompt_tokens' => 1, 'total_tokens' => 1],
                 ], 200);
             }
+
             if (str_contains($uri, 'chat/completions')) {
                 $body = "data: {\"choices\":[{\"delta\":{\"content\":\"Hi\"},\"index\":0}]}\n"
                     ."data: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}]}\n"
@@ -131,6 +132,7 @@ test('api chat without conversation_id creates a conversation for the user', fun
                     'usage' => ['prompt_tokens' => 1, 'total_tokens' => 1],
                 ], 200);
             }
+
             if (str_contains($uri, 'chat/completions')) {
                 $body = "data: {\"choices\":[{\"delta\":{\"content\":\"Hi\"},\"index\":0}]}\n"
                     ."data: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}]}\n"
@@ -149,6 +151,7 @@ test('api chat without conversation_id creates a conversation for the user', fun
 
     $response->assertSuccessful();
     $response->assertHeader('Content-Type', 'application/x-ndjson');
+
     $countAfter = DB::table('agent_conversations')->where('user_id', $user->id)->count();
     expect($countAfter)->toBe($countBefore + 1);
 });

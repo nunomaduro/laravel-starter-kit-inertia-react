@@ -9,14 +9,17 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Override;
 
 final class SeedsProfileCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:profile
                             {--connection= : Database connection to profile}
                             {--output= : Output file path (default: database/seeders/profiles/production.json)}
                             {--safe : Only profile if connection is not production}';
 
+    #[Override]
     protected $description = 'Profile production/staging database to generate seed profiles (read-only)';
 
     public function handle(ModelRegistry $registry): int
@@ -31,7 +34,7 @@ final class SeedsProfileCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info("Profiling database connection: {$connection}");
+        $this->info('Profiling database connection: '.$connection);
         $this->warn('This is a READ-ONLY operation. No data will be modified.');
         $this->newLine();
 
@@ -49,12 +52,12 @@ final class SeedsProfileCommand extends Command
                     continue;
                 }
 
-                $this->line("Profiling {$modelName}...");
+                $this->line(sprintf('Profiling %s...', $modelName));
 
                 $profile = $this->profileModel($modelClass, $connection);
                 $profiles[$modelName] = $profile;
             } catch (Exception $e) {
-                $this->warn("  {$modelName}: Error - {$e->getMessage()}");
+                $this->warn(sprintf('  %s: Error - %s', $modelName, $e->getMessage()));
             }
         }
 
@@ -68,7 +71,7 @@ final class SeedsProfileCommand extends Command
         file_put_contents($output, json_encode($profiles, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         $this->newLine();
-        $this->info("Profiles saved to: {$output}");
+        $this->info('Profiles saved to: '.$output);
 
         return self::SUCCESS;
     }
@@ -122,7 +125,7 @@ final class SeedsProfileCommand extends Command
             if ($type === 'string' || $type === 'text') {
                 $lengths = DB::connection($connection)
                     ->table($table)
-                    ->selectRaw("LENGTH({$column}) as len")
+                    ->selectRaw(sprintf('LENGTH(%s) as len', $column))
                     ->whereNotNull($column)
                     ->limit(1000)
                     ->pluck('len')
@@ -139,7 +142,7 @@ final class SeedsProfileCommand extends Command
             } elseif ($type === 'integer' || $type === 'bigint') {
                 $stats = DB::connection($connection)
                     ->table($table)
-                    ->selectRaw("MIN({$column}) as min_val, MAX({$column}) as max_val, AVG({$column}) as avg_val")
+                    ->selectRaw(sprintf('MIN(%s) as min_val, MAX(%s) as max_val, AVG(%s) as avg_val', $column, $column, $column))
                     ->whereNotNull($column)
                     ->first();
 

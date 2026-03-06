@@ -69,6 +69,7 @@ final class LogImpersonationEvents
             if ($name !== null && $name !== '') {
                 return (string) $name;
             }
+
             $email = $user->getAttribute('email');
             if ($email !== null && $email !== '') {
                 return (string) $email;

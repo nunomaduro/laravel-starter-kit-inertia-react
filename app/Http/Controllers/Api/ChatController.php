@@ -41,6 +41,7 @@ final class ChatController
 
                     return;
                 }
+
                 $exists = DB::table('agent_conversations')
                     ->where('id', $value)
                     ->where('user_id', $user->id)
@@ -67,7 +68,7 @@ final class ChatController
         }
 
         $defaultProvider = config('ai.default', 'openai');
-        $providerKey = config("ai.providers.{$defaultProvider}.key");
+        $providerKey = config(sprintf('ai.providers.%s.key', $defaultProvider));
         if (empty($providerKey)) {
             $envKey = mb_strtoupper(str_replace('-', '_', (string) $defaultProvider)).'_API_KEY';
 
@@ -97,9 +98,9 @@ final class ChatController
 
         try {
             $stream = $agent->stream($prompt);
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             return response()->json([
-                'message' => 'AI request failed: '.$e->getMessage(),
+                'message' => 'AI request failed: '.$throwable->getMessage(),
             ], 502);
         }
 
@@ -112,6 +113,7 @@ final class ChatController
                 if (ob_get_level() !== 0) {
                     ob_end_clean();
                 }
+
                 try {
                     foreach ($stream as $event) {
                         if (connection_aborted() !== 0) {
@@ -134,9 +136,11 @@ final class ChatController
                                     'conversationId' => $newConversationId,
                                 ])."\n";
                             }
+
                             if (ob_get_level() > 0) {
                                 ob_flush();
                             }
+
                             flush();
 
                             continue;
@@ -154,6 +158,7 @@ final class ChatController
                                 if (ob_get_level() > 0) {
                                     ob_flush();
                                 }
+
                                 flush();
                             }
 
@@ -172,8 +177,10 @@ final class ChatController
                                 if (ob_get_level() > 0) {
                                     ob_flush();
                                 }
+
                                 flush();
                             }
+
                             $contentAccumulator .= $event->delta;
                             echo json_encode([
                                 'type' => 'TEXT_MESSAGE_CONTENT',
@@ -185,6 +192,7 @@ final class ChatController
                             if (ob_get_level() > 0) {
                                 ob_flush();
                             }
+
                             flush();
 
                             continue;
@@ -202,8 +210,10 @@ final class ChatController
                                 if (ob_get_level() > 0) {
                                     ob_flush();
                                 }
+
                                 flush();
                             }
+
                             $contentAccumulator .= $event->delta;
                             echo json_encode([
                                 'type' => 'TEXT_MESSAGE_CONTENT',
@@ -215,6 +225,7 @@ final class ChatController
                             if (ob_get_level() > 0) {
                                 ob_flush();
                             }
+
                             flush();
 
                             continue;
@@ -246,6 +257,7 @@ final class ChatController
                             if (ob_get_level() > 0) {
                                 ob_flush();
                             }
+
                             flush();
                         }
                     }
@@ -255,7 +267,7 @@ final class ChatController
                         try {
                             $titlePrompt = 'Generate a concise 3-5 word title for this conversation. '
                                 ."Reply with ONLY the title, no quotes or punctuation at the end.\n\n"
-                                ."User: {$prompt}\n"
+                                .sprintf('User: %s%s', $prompt, PHP_EOL)
                                 .'Assistant: '.Str::limit($contentAccumulator, 500);
 
                             $generatedTitle = Str::limit(
@@ -278,23 +290,25 @@ final class ChatController
                                 if (ob_get_level() > 0) {
                                     ob_flush();
                                 }
+
                                 flush();
                             }
                         } catch (Throwable) {
                             // Silent fail — "New chat" title remains
                         }
                     }
-                } catch (Throwable $e) {
+                } catch (Throwable $throwable) {
                     $ts = (int) (microtime(true) * 1000);
                     echo json_encode([
                         'type' => 'RUN_ERROR',
                         'timestamp' => $ts,
                         'runId' => $runId,
-                        'error' => ['message' => $e->getMessage(), 'code' => (string) $e->getCode()],
+                        'error' => ['message' => $throwable->getMessage(), 'code' => (string) $throwable->getCode()],
                     ])."\n";
                     if (ob_get_level() > 0) {
                         ob_flush();
                     }
+
                     flush();
                 }
             },
@@ -318,9 +332,11 @@ final class ChatController
             if (($m['role'] ?? '') !== $role) {
                 continue;
             }
+
             if (isset($m['content']) && \is_string($m['content'])) {
                 return $m['content'];
             }
+
             $parts = $m['parts'] ?? [];
             if (is_array($parts)) {
                 $text = [];
@@ -329,6 +345,7 @@ final class ChatController
                         $text[] = $part['content'];
                     }
                 }
+
                 if ($text !== []) {
                     return implode('', $text);
                 }

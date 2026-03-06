@@ -28,6 +28,10 @@ final readonly class OrganizationSwitchController
             return back()->withErrors(['organization_id' => __('You do not have access to that organization.')]);
         }
 
-        return back()->with('status', __('Switched to :name.', ['name' => $organization->name]));
+        $message = __('Switched to :name.', ['name' => $organization->name]);
+
+        return back()
+            ->with('status', $message)
+            ->with('filament_org_switch_message', $message);
     }
 }

@@ -12,7 +12,6 @@ use App\Support\FeatureHelper;
 use App\Traits\Billing\HasAffiliate;
 use BeyondCode\Vouchers\Traits\CanRedeemVouchers;
 use Carbon\CarbonInterface;
-use Database\Factories\UserFactory;
 use DateTimeInterface;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -32,6 +31,7 @@ use Laravel\Sanctum\NewAccessToken;
 use Laravel\Scout\Searchable;
 use LevelUp\Experience\Concerns\GiveExperience;
 use LevelUp\Experience\Concerns\HasAchievements;
+use Override;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Image\Enums\Fit;
@@ -64,14 +64,28 @@ use Spatie\Tags\HasTags;
  */
 final class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasMedia, MustVerifyEmail
 {
-    /**
-     * @use HasFactory<UserFactory>
-     */
-    use CanRedeemVouchers, Categorizable, GiveExperience, HasAchievements, HasAffiliate, HasApiTokens, HasFactory, HasOrganizationPermissions, HasRoles, HasTags, InteractsWithMedia, LogsActivity, Notifiable, Referrable, Searchable, SoftDeletes, TwoFactorAuthenticatable;
+    use CanRedeemVouchers;
+    use Categorizable;
+    use GiveExperience;
+    use HasAchievements;
+    use HasAffiliate;
+    use HasApiTokens;
+    use HasFactory;
+    use HasOrganizationPermissions;
+    use HasRoles;
+    use HasTags;
+    use InteractsWithMedia;
+    use LogsActivity;
+    use Notifiable;
+    use Referrable;
+    use Searchable;
+    use SoftDeletes;
+    use TwoFactorAuthenticatable;
 
     /**
      * @var list<string>
      */
+    #[Override]
     protected $appends = [
         'avatar',
         'avatar_profile',
@@ -80,6 +94,7 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     /**
      * @var list<string>
      */
+    #[Override]
     protected $hidden = [
         'password',
         'remember_token',
@@ -148,20 +163,86 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     }
 
     /**
-     * Only super-admins may impersonate, and only when Impersonation feature is active.
+     * Super-admin or org admin may impersonate when Impersonation feature is active.
+     * Org admins may only impersonate team members (enforced in canBeImpersonated on target).
      */
     public function canImpersonate(): bool
     {
-        return $this->hasRole('super-admin')
-            && FeatureHelper::isActiveForClass(ImpersonationFeature::class, $this);
+        if (! FeatureHelper::isActiveForClass(ImpersonationFeature::class, $this)) {
+            return false;
+        }
+
+        if ($this->hasRole('super-admin')) {
+            return true;
+        }
+
+        return $this->isAdminInAnyOrganization();
     }
 
     /**
      * Super-admins cannot be impersonated.
+     * Non–super-admins: super-admin can impersonate any; org admin only users in the same org(s).
      */
     public function canBeImpersonated(): bool
     {
-        return ! $this->hasRole('super-admin');
+        if ($this->hasRole('super-admin')) {
+            return false;
+        }
+
+        $impersonator = auth()->user();
+        if (! $impersonator instanceof self) {
+            return false;
+        }
+
+        if ($impersonator->hasRole('super-admin')) {
+            return true;
+        }
+
+        if ($impersonator->isAdminInAnyOrganization()) {
+            return $this->sharesOrganizationWith($impersonator);
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether this user is admin or owner in at least one organization.
+     * Uses a single query to avoid N+1 when checking from Filament.
+     */
+    public function isAdminInAnyOrganization(): bool
+    {
+        $orgIds = $this->organizations()->pluck('organizations.id')->all();
+        if ($orgIds === []) {
+            return false;
+        }
+
+        if (Organization::query()->whereIn('id', $orgIds)->where('owner_id', $this->id)->exists()) {
+            return true;
+        }
+
+        $tableNames = config('permission.table_names');
+        $teamKey = config('permission.column_names.team_foreign_key');
+
+        return DB::table($tableNames['model_has_roles'])
+            ->join($tableNames['roles'], $tableNames['roles'].'.id', '=', $tableNames['model_has_roles'].'.role_id')
+            ->where($tableNames['model_has_roles'].'.model_id', $this->id)
+            ->where($tableNames['model_has_roles'].'.model_type', self::class)
+            ->whereIn($tableNames['model_has_roles'].'.'.$teamKey, $orgIds)
+            ->where($tableNames['roles'].'.name', 'admin')
+            ->exists();
+    }
+
+    /**
+     * Whether this user shares at least one organization with the given user.
+     */
+    public function sharesOrganizationWith(self $other): bool
+    {
+        $ourIds = $this->organizations()->pluck('organizations.id')->all();
+        if ($ourIds === []) {
+            return false;
+        }
+
+        return $other->organizations()->whereIn('organizations.id', $ourIds)->exists();
     }
 
     /**
@@ -297,20 +378,24 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     /**
      * Avatar URL (thumb conversion) for nav/header, or null when no avatar.
      */
-    protected function getAvatarAttribute(): ?string
+    protected function avatar(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
-        $url = $this->getFirstMediaUrl('avatar', 'thumb');
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(get: function () {
+            $url = $this->getFirstMediaUrl('avatar', 'thumb');
 
-        return $url !== '' ? $url : null;
+            return $url !== '' ? $url : null;
+        });
     }
 
     /**
      * Avatar URL (profile conversion) for profile/settings preview, or null when no avatar.
      */
-    protected function getAvatarProfileAttribute(): ?string
+    protected function avatarProfile(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
-        $url = $this->getFirstMediaUrl('avatar', 'profile');
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(get: function () {
+            $url = $this->getFirstMediaUrl('avatar', 'profile');
 
-        return $url !== '' ? $url : null;
+            return $url !== '' ? $url : null;
+        });
     }
 }

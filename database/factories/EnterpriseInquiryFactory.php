@@ -6,12 +6,14 @@ namespace Database\Factories;
 
 use App\Models\EnterpriseInquiry;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Override;
 
 /**
  * @extends Factory<EnterpriseInquiry>
  */
 final class EnterpriseInquiryFactory extends Factory
 {
+    #[Override]
     protected $model = EnterpriseInquiry::class;
 
     /**

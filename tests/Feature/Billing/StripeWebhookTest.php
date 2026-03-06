@@ -53,7 +53,7 @@ function stripeSignature(string $payload, string $secret): string
     $signedPayload = $timestamp.'.'.$payload;
     $signature = hash_hmac('sha256', $signedPayload, $secret);
 
-    return "t={$timestamp},v1={$signature}";
+    return sprintf('t=%d,v1=%s', $timestamp, $signature);
 }
 
 function postStripeWebhook(object $test, string $payload, string $signature): Illuminate\Testing\TestResponse
@@ -106,6 +106,7 @@ it('rejects webhooks with an invalid signature', function (): void {
     $response = postStripeWebhook($this, $payload, 'invalid_signature');
 
     $response->assertStatus(400);
+
     expect(WebhookLog::query()->count())->toBe(1);
     expect(WebhookLog::query()->first())
         ->gateway->toBe('stripe')

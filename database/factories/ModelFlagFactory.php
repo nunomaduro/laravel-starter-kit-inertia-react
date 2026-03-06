@@ -6,12 +6,14 @@ namespace Database\Factories;
 
 use App\Models\ModelFlag;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Override;
 
 /**
  * @extends Factory<ModelFlag>
  */
 final class ModelFlagFactory extends Factory
 {
+    #[Override]
     protected $model = ModelFlag::class;
 
     /**

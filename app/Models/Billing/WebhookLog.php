@@ -6,6 +6,7 @@ namespace App\Models\Billing;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Override;
 
 /**
  * @property int $id
@@ -20,6 +21,7 @@ final class WebhookLog extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
+    #[Override]
     protected $fillable = [
         'organization_id',
         'gateway',

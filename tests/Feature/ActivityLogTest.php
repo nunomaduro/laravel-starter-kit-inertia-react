@@ -127,6 +127,7 @@ test('make model full injects LogsActivity and getActivitylogOptions into genera
     if ($migration !== []) {
         unlink($migration[0]);
     }
+
     $specPath = database_path('seeders/specs/ActivityLogInjectedModel.json');
     if (file_exists($specPath)) {
         unlink($specPath);

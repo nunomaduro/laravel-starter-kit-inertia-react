@@ -35,6 +35,7 @@ final class PageViewController extends Controller
             if (! isset($props['dataSource'])) {
                 return $item;
             }
+
             $resolved = $this->dataSourceRegistry->resolve(
                 (string) $props['dataSource'],
                 $organization,

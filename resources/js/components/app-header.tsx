@@ -203,9 +203,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 className="group h-9 w-9 cursor-pointer"
                                 onClick={() =>
                                     window.dispatchEvent(
-                                        new CustomEvent(
-                                            'open-command-palette',
-                                        ),
+                                        new CustomEvent('open-command-palette'),
                                     )
                                 }
                                 data-pan="global-search"

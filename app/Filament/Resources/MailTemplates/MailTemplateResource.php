@@ -14,24 +14,33 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use MartinPetricko\LaravelDatabaseMail\Models\MailTemplate;
+use Override;
 use UnitEnum;
 
 final class MailTemplateResource extends Resource
 {
+    #[Override]
     protected static ?string $model = MailTemplate::class;
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelopeOpen;
 
+    #[Override]
     protected static ?string $navigationLabel = 'Email templates';
 
+    #[Override]
     protected static ?string $modelLabel = 'Email template';
 
+    #[Override]
     protected static ?string $pluralModelLabel = 'Email templates';
 
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Content & Legal';
 
+    #[Override]
     protected static ?int $navigationSort = 10;
 
+    #[Override]
     protected static ?string $recordTitleAttribute = 'name';
 
     /** @return array<string> */
@@ -42,7 +51,7 @@ final class MailTemplateResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasRole('super-admin') ?? false;
+        return filament()->getCurrentPanel()?->getId() === 'system' && (auth()->user()?->hasRole('super-admin') ?? false);
     }
 
     public static function form(Schema $schema): Schema

@@ -69,7 +69,7 @@ final class SchemaWatcher
             $model = $this->extractModelFromMigration($migration);
 
             if ($model !== null) {
-                $modelClass = "App\\Models\\{$model}";
+                $modelClass = 'App\Models\\'.$model;
 
                 if (class_exists($modelClass)) {
                     $models[] = $modelClass;
@@ -147,6 +147,6 @@ final class SchemaWatcher
         $namespace = $namespaceMatch[1];
         $className = basename($filePath, '.php');
 
-        return "{$namespace}\\{$className}";
+        return sprintf('%s\%s', $namespace, $className);
     }
 }

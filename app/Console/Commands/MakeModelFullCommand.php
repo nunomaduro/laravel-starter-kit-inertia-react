@@ -17,9 +17,11 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Override;
 
 final class MakeModelFullCommand extends Command
 {
+    #[Override]
     protected $signature = 'make:model:full
                             {name : The name of the model}
                             {--category=development : Seeder category (essential, development, production)}
@@ -34,6 +36,7 @@ final class MakeModelFullCommand extends Command
                             {--all : Generate a migration, factory, seeder, and resource controller}
                             {--no-ai : Skip AI generation even if available}';
 
+    #[Override]
     protected $description = 'Create a new Eloquent model with factory, seeder, and JSON data file';
 
     public function handle(): int
@@ -42,7 +45,7 @@ final class MakeModelFullCommand extends Command
         $category = $this->getCategory();
         $all = $this->option('all');
 
-        $this->info("Creating full model setup for: {$name}");
+        $this->info('Creating full model setup for: '.$name);
 
         // Create model with migration
         $this->createModel($name, $all);
@@ -84,7 +87,7 @@ final class MakeModelFullCommand extends Command
             $this->createRequests($name);
         }
 
-        $this->info("Model setup complete for: {$name}");
+        $this->info('Model setup complete for: '.$name);
 
         return self::SUCCESS;
     }
@@ -177,7 +180,7 @@ PHP;
     private function createFactory(string $name): void
     {
         Artisan::call('make:factory', [
-            'name' => "{$name}Factory",
+            'name' => $name.'Factory',
             '--model' => $name,
             '--no-interaction' => true,
         ]);
@@ -186,29 +189,29 @@ PHP;
 
     private function createSeeder(string $name, SeederCategory $category): void
     {
-        $seederName = "{$name}Seeder";
-        $categoryPath = database_path("seeders/{$category->value}");
+        $seederName = $name.'Seeder';
+        $categoryPath = database_path('seeders/'.$category->value);
 
         if (! File::isDirectory($categoryPath)) {
             File::makeDirectory($categoryPath, 0755, true);
         }
 
-        $seederPath = "{$categoryPath}/{$seederName}.php";
+        $seederPath = sprintf('%s/%s.php', $categoryPath, $seederName);
 
         if (File::exists($seederPath)) {
-            $this->warn("Seeder already exists: {$seederPath}");
+            $this->warn('Seeder already exists: '.$seederPath);
         } else {
             $this->updateSeederFile($name, $seederName, $category);
         }
 
-        $this->info("✓ Seeder created in {$category->value} category");
+        $this->info(sprintf('✓ Seeder created in %s category', $category->value));
     }
 
     private function updateSeederFile(string $modelName, string $seederName, SeederCategory $category): void
     {
-        $seederPath = database_path("seeders/{$category->value}/{$seederName}.php");
-        $modelClass = "App\\Models\\{$modelName}";
-        $namespace = "Database\\Seeders\\{$category->value}";
+        $seederPath = database_path(sprintf('seeders/%s/%s.php', $category->value, $seederName));
+        $modelClass = 'App\Models\\'.$modelName;
+        $namespace = 'Database\Seeders\\'.$category->value;
 
         $enhancedAnalyzer = resolve(EnhancedRelationshipAnalyzer::class);
 
@@ -310,9 +313,9 @@ PHP;
         }
 
         $seederEntry = [
-            'name' => "{$modelName}Seeder",
+            'name' => $modelName.'Seeder',
             'category' => $category->value,
-            'description' => "Seeds {$modelName} data",
+            'description' => sprintf('Seeds %s data', $modelName),
             'dependencies' => [],
             'data_files' => [$jsonFileName],
         ];
@@ -335,14 +338,14 @@ PHP;
             $options['--api'] = true;
         }
 
-        Artisan::call('make:controller', array_merge(['name' => "{$name}Controller"], $options));
+        Artisan::call('make:controller', array_merge(['name' => $name.'Controller'], $options));
         $this->info('✓ Controller created');
     }
 
     private function createPolicy(string $name): void
     {
         Artisan::call('make:policy', [
-            'name' => "{$name}Policy",
+            'name' => $name.'Policy',
             '--model' => $name,
             '--no-interaction' => true,
         ]);
@@ -352,12 +355,12 @@ PHP;
     private function createRequests(string $name): void
     {
         Artisan::call('make:request', [
-            'name' => "Store{$name}Request",
+            'name' => sprintf('Store%sRequest', $name),
             '--no-interaction' => true,
         ]);
 
         Artisan::call('make:request', [
-            'name' => "Update{$name}Request",
+            'name' => sprintf('Update%sRequest', $name),
             '--no-interaction' => true,
         ]);
 
@@ -382,7 +385,7 @@ PHP;
 
     private function generateSeedSpec(string $name): void
     {
-        $modelClass = "App\\Models\\{$name}";
+        $modelClass = 'App\Models\\'.$name;
 
         if (! class_exists($modelClass)) {
             return;
@@ -393,8 +396,8 @@ PHP;
             $spec = $generator->generateSpec($modelClass);
             $generator->saveSpec($modelClass, $spec);
             $this->info('✓ Seed spec created');
-        } catch (Exception $e) {
-            $this->warn("Could not generate seed spec: {$e->getMessage()}");
+        } catch (Exception $exception) {
+            $this->warn('Could not generate seed spec: '.$exception->getMessage());
         }
     }
 
@@ -405,7 +408,7 @@ PHP;
         }
 
         $jsonKey = $this->getJsonKey($name);
-        $jsonPath = database_path("seeders/data/{$jsonKey}.json");
+        $jsonPath = database_path(sprintf('seeders/data/%s.json', $jsonKey));
 
         // Check if JSON file exists and has data
         $hasData = false;
@@ -420,7 +423,7 @@ PHP;
             return;
         }
 
-        $modelClass = "App\\Models\\{$name}";
+        $modelClass = 'App\Models\\'.$name;
 
         if (! class_exists($modelClass)) {
             return;
@@ -456,11 +459,11 @@ PHP;
     {
         try {
             $aiGenerator = resolve(AISeedGenerator::class);
-            $profile = $aiGenerator->loadProfile("App\\Models\\{$name}");
+            $profile = $aiGenerator->loadProfile('App\Models\\'.$name);
 
             if ($profile === null) {
-                $profile = $aiGenerator->generateProfile("App\\Models\\{$name}", $spec);
-                $aiGenerator->saveProfile("App\\Models\\{$name}", $profile);
+                $profile = $aiGenerator->generateProfile('App\Models\\'.$name, $spec);
+                $aiGenerator->saveProfile('App\Models\\'.$name, $profile);
             }
 
             $prompt = $aiGenerator->buildPrompt($spec, $profile, 'basic_demo');
@@ -476,7 +479,7 @@ PHP;
                     '_generated_at' => now()->toIso8601String(),
                 ];
 
-                File::put(database_path("seeders/data/{$jsonKey}.json"), json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                File::put(database_path(sprintf('seeders/data/%s.json', $jsonKey)), json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                 $this->info('  ✓ JSON auto-generated with AI');
             } else {
                 $this->generateJsonWithFaker($name, $spec);
@@ -564,7 +567,7 @@ PHP;
                 '_generated_at' => now()->toIso8601String(),
             ];
 
-            File::put(database_path("seeders/data/{$jsonKey}.json"), json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            File::put(database_path(sprintf('seeders/data/%s.json', $jsonKey)), json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
             $this->info('  ✓ JSON auto-generated with Faker');
         } catch (Exception) {
             // Silently fail

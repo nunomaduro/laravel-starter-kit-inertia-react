@@ -213,7 +213,7 @@ trait HasCredits
         return $this->addCredits(
             $total,
             CreditTransactionType::Purchase,
-            "Purchase: {$pack->name}",
+            'Purchase: '.$pack->name,
             $expiresAt,
             ['credit_pack_id' => $pack->id]
         );

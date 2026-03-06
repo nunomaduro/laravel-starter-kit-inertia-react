@@ -8,12 +8,15 @@ use App\Services\SeedScenarioManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Override;
 
 final class SeedsTestCoverageCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:test-coverage
                             {--json : Output as JSON}';
 
+    #[Override]
     protected $description = 'Analyze test coverage of seed scenarios';
 
     public function handle(SeedScenarioManager $scenarioManager): int
@@ -80,7 +83,7 @@ final class SeedsTestCoverageCommand extends Command
                 foreach ($models as $modelConfig) {
                     $modelClass = $modelConfig['class'] ?? '';
 
-                    if (Str::endsWith($modelClass, "\\{$model}")) {
+                    if (Str::endsWith($modelClass, '\\'.$model)) {
                         $found = true;
                         break 2;
                     }
@@ -88,7 +91,7 @@ final class SeedsTestCoverageCommand extends Command
             }
 
             if (! $found) {
-                $report['missing_scenarios'][] = "Model {$model} is used in tests but has no scenario";
+                $report['missing_scenarios'][] = sprintf('Model %s is used in tests but has no scenario', $model);
             }
         }
 
@@ -103,32 +106,32 @@ final class SeedsTestCoverageCommand extends Command
 
         $this->line('Models used in tests:');
         foreach ($usedModels as $model => $count) {
-            $this->line("  - {$model}: {$count} references");
+            $this->line(sprintf('  - %s: %d references', $model, $count));
         }
 
         $this->newLine();
         $this->line('Relationships accessed:');
         foreach ($usedRelationships as $rel => $count) {
-            $this->line("  - {$rel}: {$count} accesses");
+            $this->line(sprintf('  - %s: %d accesses', $rel, $count));
         }
 
         $this->newLine();
         $this->line('Scenarios used:');
         foreach ($usedScenarios as $scenario => $count) {
-            $this->line("  - {$scenario}: {$count} uses");
+            $this->line(sprintf('  - %s: %d uses', $scenario, $count));
         }
 
         $this->newLine();
         $this->line('Defined scenarios:');
         foreach (array_keys($scenarios) as $name) {
-            $this->line("  - {$name}");
+            $this->line('  - '.$name);
         }
 
         if (isset($report['missing_scenarios']) && $report['missing_scenarios'] !== []) {
             $this->newLine();
             $this->warn('Missing scenarios:');
             foreach ($report['missing_scenarios'] as $missing) {
-                $this->line("  - {$missing}");
+                $this->line('  - '.$missing);
             }
         }
 

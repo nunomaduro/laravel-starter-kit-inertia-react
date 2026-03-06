@@ -21,6 +21,7 @@ final class RoleActivityObserver
         if (! $role->wasChanged()) {
             return;
         }
+
         $this->log($role, ActivityType::RoleUpdated, [
             'old' => array_intersect_key($role->getOriginal(), array_flip(['name', 'guard_name'])),
             'attributes' => $role->only(['name', 'guard_name']),
@@ -37,6 +38,7 @@ final class RoleActivityObserver
         if ($causer instanceof Model) {
             $logger->causedBy($causer);
         }
+
         $logger->log($type->value);
     }
 }

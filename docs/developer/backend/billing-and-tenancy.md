@@ -31,6 +31,10 @@ Tenant (organization) is resolved from the request domain:
 - **Config**: `config/tenancy.php` – `domain` (env `TENANCY_DOMAIN`), `subdomain_resolution` (env `TENANCY_SUBDOMAIN_RESOLUTION`)
 - **Model**: `OrganizationDomain` – `organization_id`, `domain`, `type` (subdomain/custom), `is_verified`, `is_primary`
 
+## Organization switcher in Admin
+
+When multi-tenancy is enabled, org admins and super-admins with access to multiple organizations can switch the current organization from the **admin panel sidebar**: a dropdown below the logo lists organizations; choosing one POSTs to `organizations.switch` and redirects back with a success notification. The current tenant is stored in session and applied by `TenantContext` and `EnsureTenantContext` (tenant middleware). Single-tenant mode hides the switcher.
+
 ## Filament Tenant Scoping
 
 `ScopesToCurrentTenant` trait ensures Filament resource queries filter by `organization_id` when `tenant_id()` is set. Super-admins bypass scoping. Used by `OrganizationInvitationResource`.

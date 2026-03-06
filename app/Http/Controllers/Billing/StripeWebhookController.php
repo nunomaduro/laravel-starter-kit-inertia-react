@@ -69,12 +69,12 @@ final readonly class StripeWebhookController
                 } else {
                     $webhookLog->update(['event_type' => $eventType]);
                 }
-            } catch (Throwable $e) {
+            } catch (Throwable $throwable) {
                 Log::error('Stripe webhook processing failed', [
                     'event_type' => $eventType,
-                    'error' => $e->getMessage(),
+                    'error' => $throwable->getMessage(),
                 ]);
-                throw $e;
+                throw $throwable;
             }
         });
 

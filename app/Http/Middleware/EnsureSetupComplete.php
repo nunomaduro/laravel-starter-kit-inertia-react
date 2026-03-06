@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
- * Redirects super-admins to the setup wizard when initial setup hasn't been completed.
- * Scoped to the Filament admin panel via AdminPanelProvider middleware.
+ * Redirects super-admins to the App settings page when initial setup hasn't been completed.
+ * Once they save App settings, setup is marked complete. Scoped to the Filament admin panel.
  */
 final class EnsureSetupComplete
 {
@@ -37,11 +37,15 @@ final class EnsureSetupComplete
             return $next($request);
         }
 
-        // Don't redirect if already on the wizard page or logging out.
+        // Don't redirect if already on the App settings page, setup wizard, or logging out.
         $currentRoute = $request->route()?->getName();
         $excludedRoutes = [
+            'filament.admin.pages.manage-app',
             'filament.admin.pages.setup-wizard',
             'filament.admin.auth.logout',
+            'filament.system.pages.manage-app',
+            'filament.system.pages.setup-wizard',
+            'filament.system.auth.logout',
             'logout',
         ];
 
@@ -49,6 +53,10 @@ final class EnsureSetupComplete
             return $next($request);
         }
 
-        return to_route('filament.admin.pages.setup-wizard');
+        $manageAppRoute = str_starts_with((string) $currentRoute, 'filament.system.')
+            ? 'filament.system.pages.manage-app'
+            : 'filament.admin.pages.manage-app';
+
+        return to_route($manageAppRoute);
     }
 }

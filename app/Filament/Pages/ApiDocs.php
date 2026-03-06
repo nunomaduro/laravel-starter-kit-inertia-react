@@ -12,18 +12,24 @@ use Filament\Schemas\Components\Html;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
+use Override;
 use UnitEnum;
 
 final class ApiDocs extends Page
 {
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'System';
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCodeBracketSquare;
 
+    #[Override]
     protected static ?string $navigationLabel = 'API docs';
 
+    #[Override]
     protected static ?int $navigationSort = 100;
 
+    #[Override]
     protected static ?string $title = 'API documentation';
 
     public static function canAccess(): bool
@@ -33,7 +39,7 @@ final class ApiDocs extends Page
             return false;
         }
 
-        return FeatureHelper::isActiveForClass(ScrambleApiDocsFeature::class, $user);
+        return filament()->getCurrentPanel()?->getId() === 'system' && FeatureHelper::isActiveForClass(ScrambleApiDocsFeature::class, $user);
     }
 
     public function content(Schema $schema): Schema

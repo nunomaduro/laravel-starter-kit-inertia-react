@@ -9,15 +9,18 @@ use App\Services\PrismService;
 use App\Services\SeedSpecGenerator;
 use Exception;
 use Illuminate\Console\Command;
+use Override;
 use Prism\Prism\Enums\Provider;
 
 final class SeedsReviewCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:review
                             {--model= : Review specific model only}
                             {--dry-run : Show review prompts without calling AI}
                             {--provider= : AI provider (openai, anthropic, local)}';
 
+    #[Override]
     protected $description = 'AI-based review of seeders and specs';
 
     public function handle(SeedSpecGenerator $specGenerator, ModelRegistry $registry, PrismService $prismService): int
@@ -27,7 +30,7 @@ final class SeedsReviewCommand extends Command
         $provider = $this->option('provider') ?? 'local';
 
         $models = $specificModel
-            ? ["App\\Models\\{$specificModel}"]
+            ? ['App\Models\\'.$specificModel]
             : $registry->getAllModels();
 
         if ($models === []) {
@@ -76,7 +79,7 @@ final class SeedsReviewCommand extends Command
                 $prompt = $this->buildReviewPrompt($modelName, $spec, $seederInfo);
 
                 if ($dryRun) {
-                    $this->line("  {$modelName} Review Prompt:");
+                    $this->line(sprintf('  %s Review Prompt:', $modelName));
                     $this->line('  '.str_repeat('-', 60));
                     $this->line($prompt);
                     $this->line('  '.str_repeat('-', 60));
@@ -86,22 +89,22 @@ final class SeedsReviewCommand extends Command
                     $useAI = $prismService->isAvailable($prismProvider);
 
                     if ($useAI) {
-                        $this->line("  {$modelName}: Using AI review");
+                        $this->line(sprintf('  %s: Using AI review', $modelName));
                         $review = $this->callAIReview($prompt, $provider, $prismService);
 
                         if ($review !== null) {
                             $this->displayReview($modelName, $review);
                         } else {
-                            $this->warn("  {$modelName}: AI review failed, performing basic validation");
+                            $this->warn(sprintf('  %s: AI review failed, performing basic validation', $modelName));
                             $this->performBasicValidation($modelName, $spec);
                         }
                     } else {
-                        $this->line("  {$modelName}: AI not available, performing basic validation");
+                        $this->line(sprintf('  %s: AI not available, performing basic validation', $modelName));
                         $this->performBasicValidation($modelName, $spec);
                     }
                 }
             } catch (Exception $e) {
-                $this->error("  {$modelName}: Error - {$e->getMessage()}");
+                $this->error(sprintf('  %s: Error - %s', $modelName, $e->getMessage()));
             }
         }
 
@@ -110,7 +113,7 @@ final class SeedsReviewCommand extends Command
             $this->warn('Issues found:');
 
             foreach ($issues as $issue) {
-                $this->line("  [{$issue['severity']}] {$issue['model']}: {$issue['message']}");
+                $this->line(sprintf('  [%s] %s: %s', $issue['severity'], $issue['model'], $issue['message']));
             }
         }
 
@@ -169,7 +172,7 @@ final class SeedsReviewCommand extends Command
 
             try {
                 $jsonData = $prismService->generateStructured($prompt, $schema, $model);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 $response = $prismService->using($prismProvider, $model)
                     ->withPrompt($prompt)
                     ->asText();
@@ -196,8 +199,8 @@ final class SeedsReviewCommand extends Command
                 'issues' => $jsonData['issues'] ?? [],
                 'suggestions' => $jsonData['suggestions'] ?? [],
             ];
-        } catch (Exception $e) {
-            $this->error('AI call failed: '.$e->getMessage());
+        } catch (Exception $exception) {
+            $this->error('AI call failed: '.$exception->getMessage());
 
             return null;
         }
@@ -208,7 +211,7 @@ final class SeedsReviewCommand extends Command
      */
     private function displayReview(string $modelName, array $review): void
     {
-        $this->line("  {$modelName}:");
+        $this->line(sprintf('  %s:', $modelName));
 
         $issues = $review['issues'] ?? [];
 
@@ -216,7 +219,7 @@ final class SeedsReviewCommand extends Command
             $this->warn('    Issues:');
 
             foreach ($issues as $issue) {
-                $this->line("      - {$issue}");
+                $this->line('      - '.$issue);
             }
         }
 
@@ -226,7 +229,7 @@ final class SeedsReviewCommand extends Command
             $this->info('    Suggestions:');
 
             foreach ($suggestions as $suggestion) {
-                $this->line("      - {$suggestion}");
+                $this->line('      - '.$suggestion);
             }
         }
     }
@@ -259,7 +262,7 @@ final class SeedsReviewCommand extends Command
                 'suggestions' => $suggestions,
             ]);
         } else {
-            $this->info("  {$modelName}: Basic validation passed");
+            $this->info(sprintf('  %s: Basic validation passed', $modelName));
         }
     }
 }

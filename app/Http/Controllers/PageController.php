@@ -111,6 +111,7 @@ final class PageController extends Controller
         while (Page::query()->where('slug', $uniqueSlug)->where('id', '!=', $copy->id)->exists()) {
             $uniqueSlug = $copy->slug.'-'.($n++);
         }
+
         $copy->update(['slug' => $uniqueSlug]);
 
         return to_route('pages.edit', $copy)->with('flash', ['status' => 'success', 'message' => 'Page duplicated.']);
@@ -141,6 +142,7 @@ final class PageController extends Controller
             if (! isset($props['dataSource'])) {
                 return $item;
             }
+
             $resolved = $this->dataSourceRegistry->resolve(
                 (string) $props['dataSource'],
                 $organization,

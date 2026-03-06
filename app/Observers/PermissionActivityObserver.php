@@ -21,6 +21,7 @@ final class PermissionActivityObserver
         if (! $permission->wasChanged()) {
             return;
         }
+
         $this->log($permission, ActivityType::PermissionUpdated, [
             'old' => array_intersect_key($permission->getOriginal(), array_flip(['name', 'guard_name'])),
             'attributes' => $permission->only(['name', 'guard_name']),
@@ -37,6 +38,7 @@ final class PermissionActivityObserver
         if ($causer instanceof Model) {
             $logger->causedBy($causer);
         }
+
         $logger->log($type->value);
     }
 }

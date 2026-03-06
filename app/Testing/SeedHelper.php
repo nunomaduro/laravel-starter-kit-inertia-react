@@ -24,19 +24,19 @@ final class SeedHelper
      */
     public static function seedFor(string $modelClass, int $count = 1)
     {
-        throw_unless(class_exists($modelClass), InvalidArgumentException::class, "Model class {$modelClass} does not exist");
+        throw_unless(class_exists($modelClass), InvalidArgumentException::class, sprintf('Model class %s does not exist', $modelClass));
 
-        throw_unless(is_subclass_of($modelClass, Model::class), InvalidArgumentException::class, "{$modelClass} is not an Eloquent model");
+        throw_unless(is_subclass_of($modelClass, Model::class), InvalidArgumentException::class, $modelClass.' is not an Eloquent model');
 
         $model = new $modelClass;
         $table = $model->getTable();
 
-        throw_unless(Schema::hasTable($table), RuntimeException::class, "Table {$table} does not exist. Run migrations first.");
+        throw_unless(Schema::hasTable($table), RuntimeException::class, sprintf('Table %s does not exist. Run migrations first.', $table));
 
         // Check if model has factory
         $factoryClass = 'Database\\Factories\\'.class_basename($modelClass).'Factory';
 
-        throw_unless(class_exists($factoryClass), RuntimeException::class, "Factory {$factoryClass} does not exist. Create it first.");
+        throw_unless(class_exists($factoryClass), RuntimeException::class, sprintf('Factory %s does not exist. Create it first.', $factoryClass));
 
         // Seed parent relationships first
         self::seedRelationships($modelClass);

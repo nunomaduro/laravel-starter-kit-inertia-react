@@ -69,7 +69,7 @@ final class FeatureHelper
             config('feature-flags.inertia_features', []),
             config('feature-flags.route_feature_map', [])
         );
-        $key = array_search($featureClass, $all);
+        $key = array_search($featureClass, $all, true);
 
         return $key !== false ? (string) $key : null;
     }

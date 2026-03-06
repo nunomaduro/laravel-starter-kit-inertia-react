@@ -1,8 +1,13 @@
-# Filament Admin Panel
+# Filament Admin and System Panels
 
 ## Purpose
 
-The Filament admin panel at `/admin` provides a backend UI for users with **super-admin** or **admin** roles. It is separate from the main Inertia/React app.
+The application has two Filament panels:
+
+- **Admin panel** (`/admin`): For **org admins** and **super-admins**. User management, roles, permissions, content (posts, categories, help, changelog, contact, enterprise), organization invitations, vouchers. Org switcher in the sidebar when tenancy is enabled. Access: `access admin panel` or super-admin.
+- **System panel** (`/system`): **Super-admin only**. Platform-wide settings and data: Organizations list, all Manage* settings (App, Auth, Mail, Theme, Tenancy, Billing, Stripe, Paddle, Lemon Squeezy, Prism, AI, Backup, Security, etc.), Activity Log, Feature Segments, Credit Packs, Mail Templates, Terms Versions, Affiliates, Revenue Analytics, API docs, Product Analytics, Setup Wizard, Organization Overrides. No org switcher. Access: super-admin only (`EnsureSuperAdmin` middleware).
+
+Resources and pages use `canAccess()` with `filament()->getCurrentPanel()?->getId()` so each item appears only in the correct panel. Activity Log and Feature Flag plugins are registered only on the System panel.
 
 ## Auth
 
@@ -12,7 +17,7 @@ The Filament admin panel at `/admin` provides a backend UI for users with **supe
 
 ## Dev credentials
 
-For local development, use seeded user **admin@example.com** / **password** (role `super-admin`). Log in at `/admin`.
+For local development, use seeded user **admin@example.com** / **password** (role `super-admin`). Log in at `/admin` (or `/system` for the System panel).
 
 ## Creating resources
 
@@ -52,11 +57,11 @@ Use **policies** and **permissions** for authorization. Prefer `$user->can(...)`
 
 **Package**: `stechstudio/filament-impersonate` (v5+, native implementation; no longer uses `lab404/laravel-impersonate`).
 
-- **Who can impersonate**: Only users with the **super-admin** role (`User::canImpersonate()`).
-- **Who can be impersonated**: Any user except **super-admin** (`User::canBeImpersonated()`).
-- **Where**: Impersonate action is on the Users table (row action) and on the Edit User page (header action). After impersonating, the admin is redirected to `/dashboard` as that user.
+- **Who can impersonate**: **Super-admin** or **org admin** (admin/owner in at least one organization), when the Impersonation feature is active (`User::canImpersonate()`).
+- **Who can be impersonated**: Super-admins cannot be impersonated. **Super-admin** may impersonate any other user. **Org admin** may impersonate only users in the same organization(s) (`User::canBeImpersonated()`; impersonator is `auth()->user()` at click time).
+- **Where**: Impersonate action is on the Users table (row action) and on the Edit User page (header action). Visibility uses `canImpersonate()`; the package still enforces `canBeImpersonated()` on the target. The **Users list** is scoped: super-admins see all users; org admins and others see only users that share at least one organization (`UserResource::getEloquentQuery()`). After impersonating, the admin is redirected to `/dashboard` as that user.
 - **Banner**: When impersonating, a banner is shown (Filament panel and main app via `<x-impersonate::banner />` in `resources/views/app.blade.php`) with a “Leave” link that returns to the admin panel.
-- **Activity log**: Start and end of impersonation are logged with causer = impersonator (super-admin), subject = impersonated user, and properties `impersonator_name`, `impersonated_name`, `impersonator_id`, `impersonated_id` (see `App\Enums\ActivityType::ImpersonationStarted`, `ImpersonationEnded` and `App\Listeners\LogImpersonationEvents`). Events: `STS\FilamentImpersonate\Events\EnterImpersonation`, `LeaveImpersonation`.
+- **Activity log**: Start and end of impersonation are logged with causer = impersonator, subject = impersonated user, and properties `impersonator_name`, `impersonated_name`, `impersonator_id`, `impersonated_id` (see `App\Enums\ActivityType::ImpersonationStarted`, `ImpersonationEnded` and `App\Listeners\LogImpersonationEvents`). **Actions taken while impersonating** (model changes, RBAC logs, etc.) use the **impersonator** as causer: `AppServiceProvider::registerActivityLogImpersonationCauser()` configures Spatie's `CauserResolver` so that when `Impersonation::isImpersonating()`, the default causer is the impersonator; `ActivityLogRbac` uses that resolver for its causer. Events: `STS\FilamentImpersonate\Events\EnterImpersonation`, `LeaveImpersonation`.
 - **Policy**: `UserPolicy::viewAny()` returns `true` when `Impersonation::isImpersonating()` (via `STS\FilamentImpersonate\Facades\Impersonation`) to avoid 403s on the users list during impersonation.
 - **Routes**: The package registers `filament-impersonate.leave` for the banner. Impersonation is started only via the Filament Impersonate action (no standalone take route).
 

@@ -6,12 +6,14 @@ namespace Database\Factories;
 
 use App\Models\ContactSubmission;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Override;
 
 /**
  * @extends Factory<ContactSubmission>
  */
 final class ContactSubmissionFactory extends Factory
 {
+    #[Override]
     protected $model = ContactSubmission::class;
 
     /**

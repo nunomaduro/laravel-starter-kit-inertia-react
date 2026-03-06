@@ -38,6 +38,7 @@ test('required terms version redirects authenticated user to accept page', funct
 
     $response = get(route('dashboard'));
     $response->assertRedirect();
+
     expect(str_contains($response->headers->get('Location') ?? '', 'terms/accept'))->toBeTrue();
 });
 

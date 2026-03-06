@@ -102,6 +102,7 @@ final class PermissionCategoryResolver
             if ($category === null) {
                 continue;
             }
+
             $patterns = $category['patterns'] ?? [];
             $exclude = $category['exclude'] ?? [];
             $matched = $this->matchPatterns($allPermissionNames, $patterns);
@@ -148,6 +149,7 @@ final class PermissionCategoryResolver
         if ($names === []) {
             return [];
         }
+
         $existing = Permission::query()->whereIn('name', $names)->pluck('name')->all();
 
         return array_values($existing);

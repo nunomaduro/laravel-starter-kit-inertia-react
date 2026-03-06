@@ -36,8 +36,9 @@ final readonly class WithMemoryUnlessUnavailable
         }
 
         if ($memories->isNotEmpty()) {
-            $memoryContext = $memories->map(fn ($memory): string => "- {$memory->content}")->implode("\n");
-            $prompt = $prompt->prepend("Relevant memories from previous conversations:\n{$memoryContext}");
+            $memoryContext = $memories->map(fn ($memory): string => '- '.$memory->content)->implode("\n");
+            $prompt = $prompt->prepend('Relevant memories from previous conversations:
+'.$memoryContext);
         }
 
         return $next($prompt);

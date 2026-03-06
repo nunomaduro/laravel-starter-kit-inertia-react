@@ -8,13 +8,16 @@ use App\Enums\SeederCategory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Override;
 
 final class SeedersListCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeders:list
                             {--category= : Filter by category}
                             {--json : Output as JSON}';
 
+    #[Override]
     protected $description = 'List all available seeders with their status';
 
     public function handle(): int
@@ -25,7 +28,7 @@ final class SeedersListCommand extends Command
         $seeders = [];
 
         foreach ($categories as $cat) {
-            $path = database_path("seeders/{$cat->value}");
+            $path = database_path('seeders/'.$cat->value);
 
             if (! File::isDirectory($path)) {
                 continue;

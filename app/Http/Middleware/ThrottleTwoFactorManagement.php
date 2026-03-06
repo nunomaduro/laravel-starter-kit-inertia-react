@@ -60,7 +60,11 @@ final class ThrottleTwoFactorManagement
         }
 
         if ($path === 'user/two-factor-authentication') {
-            return $request->isMethod('POST') || $request->isMethod('DELETE');
+            if ($request->isMethod('POST')) {
+                return true;
+            }
+
+            return $request->isMethod('DELETE');
         }
 
         return false;

@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Models\Organization;
 use App\Services\Organization\OrganizationRoleService;
 use Illuminate\Console\Command;
+use Override;
 use RuntimeException;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
@@ -15,11 +16,13 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(name: 'permission:sync')]
 final class PermissionSyncCommand extends Command
 {
+    #[Override]
     protected $signature = 'permission:sync
                             {--dry-run : Preview changes without applying}
                             {--org-only : Sync only organization permissions}
                             {--silent : Suppress output}';
 
+    #[Override]
     protected $description = 'Sync org permissions from organization-permissions.json and assign to org roles';
 
     public function handle(): int
@@ -41,8 +44,9 @@ final class PermissionSyncCommand extends Command
 
         foreach ($toCreate as $name) {
             if (! $silent) {
-                $this->line("+ Creating: {$name}");
+                $this->line('+ Creating: '.$name);
             }
+
             if (! $dryRun) {
                 Permission::create(['name' => $name, 'guard_name' => 'web']);
             }
@@ -52,8 +56,9 @@ final class PermissionSyncCommand extends Command
 
         foreach (Organization::query()->get() as $org) {
             if (! $silent) {
-                $this->line("Syncing permissions for org: {$org->name}");
+                $this->line('Syncing permissions for org: '.$org->name);
             }
+
             if (! $dryRun) {
                 $roleService->syncRolePermissions($org);
             }

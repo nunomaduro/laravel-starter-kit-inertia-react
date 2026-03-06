@@ -8,6 +8,7 @@ it('serves robots.txt with sitemap line', function (): void {
     $response = $this->get(route('robots'));
 
     $response->assertOk();
+
     expect(str_contains((string) $response->headers->get('Content-Type'), 'text/plain'))->toBeTrue();
     $response->assertSee('User-agent: *')
         ->assertSee('Sitemap:');

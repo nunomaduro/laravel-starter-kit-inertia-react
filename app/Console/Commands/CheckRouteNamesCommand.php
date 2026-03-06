@@ -8,12 +8,15 @@ use Closure;
 use Illuminate\Console\Command;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Route as RouteFacade;
+use Override;
 
 final class CheckRouteNamesCommand extends Command
 {
+    #[Override]
     protected $signature = 'permission:check-routes
                             {--strict : Fail when unnamed app routes exist (default: use config permission.require_named_routes)}';
 
+    #[Override]
     protected $description = 'Ensure all application routes have names (for route-based permissions and CI)';
 
     public function handle(): int
@@ -41,7 +44,7 @@ final class CheckRouteNamesCommand extends Command
 
         $fail = $this->option('strict') || config('permission.require_named_routes', true);
         if ($fail) {
-            $this->error(sprintf('Found %d unnamed route(s). Add ->name(\'...\') to each.', count($unnamed)));
+            $this->error(sprintf("Found %d unnamed route(s). Add ->name('...') to each.", count($unnamed)));
 
             return self::FAILURE;
         }
@@ -59,10 +62,12 @@ final class CheckRouteNamesCommand extends Command
             if (! $this->isApplicationRoute($route)) {
                 continue;
             }
+
             $name = $route->getName();
             if (is_string($name) && $name !== '') {
                 continue;
             }
+
             $unnamed[] = $route;
         }
 
@@ -103,6 +108,7 @@ final class CheckRouteNamesCommand extends Command
         if ($action === 'Closure') {
             return 'Closure';
         }
+
         if (is_string($action) && str_contains($action, '@')) {
             return $action;
         }

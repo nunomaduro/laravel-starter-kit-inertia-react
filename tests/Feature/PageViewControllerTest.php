@@ -30,6 +30,7 @@ it('shows published page when tenant is set', function (): void {
         $org = Organization::factory()->create();
         $org->addMember($user, 'admin');
     }
+
     Artisan::call('permission:sync', ['--silent' => true]);
     $page = Page::factory()->for($org)->published()->create(['slug' => 'about']);
 
@@ -53,6 +54,7 @@ it('shows published page for authenticated user with tenant', function (): void 
         $org = Organization::factory()->create();
         $org->addMember($user, 'admin');
     }
+
     Artisan::call('permission:sync', ['--silent' => true]);
     $page = Page::factory()->for($org)->published()->create(['slug' => 'welcome']);
 

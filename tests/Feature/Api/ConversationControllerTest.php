@@ -26,6 +26,7 @@ test('get conversations returns only current user conversations', function (): v
     $response = actingAs($user, 'sanctum')->getJson('/api/conversations');
 
     $response->assertOk();
+
     $data = $response->json('data');
     expect($data)->toHaveCount(1);
     expect($data[0]['id'])->toBe($userConvId);
@@ -43,7 +44,7 @@ test('get conversation by id returns 200 when owner', function (): void {
         'updated_at' => now(),
     ]);
 
-    $response = actingAs($user, 'sanctum')->getJson("/api/conversations/{$convId}");
+    $response = actingAs($user, 'sanctum')->getJson('/api/conversations/'.$convId);
 
     $response->assertOk();
     $response->assertJsonPath('data.id', $convId);
@@ -63,7 +64,7 @@ test('get conversation by id returns 404 when not owner', function (): void {
         'updated_at' => now(),
     ]);
 
-    $response = actingAs($user, 'sanctum')->getJson("/api/conversations/{$convId}");
+    $response = actingAs($user, 'sanctum')->getJson('/api/conversations/'.$convId);
 
     $response->assertNotFound();
 });
@@ -72,7 +73,7 @@ test('get conversation by id returns 404 when not found', function (): void {
     $user = User::factory()->withoutTwoFactor()->create();
     $fakeId = (string) Illuminate\Support\Str::uuid();
 
-    $response = actingAs($user, 'sanctum')->getJson("/api/conversations/{$fakeId}");
+    $response = actingAs($user, 'sanctum')->getJson('/api/conversations/'.$fakeId);
 
     $response->assertNotFound();
 });

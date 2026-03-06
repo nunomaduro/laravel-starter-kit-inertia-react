@@ -66,13 +66,17 @@ final class SeedScenarioManager
     {
         $scenario = $this->getScenario($scenarioName);
 
-        throw_if($scenario === null, InvalidArgumentException::class, "Scenario '{$scenarioName}' not found");
+        throw_if($scenario === null, InvalidArgumentException::class, sprintf("Scenario '%s' not found", $scenarioName));
 
         $results = [];
 
         foreach ($scenario['models'] ?? [] as $modelConfig) {
             $modelClass = $modelConfig['class'] ?? null;
-            if ($modelClass === null || ! class_exists($modelClass)) {
+            if ($modelClass === null) {
+                continue;
+            }
+
+            if (! class_exists($modelClass)) {
                 continue;
             }
 

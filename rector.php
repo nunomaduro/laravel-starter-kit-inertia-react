@@ -23,8 +23,17 @@ return RectorConfig::configure()
         LaravelSetList::LARAVEL_FACTORIES,
         LaravelSetList::LARAVEL_IF_HELPERS,
         LaravelSetList::LARAVEL_LEGACY_FACTORIES_TO_CLASSES,
+        // Laravel version upgrades (loaded explicitly; withComposerBased merges cause RenameClassRector integer config error)
+        LaravelSetList::LARAVEL_120,
+        LaravelSetList::LARAVEL_110,
+        LaravelSetList::LARAVEL_100,
+        LaravelSetList::LARAVEL_90,
+        LaravelSetList::LARAVEL_80,
+        LaravelSetList::LARAVEL_70,
+        LaravelSetList::LARAVEL_60,
     ])
-    ->withComposerBased(laravel: true)
+    // Prefer explicit version sets; withComposerBased(laravel: true) can merge configs and trigger RenameClassRector "Expected a string. Got: integer"
+    // ->withComposerBased(laravel: true)
     ->withCache(
         cacheDirectory: '/tmp/rector',
         cacheClass: FileCacheStorage::class,

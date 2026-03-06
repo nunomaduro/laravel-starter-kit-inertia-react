@@ -10,19 +10,30 @@ use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Override;
 use UnitEnum;
 
 final class ManageAuth extends SettingsPage
 {
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Platform';
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldCheck;
 
+    #[Override]
     protected static ?string $navigationLabel = 'Auth';
 
+    #[Override]
     protected static ?int $navigationSort = 20;
 
+    #[Override]
     protected static string $settings = AuthSettings::class;
+
+    public static function canAccess(): bool
+    {
+        return filament()->getCurrentPanel()?->getId() === 'system';
+    }
 
     public function form(Schema $schema): Schema
     {

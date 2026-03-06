@@ -65,9 +65,9 @@ final readonly class DocumentationTemplateSelector
     public function getTemplatePath(string $templateName): string
     {
         $basePath = base_path('docs/.templates');
-        $path = "{$basePath}/{$templateName}.md";
+        $path = sprintf('%s/%s.md', $basePath, $templateName);
 
-        return file_exists($path) ? $path : "{$basePath}/action.md";
+        return file_exists($path) ? $path : $basePath.'/action.md';
     }
 
     /**
@@ -86,6 +86,7 @@ final readonly class DocumentationTemplateSelector
         if (! empty($relationships['usedBy'])) {
             $complexity += 1;
         }
+
         if (! empty($relationships['usesModels'])) {
             $complexity += 1;
         }

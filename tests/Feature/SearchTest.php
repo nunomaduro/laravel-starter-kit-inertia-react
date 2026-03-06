@@ -178,7 +178,7 @@ it('returns correct result structure', function (): void {
 
 it('limits results to 5 per category', function (): void {
     for ($i = 0; $i < 7; $i++) {
-        $member = User::factory()->withoutTwoFactor()->create(['name' => "Bulkuser {$i}"]);
+        $member = User::factory()->withoutTwoFactor()->create(['name' => 'Bulkuser '.$i]);
         $this->organization->addMember($member, 'member');
     }
 

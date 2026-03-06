@@ -7,12 +7,14 @@ namespace Database\Factories;
 use App\Enums\ChangelogType;
 use App\Models\ChangelogEntry;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Override;
 
 /**
  * @extends Factory<ChangelogEntry>
  */
 final class ChangelogEntryFactory extends Factory
 {
+    #[Override]
     protected $model = ChangelogEntry::class;
 
     /**

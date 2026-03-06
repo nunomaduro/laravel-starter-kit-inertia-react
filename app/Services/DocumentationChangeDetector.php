@@ -104,18 +104,21 @@ final readonly class DocumentationChangeDetector
             if ($actionChanges['methodSignatureChanged']) {
                 $actionSummary[] = 'method signature';
             }
+
             if ($actionChanges['parametersChanged']) {
                 $actionSummary[] = 'parameters';
             }
+
             if ($actionChanges['returnTypeChanged']) {
                 $actionSummary[] = 'return type';
             }
+
             if ($actionChanges['dependenciesChanged']) {
                 $actionSummary[] = 'dependencies';
             }
 
             if ($actionSummary !== []) {
-                $summary[] = "Action {$actionName}: ".implode(', ', $actionSummary).' changed';
+                $summary[] = sprintf('Action %s: ', $actionName).implode(', ', $actionSummary).' changed';
             }
         }
 
@@ -124,15 +127,17 @@ final readonly class DocumentationChangeDetector
             if ($controllerChanges['methodsChanged']) {
                 $controllerSummary[] = 'methods';
             }
+
             if ($controllerChanges['actionsChanged']) {
                 $controllerSummary[] = 'actions used';
             }
+
             if ($controllerChanges['formRequestsChanged']) {
                 $controllerSummary[] = 'form requests';
             }
 
             if ($controllerSummary !== []) {
-                $summary[] = "Controller {$controllerName}: ".implode(', ', $controllerSummary).' changed';
+                $summary[] = sprintf('Controller %s: ', $controllerName).implode(', ', $controllerSummary).' changed';
             }
         }
 
@@ -141,12 +146,13 @@ final readonly class DocumentationChangeDetector
             if ($pageChanges['propsChanged']) {
                 $pageSummary[] = 'props';
             }
+
             if ($pageChanges['componentChanged']) {
                 $pageSummary[] = 'component';
             }
 
             if ($pageSummary !== []) {
-                $summary[] = "Page {$pagePath}: ".implode(', ', $pageSummary).' changed';
+                $summary[] = sprintf('Page %s: ', $pagePath).implode(', ', $pageSummary).' changed';
             }
         }
 

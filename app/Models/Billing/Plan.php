@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Billing;
 
 use Laravelcm\Subscriptions\Models\Plan as BasePlan;
+use Override;
 
 /**
  * @property-read bool $is_per_seat
@@ -12,6 +13,7 @@ use Laravelcm\Subscriptions\Models\Plan as BasePlan;
  */
 final class Plan extends BasePlan
 {
+    #[Override]
     protected $fillable = [
         'slug',
         'name',
@@ -35,17 +37,20 @@ final class Plan extends BasePlan
         'sort_order',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-        'price' => 'float',
-        'signup_fee' => 'float',
-        'is_per_seat' => 'boolean',
-        'price_per_seat' => 'float',
-        'deleted_at' => 'datetime',
-    ];
-
     public function isPerSeat(): bool
     {
         return (bool) $this->is_per_seat;
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'price' => 'float',
+            'signup_fee' => 'float',
+            'is_per_seat' => 'boolean',
+            'price_per_seat' => 'float',
+            'deleted_at' => 'datetime',
+        ];
     }
 }

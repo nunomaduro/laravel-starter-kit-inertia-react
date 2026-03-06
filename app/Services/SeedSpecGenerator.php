@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionNamedType;
 
 final class SeedSpecGenerator
 {
@@ -21,8 +22,8 @@ final class SeedSpecGenerator
      */
     public function generateSpec(string $modelClass): array
     {
-        throw_unless(class_exists($modelClass), InvalidArgumentException::class, "Model class {$modelClass} does not exist");
-        throw_unless(is_subclass_of($modelClass, Model::class), InvalidArgumentException::class, "Class {$modelClass} is not an Eloquent model");
+        throw_unless(class_exists($modelClass), InvalidArgumentException::class, sprintf('Model class %s does not exist', $modelClass));
+        throw_unless(is_subclass_of($modelClass, Model::class), InvalidArgumentException::class, sprintf('Class %s is not an Eloquent model', $modelClass));
 
         $model = new $modelClass;
         $table = $model->getTable();
@@ -46,7 +47,7 @@ final class SeedSpecGenerator
     public function loadSpec(string $modelClass): ?array
     {
         $modelName = class_basename($modelClass);
-        $specPath = database_path("seeders/specs/{$modelName}.json");
+        $specPath = database_path(sprintf('seeders/specs/%s.json', $modelName));
 
         if (! File::exists($specPath)) {
             return null;
@@ -69,7 +70,7 @@ final class SeedSpecGenerator
             File::makeDirectory($specsDir, 0755, true);
         }
 
-        $specPath = "{$specsDir}/{$modelName}.json";
+        $specPath = sprintf('%s/%s.json', $specsDir, $modelName);
 
         File::put($specPath, json_encode($spec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
@@ -100,7 +101,7 @@ final class SeedSpecGenerator
 
                 // If new field is non-nullable without default, needs approval
                 if (! $fieldSpec['nullable'] && $fieldSpec['default'] === null) {
-                    $diff['needs_approval'][] = "New non-nullable field '{$field}' without default";
+                    $diff['needs_approval'][] = sprintf("New non-nullable field '%s' without default", $field);
                 }
             } elseif ($oldFields[$field] !== $fieldSpec) {
                 $diff['changed_fields'][$field] = [
@@ -110,7 +111,7 @@ final class SeedSpecGenerator
 
                 // If field became non-nullable, needs approval
                 if ($oldFields[$field]['nullable'] && ! $fieldSpec['nullable']) {
-                    $diff['needs_approval'][] = "Field '{$field}' became non-nullable";
+                    $diff['needs_approval'][] = sprintf("Field '%s' became non-nullable", $field);
                 }
             }
         }
@@ -218,8 +219,11 @@ final class SeedSpecGenerator
 
         foreach ($methods as $method) {
             $returnType = $method->getReturnType();
-
             if ($returnType === null) {
+                continue;
+            }
+
+            if (! $returnType instanceof ReflectionNamedType) {
                 continue;
             }
 

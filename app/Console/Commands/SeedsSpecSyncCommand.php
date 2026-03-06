@@ -8,14 +8,17 @@ use App\Services\ModelRegistry;
 use App\Services\SeedSpecGenerator;
 use Exception;
 use Illuminate\Console\Command;
+use Override;
 
 final class SeedsSpecSyncCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:spec-sync
                             {--check : Check mode - only report differences without updating}
                             {--model= : Sync specific model only}
                             {--force : Force update even if needs approval items exist}';
 
+    #[Override]
     protected $description = 'Sync seed specs with current model and migration state';
 
     public function handle(SeedSpecGenerator $generator, ModelRegistry $registry): int
@@ -25,7 +28,7 @@ final class SeedsSpecSyncCommand extends Command
         $force = $this->option('force');
 
         $models = $specificModel
-            ? ["App\\Models\\{$specificModel}"]
+            ? ['App\Models\\'.$specificModel]
             : $registry->getAllModels();
 
         if ($models === []) {
@@ -49,11 +52,11 @@ final class SeedsSpecSyncCommand extends Command
 
                 if ($oldSpec === null) {
                     if ($checkMode) {
-                        $this->warn("  {$modelName}: Missing spec (would be created)");
+                        $this->warn(sprintf('  %s: Missing spec (would be created)', $modelName));
                         $hasChanges = true;
                     } else {
                         $generator->saveSpec($modelClass, $newSpec);
-                        $this->info("  {$modelName}: Created new spec");
+                        $this->info(sprintf('  %s: Created new spec', $modelName));
                     }
                 } else {
                     $diff = $generator->diffSpecs($oldSpec, $newSpec);
@@ -63,25 +66,27 @@ final class SeedsSpecSyncCommand extends Command
 
                         if (! empty($diff['needs_approval'])) {
                             $hasApprovalNeeded = true;
-                            $this->warn("  {$modelName}: Changes require approval:");
+                            $this->warn(sprintf('  %s: Changes require approval:', $modelName));
                             foreach ($diff['needs_approval'] as $item) {
-                                $this->line("    - {$item}");
+                                $this->line('    - '.$item);
                             }
                         }
 
                         if ($checkMode) {
-                            $this->warn("  {$modelName}: Spec out of sync (would be updated)");
+                            $this->warn(sprintf('  %s: Spec out of sync (would be updated)', $modelName));
                             if (! empty($diff['added_fields'])) {
                                 $this->line('    Added fields: '.implode(', ', array_keys($diff['added_fields'])));
                             }
+
                             if (! empty($diff['removed_fields'])) {
                                 $this->line('    Removed fields: '.implode(', ', array_keys($diff['removed_fields'])));
                             }
+
                             if (! empty($diff['added_relationships'])) {
                                 $this->line('    Added relationships: '.implode(', ', array_keys($diff['added_relationships'])));
                             }
                         } elseif ($hasApprovalNeeded && ! $force) {
-                            $this->error("  {$modelName}: Cannot update - approval needed. Use --force to override.");
+                            $this->error(sprintf('  %s: Cannot update - approval needed. Use --force to override.', $modelName));
                         } else {
                             $updatedSpec = $oldSpec;
                             $updatedSpec['fields'] = $newSpec['fields'];
@@ -89,14 +94,14 @@ final class SeedsSpecSyncCommand extends Command
                             $updatedSpec['value_hints'] = array_merge($oldSpec['value_hints'] ?? [], $newSpec['value_hints']);
 
                             $generator->saveSpec($modelClass, $updatedSpec);
-                            $this->info("  {$modelName}: Updated spec");
+                            $this->info(sprintf('  %s: Updated spec', $modelName));
                         }
                     } else {
-                        $this->line("  {$modelName}: Up to date");
+                        $this->line(sprintf('  %s: Up to date', $modelName));
                     }
                 }
             } catch (Exception $e) {
-                $this->error("  {$modelName}: Error - {$e->getMessage()}");
+                $this->error(sprintf('  %s: Error - %s', $modelName, $e->getMessage()));
             }
         }
 
@@ -111,6 +116,7 @@ final class SeedsSpecSyncCommand extends Command
 
                 return self::FAILURE;
             }
+
             $this->info('All specs are in sync.');
 
             return self::SUCCESS;

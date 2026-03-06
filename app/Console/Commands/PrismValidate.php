@@ -7,14 +7,17 @@ namespace App\Console\Commands;
 use App\Services\PrismService;
 use Exception;
 use Illuminate\Console\Command;
+use Override;
 use Prism\Prism\Enums\Provider;
 use Prism\Relay\Facades\Relay;
 use ValueError;
 
 final class PrismValidate extends Command
 {
+    #[Override]
     protected $signature = 'prism:validate';
 
+    #[Override]
     protected $description = 'Validate Prism and Relay configuration';
 
     public function handle(PrismService $prism): int
@@ -35,17 +38,17 @@ final class PrismValidate extends Command
         } else {
             try {
                 Provider::from($defaultProvider);
-                $this->info("  ✓ Default provider: {$defaultProvider}");
+                $this->info('  ✓ Default provider: '.$defaultProvider);
             } catch (ValueError) {
-                $errors[] = "Invalid default provider: {$defaultProvider}";
+                $errors[] = 'Invalid default provider: '.$defaultProvider;
             }
         }
 
         if (! $defaultModel) {
             $fallbackModel = config('prism.defaults.model', 'deepseek/deepseek-r1-0528:free');
-            $warnings[] = "No default model configured. Using \"{$fallbackModel}\" as fallback.";
+            $warnings[] = sprintf('No default model configured. Using "%s" as fallback.', $fallbackModel);
         } else {
-            $this->info("  ✓ Default model: {$defaultModel}");
+            $this->info('  ✓ Default model: '.$defaultModel);
         }
 
         $this->newLine();
@@ -63,7 +66,7 @@ final class PrismValidate extends Command
         if (empty($openRouterUrl)) {
             $warnings[] = 'OPENROUTER_URL is not set. Using default: https://openrouter.ai/api/v1';
         } else {
-            $this->info("  ✓ OpenRouter URL: {$openRouterUrl}");
+            $this->info('  ✓ OpenRouter URL: '.$openRouterUrl);
         }
 
         $this->newLine();
@@ -79,9 +82,9 @@ final class PrismValidate extends Command
             foreach ($relayServers as $serverName => $serverConfig) {
                 try {
                     $tools = Relay::tools($serverName);
-                    $this->info("    ✓ {$serverName}: ".count($tools).' tools available');
+                    $this->info(sprintf('    ✓ %s: ', $serverName).count($tools).' tools available');
                 } catch (Exception $e) {
-                    $warnings[] = "Could not load tools for {$serverName}: {$e->getMessage()}";
+                    $warnings[] = sprintf('Could not load tools for %s: %s', $serverName, $e->getMessage());
                 }
             }
         }
@@ -91,16 +94,18 @@ final class PrismValidate extends Command
         if ($warnings !== []) {
             $this->warn('Warnings:');
             foreach ($warnings as $warning) {
-                $this->line("  ⚠ {$warning}");
+                $this->line('  ⚠ '.$warning);
             }
+
             $this->newLine();
         }
 
         if ($errors !== []) {
             $this->error('Errors found:');
             foreach ($errors as $error) {
-                $this->line("  ✗ {$error}");
+                $this->line('  ✗ '.$error);
             }
+
             $this->newLine();
             $this->error('Configuration validation failed.');
 

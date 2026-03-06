@@ -28,6 +28,7 @@ final class BrandingController extends Controller
         if (! $organization instanceof Organization) {
             return to_route('dashboard')->with('flash', ['status' => 'error', 'message' => 'No organization selected.']);
         }
+
         abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);
 
         $branding = $this->organizationSettings->getBranding($organization);
@@ -46,6 +47,7 @@ final class BrandingController extends Controller
         if (! $organization instanceof Organization) {
             return to_route('dashboard')->with('flash', ['status' => 'error', 'message' => 'No organization selected.']);
         }
+
         abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);
 
         $data = $request->validated();
@@ -59,6 +61,7 @@ final class BrandingController extends Controller
             if ($oldRow && Storage::disk('public')->exists(json_decode((string) $oldRow->payload, true, 512, JSON_THROW_ON_ERROR))) {
                 Storage::disk('public')->delete(json_decode((string) $oldRow->payload, true, 512, JSON_THROW_ON_ERROR));
             }
+
             $path = $request->file('logo')->store('branding/logos', 'public');
             $this->organizationSettings->setOverride($organization, 'branding', 'logo_path', $path);
         }
@@ -66,12 +69,15 @@ final class BrandingController extends Controller
         if (array_key_exists('theme_preset', $data)) {
             $this->organizationSettings->setOverride($organization, 'branding', 'theme_preset', $data['theme_preset'] ?? null);
         }
+
         if (array_key_exists('theme_radius', $data)) {
             $this->organizationSettings->setOverride($organization, 'branding', 'theme_radius', $data['theme_radius'] ?? null);
         }
+
         if (array_key_exists('theme_font', $data)) {
             $this->organizationSettings->setOverride($organization, 'branding', 'theme_font', $data['theme_font'] ?? null);
         }
+
         if (array_key_exists('allow_user_ui_customization', $data)) {
             $this->organizationSettings->setOverride($organization, 'branding', 'allow_user_ui_customization', (bool) ($data['allow_user_ui_customization'] ?? false));
         }

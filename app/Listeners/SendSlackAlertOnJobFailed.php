@@ -26,15 +26,16 @@ final class SendSlackAlertOnJobFailed
             if (mb_strlen($body) > 2000) {
                 $body = mb_substr($body, 0, 1997).'...';
             }
+
             $recipient->notify(new SlackCriticalAlertNotification(
                 title: 'Queue job failed: '.$jobName,
                 body: $body,
                 level: 'error',
             ));
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             Log::warning('Failed to send Slack alert for failed job', [
                 'job' => $event->job->resolveName(),
-                'slack_error' => $e->getMessage(),
+                'slack_error' => $throwable->getMessage(),
             ]);
         }
     }

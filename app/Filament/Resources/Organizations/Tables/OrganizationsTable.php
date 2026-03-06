@@ -21,6 +21,7 @@ final class OrganizationsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with('owner'))
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(10)
             ->paginationPageOptions([10, 25, 50])

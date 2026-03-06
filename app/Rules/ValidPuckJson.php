@@ -28,25 +28,27 @@ final class ValidPuckJson implements ValidationRule
         }
 
         if (count($content) > $maxItems) {
-            $fail("The :attribute may not contain more than {$maxItems} blocks.");
+            $fail(sprintf('The :attribute may not contain more than %s blocks.', $maxItems));
 
             return;
         }
 
         foreach ($content as $index => $item) {
             if (! is_array($item)) {
-                $fail("The :attribute content[{$index}] must be an object.");
+                $fail(sprintf('The :attribute content[%s] must be an object.', $index));
 
                 return;
             }
+
             $type = $item['type'] ?? null;
             if ($type === null || $type === '') {
-                $fail("The :attribute content[{$index}] must have a type.");
+                $fail(sprintf('The :attribute content[%s] must have a type.', $index));
 
                 return;
             }
+
             if ($allowed !== [] && ! in_array($type, $allowed, true)) {
-                $fail("The :attribute content[{$index}] has disallowed component type \"{$type}\".");
+                $fail(sprintf('The :attribute content[%s] has disallowed component type "%s".', $index, $type));
 
                 return;
             }

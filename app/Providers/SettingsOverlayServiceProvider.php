@@ -406,7 +406,7 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
             $group = $settingsClass::group();
 
             foreach ($config['map'] as $property => $configKey) {
-                $keys["{$group}.{$property}"] = $configKey;
+                $keys[sprintf('%s.%s', $group, $property)] = $configKey;
             }
         }
 

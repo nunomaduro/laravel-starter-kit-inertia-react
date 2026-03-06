@@ -8,11 +8,14 @@ use App\Models\Organization;
 use App\Providers\SettingsOverlayServiceProvider;
 use App\Services\OrganizationSettingsService;
 use Illuminate\Console\Command;
+use Override;
 
 final class SettingsCacheCommand extends Command
 {
+    #[Override]
     protected $signature = 'settings:cache';
 
+    #[Override]
     protected $description = 'Warm the organization settings cache for all organizations';
 
     public function handle(OrganizationSettingsService $service): int
@@ -37,7 +40,7 @@ final class SettingsCacheCommand extends Command
                 }
             });
 
-        $this->components->info("Cached settings for {$count} organization(s).");
+        $this->components->info(sprintf('Cached settings for %d organization(s).', $count));
 
         return self::SUCCESS;
     }

@@ -6,13 +6,16 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Override;
 
 final class SeedsMetricsCommand extends Command
 {
+    #[Override]
     protected $signature = 'seeds:metrics
                             {--file= : Specific metrics file to display}
                             {--latest : Show latest metrics file}';
 
+    #[Override]
     protected $description = 'Display seeding metrics from last run';
 
     public function handle(): int
@@ -24,7 +27,7 @@ final class SeedsMetricsCommand extends Command
         if ($specificFile !== null) {
             $file = $specificFile;
         } elseif ($latest) {
-            $files = glob("{$metricsPath}/seeding_metrics_*.json");
+            $files = glob($metricsPath.'/seeding_metrics_*.json');
 
             if ($files === false) {
                 $files = [];
@@ -46,7 +49,7 @@ final class SeedsMetricsCommand extends Command
         }
 
         if (! File::exists($file)) {
-            $this->error("Metrics file not found: {$file}");
+            $this->error('Metrics file not found: '.$file);
 
             return self::FAILURE;
         }
@@ -70,12 +73,12 @@ final class SeedsMetricsCommand extends Command
         $totalWarnings = $summary['total_warnings'] ?? 0;
         $totalErrors = $summary['total_errors'] ?? 0;
 
-        $this->line("Timestamp: {$timestamp}");
-        $this->line("Seeders Run: {$seedersRun}");
-        $this->line("Total Duration: {$totalDuration}s");
-        $this->line("Total Records: {$totalRecords}");
-        $this->line("Warnings: {$totalWarnings}");
-        $this->line("Errors: {$totalErrors}");
+        $this->line('Timestamp: '.$timestamp);
+        $this->line('Seeders Run: '.$seedersRun);
+        $this->line(sprintf('Total Duration: %ss', $totalDuration));
+        $this->line('Total Records: '.$totalRecords);
+        $this->line('Warnings: '.$totalWarnings);
+        $this->line('Errors: '.$totalErrors);
 
         $this->newLine();
         $this->info('Per-Seeder Details:');
@@ -84,7 +87,7 @@ final class SeedsMetricsCommand extends Command
 
         foreach ($seeders as $seederName => $metrics) {
             $this->newLine();
-            $this->line("  {$seederName}:");
+            $this->line(sprintf('  %s:', $seederName));
             $this->line('    Duration: '.($metrics['duration'] ?? 0).'s');
 
             $records = $metrics['records_created'] ?? [];
@@ -93,7 +96,7 @@ final class SeedsMetricsCommand extends Command
                 $this->line('    Records:');
 
                 foreach ($records as $model => $count) {
-                    $this->line("      - {$model}: {$count}");
+                    $this->line(sprintf('      - %s: %s', $model, $count));
                 }
             }
 
@@ -103,7 +106,7 @@ final class SeedsMetricsCommand extends Command
                 $this->warn('    Warnings:');
 
                 foreach ($warnings as $warning) {
-                    $this->line("      - {$warning}");
+                    $this->line('      - '.$warning);
                 }
             }
 
@@ -113,7 +116,7 @@ final class SeedsMetricsCommand extends Command
                 $this->error('    Errors:');
 
                 foreach ($errors as $error) {
-                    $this->line("      - {$error}");
+                    $this->line('      - '.$error);
                 }
             }
         }

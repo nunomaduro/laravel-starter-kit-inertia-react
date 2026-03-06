@@ -32,6 +32,7 @@ it('allows legitimate form submissions with valid honeypot fields', function ():
     ]);
 
     $response->assertSuccessful();
+
     expect($response->json('success'))->toBeTrue();
 });
 
@@ -45,6 +46,7 @@ it('blocks submissions that are too fast', function (): void {
     ]);
 
     $response->assertStatus(200);
+
     expect($response->getContent())->toBeEmpty();
 });
 
@@ -59,6 +61,7 @@ it('blocks submissions with filled honeypot field', function (): void {
     ]);
 
     $response->assertStatus(200);
+
     expect($response->getContent())->toBeEmpty();
 });
 
@@ -71,6 +74,7 @@ it('can be disabled via configuration', function (): void {
     ]);
 
     $response->assertSuccessful();
+
     expect($response->json('success'))->toBeTrue();
 });
 
@@ -83,5 +87,6 @@ it('respects route without honeypot middleware', function (): void {
     ]);
 
     $response->assertSuccessful();
+
     expect($response->json('success'))->toBeTrue();
 });

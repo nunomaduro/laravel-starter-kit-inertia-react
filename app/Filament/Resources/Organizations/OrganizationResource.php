@@ -19,19 +19,30 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Override;
 use UnitEnum;
 
 final class OrganizationResource extends Resource
 {
+    #[Override]
     protected static ?string $model = Organization::class;
 
+    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Organizations';
 
+    #[Override]
     protected static ?int $navigationSort = 10;
 
+    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::BuildingOffice2;
 
+    #[Override]
     protected static ?string $recordTitleAttribute = 'name';
+
+    public static function canAccess(): bool
+    {
+        return filament()->getCurrentPanel()?->getId() === 'system';
+    }
 
     /** @return array<string> */
     public static function getGloballySearchableAttributes(): array

@@ -44,7 +44,8 @@ export function DataTableRowActions<TData>({
     row,
     actions,
 }: DataTableRowActionsProps<TData>) {
-    const [confirmingAction, setConfirmingAction] = useState<DataTableAction<TData> | null>(null);
+    const [confirmingAction, setConfirmingAction] =
+        useState<DataTableAction<TData> | null>(null);
 
     const visibleActions = actions.filter(
         (action) => !action.visible || action.visible(row),
@@ -122,9 +123,7 @@ export function DataTableRowActions<TData>({
             {opts && (
                 <Dialog
                     open={!!confirmingAction}
-                    onOpenChange={(open) =>
-                        !open && setConfirmingAction(null)
-                    }
+                    onOpenChange={(open) => !open && setConfirmingAction(null)}
                 >
                     <DialogContent>
                         <DialogHeader>

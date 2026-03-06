@@ -8,6 +8,7 @@ use App\Enums\Billing\PaymentGatewayType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Crypt;
+use Override;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
@@ -27,6 +28,7 @@ final class PaymentGateway extends Model implements Sortable
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use SortableTrait;
 
+    #[Override]
     protected $fillable = [
         'name',
         'type',

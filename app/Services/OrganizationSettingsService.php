@@ -164,7 +164,7 @@ final class OrganizationSettingsService
 
     private function cacheKey(Organization $organization): string
     {
-        return "org_settings:{$organization->id}";
+        return 'org_settings:'.$organization->id;
     }
 
     private function decodePayload(string $payload, bool|int $isEncrypted): mixed

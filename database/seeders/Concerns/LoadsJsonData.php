@@ -16,14 +16,14 @@ trait LoadsJsonData
      */
     protected function loadJson(string $filename): array
     {
-        $path = database_path("seeders/data/{$filename}");
+        $path = database_path('seeders/data/'.$filename);
 
-        throw_unless(File::exists($path), RuntimeException::class, "JSON file not found: {$path}");
+        throw_unless(File::exists($path), RuntimeException::class, 'JSON file not found: '.$path);
 
         $contents = File::get($path);
         $data = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
 
-        throw_unless(is_array($data), RuntimeException::class, "Invalid JSON structure in file: {$filename}");
+        throw_unless(is_array($data), RuntimeException::class, 'Invalid JSON structure in file: '.$filename);
 
         return $data;
     }

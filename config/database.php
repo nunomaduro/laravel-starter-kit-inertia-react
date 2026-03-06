@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+// PHP 8.5+ deprecated PDO::MYSQL_ATTR_SSL_CA in favor of Pdo\Mysql::ATTR_SSL_CA
+$mysqlAttrSslCa = PHP_VERSION_ID >= 80500 ? Pdo\Mysql::ATTR_SSL_CA : Pdo\Mysql::ATTR_SSL_CA;
+
 return [
 
     /*
@@ -58,7 +61,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                $mysqlAttrSslCa => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
@@ -78,7 +81,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                $mysqlAttrSslCa => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 

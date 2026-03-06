@@ -17,8 +17,8 @@ final readonly class PricingController
             ->get()
             ->map(fn ($plan): array => [
                 'id' => $plan->id,
-                'name' => is_array($plan->name) ? ($plan->name[array_key_first($plan->name)] ?? '') : (string) $plan->name,
-                'description' => is_array($plan->description) ? ($plan->description[array_key_first($plan->description)] ?? '') : (string) $plan->description,
+                'name' => is_array($plan->name) ? (array_first($plan->name) ?? '') : (string) $plan->name,
+                'description' => is_array($plan->description) ? (array_first($plan->description) ?? '') : (string) $plan->description,
                 'price' => (float) ($plan->price ?? 0),
                 'currency' => $plan->currency ?? config('billing.currency'),
                 'interval' => $plan->invoice_interval ?? 'month',
