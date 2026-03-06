@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { useReducedMotion } from "@/hooks/use-reduced-motion"
 
 type SkeletonAnimation = "pulse" | "shimmer" | "wave"
 
@@ -19,12 +20,14 @@ function Skeleton({
 }: React.ComponentProps<"div"> & {
   animation?: SkeletonAnimation
 }) {
+  const reducedMotion = useReducedMotion()
+
   return (
     <div
       data-slot="skeleton"
       className={cn(
         "bg-primary/10 rounded-md",
-        animationClasses[animation],
+        reducedMotion ? undefined : animationClasses[animation],
         className
       )}
       {...props}

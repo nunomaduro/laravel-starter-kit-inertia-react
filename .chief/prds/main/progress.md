@@ -1,5 +1,18 @@
 # Progress Log
 
+## 2026-03-07 - US-014
+- Created `resources/js/hooks/use-reduced-motion.ts`: reads `matchMedia('(prefers-reduced-motion: reduce)')` on init and subscribes to changes; returns boolean.
+- Created `resources/js/hooks/use-focus-trap.ts`: traps Tab/Shift+Tab within a given `RefObject<HTMLElement>`; focuses first focusable element on activation; accepts `enabled` flag to toggle.
+- Created `resources/js/components/ui/skip-to-content.tsx`: `sr-only` anchor that becomes visible (`focus:not-sr-only`) and jumps to `#main-content`; exported with `SkipToContentProps` type.
+- Created `resources/js/hooks/index.ts`: barrel export for all hooks (useAppearance, useThemePreset, useCan, useClipboard, useFocusTrap, useInitials, useIsMobile, useMobileNavigation, useReducedMotion, useTwoFactorAuth).
+- Updated `resources/js/components/ui/skeleton.tsx`: now calls `useReducedMotion()` and omits animation classes when reduced motion is preferred.
+- `npx tsc --noEmit` ✓ | `npm run build` ✓
+- **Learnings for future iterations:**
+  - `feed.tsx` and `streaming-text.tsx` don't exist yet — `useReducedMotion` is applied to `skeleton.tsx` now; apply to the others when they are created.
+  - `useFocusTrap` auto-focuses the first focusable element on mount; callers that want to preserve focus (e.g. drawers already handled by Radix) should pass `enabled={false}`.
+  - The `SkipToContent` component must be the **first** element inside each app shell layout with `id="main-content"` on the main wrapper — this is deferred to US-025.
+---
+
 ## 2026-03-07 - US-013
 - Enhanced `button.tsx`: added `filled`/`soft`/`flat` variants, `color` prop (7 semantic colors via compound CVA variants), `isLoading` prop (shows spinner, disables button), `leftIcon`/`rightIcon` props. Used `Omit<React.ComponentProps<"button">, "color">` to avoid conflict with deprecated HTML `color` attribute.
 - Enhanced `badge.tsx`: added `filled`/`soft` variants, `color` prop (7 semantic colors), `glow` prop (shadow glow).
