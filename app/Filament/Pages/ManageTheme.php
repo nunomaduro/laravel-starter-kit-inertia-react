@@ -7,6 +7,7 @@ namespace App\Filament\Pages;
 use App\Settings\ThemeSettings;
 use BackedEnum;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -65,6 +66,9 @@ final class ManageTheme extends SettingsPage
                     ->label('Default appearance')
                     ->options(config('theme.appearances', []))
                     ->required(),
+                Toggle::make('allow_user_theme_customization')
+                    ->label('Allow users to customize their own theme')
+                    ->helperText('When enabled, all authenticated users can use the theme customizer. When disabled, only organization admins can.'),
             ]);
     }
 }

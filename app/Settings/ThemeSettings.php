@@ -29,6 +29,8 @@ final class ThemeSettings extends Settings
 
     public string $border_radius = 'default';
 
+    public bool $allow_user_theme_customization = false;
+
     public static function group(): string
     {
         return 'theme';
