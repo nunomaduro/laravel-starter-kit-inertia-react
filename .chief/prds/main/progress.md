@@ -1,5 +1,26 @@
 # Progress Log
 
+## 2026-03-07 - US-013
+- Enhanced `button.tsx`: added `filled`/`soft`/`flat` variants, `color` prop (7 semantic colors via compound CVA variants), `isLoading` prop (shows spinner, disables button), `leftIcon`/`rightIcon` props. Used `Omit<React.ComponentProps<"button">, "color">` to avoid conflict with deprecated HTML `color` attribute.
+- Enhanced `badge.tsx`: added `filled`/`soft` variants, `color` prop (7 semantic colors), `glow` prop (shadow glow).
+- Enhanced `card.tsx`: added `skin` prop (`shadow`/`bordered`/`flat`/`elevated`), `hoverable` bool; respects `data-card-skin` attribute.
+- Enhanced `input.tsx`: added `variant` (`outlined`/`filled`/`soft`), `size` (`xs`/`sm`/`md`/`lg`), `startContent`/`endContent` slots. Used `Omit<..., "size"> & { size?: InputSize | number }` to accept both HTML numeric size and new string size.
+- Enhanced `textarea.tsx`: wraps `react-textarea-autosize` when `autoSize=true`; same `variant` options as input.
+- Enhanced `alert.tsx`: added `filled`/`soft`/`outlined` variants + semantic `color` prop.
+- Enhanced `tabs.tsx`: added `underline`/`pill`/`card`/`lifted` variants to `tabsListVariants` and updated `TabsTrigger` styles with group-data selectors for each new variant.
+- Enhanced `avatar.tsx`: added `indicator` slot (status dot: online/offline/busy/away); exported `AvatarGroup` with `max` prop; added auto-color from name in `AvatarFallback`.
+- Enhanced `skeleton.tsx`: added `animation` prop with `pulse`/`shimmer`/`wave` variants.
+- Enhanced `tooltip.tsx`: added `TooltipRichContent` component with `title`/`description` props and an arrow.
+- Enhanced `dialog.tsx`: added `size` prop (`xs`/`sm`/`md`/`lg`/`xl`/`fullscreen`) to `DialogContent`.
+- Enhanced `sheet.tsx`: added `size` prop (`quarter`/`half`/`full`) and `backdropBlur` prop to `SheetContent`/`SheetOverlay`.
+- Fixed `calendar.tsx`: destructured `color: _color` to prevent HTML `color: string` from conflicting with Button's new `color?: SemanticColor`.
+- **Learnings for future iterations:**
+  - When adding a prop to a component that conflicts with a deprecated HTML attribute (like `color` on `<button>` or `size` on `<input>`), use `Omit<React.ComponentProps<"element">, "conflicting-prop">` in the function signature.
+  - Accepting `InputSize | number` for `size` prop allows backward compat with react-hook-form spreads that include native `size: number`.
+  - `react-textarea-autosize` has a custom `Style` type `{height?: number}` incompatible with `CSSProperties` — omit `style` from props before spreading and cast the rest.
+  - When spread props from a library (react-day-picker DayButton) flow through to a component with a new typed prop, destructure the conflicting prop in the parent component to prevent TypeScript errors.
+---
+
 ## US-001: Tailux CSS design token foundation — COMPLETE
 
 **Date:** 2026-03-07
