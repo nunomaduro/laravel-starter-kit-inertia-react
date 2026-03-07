@@ -14,7 +14,8 @@ final class ThemeSettings extends Settings
 
     public string $radius = 'default';
 
-    public string $font = 'instrument-sans';
+    /** @var 'inter'|'geist'|'poppins'|'outfit'|'plus-jakarta-sans' */
+    public string $font = 'inter';
 
     /** @var 'light'|'dark'|'system' */
     public string $default_appearance = 'system';
@@ -28,6 +29,15 @@ final class ThemeSettings extends Settings
     public string $card_skin = 'shadow';
 
     public string $border_radius = 'default';
+
+    /** @var 'main'|'sideblock' */
+    public string $sidebar_layout = 'main';
+
+    /** @var 'default'|'primary'|'muted' */
+    public string $menu_color = 'default';
+
+    /** @var 'subtle'|'strong'|'bordered' */
+    public string $menu_accent = 'subtle';
 
     public bool $allow_user_theme_customization = false;
 

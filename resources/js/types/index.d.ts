@@ -84,6 +84,12 @@ export interface ThemeProps {
     light?: string;
     /** Tailux card skin (e.g. 'shadow', 'bordered') */
     skin?: string;
+    /** Sidebar layout variant ('main' | 'sideblock') */
+    layout?: string;
+    /** Menu color scheme ('default' | 'primary' | 'muted') */
+    menuColor?: string;
+    /** Menu accent style ('subtle' | 'strong' | 'bordered') */
+    menuAccent?: string;
     /** True when the current user may customize their personal theme. */
     canCustomize?: boolean;
     /** The authenticated user's personal dark/light/system mode preference. */

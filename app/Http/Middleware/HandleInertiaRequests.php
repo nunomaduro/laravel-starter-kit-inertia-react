@@ -98,7 +98,7 @@ final class HandleInertiaRequests extends Middleware
      * Resolve theme from DB (settings table) so Manage Theme changes take effect immediately.
      * Bypasses Settings class cache by reading directly. Falls back to config when unavailable.
      *
-     * @return array{preset: string, base_color: string, radius: string, font: string, default_appearance: string, dark: string, primary: string, light: string, skin: string, canCustomize: bool, userMode: string}
+     * @return array{preset: string, base_color: string, radius: string, font: string, default_appearance: string, dark: string, primary: string, light: string, skin: string, layout: string, menuColor: string, menuAccent: string, canCustomize: bool, userMode: string}
      */
     private function resolveTheme(Request $request): array
     {
@@ -106,12 +106,15 @@ final class HandleInertiaRequests extends Middleware
             'preset' => config('theme.preset', 'default'),
             'base_color' => config('theme.base_color', 'neutral'),
             'radius' => config('theme.radius', 'default'),
-            'font' => config('theme.font', 'instrument-sans'),
+            'font' => config('theme.font', 'inter'),
             'default_appearance' => config('theme.default_appearance', 'system'),
             'dark' => 'navy',
             'primary' => 'indigo',
             'light' => 'slate',
             'skin' => 'shadow',
+            'layout' => 'main',
+            'menuColor' => 'default',
+            'menuAccent' => 'subtle',
             'canCustomize' => false,
             'userMode' => 'system',
         ];
@@ -148,6 +151,9 @@ final class HandleInertiaRequests extends Middleware
                 'primary' => $db['primary_color'] ?? $defaults['primary'],
                 'light' => $db['light_color_scheme'] ?? $defaults['light'],
                 'skin' => $db['card_skin'] ?? $defaults['skin'],
+                'layout' => $db['sidebar_layout'] ?? $defaults['layout'],
+                'menuColor' => $db['menu_color'] ?? $defaults['menuColor'],
+                'menuAccent' => $db['menu_accent'] ?? $defaults['menuAccent'],
                 'canCustomize' => $canCustomize,
                 'userMode' => $userMode,
             ];

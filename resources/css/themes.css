@@ -17,6 +17,30 @@
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 }
+[data-font='inter'] {
+    --app-font-sans:
+        'Inter', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+}
+[data-font='poppins'] {
+    --app-font-sans:
+        'Poppins', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+}
+[data-font='outfit'] {
+    --app-font-sans:
+        'Outfit', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+}
+[data-font='plus-jakarta-sans'] {
+    --app-font-sans:
+        'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+}
 
 [data-theme='vega'] {
     --background: oklch(0.985 0.002 247);
@@ -716,4 +740,60 @@
     --sidebar-accent: oklch(0.97 0 0);
     --sidebar-accent-foreground: oklch(0.33 0 0);
     --sidebar-border: oklch(0.91 0 0);
+}
+
+/*
+ * ============================================================
+ * Sidebar layout variants
+ * Applied as [data-sidebar-layout="..."] on documentElement.
+ * data-sidebar-layout = "main" | "sideblock"
+ * ============================================================
+ */
+
+[data-sidebar-layout='sideblock'] {
+    --sidebar-width: 18rem;
+    --sidebar-offset: 1rem;
+}
+
+/*
+ * ============================================================
+ * Menu color variants
+ * Applied as [data-menu-color="..."] on documentElement.
+ * data-menu-color = "default" | "primary" | "muted"
+ * ============================================================
+ */
+
+[data-menu-color='primary'] {
+    --sidebar: var(--primary);
+    --sidebar-foreground: var(--primary-foreground);
+    --sidebar-accent: color-mix(in oklch, var(--primary) 85%, white);
+    --sidebar-accent-foreground: var(--primary-foreground);
+    --sidebar-border: color-mix(in oklch, var(--primary) 80%, black);
+}
+
+[data-menu-color='muted'] {
+    --sidebar: var(--muted);
+    --sidebar-foreground: var(--muted-foreground);
+    --sidebar-accent: color-mix(in oklch, var(--muted) 90%, black);
+    --sidebar-accent-foreground: var(--foreground);
+    --sidebar-border: var(--border);
+}
+
+/*
+ * ============================================================
+ * Menu accent variants
+ * Applied as [data-menu-accent="..."] on documentElement.
+ * data-menu-accent = "subtle" | "strong" | "bordered"
+ * ============================================================
+ */
+
+[data-menu-accent='strong'] {
+    --sidebar-accent: var(--primary);
+    --sidebar-accent-foreground: var(--primary-foreground);
+}
+
+[data-menu-accent='bordered'] {
+    --sidebar-accent: transparent;
+    --sidebar-accent-foreground: var(--sidebar-foreground);
+    --sidebar-item-border: 2px solid var(--primary);
 }

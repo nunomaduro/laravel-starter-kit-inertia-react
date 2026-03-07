@@ -65,7 +65,19 @@ export function ThemeFromProps() {
         if (theme.skin) {
             root.setAttribute('data-card-skin', theme.skin);
         }
-    }, [theme.dark, theme.primary, theme.light, theme.skin]);
+
+        if (theme.layout) {
+            root.setAttribute('data-sidebar-layout', theme.layout);
+        }
+
+        if (theme.menuColor) {
+            root.setAttribute('data-menu-color', theme.menuColor);
+        }
+
+        if (theme.menuAccent) {
+            root.setAttribute('data-menu-accent', theme.menuAccent);
+        }
+    }, [theme.dark, theme.primary, theme.light, theme.skin, theme.layout, theme.menuColor, theme.menuAccent]);
 
     // Apply user mode (dark/light/system) on mount and when it changes
     useEffect(() => {
