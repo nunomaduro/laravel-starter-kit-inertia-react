@@ -480,7 +480,7 @@
         "`npm run storybook` runs all stories with 0 errors"
       ],
       "priority": 32,
-      "passes": false
+      "passes": true
     },
     {
       "id": "US-033",
