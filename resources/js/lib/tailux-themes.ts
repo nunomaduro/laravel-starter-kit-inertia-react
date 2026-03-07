@@ -18,6 +18,18 @@ export type CardSkin = (typeof CARD_SKINS)[number];
 export const RADIUS_OPTIONS = ['none', 'sm', 'default', 'md', 'lg', 'full'] as const;
 export type RadiusOption = (typeof RADIUS_OPTIONS)[number];
 
+export const SIDEBAR_LAYOUTS = ['main', 'sideblock'] as const;
+export type SidebarLayout = (typeof SIDEBAR_LAYOUTS)[number];
+
+export const FONT_OPTIONS = ['inter', 'geist-sans', 'poppins', 'outfit', 'plus-jakarta-sans'] as const;
+export type FontOption = (typeof FONT_OPTIONS)[number];
+
+export const MENU_COLORS = ['default', 'primary', 'muted'] as const;
+export type MenuColor = (typeof MENU_COLORS)[number];
+
+export const MENU_ACCENTS = ['subtle', 'strong', 'bordered'] as const;
+export type MenuAccent = (typeof MENU_ACCENTS)[number];
+
 export interface ThemePreset {
     name: string;
     dark: DarkTheme;

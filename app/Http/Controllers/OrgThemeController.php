@@ -32,6 +32,10 @@ final class OrgThemeController extends Controller
             'light' => ['required', 'string', 'in:slate,gray,neutral'],
             'skin' => ['required', 'string', 'in:shadow,bordered,flat,elevated'],
             'radius' => ['required', 'string', 'in:none,sm,default,md,lg,full'],
+            'layout' => ['sometimes', 'string', 'in:main,sideblock'],
+            'font' => ['sometimes', 'string', 'in:inter,geist-sans,poppins,outfit,plus-jakarta-sans,instrument-sans'],
+            'menuColor' => ['sometimes', 'string', 'in:default,primary,muted'],
+            'menuAccent' => ['sometimes', 'string', 'in:subtle,strong,bordered'],
         ]);
 
         $map = [
@@ -40,6 +44,10 @@ final class OrgThemeController extends Controller
             'light' => 'light_color_scheme',
             'skin' => 'card_skin',
             'radius' => 'border_radius',
+            'layout' => 'sidebar_layout',
+            'font' => 'font',
+            'menuColor' => 'menu_color',
+            'menuAccent' => 'menu_accent',
         ];
 
         foreach ($map as $key => $settingName) {
@@ -58,7 +66,7 @@ final class OrgThemeController extends Controller
 
         $this->authorizeCustomize($request, $organization);
 
-        foreach (['dark_color_scheme', 'primary_color', 'light_color_scheme', 'card_skin', 'border_radius'] as $name) {
+        foreach (['dark_color_scheme', 'primary_color', 'light_color_scheme', 'card_skin', 'border_radius', 'sidebar_layout', 'font', 'menu_color', 'menu_accent'] as $name) {
             $this->organizationSettings->removeOverride($organization, ThemeSettings::group(), $name);
         }
 
