@@ -571,7 +571,7 @@
         "`npx tsc --noEmit` passes"
       ],
       "priority": 36,
-      "passes": false
+      "passes": true
     }
   ]
 }
