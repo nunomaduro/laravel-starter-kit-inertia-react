@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { Spinner } from '@/components/ui/spinner';
 
@@ -33,7 +32,9 @@ export const AllSizes: Story = {
             {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
                 <div key={size} className="flex flex-col items-center gap-1.5">
                     <Spinner size={size} />
-                    <span className="text-xs text-muted-foreground">{size}</span>
+                    <span className="text-xs text-muted-foreground">
+                        {size}
+                    </span>
                 </div>
             ))}
         </div>
@@ -61,7 +62,10 @@ export const AllVariants: Story = {
 
 export const InButton: Story = {
     render: () => (
-        <button className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground" disabled>
+        <button
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+            disabled
+        >
             <Spinner size="sm" variant="white" />
             Saving…
         </button>

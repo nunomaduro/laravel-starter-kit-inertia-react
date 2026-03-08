@@ -182,7 +182,13 @@ export function AppSidebar() {
                     isSuperAdmin,
                 ),
             ),
-        [permissions, canBypass, resolvedFeatures, tenancyEnabled, isSuperAdmin],
+        [
+            permissions,
+            canBypass,
+            resolvedFeatures,
+            tenancyEnabled,
+            isSuperAdmin,
+        ],
     );
     const visibleFooterNavItems = useMemo(
         () =>
@@ -196,7 +202,13 @@ export function AppSidebar() {
                     isSuperAdmin,
                 ),
             ),
-        [permissions, canBypass, resolvedFeatures, tenancyEnabled, isSuperAdmin],
+        [
+            permissions,
+            canBypass,
+            resolvedFeatures,
+            tenancyEnabled,
+            isSuperAdmin,
+        ],
     );
 
     return (

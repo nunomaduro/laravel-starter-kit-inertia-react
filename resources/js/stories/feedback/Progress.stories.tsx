@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { Progress } from '@/components/ui/progress';
 
@@ -33,7 +32,7 @@ export const Full: Story = {
 
 export const MultipleStates: Story = {
     render: () => (
-        <div className="space-y-4 w-80">
+        <div className="w-80 space-y-4">
             {[
                 { label: 'Storage', value: 72 },
                 { label: 'Memory', value: 45 },
@@ -42,7 +41,9 @@ export const MultipleStates: Story = {
             ].map(({ label, value }) => (
                 <div key={label} className="space-y-1.5">
                     <div className="flex justify-between text-sm">
-                        <span className="text-foreground font-medium">{label}</span>
+                        <span className="font-medium text-foreground">
+                            {label}
+                        </span>
                         <span className="text-muted-foreground">{value}%</span>
                     </div>
                     <Progress value={value} />

@@ -1,12 +1,11 @@
-import * as React from 'react';
 import { MapPinIcon, NavigationIcon, StarIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
+import { MarkersMap, type MapMarkerData } from '@/components/maps/markers-map';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { MarkersMap, type MapMarkerData } from '@/components/maps/markers-map';
+import { cn } from '@/lib/utils';
 
 export interface LocationItem {
     id: string;
@@ -34,7 +33,10 @@ export interface LocationDashboardProps {
 
 function StarRating({ rating }: { rating: number }) {
     return (
-        <div className="flex items-center gap-0.5" aria-label={`${rating} out of 5 stars`}>
+        <div
+            className="flex items-center gap-0.5"
+            aria-label={`${rating} out of 5 stars`}
+        >
             {Array.from({ length: 5 }).map((_, i) => (
                 <StarIcon
                     key={i}
@@ -46,7 +48,9 @@ function StarRating({ rating }: { rating: number }) {
                     )}
                 />
             ))}
-            <span className="ml-1 text-[10px] text-muted-foreground">{rating.toFixed(1)}</span>
+            <span className="ml-1 text-[10px] text-muted-foreground">
+                {rating.toFixed(1)}
+            </span>
         </div>
     );
 }
@@ -63,7 +67,9 @@ function LocationDashboard({
     mapHeight = 300,
 }: LocationDashboardProps) {
     const [search, setSearch] = React.useState('');
-    const [localSelected, setLocalSelected] = React.useState<string | null>(selectedId ?? null);
+    const [localSelected, setLocalSelected] = React.useState<string | null>(
+        selectedId ?? null,
+    );
 
     const activeId = selectedId ?? localSelected;
 
@@ -88,7 +94,8 @@ function LocationDashboard({
         if (center) return center;
         const active = locations.find((l) => l.id === activeId);
         if (active) return [active.longitude, active.latitude];
-        if (locations.length > 0) return [locations[0].longitude, locations[0].latitude];
+        if (locations.length > 0)
+            return [locations[0].longitude, locations[0].latitude];
         return undefined;
     }, [center, activeId, locations]);
 
@@ -98,9 +105,15 @@ function LocationDashboard({
     };
 
     return (
-        <div data-slot="location-dashboard" className={cn('grid gap-4 lg:grid-cols-[1fr_320px]', className)}>
+        <div
+            data-slot="location-dashboard"
+            className={cn('grid gap-4 lg:grid-cols-[1fr_320px]', className)}
+        >
             <Card className="overflow-hidden">
-                <div style={{ height: `${mapHeight}px` }} className="relative w-full">
+                <div
+                    style={{ height: `${mapHeight}px` }}
+                    className="relative w-full"
+                >
                     <MarkersMap
                         markers={markers}
                         center={mapCenter}
@@ -175,7 +188,9 @@ function LocationDashboard({
                                                     </Badge>
                                                 )}
                                                 {loc.rating !== undefined && (
-                                                    <StarRating rating={loc.rating} />
+                                                    <StarRating
+                                                        rating={loc.rating}
+                                                    />
                                                 )}
                                             </div>
                                         </div>
@@ -200,7 +215,8 @@ function LocationDashboard({
                 {filtered.length > 0 && (
                     <div className="border-t px-4 py-2">
                         <p className="text-xs text-muted-foreground">
-                            {filtered.length} location{filtered.length !== 1 ? 's' : ''}
+                            {filtered.length} location
+                            {filtered.length !== 1 ? 's' : ''}
                         </p>
                     </div>
                 )}

@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 use Override;
 use RuntimeException;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -64,6 +65,9 @@ final class PermissionSyncCommand extends Command
             }
         }
 
+        // Sync role templates (global roles visible to orgs as starting points)
+        $this->syncRoleTemplates($config, $dryRun, $silent);
+
         if (! $silent) {
             $this->info('Permission sync completed.');
         }
@@ -83,6 +87,34 @@ final class PermissionSyncCommand extends Command
         throw_if($content === false, RuntimeException::class, 'Failed to read organization-permissions.json');
 
         return json_decode($content, true) ?? [];
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     */
+    private function syncRoleTemplates(array $config, bool $dryRun, bool $silent): void
+    {
+        $templates = $config['role_templates'] ?? [];
+
+        foreach ($templates as $template) {
+            $name = 'template_'.($template['name'] ?? '');
+
+            if (! $silent) {
+                $this->line('Role template: '.$name);
+            }
+
+            if (! $dryRun) {
+                $role = Role::query()->firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+
+                $permNames = $template['permissions'] ?? [];
+                $permissions = Permission::query()
+                    ->where('guard_name', 'web')
+                    ->whereIn('name', $permNames)
+                    ->get();
+
+                $role->syncPermissions($permissions);
+            }
+        }
     }
 
     /**

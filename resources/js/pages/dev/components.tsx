@@ -1,14 +1,13 @@
 import * as React from 'react';
 
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import {
     AlertTriangle,
     BarChart3,
     Bell,
-    BookOpen,
     Check,
     Code2,
-    Cpu,
+    Copy,
     FileText,
     Globe,
     Layers,
@@ -16,7 +15,6 @@ import {
     Map,
     Palette,
     Puzzle,
-    Settings2,
     Shield,
     Sliders,
     Sparkles,
@@ -29,17 +27,57 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { KeyboardShortcutDisplay } from '@/components/ui/keyboard-shortcut-display';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ThemeCustomizerPanel } from '@/components/ui/theme-customizer';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { AreaChart } from '@/components/charts/area-chart';
 import { BarChart } from '@/components/charts/bar-chart';
@@ -81,13 +119,29 @@ interface Category {
 }
 
 const CATEGORIES: Category[] = [
-    { id: 'foundation', label: 'Foundation', icon: <Palette className="size-4" /> },
+    {
+        id: 'foundation',
+        label: 'Foundation',
+        icon: <Palette className="size-4" />,
+    },
     { id: 'layout', label: 'Layout', icon: <LayoutGrid className="size-4" /> },
     { id: 'shells', label: 'Shells', icon: <Layers className="size-4" /> },
-    { id: 'navigation', label: 'Navigation', icon: <Globe className="size-4" /> },
-    { id: 'buttons', label: 'Buttons & Actions', icon: <Zap className="size-4" /> },
+    {
+        id: 'navigation',
+        label: 'Navigation',
+        icon: <Globe className="size-4" />,
+    },
+    {
+        id: 'buttons',
+        label: 'Buttons & Actions',
+        icon: <Zap className="size-4" />,
+    },
     { id: 'forms', label: 'Forms', icon: <Sliders className="size-4" /> },
-    { id: 'data-display', label: 'Data Display', icon: <FileText className="size-4" /> },
+    {
+        id: 'data-display',
+        label: 'Data Display',
+        icon: <FileText className="size-4" />,
+    },
     { id: 'feedback', label: 'Feedback', icon: <Bell className="size-4" /> },
     { id: 'overlay', label: 'Overlay', icon: <Layers className="size-4" /> },
     { id: 'charts', label: 'Charts', icon: <BarChart3 className="size-4" /> },
@@ -96,7 +150,11 @@ const CATEGORIES: Category[] = [
     { id: 'saas', label: 'SaaS', icon: <Star className="size-4" /> },
     { id: 'admin', label: 'Admin', icon: <Shield className="size-4" /> },
     { id: 'composed', label: 'Composed', icon: <Puzzle className="size-4" /> },
-    { id: 'accessibility', label: 'Accessibility', icon: <Users className="size-4" /> },
+    {
+        id: 'accessibility',
+        label: 'Accessibility',
+        icon: <Users className="size-4" />,
+    },
 ];
 
 // ---------------------------------------------------------------------------
@@ -112,7 +170,12 @@ interface ActiveTheme {
 
 function getThemeFromDOM(): ActiveTheme {
     if (typeof document === 'undefined') {
-        return { dark: 'navy', primary: 'indigo', radius: 'default', skin: 'shadow' };
+        return {
+            dark: 'navy',
+            primary: 'indigo',
+            radius: 'default',
+            skin: 'shadow',
+        };
     }
     const el = document.documentElement;
     return {
@@ -127,7 +190,9 @@ function useActiveTheme(): ActiveTheme {
     const [theme, setTheme] = React.useState<ActiveTheme>(getThemeFromDOM);
 
     React.useEffect(() => {
-        const observer = new MutationObserver(() => setTheme(getThemeFromDOM()));
+        const observer = new MutationObserver(() =>
+            setTheme(getThemeFromDOM()),
+        );
         observer.observe(document.documentElement, { attributes: true });
         return () => observer.disconnect();
     }, []);
@@ -139,27 +204,69 @@ function useActiveTheme(): ActiveTheme {
 // Layout helpers
 // ---------------------------------------------------------------------------
 
-function ShowcaseSection({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+function ShowcaseSection({
+    id,
+    title,
+    description,
+    badge,
+    children,
+}: {
+    id: string;
+    title: string;
+    description?: string;
+    badge?: string;
+    children: React.ReactNode;
+}) {
     return (
-        <section id={id} className="scroll-mt-16 space-y-4">
-            <div className="border-b pb-2">
-                <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+        <section id={id} className="scroll-mt-20 space-y-6">
+            <div className="border-b pb-3">
+                <div className="flex items-center gap-3">
+                    <h2 className="text-xl font-semibold tracking-tight">
+                        {title}
+                    </h2>
+                    {badge && (
+                        <Badge variant="secondary" className="text-xs">
+                            {badge}
+                        </Badge>
+                    )}
+                </div>
+                {description && (
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        {description}
+                    </p>
+                )}
             </div>
-            {children}
+            <div className="space-y-8">{children}</div>
         </section>
     );
 }
 
-function ShowcaseRow({ title, children }: { title?: string; children: React.ReactNode }) {
+function ShowcaseRow({
+    title,
+    children,
+}: {
+    title?: string;
+    children: React.ReactNode;
+}) {
     return (
         <div className="space-y-2">
-            {title && <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{title}</p>}
+            {title && (
+                <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                    {title}
+                </p>
+            )}
             <div className="flex flex-wrap items-center gap-3">{children}</div>
         </div>
     );
 }
 
-function ShowcaseGrid({ children, cols = 3 }: { children: React.ReactNode; cols?: 2 | 3 | 4 }) {
+function ShowcaseGrid({
+    children,
+    cols = 3,
+}: {
+    children: React.ReactNode;
+    cols?: 2 | 3 | 4;
+}) {
     return (
         <div
             className={cn('grid gap-4', {
@@ -169,6 +276,100 @@ function ShowcaseGrid({ children, cols = 3 }: { children: React.ReactNode; cols?
             })}
         >
             {children}
+        </div>
+    );
+}
+
+// ---------------------------------------------------------------------------
+// ComponentPreview — shadcn-style Preview/Code tabs with copy button
+// ---------------------------------------------------------------------------
+
+function ComponentPreview({
+    title,
+    description,
+    code,
+    children,
+    fullWidth = false,
+}: {
+    title?: string;
+    description?: string;
+    code: string;
+    children: React.ReactNode;
+    fullWidth?: boolean;
+}) {
+    const [copied, setCopied] = React.useState(false);
+
+    function handleCopy() {
+        navigator.clipboard.writeText(code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    }
+
+    return (
+        <div className="space-y-2">
+            {title && (
+                <div>
+                    <p className="text-sm font-medium">{title}</p>
+                    {description && (
+                        <p className="text-xs text-muted-foreground">
+                            {description}
+                        </p>
+                    )}
+                </div>
+            )}
+            <div className="overflow-hidden rounded-xl border">
+                <Tabs defaultValue="preview">
+                    {/* Tab bar */}
+                    <div className="flex items-center justify-between border-b bg-muted/40 px-3 py-1.5">
+                        <TabsList className="h-7 gap-0.5 bg-transparent p-0">
+                            <TabsTrigger
+                                value="preview"
+                                className="h-6 rounded px-2.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                            >
+                                Preview
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="code"
+                                className="h-6 rounded px-2.5 text-xs data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                            >
+                                Code
+                            </TabsTrigger>
+                        </TabsList>
+                        <button
+                            onClick={handleCopy}
+                            className="flex items-center gap-1 rounded px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
+                        >
+                            {copied ? (
+                                <Check className="size-3" />
+                            ) : (
+                                <Copy className="size-3" />
+                            )}
+                            {copied ? 'Copied!' : 'Copy'}
+                        </button>
+                    </div>
+                    {/* Preview tab */}
+                    <TabsContent
+                        value="preview"
+                        className="m-0 flex min-h-[120px] items-center justify-center bg-background p-6"
+                    >
+                        <div
+                            className={
+                                fullWidth
+                                    ? 'w-full'
+                                    : 'flex flex-wrap items-center gap-3'
+                            }
+                        >
+                            {children}
+                        </div>
+                    </TabsContent>
+                    {/* Code tab */}
+                    <TabsContent value="code" className="m-0">
+                        <pre className="overflow-x-auto bg-zinc-950 p-4 text-xs leading-relaxed text-zinc-100 dark:bg-zinc-900">
+                            <code>{code}</code>
+                        </pre>
+                    </TabsContent>
+                </Tabs>
+            </div>
         </div>
     );
 }
@@ -187,7 +388,13 @@ const CHART_DATA = [
 ];
 
 const SPARKLINE_DATA = [
-    { v: 30 }, { v: 50 }, { v: 35 }, { v: 70 }, { v: 55 }, { v: 80 }, { v: 65 },
+    { v: 30 },
+    { v: 50 },
+    { v: 35 },
+    { v: 70 },
+    { v: 55 },
+    { v: 80 },
+    { v: 65 },
 ];
 
 const PIE_DATA = [
@@ -272,7 +479,12 @@ const MOCK_METRICS = [
 const MOCK_AUDIT_ENTRIES = [
     {
         id: '1',
-        actor: { id: 'u1', name: 'Alice Johnson', email: 'alice@example.com', initials: 'AJ' },
+        actor: {
+            id: 'u1',
+            name: 'Alice Johnson',
+            email: 'alice@example.com',
+            initials: 'AJ',
+        },
         action: 'user.login',
         target: 'Web session',
         timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
@@ -281,7 +493,12 @@ const MOCK_AUDIT_ENTRIES = [
     },
     {
         id: '2',
-        actor: { id: 'u2', name: 'Bob Smith', email: 'bob@example.com', initials: 'BS' },
+        actor: {
+            id: 'u2',
+            name: 'Bob Smith',
+            email: 'bob@example.com',
+            initials: 'BS',
+        },
         action: 'settings.update',
         target: 'Acme Corp',
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
@@ -311,12 +528,25 @@ const MOCK_PM_GRANTS = {
 // ---------------------------------------------------------------------------
 
 function ShowcaseSidebar({ activeId }: { activeId: string }) {
+    const [search, setSearch] = React.useState('');
+    const filtered = CATEGORIES.filter((c) =>
+        c.label.toLowerCase().includes(search.toLowerCase()),
+    );
+
     return (
         <nav className="flex flex-col gap-0.5 p-3">
-            <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="mb-2 px-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                 Components
             </p>
-            {CATEGORIES.map((cat) => (
+            <div className="mb-2 px-2">
+                <Input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Filter..."
+                    className="h-7 text-xs"
+                />
+            </div>
+            {filtered.map((cat) => (
                 <a
                     key={cat.id}
                     href={`#${cat.id}`}
@@ -328,13 +558,21 @@ function ShowcaseSidebar({ activeId }: { activeId: string }) {
                     )}
                     onClick={(e) => {
                         e.preventDefault();
-                        document.getElementById(cat.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        document.getElementById(cat.id)?.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start',
+                        });
                     }}
                 >
                     {cat.icon}
                     {cat.label}
                 </a>
             ))}
+            {filtered.length === 0 && (
+                <p className="px-2 py-4 text-center text-xs text-muted-foreground">
+                    No results
+                </p>
+            )}
         </nav>
     );
 }
@@ -343,18 +581,30 @@ function ShowcaseSidebar({ activeId }: { activeId: string }) {
 // Sticky top bar
 // ---------------------------------------------------------------------------
 
-function ThemeBar({ theme }: { theme: ActiveTheme }) {
+function ThemeBar({
+    theme,
+}: {
+    theme: ActiveTheme;
+    onOpenCustomizer?: () => void;
+}) {
     return (
-        <div className="flex h-full items-center gap-4 px-4 text-xs">
-            <span className="font-semibold text-muted-foreground">Live theme:</span>
-            <ThemePill label="Dark" value={theme.dark} />
-            <ThemePill label="Primary" value={theme.primary} />
-            <ThemePill label="Radius" value={theme.radius} />
-            <ThemePill label="Skin" value={theme.skin} />
-            <Separator orientation="vertical" className="h-4" />
-            <span className="text-muted-foreground">
-                Press <kbd className="rounded border px-1 font-mono text-[10px]">?</kbd> for shortcuts
-            </span>
+        <div className="flex h-full items-center justify-between gap-4 px-4 text-xs">
+            <div className="flex items-center gap-4">
+                <span className="font-semibold text-muted-foreground">
+                    Live theme:
+                </span>
+                <ThemePill label="Dark" value={theme.dark} />
+                <ThemePill label="Primary" value={theme.primary} />
+                <ThemePill label="Radius" value={theme.radius} />
+                <ThemePill label="Skin" value={theme.skin} />
+            </div>
+            <div className="hidden items-center gap-1 text-muted-foreground sm:flex">
+                <span>Switch themes with the</span>
+                <span className="font-medium text-primary">
+                    Theme Customizer
+                </span>
+                <span>on the right edge →</span>
+            </div>
         </div>
     );
 }
@@ -393,7 +643,11 @@ const PRIMARY_PALETTE_COLORS: Record<string, string> = {
 
 function FoundationSection() {
     return (
-        <ShowcaseSection id="foundation" title="Foundation">
+        <ShowcaseSection
+            id="foundation"
+            title="Foundation"
+            description="Design tokens — colors, typography, shadows, and spacing that power the entire system."
+        >
             <ShowcaseRow title="Dark Themes">
                 {DARK_THEMES.map((name) => (
                     <div key={name} className="flex items-center gap-2">
@@ -401,7 +655,9 @@ function FoundationSection() {
                             className="size-6 rounded-full border"
                             style={{ background: DARK_PALETTE_COLORS[name] }}
                         />
-                        <span className="text-xs text-muted-foreground capitalize">{name}</span>
+                        <span className="text-xs text-muted-foreground capitalize">
+                            {name}
+                        </span>
                     </div>
                 ))}
             </ShowcaseRow>
@@ -413,7 +669,9 @@ function FoundationSection() {
                             className="size-6 rotate-45 rounded-sm border"
                             style={{ background: PRIMARY_PALETTE_COLORS[name] }}
                         />
-                        <span className="text-xs text-muted-foreground capitalize">{name}</span>
+                        <span className="text-xs text-muted-foreground capitalize">
+                            {name}
+                        </span>
                     </div>
                 ))}
             </ShowcaseRow>
@@ -430,9 +688,14 @@ function FoundationSection() {
                     { label: 'Surface 2', cls: 'bg-[var(--color-surface-2)]' },
                     { label: 'Surface 3', cls: 'bg-[var(--color-surface-3)]' },
                 ].map(({ label, cls }) => (
-                    <div key={label} className="flex flex-col items-center gap-1">
+                    <div
+                        key={label}
+                        className="flex flex-col items-center gap-1"
+                    >
                         <span className={cn('size-8 rounded border', cls)} />
-                        <span className="text-[10px] text-muted-foreground">{label}</span>
+                        <span className="text-[10px] text-muted-foreground">
+                            {label}
+                        </span>
                     </div>
                 ))}
             </ShowcaseRow>
@@ -449,7 +712,9 @@ function FoundationSection() {
                         { cls: 'text-2xl', label: 'text-2xl' },
                     ].map(({ cls, label }) => (
                         <div key={label} className="flex items-baseline gap-3">
-                            <span className="w-24 shrink-0 text-[10px] text-muted-foreground font-mono">{label}</span>
+                            <span className="w-24 shrink-0 font-mono text-[10px] text-muted-foreground">
+                                {label}
+                            </span>
                             <span className={cn('text-foreground', cls)}>
                                 The quick brown fox
                             </span>
@@ -468,7 +733,10 @@ function FoundationSection() {
                 ].map(({ label, cls }) => (
                     <div
                         key={label}
-                        className={cn('flex h-12 w-20 items-center justify-center rounded-md bg-card text-xs text-muted-foreground', cls)}
+                        className={cn(
+                            'flex h-12 w-20 items-center justify-center rounded-md bg-card text-xs text-muted-foreground',
+                            cls,
+                        )}
                     >
                         {label}
                     </div>
@@ -484,7 +752,11 @@ function FoundationSection() {
 
 function LayoutSection() {
     return (
-        <ShowcaseSection id="layout" title="Layout">
+        <ShowcaseSection
+            id="layout"
+            title="Layout"
+            description="Container widths, stacks, grids, and dividers."
+        >
             <ShowcaseRow title="Container (max-widths)">
                 {(['sm', 'md', 'lg', 'xl', '2xl'] as const).map((size) => (
                     <div
@@ -499,20 +771,30 @@ function LayoutSection() {
             <ShowcaseRow title="Stack / HStack / VStack">
                 <div className="flex items-start gap-6">
                     <div className="flex flex-col gap-2">
-                        <p className="text-[10px] text-muted-foreground">VStack gap-2</p>
+                        <p className="text-[10px] text-muted-foreground">
+                            VStack gap-2
+                        </p>
                         <div className="flex flex-col gap-2">
                             {['A', 'B', 'C'].map((l) => (
-                                <span key={l} className="flex h-6 w-10 items-center justify-center rounded bg-primary/20 text-xs">
+                                <span
+                                    key={l}
+                                    className="flex h-6 w-10 items-center justify-center rounded bg-primary/20 text-xs"
+                                >
                                     {l}
                                 </span>
                             ))}
                         </div>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <p className="text-[10px] text-muted-foreground">HStack gap-2</p>
+                        <p className="text-[10px] text-muted-foreground">
+                            HStack gap-2
+                        </p>
                         <div className="flex items-center gap-2">
                             {['X', 'Y', 'Z'].map((l) => (
-                                <span key={l} className="flex h-6 w-10 items-center justify-center rounded bg-secondary/40 text-xs">
+                                <span
+                                    key={l}
+                                    className="flex h-6 w-10 items-center justify-center rounded bg-secondary/40 text-xs"
+                                >
                                     {l}
                                 </span>
                             ))}
@@ -522,9 +804,12 @@ function LayoutSection() {
             </ShowcaseRow>
 
             <ShowcaseRow title="Grid">
-                <div className="w-full grid grid-cols-4 gap-2">
+                <div className="grid w-full grid-cols-4 gap-2">
                     {Array.from({ length: 8 }, (_, i) => (
-                        <div key={i} className="flex h-8 items-center justify-center rounded bg-muted text-xs text-muted-foreground">
+                        <div
+                            key={i}
+                            className="flex h-8 items-center justify-center rounded bg-muted text-xs text-muted-foreground"
+                        >
                             col {i + 1}
                         </div>
                     ))}
@@ -547,26 +832,54 @@ function LayoutSection() {
 
 function ShellsSection() {
     return (
-        <ShowcaseSection id="shells" title="Shells">
+        <ShowcaseSection
+            id="shells"
+            title="Shells"
+            description="Full-page layout wrappers for common application patterns."
+        >
             <ShowcaseRow>
                 <div className="w-full space-y-2">
                     <p className="text-xs text-muted-foreground">
-                        Shells are full-page layout wrappers. This page itself uses <code className="rounded bg-muted px-1 font-mono text-[11px]">AppShell</code> with a sticky sidebar and header.
+                        Shells are full-page layout wrappers. This page itself
+                        uses{' '}
+                        <code className="rounded bg-muted px-1 font-mono text-[11px]">
+                            AppShell
+                        </code>{' '}
+                        with a sticky sidebar and header.
                     </p>
                     <ShowcaseGrid cols={3}>
                         {[
-                            { name: 'AppShell', desc: 'Sidebar + header + main + optional right panel' },
-                            { name: 'DashboardLayout', desc: 'Two-column responsive dashboard' },
-                            { name: 'MarketingLayout', desc: 'Marketing site layout with hero slots' },
-                            { name: 'MasterDetail', desc: 'List + detail split panel' },
-                            { name: 'SplitView', desc: 'Resizable horizontal split' },
+                            {
+                                name: 'AppShell',
+                                desc: 'Sidebar + header + main + optional right panel',
+                            },
+                            {
+                                name: 'DashboardLayout',
+                                desc: 'Two-column responsive dashboard',
+                            },
+                            {
+                                name: 'MarketingLayout',
+                                desc: 'Marketing site layout with hero slots',
+                            },
+                            {
+                                name: 'MasterDetail',
+                                desc: 'List + detail split panel',
+                            },
+                            {
+                                name: 'SplitView',
+                                desc: 'Resizable horizontal split',
+                            },
                         ].map(({ name, desc }) => (
                             <Card key={name}>
                                 <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm">{name}</CardTitle>
+                                    <CardTitle className="text-sm">
+                                        {name}
+                                    </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-xs text-muted-foreground">{desc}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {desc}
+                                    </p>
                                 </CardContent>
                             </Card>
                         ))}
@@ -583,54 +896,118 @@ function ShellsSection() {
 
 function NavigationSection() {
     return (
-        <ShowcaseSection id="navigation" title="Navigation">
-            <ShowcaseRow title="Tabs">
+        <ShowcaseSection
+            id="navigation"
+            title="Navigation"
+            description="Tabs, breadcrumbs, and pagination for moving between views."
+            badge="3 components"
+        >
+            <ComponentPreview
+                title="Tabs"
+                description="Switch between related content panels."
+                code={`<Tabs defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">Overview</TabsTrigger>
+    <TabsTrigger value="tab2">Analytics</TabsTrigger>
+    <TabsTrigger value="tab3">Settings</TabsTrigger>
+  </TabsList>
+  <TabsContent value="tab1">Overview content.</TabsContent>
+  <TabsContent value="tab2">Analytics content.</TabsContent>
+  <TabsContent value="tab3">Settings content.</TabsContent>
+</Tabs>`}
+                fullWidth
+            >
                 <Tabs defaultValue="tab1" className="w-full">
                     <TabsList>
                         <TabsTrigger value="tab1">Overview</TabsTrigger>
                         <TabsTrigger value="tab2">Analytics</TabsTrigger>
                         <TabsTrigger value="tab3">Settings</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="tab1" className="mt-3 text-sm text-muted-foreground">
+                    <TabsContent
+                        value="tab1"
+                        className="mt-3 text-sm text-muted-foreground"
+                    >
                         Overview tab content.
                     </TabsContent>
-                    <TabsContent value="tab2" className="mt-3 text-sm text-muted-foreground">
+                    <TabsContent
+                        value="tab2"
+                        className="mt-3 text-sm text-muted-foreground"
+                    >
                         Analytics tab content.
                     </TabsContent>
-                    <TabsContent value="tab3" className="mt-3 text-sm text-muted-foreground">
+                    <TabsContent
+                        value="tab3"
+                        className="mt-3 text-sm text-muted-foreground"
+                    >
                         Settings tab content.
                     </TabsContent>
                 </Tabs>
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Breadcrumbs (representative)">
+            <ComponentPreview
+                title="Breadcrumbs"
+                description="Show the current location within the app hierarchy."
+                code={`<nav className="flex items-center gap-1 text-sm">
+  <span className="text-muted-foreground hover:text-foreground cursor-pointer">Home</span>
+  <span className="text-muted-foreground">/</span>
+  <span className="text-muted-foreground hover:text-foreground cursor-pointer">Settings</span>
+  <span className="text-muted-foreground">/</span>
+  <span className="font-medium">Profile</span>
+</nav>`}
+            >
                 <nav className="flex items-center gap-1 text-sm">
                     {['Home', 'Settings', 'Profile'].map((crumb, i, arr) => (
                         <React.Fragment key={crumb}>
-                            <span className={i === arr.length - 1 ? 'font-medium' : 'text-muted-foreground hover:text-foreground cursor-pointer'}>
+                            <span
+                                className={
+                                    i === arr.length - 1
+                                        ? 'font-medium'
+                                        : 'cursor-pointer text-muted-foreground hover:text-foreground'
+                                }
+                            >
                                 {crumb}
                             </span>
-                            {i < arr.length - 1 && <span className="text-muted-foreground">/</span>}
+                            {i < arr.length - 1 && (
+                                <span className="text-muted-foreground">/</span>
+                            )}
                         </React.Fragment>
                     ))}
                 </nav>
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Pagination (representative)">
+            <ComponentPreview
+                title="Pagination"
+                description="Navigate between pages of content."
+                code={`<div className="flex items-center gap-1">
+  {['«', '1', '2', '3', '…', '10', '»'].map((p) => (
+    <button
+      key={p}
+      className={cn(
+        'flex h-8 min-w-[2rem] items-center justify-center rounded-md border px-2 text-sm',
+        p === '2' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',
+      )}
+    >
+      {p}
+    </button>
+  ))}
+</div>`}
+            >
                 <div className="flex items-center gap-1">
                     {['«', '1', '2', '3', '…', '10', '»'].map((p) => (
                         <button
                             key={p}
                             className={cn(
                                 'flex h-8 min-w-[2rem] items-center justify-center rounded-md border px-2 text-sm',
-                                p === '2' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted',
+                                p === '2'
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'hover:bg-muted',
                             )}
                         >
                             {p}
                         </button>
                     ))}
                 </div>
-            </ShowcaseRow>
+            </ComponentPreview>
         </ShowcaseSection>
     );
 }
@@ -641,39 +1018,101 @@ function NavigationSection() {
 
 function ButtonsSection() {
     return (
-        <ShowcaseSection id="buttons" title="Buttons & Actions">
-            <ShowcaseRow title="Button Variants">
-                {(['default', 'secondary', 'outline', 'ghost', 'link', 'destructive', 'soft', 'flat'] as const).map((v) => (
-                    <Button key={v} variant={v} size="sm">{v}</Button>
+        <ShowcaseSection
+            id="buttons"
+            title="Buttons & Actions"
+            description="Interactive controls for triggering actions and navigating."
+            badge="8 variants"
+        >
+            <ComponentPreview
+                title="Button Variants"
+                description="All available visual styles for the Button component."
+                code={`<Button variant="default">Default</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="link">Link</Button>
+<Button variant="destructive">Destructive</Button>
+<Button variant="soft">Soft</Button>
+<Button variant="flat">Flat</Button>`}
+            >
+                {(
+                    [
+                        'default',
+                        'secondary',
+                        'outline',
+                        'ghost',
+                        'link',
+                        'destructive',
+                        'soft',
+                        'flat',
+                    ] as const
+                ).map((v) => (
+                    <Button key={v} variant={v} size="sm">
+                        {v}
+                    </Button>
                 ))}
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Button Sizes">
+            <ComponentPreview
+                title="Button Sizes"
+                description="Three size options to fit different contexts."
+                code={`<Button size="sm">Small</Button>
+<Button size="default">Default</Button>
+<Button size="lg">Large</Button>`}
+            >
                 {(['sm', 'default', 'lg'] as const).map((s) => (
-                    <Button key={s} size={s}>Size {s}</Button>
+                    <Button key={s} size={s}>
+                        Size {s}
+                    </Button>
                 ))}
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Button States">
+            <ComponentPreview
+                title="Button States"
+                description="Disabled and loading states for async operations."
+                code={`<Button disabled>Disabled</Button>
+<Button isLoading>Loading</Button>
+<Button variant="outline">
+  <Check className="size-4" /> With icon
+</Button>`}
+            >
                 <Button disabled>Disabled</Button>
                 <Button isLoading>Loading</Button>
-                <Button variant="outline"><Check className="size-4" /> With icon</Button>
-            </ShowcaseRow>
+                <Button variant="outline">
+                    <Check className="size-4" /> With icon
+                </Button>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Tooltips on buttons">
+            <ComponentPreview
+                title="Tooltips on Buttons"
+                description="Attach tooltips to any element with TooltipProvider."
+                code={`<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button variant="outline" size="sm">Hover (top)</Button>
+    </TooltipTrigger>
+    <TooltipContent side="top">Tooltip on top</TooltipContent>
+  </Tooltip>
+</TooltipProvider>`}
+            >
                 <TooltipProvider>
-                    {(['top', 'right', 'bottom', 'left'] as const).map((side) => (
-                        <Tooltip key={side}>
-                            <TooltipTrigger asChild>
-                                <Button variant="outline" size="sm">Hover ({side})</Button>
-                            </TooltipTrigger>
-                            <TooltipContent side={side}>
-                                Tooltip on {side}
-                            </TooltipContent>
-                        </Tooltip>
-                    ))}
+                    {(['top', 'right', 'bottom', 'left'] as const).map(
+                        (side) => (
+                            <Tooltip key={side}>
+                                <TooltipTrigger asChild>
+                                    <Button variant="outline" size="sm">
+                                        Hover ({side})
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side={side}>
+                                    Tooltip on {side}
+                                </TooltipContent>
+                            </Tooltip>
+                        ),
+                    )}
                 </TooltipProvider>
-            </ShowcaseRow>
+            </ComponentPreview>
         </ShowcaseSection>
     );
 }
@@ -684,42 +1123,82 @@ function ButtonsSection() {
 
 function FormsSection() {
     return (
-        <ShowcaseSection id="forms" title="Forms">
-            <ShowcaseGrid cols={3}>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Text Input</label>
-                    <Input placeholder="Enter text…" />
+        <ShowcaseSection
+            id="forms"
+            title="Forms"
+            description="Input controls for collecting user data."
+            badge="3 components"
+        >
+            <ComponentPreview
+                title="Text Inputs"
+                description="Standard, password, and disabled input states."
+                code={`<Input placeholder="Enter text…" />
+<Input type="password" placeholder="Password" />
+<Input placeholder="Disabled" disabled />`}
+                fullWidth
+            >
+                <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                            Text Input
+                        </label>
+                        <Input placeholder="Enter text…" />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                            Password Input
+                        </label>
+                        <Input type="password" placeholder="Password" />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Disabled</label>
+                        <Input placeholder="Disabled" disabled />
+                    </div>
                 </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Password Input</label>
-                    <Input type="password" placeholder="Password" />
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Disabled</label>
-                    <Input placeholder="Disabled" disabled />
-                </div>
-            </ShowcaseGrid>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Switches">
+            <ComponentPreview
+                title="Switches"
+                description="Toggle between two states."
+                code={`<div className="flex items-center gap-2">
+  <Switch id="sw1" defaultChecked />
+  <label htmlFor="sw1">Enabled</label>
+</div>
+<div className="flex items-center gap-2">
+  <Switch id="sw2" />
+  <label htmlFor="sw2">Disabled (off)</label>
+</div>`}
+            >
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
                         <Switch id="sw1" defaultChecked />
-                        <label htmlFor="sw1" className="text-sm">Enabled</label>
+                        <label htmlFor="sw1" className="text-sm">
+                            Enabled
+                        </label>
                     </div>
                     <div className="flex items-center gap-2">
                         <Switch id="sw2" />
-                        <label htmlFor="sw2" className="text-sm">Disabled (off)</label>
+                        <label htmlFor="sw2" className="text-sm">
+                            Disabled (off)
+                        </label>
                     </div>
                 </div>
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Progress">
+            <ComponentPreview
+                title="Progress"
+                description="Indicate completion of a task or process."
+                code={`<Progress value={33} />
+<Progress value={66} />
+<Progress value={100} />`}
+                fullWidth
+            >
                 <div className="w-full max-w-sm space-y-2">
                     <Progress value={33} />
                     <Progress value={66} />
                     <Progress value={100} />
                 </div>
-            </ShowcaseRow>
+            </ComponentPreview>
         </ShowcaseSection>
     );
 }
@@ -730,16 +1209,45 @@ function FormsSection() {
 
 function DataDisplaySection() {
     return (
-        <ShowcaseSection id="data-display" title="Data Display">
-            <ShowcaseRow title="Badges">
-                {(['default', 'secondary', 'outline', 'destructive'] as const).map((v) => (
-                    <Badge key={v} variant={v}>{v}</Badge>
+        <ShowcaseSection
+            id="data-display"
+            title="Data Display"
+            description="Components for presenting information clearly."
+            badge="3 components"
+        >
+            <ComponentPreview
+                title="Badges"
+                description="Small status indicators and labels."
+                code={`<Badge variant="default">default</Badge>
+<Badge variant="secondary">secondary</Badge>
+<Badge variant="outline">outline</Badge>
+<Badge variant="destructive">destructive</Badge>`}
+            >
+                {(
+                    ['default', 'secondary', 'outline', 'destructive'] as const
+                ).map((v) => (
+                    <Badge key={v} variant={v}>
+                        {v}
+                    </Badge>
                 ))}
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Avatars">
+            <ComponentPreview
+                title="Avatars"
+                description="User profile pictures with image and fallback support."
+                code={`<Avatar>
+  <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
+  <AvatarFallback>SC</AvatarFallback>
+</Avatar>
+<Avatar>
+  <AvatarFallback>AJ</AvatarFallback>
+</Avatar>`}
+            >
                 <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
+                    <AvatarImage
+                        src="https://github.com/shadcn.png"
+                        alt="shadcn"
+                    />
                     <AvatarFallback>SC</AvatarFallback>
                 </Avatar>
                 <Avatar>
@@ -748,26 +1256,57 @@ function DataDisplaySection() {
                 <Avatar>
                     <AvatarFallback>BK</AvatarFallback>
                 </Avatar>
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Cards">
+            <ComponentPreview
+                title="Cards"
+                description="Surface variants: default (shadow), bordered, and flat."
+                code={`<Card>
+  <CardHeader>
+    <CardTitle>Default Card</CardTitle>
+    <CardDescription>Shadow skin (default)</CardDescription>
+  </CardHeader>
+  <CardContent>Card body content.</CardContent>
+</Card>
+
+<Card skin="bordered">
+  <CardHeader>
+    <CardTitle>Bordered Card</CardTitle>
+  </CardHeader>
+</Card>
+
+<Card skin="flat">
+  <CardHeader>
+    <CardTitle>Flat Card</CardTitle>
+  </CardHeader>
+</Card>`}
+                fullWidth
+            >
                 <ShowcaseGrid cols={3}>
                     <Card>
                         <CardHeader>
                             <CardTitle>Default Card</CardTitle>
-                            <CardDescription>A standard card component</CardDescription>
+                            <CardDescription>
+                                A standard card component
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-sm text-muted-foreground">Card body content.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Card body content.
+                            </p>
                         </CardContent>
                     </Card>
                     <Card skin="bordered">
                         <CardHeader>
                             <CardTitle>Bordered Card</CardTitle>
-                            <CardDescription>Bordered skin variant</CardDescription>
+                            <CardDescription>
+                                Bordered skin variant
+                            </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-sm text-muted-foreground">Card body content.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Card body content.
+                            </p>
                         </CardContent>
                     </Card>
                     <Card skin="flat">
@@ -776,11 +1315,13 @@ function DataDisplaySection() {
                             <CardDescription>Flat skin variant</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-sm text-muted-foreground">Card body content.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Card body content.
+                            </p>
                         </CardContent>
                     </Card>
                 </ShowcaseGrid>
-            </ShowcaseRow>
+            </ComponentPreview>
         </ShowcaseSection>
     );
 }
@@ -791,35 +1332,72 @@ function DataDisplaySection() {
 
 function FeedbackSection() {
     return (
-        <ShowcaseSection id="feedback" title="Feedback">
-            <ShowcaseRow title="Alerts">
+        <ShowcaseSection
+            id="feedback"
+            title="Feedback"
+            description="Alerts, skeletons, and spinners to communicate state to users."
+            badge="3 components"
+        >
+            <ComponentPreview
+                title="Alerts"
+                description="Contextual messages for default and destructive states."
+                code={`<Alert>
+  <AlertTriangle className="size-4" />
+  <AlertTitle>Heads up!</AlertTitle>
+  <AlertDescription>Default alert — informational message.</AlertDescription>
+</Alert>
+
+<Alert variant="destructive">
+  <AlertTriangle className="size-4" />
+  <AlertTitle>Error</AlertTitle>
+  <AlertDescription>Something went wrong. Please try again.</AlertDescription>
+</Alert>`}
+                fullWidth
+            >
                 <div className="w-full space-y-3">
                     <Alert>
                         <AlertTriangle className="size-4" />
                         <AlertTitle>Heads up!</AlertTitle>
-                        <AlertDescription>Default alert — informational message.</AlertDescription>
+                        <AlertDescription>
+                            Default alert — informational message.
+                        </AlertDescription>
                     </Alert>
                     <Alert variant="destructive">
                         <AlertTriangle className="size-4" />
                         <AlertTitle>Error</AlertTitle>
-                        <AlertDescription>Something went wrong. Please try again.</AlertDescription>
+                        <AlertDescription>
+                            Something went wrong. Please try again.
+                        </AlertDescription>
                     </Alert>
                 </div>
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Skeletons">
+            <ComponentPreview
+                title="Skeletons"
+                description="Animated placeholders while content is loading."
+                code={`<Skeleton className="h-4 w-3/4" />
+<Skeleton className="h-4 w-full" />
+<Skeleton className="h-4 w-1/2" />`}
+                fullWidth
+            >
                 <div className="w-full max-w-sm space-y-2">
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-4 w-full" />
                     <Skeleton className="h-4 w-1/2" />
                 </div>
-            </ShowcaseRow>
+            </ComponentPreview>
 
-            <ShowcaseRow title="Spinners">
+            <ComponentPreview
+                title="Spinners"
+                description="Indicate an ongoing operation with three sizes."
+                code={`<Spinner size="sm" />
+<Spinner size="md" />
+<Spinner size="lg" />`}
+            >
                 {(['sm', 'md', 'lg'] as const).map((size) => (
                     <Spinner key={size} size={size} />
                 ))}
-            </ShowcaseRow>
+            </ComponentPreview>
         </ShowcaseSection>
     );
 }
@@ -829,22 +1407,178 @@ function FeedbackSection() {
 // ---------------------------------------------------------------------------
 
 function OverlaySection() {
+    const [confirmOpen, setConfirmOpen] = React.useState(false);
+
     return (
-        <ShowcaseSection id="overlay" title="Overlay">
-            <ShowcaseRow>
-                <p className="text-xs text-muted-foreground">
-                    Overlay components (Dialog, Sheet, Popover, DropdownMenu, Credenza, ConfirmDialog) are triggered by user interaction. Below are the trigger buttons.
-                </p>
-            </ShowcaseRow>
-            <ShowcaseRow title="Overlay Triggers (representative)">
-                {[
-                    'Dialog', 'Sheet', 'Popover', 'DropdownMenu', 'Command', 'ConfirmDialog', 'Credenza',
-                ].map((name) => (
-                    <Button key={name} variant="outline" size="sm">
-                        Open {name}
-                    </Button>
-                ))}
-            </ShowcaseRow>
+        <ShowcaseSection
+            id="overlay"
+            title="Overlay"
+            description="Modals, panels, popovers, and menus that appear on top of content."
+            badge="5 components"
+        >
+            <ComponentPreview
+                title="Dialog"
+                description="A modal dialog that interrupts the user with important content."
+                code={`<Dialog>
+  <DialogTrigger asChild>
+    <Button variant="outline">Open Dialog</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Are you sure?</DialogTitle>
+      <DialogDescription>
+        This action cannot be undone.
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>`}
+            >
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant="outline">Open Dialog</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Dialog Title</DialogTitle>
+                            <DialogDescription>
+                                This is a standard dialog. It focuses the user's
+                                attention on a single task or message.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <p className="text-sm text-muted-foreground">
+                            Dialog body content goes here. You can put forms,
+                            text, or any other content.
+                        </p>
+                    </DialogContent>
+                </Dialog>
+            </ComponentPreview>
+
+            <ComponentPreview
+                title="Sheet"
+                description="A slide-over panel anchored to the edge of the screen."
+                code={`<Sheet>
+  <SheetTrigger asChild>
+    <Button variant="outline">Open Sheet</Button>
+  </SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Sheet Title</SheetTitle>
+      <SheetDescription>Sheet description.</SheetDescription>
+    </SheetHeader>
+  </SheetContent>
+</Sheet>`}
+            >
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button variant="outline">Open Sheet</Button>
+                    </SheetTrigger>
+                    <SheetContent>
+                        <SheetHeader>
+                            <SheetTitle>Sheet Title</SheetTitle>
+                            <SheetDescription>
+                                Sheets slide in from the side. Useful for forms,
+                                filters, or detail views.
+                            </SheetDescription>
+                        </SheetHeader>
+                        <p className="mt-4 text-sm text-muted-foreground">
+                            Sheet body content goes here.
+                        </p>
+                    </SheetContent>
+                </Sheet>
+            </ComponentPreview>
+
+            <ComponentPreview
+                title="Popover"
+                description="A floating panel anchored to a trigger element."
+                code={`<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">Open Popover</Button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <p className="text-sm">Popover content here.</p>
+  </PopoverContent>
+</Popover>`}
+            >
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button variant="outline">Open Popover</Button>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                        <p className="text-sm font-medium">Popover title</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            Use popovers for contextual information or quick
+                            actions.
+                        </p>
+                    </PopoverContent>
+                </Popover>
+            </ComponentPreview>
+
+            <ComponentPreview
+                title="Dropdown Menu"
+                description="A contextual menu of actions triggered by a button."
+                code={`<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="outline">Open Menu</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>Profile</DropdownMenuItem>
+    <DropdownMenuItem>Settings</DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem>Log out</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>`}
+            >
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline">Open Menu</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>Profile</DropdownMenuItem>
+                        <DropdownMenuItem>Settings</DropdownMenuItem>
+                        <DropdownMenuItem>Billing</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive">
+                            Log out
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </ComponentPreview>
+
+            <ComponentPreview
+                title="Confirm Dialog"
+                description="A pre-built confirmation dialog for destructive actions."
+                code={`const [open, setOpen] = React.useState(false);
+
+<Button variant="destructive" onClick={() => setOpen(true)}>
+  Delete Item
+</Button>
+
+<ConfirmDialog
+  open={open}
+  onOpenChange={setOpen}
+  title="Delete this item?"
+  description="This action cannot be undone."
+  confirmLabel="Delete"
+  variant="destructive"
+  onConfirm={() => setOpen(false)}
+/>`}
+            >
+                <Button
+                    variant="destructive"
+                    onClick={() => setConfirmOpen(true)}
+                >
+                    Delete Item
+                </Button>
+                <ConfirmDialog
+                    open={confirmOpen}
+                    onOpenChange={setConfirmOpen}
+                    title="Delete this item?"
+                    description="This action cannot be undone. All associated data will be permanently removed."
+                    confirmLabel="Delete"
+                    variant="destructive"
+                    onConfirm={() => setConfirmOpen(false)}
+                />
+            </ComponentPreview>
         </ShowcaseSection>
     );
 }
@@ -855,7 +1589,11 @@ function OverlaySection() {
 
 function ChartsSection() {
     return (
-        <ShowcaseSection id="charts" title="Charts">
+        <ShowcaseSection
+            id="charts"
+            title="Charts"
+            description="Data visualisation components built on Recharts."
+        >
             <ShowcaseGrid cols={2}>
                 <Card>
                     <CardHeader className="pb-2">
@@ -891,7 +1629,9 @@ function ChartsSection() {
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Pie / Donut Chart</CardTitle>
+                        <CardTitle className="text-sm">
+                            Pie / Donut Chart
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <PieChart
@@ -906,13 +1646,30 @@ function ChartsSection() {
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Gauge + Sparkline + Progress Ring</CardTitle>
+                        <CardTitle className="text-sm">
+                            Gauge + Sparkline + Progress Ring
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="flex items-center gap-6">
-                        <GaugeChart value={72} max={100} label="Score" size={100} />
+                        <GaugeChart
+                            value={72}
+                            max={100}
+                            label="Score"
+                            size={100}
+                        />
                         <div className="flex flex-col gap-3">
-                            <Sparkline data={SPARKLINE_DATA} dataKey="v" height={40} variant="area" />
-                            <ProgressRing value={68} size={64} strokeWidth={8} label="68%" />
+                            <Sparkline
+                                data={SPARKLINE_DATA}
+                                dataKey="v"
+                                height={40}
+                                variant="area"
+                            />
+                            <ProgressRing
+                                value={68}
+                                size={64}
+                                strokeWidth={8}
+                                label="68%"
+                            />
                         </div>
                     </CardContent>
                 </Card>
@@ -927,30 +1684,49 @@ function ChartsSection() {
 
 function MapsSection() {
     return (
-        <ShowcaseSection id="maps" title="Maps">
+        <ShowcaseSection
+            id="maps"
+            title="Maps"
+            description="Map components using OpenFreeMap tiles — no API key required."
+        >
             <ShowcaseRow>
                 <div className="w-full space-y-2">
                     <p className="text-xs text-muted-foreground">
-                        Map components use OpenFreeMap tiles (no API key required). Available: BaseMap, MarkersMap, ClustersMap, RoutesMap, AnalyticsMap, TrackingMap, LocationPicker.
+                        Available: BaseMap, MarkersMap, ClustersMap, RoutesMap,
+                        AnalyticsMap, TrackingMap, LocationPicker.
                     </p>
                     <ShowcaseGrid cols={3}>
                         {[
                             { name: 'BaseMap', desc: 'Base map with controls' },
-                            { name: 'MarkersMap', desc: 'Clickable markers with popups' },
-                            { name: 'ClustersMap', desc: 'Point clustering layer' },
+                            {
+                                name: 'MarkersMap',
+                                desc: 'Clickable markers with popups',
+                            },
+                            {
+                                name: 'ClustersMap',
+                                desc: 'Point clustering layer',
+                            },
                             { name: 'RoutesMap', desc: 'Route polylines' },
-                            { name: 'AnalyticsMap', desc: 'Bubble / heatmap data' },
-                            { name: 'TrackingMap', desc: 'Real-time asset tracking' },
+                            {
+                                name: 'AnalyticsMap',
+                                desc: 'Bubble / heatmap data',
+                            },
+                            {
+                                name: 'TrackingMap',
+                                desc: 'Real-time asset tracking',
+                            },
                         ].map(({ name, desc }) => (
                             <Card key={name}>
                                 <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm flex items-center gap-2">
+                                    <CardTitle className="flex items-center gap-2 text-sm">
                                         <Map className="size-3.5" />
                                         {name}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-xs text-muted-foreground">{desc}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {desc}
+                                    </p>
                                 </CardContent>
                             </Card>
                         ))}
@@ -967,7 +1743,11 @@ function MapsSection() {
 
 function AiSection() {
     return (
-        <ShowcaseSection id="ai" title="AI">
+        <ShowcaseSection
+            id="ai"
+            title="AI"
+            description="Components for building AI-powered interfaces and chat UIs."
+        >
             <ShowcaseGrid cols={2}>
                 <Card>
                     <CardHeader className="pb-2">
@@ -984,27 +1764,37 @@ function AiSection() {
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">ThinkingIndicator (3 variants)</CardTitle>
+                        <CardTitle className="text-sm">
+                            ThinkingIndicator (3 variants)
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="flex items-center gap-6">
                         <div className="flex flex-col items-center gap-1">
                             <ThinkingIndicator variant="dots" />
-                            <span className="text-[10px] text-muted-foreground">dots</span>
+                            <span className="text-[10px] text-muted-foreground">
+                                dots
+                            </span>
                         </div>
                         <div className="flex flex-col items-center gap-1">
                             <ThinkingIndicator variant="pulse" />
-                            <span className="text-[10px] text-muted-foreground">pulse</span>
+                            <span className="text-[10px] text-muted-foreground">
+                                pulse
+                            </span>
                         </div>
                         <div className="flex flex-col items-center gap-1">
                             <ThinkingIndicator variant="bars" />
-                            <span className="text-[10px] text-muted-foreground">bars</span>
+                            <span className="text-[10px] text-muted-foreground">
+                                bars
+                            </span>
                         </div>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">ConfidenceScore</CardTitle>
+                        <CardTitle className="text-sm">
+                            ConfidenceScore
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <ConfidenceScore score={0.92} showLabel size="md" />
@@ -1019,7 +1809,11 @@ function AiSection() {
                     </CardHeader>
                     <CardContent>
                         <TokenUsageDisplay
-                            usage={{ prompt: 1240, completion: 380, total: 1620 }}
+                            usage={{
+                                prompt: 1240,
+                                completion: 380,
+                                total: 1620,
+                            }}
                             maxTokens={4096}
                         />
                     </CardContent>
@@ -1029,7 +1823,13 @@ function AiSection() {
             <ShowcaseRow title="Other AI Components">
                 <div className="w-full">
                     <p className="text-xs text-muted-foreground">
-                        Also available: AssistantRuntimeProvider, AssistantThread, AssistantModal, AssistantSidebar, CodeBlock, MarkdownResponse, ToolCallCard, AIResponseCard, AIInsightCard, EntityHighlight, AISummaryCard, PredictionWidget, AnomalyAlert, AgentStatus, ModelSelector, PromptInput, VoiceInput, ContextDrawer.
+                        Also available: AssistantRuntimeProvider,
+                        AssistantThread, AssistantModal, AssistantSidebar,
+                        CodeBlock, MarkdownResponse, ToolCallCard,
+                        AIResponseCard, AIInsightCard, EntityHighlight,
+                        AISummaryCard, PredictionWidget, AnomalyAlert,
+                        AgentStatus, ModelSelector, PromptInput, VoiceInput,
+                        ContextDrawer.
                     </p>
                 </div>
             </ShowcaseRow>
@@ -1043,24 +1843,41 @@ function AiSection() {
 
 function SaasSection() {
     return (
-        <ShowcaseSection id="saas" title="SaaS">
+        <ShowcaseSection
+            id="saas"
+            title="SaaS"
+            description="Subscription, feature gating, and usage metering components."
+        >
             <div className="space-y-4">
-                <TrialBanner daysRemaining={5} storageKey="showcase-trial-banner" />
+                <TrialBanner
+                    daysRemaining={5}
+                    storageKey="showcase-trial-banner"
+                />
 
                 <ShowcaseGrid cols={2}>
                     <div className="space-y-2">
-                        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">FeatureGate (locked)</p>
-                        <FeatureGate hasAccess={false} feature="Analytics Pro" onUpgrade={() => {}}>
+                        <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                            FeatureGate (locked)
+                        </p>
+                        <FeatureGate
+                            hasAccess={false}
+                            feature="Analytics Pro"
+                            onUpgrade={() => {}}
+                        >
                             <p>This would be visible content.</p>
                         </FeatureGate>
                     </div>
 
                     <div className="space-y-2">
-                        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">FeatureGate (unlocked)</p>
+                        <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                            FeatureGate (unlocked)
+                        </p>
                         <FeatureGate hasAccess={true} feature="Analytics Pro">
                             <Card>
                                 <CardContent className="pt-4">
-                                    <p className="text-sm text-muted-foreground">Content visible when access granted.</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        Content visible when access granted.
+                                    </p>
                                 </CardContent>
                             </Card>
                         </FeatureGate>
@@ -1068,7 +1885,9 @@ function SaasSection() {
                 </ShowcaseGrid>
 
                 <div className="space-y-2">
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">UsageMeter</p>
+                    <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                        UsageMeter
+                    </p>
                     <UsageMeter
                         label="API Calls"
                         used={7200}
@@ -1087,16 +1906,28 @@ function SaasSection() {
 
 function AdminSection() {
     return (
-        <ShowcaseSection id="admin" title="Admin">
+        <ShowcaseSection
+            id="admin"
+            title="Admin"
+            description="Audit logs and permission management for back-office interfaces."
+        >
             <div className="space-y-6">
                 <div className="space-y-2">
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Audit Log Viewer</p>
+                    <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                        Audit Log Viewer
+                    </p>
                     <AuditLogViewer entries={MOCK_AUDIT_ENTRIES} />
                 </div>
 
                 <div className="space-y-2">
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Permission Matrix</p>
-                    <PermissionMatrix roles={MOCK_PM_ROLES} permissions={MOCK_PM_PERMISSIONS} grants={MOCK_PM_GRANTS} />
+                    <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                        Permission Matrix
+                    </p>
+                    <PermissionMatrix
+                        roles={MOCK_PM_ROLES}
+                        permissions={MOCK_PM_PERMISSIONS}
+                        grants={MOCK_PM_GRANTS}
+                    />
                 </div>
             </div>
         </ShowcaseSection>
@@ -1109,10 +1940,16 @@ function AdminSection() {
 
 function ComposedSection() {
     return (
-        <ShowcaseSection id="composed" title="Composed">
+        <ShowcaseSection
+            id="composed"
+            title="Composed"
+            description="Higher-level components assembled from primitives."
+        >
             <div className="space-y-6">
                 <div className="space-y-2">
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">MetricDashboard</p>
+                    <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                        MetricDashboard
+                    </p>
                     <MetricDashboard
                         metrics={MOCK_METRICS}
                         chartData={CHART_DATA}
@@ -1125,7 +1962,9 @@ function ComposedSection() {
 
                 <ShowcaseGrid cols={2}>
                     <div className="space-y-2">
-                        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">UserCard variants</p>
+                        <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                            UserCard variants
+                        </p>
                         <div className="space-y-3">
                             <UserCard user={MOCK_USER} variant="compact" />
                             <UserCard user={MOCK_USER} variant="default" />
@@ -1133,7 +1972,9 @@ function ComposedSection() {
                     </div>
 
                     <div className="space-y-2">
-                        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">PricingCard</p>
+                        <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                            PricingCard
+                        </p>
                         <PricingCard
                             name="Starter"
                             price={29}
@@ -1145,7 +1986,9 @@ function ComposedSection() {
                 </ShowcaseGrid>
 
                 <div className="space-y-2">
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">ActivityLog</p>
+                    <p className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+                        ActivityLog
+                    </p>
                     <ActivityLog entries={MOCK_ACTIVITIES} />
                 </div>
             </div>
@@ -1159,12 +2002,24 @@ function ComposedSection() {
 
 function AccessibilitySection() {
     return (
-        <ShowcaseSection id="accessibility" title="Accessibility">
+        <ShowcaseSection
+            id="accessibility"
+            title="Accessibility"
+            description="WCAG 2.1 AA compliance — keyboard nav, ARIA roles, and colour contrast."
+        >
             <ShowcaseRow title="Keyboard Shortcut Display">
                 <div className="w-full space-y-2">
                     <p className="text-xs text-muted-foreground">
-                        Press <kbd className="rounded border px-1 font-mono text-[10px]">?</kbd> anywhere on this page to open the keyboard shortcuts panel.
-                        The <code className="rounded bg-muted px-1 font-mono text-[11px]">KeyboardShortcutDisplay</code> component is always mounted on this page.
+                        Press{' '}
+                        <kbd className="rounded border px-1 font-mono text-[10px]">
+                            ?
+                        </kbd>{' '}
+                        anywhere on this page to open the keyboard shortcuts
+                        panel. The{' '}
+                        <code className="rounded bg-muted px-1 font-mono text-[11px]">
+                            KeyboardShortcutDisplay
+                        </code>{' '}
+                        component is always mounted on this page.
                     </p>
                 </div>
             </ShowcaseRow>
@@ -1172,7 +2027,11 @@ function AccessibilitySection() {
             <ShowcaseRow title="Skip to Content">
                 <div className="w-full space-y-2">
                     <p className="text-xs text-muted-foreground">
-                        A visually hidden "Skip to content" link is provided via <code className="rounded bg-muted px-1 font-mono text-[11px]">SkipToContent</code>. Press Tab on page load to reveal it.
+                        A visually hidden "Skip to content" link is provided via{' '}
+                        <code className="rounded bg-muted px-1 font-mono text-[11px]">
+                            SkipToContent
+                        </code>
+                        . Press Tab on page load to reveal it.
                     </p>
                 </div>
             </ShowcaseRow>
@@ -1180,15 +2039,38 @@ function AccessibilitySection() {
             <ShowcaseRow title="ARIA & Roles">
                 <div className="w-full space-y-2">
                     <p className="text-xs text-muted-foreground">
-                        All components include proper ARIA roles, labels, and keyboard navigation. Spinners use <code className="rounded bg-muted px-1 font-mono text-[11px]">role="status"</code>, progress bars use <code className="rounded bg-muted px-1 font-mono text-[11px]">role="progressbar"</code>, and dialogs use <code className="rounded bg-muted px-1 font-mono text-[11px]">role="dialog"</code>.
+                        All components include proper ARIA roles, labels, and
+                        keyboard navigation. Spinners use{' '}
+                        <code className="rounded bg-muted px-1 font-mono text-[11px]">
+                            role="status"
+                        </code>
+                        , progress bars use{' '}
+                        <code className="rounded bg-muted px-1 font-mono text-[11px]">
+                            role="progressbar"
+                        </code>
+                        , and dialogs use{' '}
+                        <code className="rounded bg-muted px-1 font-mono text-[11px]">
+                            role="dialog"
+                        </code>
+                        .
                     </p>
                 </div>
             </ShowcaseRow>
 
             <ShowcaseRow title="Color Contrast">
                 <div className="flex gap-3">
-                    {['text-foreground bg-background', 'text-primary-foreground bg-primary', 'text-secondary-foreground bg-secondary'].map((cls) => (
-                        <span key={cls} className={cn('rounded px-3 py-1.5 text-sm font-medium', cls)}>
+                    {[
+                        'text-foreground bg-background',
+                        'text-primary-foreground bg-primary',
+                        'text-secondary-foreground bg-secondary',
+                    ].map((cls) => (
+                        <span
+                            key={cls}
+                            className={cn(
+                                'rounded px-3 py-1.5 text-sm font-medium',
+                                cls,
+                            )}
+                        >
                             Aa
                         </span>
                     ))}
@@ -1246,15 +2128,42 @@ export default function ComponentShowcase() {
 
             <AppShell sidebar={sidebar} header={header}>
                 <div className="mx-auto max-w-5xl space-y-20 p-6">
-                    <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                            <Code2 className="size-6 text-primary" />
-                            <h1 className="text-2xl font-bold tracking-tight">Component Showcase</h1>
+                    {/* Page hero */}
+                    <div className="space-y-4 border-b pb-6">
+                        <div className="flex items-center gap-3">
+                            <div className="rounded-lg bg-primary/10 p-2">
+                                <Code2 className="size-6 text-primary" />
+                            </div>
+                            <div>
+                                <h1 className="text-3xl font-bold tracking-tight">
+                                    Component Showcase
+                                </h1>
+                                <p className="text-muted-foreground">
+                                    Interactive previews with copy-ready code
+                                    for every component.
+                                </p>
+                            </div>
                         </div>
-                        <p className="text-muted-foreground">
-                            Kitchen-sink page for the full component library. Use the Theme Customizer (
-                            <Palette className="inline size-4" />) on the right edge to switch themes live.
-                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                            {[
+                                '75+ components',
+                                '16 categories',
+                                'Tailwind CSS v4',
+                                'shadcn/ui',
+                                'Dark mode',
+                            ].map((tag) => (
+                                <Badge key={tag} variant="secondary">
+                                    {tag}
+                                </Badge>
+                            ))}
+                            <Link
+                                href="/dev/pages"
+                                className="ml-auto flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-medium transition-colors hover:bg-muted"
+                            >
+                                <LayoutGrid className="size-3.5" />
+                                Page Gallery →
+                            </Link>
+                        </div>
                     </div>
 
                     <FoundationSection />

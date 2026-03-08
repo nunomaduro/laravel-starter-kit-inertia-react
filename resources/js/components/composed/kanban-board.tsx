@@ -1,10 +1,14 @@
-import * as React from 'react';
 import { PlusIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Kanban, type KanbanCard, type KanbanColumn } from '@/components/ui/kanban';
+import {
+    Kanban,
+    type KanbanCard,
+    type KanbanColumn,
+} from '@/components/ui/kanban';
+import { cn } from '@/lib/utils';
 
 export interface KanbanBoardProps {
     columns: KanbanColumn[];
@@ -55,19 +59,29 @@ function KanbanBoard({
     };
 
     return (
-        <div data-slot="kanban-board" className={cn('flex flex-col gap-3', className)}>
+        <div
+            data-slot="kanban-board"
+            className={cn('flex flex-col gap-3', className)}
+        >
             {title && (
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold">{title}</h2>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        {columns.reduce((acc, col) => acc + col.cards.length, 0)} cards across{' '}
-                        {columns.length} columns
+                        {columns.reduce(
+                            (acc, col) => acc + col.cards.length,
+                            0,
+                        )}{' '}
+                        cards across {columns.length} columns
                     </div>
                 </div>
             )}
 
             <div className="flex gap-4 overflow-x-auto pb-2">
-                <Kanban columns={columns} onChange={onChange} renderCard={renderCard} />
+                <Kanban
+                    columns={columns}
+                    onChange={onChange}
+                    renderCard={renderCard}
+                />
 
                 {allowAddCard && (
                     <div className="flex shrink-0 flex-col gap-2">
@@ -78,11 +92,14 @@ function KanbanBoard({
                                         <Input
                                             autoFocus
                                             value={newCardTitle}
-                                            onChange={(e) => setNewCardTitle(e.target.value)}
+                                            onChange={(e) =>
+                                                setNewCardTitle(e.target.value)
+                                            }
                                             placeholder="Card title..."
                                             className="mb-2 h-7 text-sm"
                                             onKeyDown={(e) => {
-                                                if (e.key === 'Enter') handleAddCard(col.id);
+                                                if (e.key === 'Enter')
+                                                    handleAddCard(col.id);
                                                 if (e.key === 'Escape') {
                                                     setAddingCard(null);
                                                     setNewCardTitle('');
@@ -93,7 +110,9 @@ function KanbanBoard({
                                             <Button
                                                 size="sm"
                                                 className="h-6 text-xs"
-                                                onClick={() => handleAddCard(col.id)}
+                                                onClick={() =>
+                                                    handleAddCard(col.id)
+                                                }
                                             >
                                                 Add
                                             </Button>
@@ -123,11 +142,14 @@ function KanbanBoard({
                                 <Input
                                     autoFocus
                                     value={newColumnTitle}
-                                    onChange={(e) => setNewColumnTitle(e.target.value)}
+                                    onChange={(e) =>
+                                        setNewColumnTitle(e.target.value)
+                                    }
                                     placeholder="Column title..."
                                     className="h-7 text-sm"
                                     onKeyDown={(e) => {
-                                        if (e.key === 'Enter') handleAddColumn();
+                                        if (e.key === 'Enter')
+                                            handleAddColumn();
                                         if (e.key === 'Escape') {
                                             setAddingColumn(false);
                                             setNewColumnTitle('');

@@ -8,6 +8,6 @@ return new class extends SettingsMigration
 {
     public function up(): void
     {
-        $this->migrator->add('theme.allow_user_theme_customization', false);
+        $this->migrator->add('theme.allow_user_theme_customization', true);
     }
 };

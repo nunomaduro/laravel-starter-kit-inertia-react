@@ -2,7 +2,48 @@
 
 This document lists all available routes in the application.
 
-**Last Updated**: 2026-03-06 04:50:58
+**Last Updated**: 2026-03-08
+
+## New Routes (added 2026-03-08)
+
+### Workspace URL & Custom Domains
+
+| Method | URI | Route Name | Middleware |
+|--------|-----|------------|------------|
+| GET | `settings/general` | `settings.general.show` | auth, tenant, org.settings.manage |
+| PATCH | `settings/general/slug` | `settings.general.slug.update` | auth, tenant, org.settings.manage |
+| GET | `settings/domains` | `settings.domains.show` | auth, tenant, org.settings.manage |
+| POST | `settings/domains` | `settings.domains.store` | auth, tenant, org.settings.manage |
+| DELETE | `settings/domains/{domain}` | `settings.domains.destroy` | auth, tenant, org.settings.manage |
+| POST | `settings/domains/{domain}/verify` | `settings.domains.verify` | auth, tenant, org.settings.manage |
+| GET | `api/slug-availability` | `api.slug-availability` | auth |
+| GET | `internal/caddy/ask` | `internal.caddy.ask` | InternalRequestMiddleware (IP allowlist) |
+
+### Social OAuth Login
+
+| Method | URI | Route Name | Middleware |
+|--------|-----|------------|------------|
+| GET | `auth/{provider}/redirect` | `auth.social.redirect` | — (public) |
+| GET | `auth/{provider}/callback` | `auth.social.callback` | — (public) |
+
+Supported providers: `google`, `github` (controlled by `AuthSettings::google_oauth_enabled` / `github_oauth_enabled`).
+
+### In-App Notifications
+
+| Method | URI | Route Name | Middleware |
+|--------|-----|------------|------------|
+| GET | `notifications` | `notifications.index` | auth |
+| POST | `notifications/{notification}/read` | `notifications.read` | auth |
+| POST | `notifications/read-all` | `notifications.read-all` | auth |
+| DELETE | `notifications/{notification}` | `notifications.delete` | auth |
+| DELETE | `notifications` | `notifications.clear` | auth |
+
+### Notification Preferences
+
+| Method | URI | Route Name | Middleware |
+|--------|-----|------------|------------|
+| GET | `settings/notifications` | `settings.notifications.show` | auth |
+| PATCH | `settings/notifications` | `settings.notifications.update` | auth |
 
 ## Closure
 

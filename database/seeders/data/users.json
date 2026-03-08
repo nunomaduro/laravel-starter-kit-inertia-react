@@ -4,12 +4,59 @@
       "name": "Demo Admin",
       "email": "admin@example.com",
       "role": "super-admin",
-      "_factory_state": "admin"
+      "_factory_state": "admin",
+      "_comment": "Super-admin, no organization. System panel, setup wizard, impersonation."
     },
     {
       "name": "Test User",
       "email": "test@example.com",
-      "role": "user"
+      "role": "user",
+      "_comment": "Regular user with one personal organization (owner + admin)."
+    },
+    {
+      "name": "App Admin",
+      "email": "admin-app@example.com",
+      "role": "admin",
+      "_comment": "Global admin (Filament app panel). One personal organization."
+    },
+    {
+      "name": "Org Owner",
+      "email": "owner@example.com",
+      "role": "user",
+      "_comment": "Owns Acme and Beta Co (created in seeder). Used for multi-org scenarios."
+    },
+    {
+      "name": "Unverified User",
+      "email": "unverified@example.com",
+      "role": "user",
+      "email_verified_at": null,
+      "_comment": "User with unverified email for testing verification flow."
+    },
+    {
+      "name": "Onboarding User",
+      "email": "onboarding@example.com",
+      "role": "user",
+      "onboarding_completed": false,
+      "_comment": "User who has not completed onboarding (redirect to onboarding)."
+    },
+    {
+      "name": "Multi-Org User",
+      "email": "multi@example.com",
+      "role": "user",
+      "_comment": "Personal org + member of Acme as admin. Tests org switcher."
+    },
+    {
+      "name": "Member Only",
+      "email": "member@example.com",
+      "role": "user",
+      "_skip_personal_org": true,
+      "_comment": "No personal org. Member of Acme only (org.members.view, no invite/settings/pages)."
+    },
+    {
+      "name": "Mixed Roles",
+      "email": "mixed@example.com",
+      "role": "user",
+      "_comment": "Personal org (owner) + Acme (admin) + Beta Co (member). Different roles per org."
     }
   ]
 }

@@ -18,6 +18,7 @@ function PasswordInput({ className, showToggle = true, ...props }: PasswordInput
         "focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         "has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50",
+        className,
       )}
     >
       <input

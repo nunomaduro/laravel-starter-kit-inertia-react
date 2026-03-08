@@ -1,13 +1,31 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
+import type {
+    Permission,
+    PermissionGrant,
+    PermissionRole,
+} from '@/components/admin/permission-matrix';
 import { PermissionMatrix } from '@/components/admin/permission-matrix';
-import type { Permission, PermissionGrant, PermissionRole } from '@/components/admin/permission-matrix';
 
 const ROLES: PermissionRole[] = [
-    { id: 'admin', name: 'Admin', description: 'Full access', color: 'destructive' },
-    { id: 'editor', name: 'Editor', description: 'Can edit content', color: 'primary' },
-    { id: 'viewer', name: 'Viewer', description: 'Read-only access', color: 'secondary' },
+    {
+        id: 'admin',
+        name: 'Admin',
+        description: 'Full access',
+        color: 'destructive',
+    },
+    {
+        id: 'editor',
+        name: 'Editor',
+        description: 'Can edit content',
+        color: 'primary',
+    },
+    {
+        id: 'viewer',
+        name: 'Viewer',
+        description: 'Read-only access',
+        color: 'secondary',
+    },
 ];
 
 const PERMISSIONS: Permission[] = [
@@ -25,19 +43,40 @@ const PERMISSIONS: Permission[] = [
 
 const GRANTS: PermissionGrant = {
     admin: {
-        'users.view': true, 'users.create': true, 'users.edit': true, 'users.delete': true,
-        'posts.view': true, 'posts.create': true, 'posts.edit': true, 'posts.delete': true,
-        'settings.view': true, 'settings.edit': true,
+        'users.view': true,
+        'users.create': true,
+        'users.edit': true,
+        'users.delete': true,
+        'posts.view': true,
+        'posts.create': true,
+        'posts.edit': true,
+        'posts.delete': true,
+        'settings.view': true,
+        'settings.edit': true,
     },
     editor: {
-        'users.view': true, 'users.create': false, 'users.edit': true, 'users.delete': false,
-        'posts.view': true, 'posts.create': true, 'posts.edit': true, 'posts.delete': false,
-        'settings.view': true, 'settings.edit': false,
+        'users.view': true,
+        'users.create': false,
+        'users.edit': true,
+        'users.delete': false,
+        'posts.view': true,
+        'posts.create': true,
+        'posts.edit': true,
+        'posts.delete': false,
+        'settings.view': true,
+        'settings.edit': false,
     },
     viewer: {
-        'users.view': true, 'users.create': false, 'users.edit': false, 'users.delete': false,
-        'posts.view': true, 'posts.create': false, 'posts.edit': false, 'posts.delete': false,
-        'settings.view': false, 'settings.edit': false,
+        'users.view': true,
+        'users.create': false,
+        'users.edit': false,
+        'users.delete': false,
+        'posts.view': true,
+        'posts.create': false,
+        'posts.edit': false,
+        'posts.delete': false,
+        'settings.view': false,
+        'settings.edit': false,
     },
 };
 
@@ -56,10 +95,23 @@ type Story = StoryObj<typeof PermissionMatrix>;
 
 export const Editable: Story = {
     args: { roles: ROLES, permissions: PERMISSIONS, grants: GRANTS },
-    render: (args) => <div className="w-[700px]"><PermissionMatrix {...args} /></div>,
+    render: (args) => (
+        <div className="w-[700px]">
+            <PermissionMatrix {...args} />
+        </div>
+    ),
 };
 
 export const Readonly: Story = {
-    args: { roles: ROLES, permissions: PERMISSIONS, grants: GRANTS, readonly: true },
-    render: (args) => <div className="w-[700px]"><PermissionMatrix {...args} /></div>,
+    args: {
+        roles: ROLES,
+        permissions: PERMISSIONS,
+        grants: GRANTS,
+        readonly: true,
+    },
+    render: (args) => (
+        <div className="w-[700px]">
+            <PermissionMatrix {...args} />
+        </div>
+    ),
 };

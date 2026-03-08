@@ -6,6 +6,8 @@ namespace App\Filament\Pages;
 
 use App\Settings\AuthSettings;
 use BackedEnum;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
@@ -43,6 +45,26 @@ final class ManageAuth extends SettingsPage
                     ->label('Registration enabled'),
                 Toggle::make('email_verification_required')
                     ->label('Email verification required'),
+                Section::make('Social Login Providers')
+                    ->description('Configure OAuth login for Google and GitHub.')
+                    ->schema([
+                        Toggle::make('google_oauth_enabled')
+                            ->label('Enable Google OAuth'),
+                        TextInput::make('google_client_id')
+                            ->label('Google Client ID'),
+                        TextInput::make('google_client_secret')
+                            ->label('Google Client Secret')
+                            ->password()
+                            ->revealable(),
+                        Toggle::make('github_oauth_enabled')
+                            ->label('Enable GitHub OAuth'),
+                        TextInput::make('github_client_id')
+                            ->label('GitHub Client ID'),
+                        TextInput::make('github_client_secret')
+                            ->label('GitHub Client Secret')
+                            ->password()
+                            ->revealable(),
+                    ]),
             ]);
     }
 }

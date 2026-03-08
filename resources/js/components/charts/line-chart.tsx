@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
     CartesianGrid,
     Legend,
@@ -10,9 +9,9 @@ import {
     YAxis,
 } from 'recharts';
 
-import { cn } from '@/lib/utils';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 import { CHART_COLORS } from './chart-colors';
 
 export interface LineChartProps {
@@ -45,13 +44,21 @@ export function LineChart({
     const reducedMotion = useReducedMotion();
 
     if (skeleton) {
-        return <Skeleton className={cn('rounded-md', className)} style={{ height }} />;
+        return (
+            <Skeleton
+                className={cn('rounded-md', className)}
+                style={{ height }}
+            />
+        );
     }
 
     return (
         <div className={cn('w-full', className)} style={{ height }}>
             <ResponsiveContainer width="100%" height="100%">
-                <RechartsLineChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+                <RechartsLineChart
+                    data={data}
+                    margin={{ top: 4, right: 4, bottom: 0, left: 0 }}
+                >
                     {showGrid && (
                         <CartesianGrid
                             strokeDasharray="3 3"

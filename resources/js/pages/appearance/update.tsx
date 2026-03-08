@@ -2,8 +2,8 @@ import { Head, usePage } from '@inertiajs/react';
 
 import HeadingSmall from '@/components/heading-small';
 import { ModeToggle } from '@/components/ui/mode-toggle';
-import { cn } from '@/lib/utils';
 import { type ThemePreset, useThemePreset } from '@/hooks/use-appearance';
+import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 
 import AppLayout from '@/layouts/app-layout';
@@ -55,7 +55,7 @@ function ThemePresetPicker() {
                     onClick={() => updatePreset(p.value)}
                     data-pan={`appearance-theme-${p.value}`}
                     className={cn(
-                        'flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 p-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                        'flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 p-3 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
                         preset === p.value
                             ? 'border-primary bg-primary/5'
                             : 'border-border hover:border-primary/50 hover:bg-accent/50',
@@ -77,8 +77,10 @@ function ThemePresetPicker() {
 }
 
 export default function Update() {
-    const { branding } = usePage<SharedData>().props;
-    const allowUserCustomization = branding?.allowUserCustomization ?? true;
+    const { theme, branding } = usePage<SharedData>().props;
+    const allowSystem = theme?.allowUserThemeCustomization ?? true;
+    const allowOrg = branding?.allowUserCustomization ?? true;
+    const canChangeAppearance = allowSystem && allowOrg;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -90,15 +92,18 @@ export default function Update() {
                         title="Appearance settings"
                         description="Update your account's appearance settings"
                     />
-                    {!allowUserCustomization ? (
+                    {!canChangeAppearance ? (
                         <p className="text-sm text-muted-foreground">
-                            Your organization has disabled appearance
-                            customization. Theme is set by your organization.
+                            {!allowSystem
+                                ? 'Appearance customization is disabled by the system administrator.'
+                                : 'Your organization has disabled appearance customization. Theme is set by your organization.'}
                         </p>
                     ) : (
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <p className="text-sm font-medium">Color theme</p>
+                                <p className="text-sm font-medium">
+                                    Color theme
+                                </p>
                                 <ThemePresetPicker />
                             </div>
                             <div className="space-y-2">

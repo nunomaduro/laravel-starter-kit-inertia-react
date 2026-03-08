@@ -30,10 +30,10 @@ function Highlight({
   wrapLongLines = false,
 }: HighlightProps) {
   const [copied, setCopied] = React.useState(false)
-
   const isDark =
     theme === "dark" ||
-    (theme === "auto" && document.documentElement.classList.contains("dark"))
+    (theme === "auto" && typeof document !== "undefined" && document.documentElement.classList.contains("dark"))
+  const style = isDark ? atomOneDark : atomOneLight
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code)
@@ -91,7 +91,7 @@ function Highlight({
       <div style={maxHeight ? { maxHeight, overflowY: "auto" } : undefined}>
         <SyntaxHighlighter
           language={language}
-          style={atomOneDark}
+          style={style}
           showLineNumbers={showLineNumbers}
           wrapLongLines={wrapLongLines}
           customStyle={{

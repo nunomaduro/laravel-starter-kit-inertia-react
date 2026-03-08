@@ -1,8 +1,8 @@
+import { PaperclipIcon, SendIcon, SquareIcon } from 'lucide-react';
 import * as React from 'react';
-import { SendIcon, SquareIcon, PaperclipIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export interface PromptInputProps {
     placeholder?: string;
@@ -83,7 +83,7 @@ export function PromptInput({
     return (
         <div
             className={cn(
-                'flex items-end gap-2 rounded-xl border bg-background shadow-sm px-3 py-2',
+                'flex items-end gap-2 rounded-xl border bg-background px-3 py-2 shadow-sm',
                 (disabled || isLoading) && 'opacity-80',
                 className,
             )}

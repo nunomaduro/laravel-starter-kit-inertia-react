@@ -66,7 +66,7 @@ function TreeNav({
   }, [])
 
   return (
-    <TreeNavContext.Provider value={{ selected, expanded, onSelect: handleSelect, onToggle: handleToggle }}>
+    <TreeNavContext value={{ selected, expanded, onSelect: handleSelect, onToggle: handleToggle }}>
       <nav
         data-slot="tree-nav"
         className={cn("w-full", className)}
@@ -74,7 +74,7 @@ function TreeNav({
       >
         <TreeNavList nodes={nodes} depth={0} />
       </nav>
-    </TreeNavContext.Provider>
+    </TreeNavContext>
   )
 }
 
@@ -101,7 +101,7 @@ function TreeNavNodeItem({
   node: TreeNavNode
   depth: number
 }) {
-  const { selected, expanded, onSelect, onToggle } = React.useContext(TreeNavContext)
+  const { selected, expanded, onSelect, onToggle } = React.use(TreeNavContext)
   const hasChildren = node.children && node.children.length > 0
   const isExpanded = expanded.has(node.id)
   const isSelected = selected === node.id

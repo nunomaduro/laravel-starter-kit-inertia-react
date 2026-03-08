@@ -1,5 +1,5 @@
 import { router, usePage } from '@inertiajs/react';
-import { ChevronDown, Copy, Palette, RefreshCw, Upload, X } from 'lucide-react';
+import { ChevronDown, Copy, ImageIcon, Loader2, Lock, LockKeyhole, Palette, RefreshCw, Unlock, Upload, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -24,10 +24,25 @@ import {
     type PrimaryColor,
     type RadiusOption,
     type SidebarLayout,
+    type ThemePreset,
 } from '@/lib/tailux-themes';
 import type { SharedData } from '@/types';
 
 type ThemeMode = 'dark' | 'light' | 'system';
+type LockableKey = 'dark' | 'primary' | 'light' | 'skin' | 'radius' | 'layout' | 'font' | 'menuColor' | 'menuAccent';
+
+// Maps DB setting names (from ThemeSettings) to frontend ThemeState keys
+const DB_SETTING_TO_FRONTEND_KEY: Record<string, LockableKey> = {
+    dark_color_scheme: 'dark',
+    primary_color: 'primary',
+    light_color_scheme: 'light',
+    card_skin: 'skin',
+    border_radius: 'radius',
+    sidebar_layout: 'layout',
+    font: 'font',
+    menu_color: 'menuColor',
+    menu_accent: 'menuAccent',
+};
 
 interface ThemeState {
     mode: ThemeMode;
@@ -74,12 +89,28 @@ const PRIMARY_COLORS_HEX: Record<PrimaryColor, string> = {
     rose: '#f43f5e',
 };
 
+const LIGHT_THEME_COLORS: Record<LightTheme, string> = {
+    slate: '#cbd5e1',
+    gray: '#d1d5db',
+    neutral: '#d4d4d4',
+};
+
 const FONT_LABELS: Record<FontOption, string> = {
     inter: 'Inter',
     'geist-sans': 'Geist',
+    'instrument-sans': 'Instrument',
     poppins: 'Poppins',
     outfit: 'Outfit',
-    'plus-jakarta-sans': 'Plus Jakarta',
+    'plus-jakarta-sans': 'Jakarta',
+};
+
+const FONT_FAMILIES: Record<FontOption, string> = {
+    inter: 'Inter, sans-serif',
+    'geist-sans': '"Geist", "Geist Sans", sans-serif',
+    'instrument-sans': '"Instrument Sans", sans-serif',
+    poppins: 'Poppins, sans-serif',
+    outfit: 'Outfit, sans-serif',
+    'plus-jakarta-sans': '"Plus Jakarta Sans", sans-serif',
 };
 
 const RADIUS_CLASS: Record<RadiusOption, string> = {
@@ -115,19 +146,26 @@ function pickRandom<T>(arr: readonly T[]): T {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function randomThemeState(mode: ThemeMode): ThemeState {
+function randomThemeState(mode: ThemeMode, locked: Set<string>, current: ThemeState): ThemeState {
     return {
         mode,
-        dark: pickRandom(DARK_THEMES),
-        primary: pickRandom(PRIMARY_COLORS),
-        light: pickRandom(LIGHT_THEMES),
-        skin: pickRandom(CARD_SKINS),
-        radius: pickRandom(RADIUS_OPTIONS),
-        layout: pickRandom(SIDEBAR_LAYOUTS),
-        font: pickRandom(FONT_OPTIONS),
-        menuColor: pickRandom(MENU_COLORS),
-        menuAccent: pickRandom(MENU_ACCENTS),
+        dark: locked.has('dark') ? current.dark : pickRandom(DARK_THEMES),
+        primary: locked.has('primary') ? current.primary : pickRandom(PRIMARY_COLORS),
+        light: locked.has('light') ? current.light : pickRandom(LIGHT_THEMES),
+        skin: locked.has('skin') ? current.skin : pickRandom(CARD_SKINS),
+        radius: locked.has('radius') ? current.radius : pickRandom(RADIUS_OPTIONS),
+        layout: locked.has('layout') ? current.layout : pickRandom(SIDEBAR_LAYOUTS),
+        font: locked.has('font') ? current.font : pickRandom(FONT_OPTIONS),
+        menuColor: locked.has('menuColor') ? current.menuColor : pickRandom(MENU_COLORS),
+        menuAccent: locked.has('menuAccent') ? current.menuAccent : pickRandom(MENU_ACCENTS),
     };
+}
+
+function getPresetSlug(state: ThemeState): string {
+    const preset = THEME_PRESETS.find(
+        (p) => p.dark === state.dark && p.primary === state.primary && p.light === state.light && p.skin === state.skin && p.radius === state.radius,
+    );
+    return preset ? `--preset ${preset.name.toLowerCase()}` : '--preset custom';
 }
 
 function getInitialState(theme: SharedData['theme']): ThemeState {
@@ -137,7 +175,7 @@ function getInitialState(theme: SharedData['theme']): ThemeState {
         primary: (theme?.primary as PrimaryColor | undefined) ?? 'indigo',
         light: (theme?.light as LightTheme | undefined) ?? 'slate',
         skin: (theme?.skin as CardSkin | undefined) ?? 'shadow',
-        radius: 'default',
+        radius: (theme?.radius as RadiusOption | undefined) ?? 'default',
         layout: (theme?.layout as SidebarLayout | undefined) ?? 'main',
         font: (theme?.font as FontOption | undefined) ?? 'inter',
         menuColor: (theme?.menuColor as MenuColor | undefined) ?? 'default',
@@ -149,6 +187,69 @@ function cap(s: string): string {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+/**
+ * Extracts the dominant hue from an image file using canvas sampling,
+ * skipping near-white, near-black, and transparent pixels.
+ * Returns the nearest PrimaryColor name.
+ */
+function extractDominantPrimary(file: File): Promise<PrimaryColor> {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 64;
+                canvas.height = 64;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) { resolve('indigo'); return; }
+                ctx.drawImage(img, 0, 0, 64, 64);
+                const { data } = ctx.getImageData(0, 0, 64, 64);
+                let rSum = 0, gSum = 0, bSum = 0, count = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    const a = data[i + 3];
+                    if (a < 128) continue;
+                    const r = data[i], g = data[i + 1], b = data[i + 2];
+                    // Skip near-white and near-black pixels
+                    if (r > 215 && g > 215 && b > 215) continue;
+                    if (r < 40 && g < 40 && b < 40) continue;
+                    rSum += r; gSum += g; bSum += b; count++;
+                }
+                if (count === 0) { resolve('indigo'); return; }
+                const rn = (rSum / count) / 255;
+                const gn = (gSum / count) / 255;
+                const bn = (bSum / count) / 255;
+                const max = Math.max(rn, gn, bn);
+                const min = Math.min(rn, gn, bn);
+                const d = max - min;
+                let h = 0;
+                if (d > 0.05) {
+                    if (max === rn) h = ((gn - bn) / d) % 6;
+                    else if (max === gn) h = (bn - rn) / d + 2;
+                    else h = (rn - gn) / d + 4;
+                    h = Math.round(h * 60);
+                    if (h < 0) h += 360;
+                }
+                // Map hue to nearest primary color
+                let primary: PrimaryColor;
+                if (h >= 330 || h < 20) primary = 'rose';
+                else if (h < 70) primary = 'amber';
+                else if (h < 160) primary = 'green';
+                else if (h < 240) primary = 'blue';
+                else if (h < 275) primary = 'indigo';
+                else primary = 'purple';
+                resolve(primary);
+            } catch {
+                resolve('indigo');
+            } finally {
+                URL.revokeObjectURL(url);
+            }
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve('indigo'); };
+        img.src = url;
+    });
+}
+
 function useThemeCustomizer(isOpen: boolean) {
     const { props } = usePage<SharedData>();
     const [state, setState] = useState<ThemeState>(() => getInitialState(props.theme));
@@ -157,9 +258,33 @@ function useThemeCustomizer(isOpen: boolean) {
     const [expanded, setExpanded] = useState<ExpandedKey>(null);
     const [importText, setImportText] = useState('');
     const [importError, setImportError] = useState('');
+    const [lockedKeys, setLockedKeys] = useState<Set<LockableKey>>(() => {
+        try {
+            const saved = localStorage.getItem('theme-customizer-locks');
+            if (saved) {
+                return new Set(JSON.parse(saved) as LockableKey[]);
+            }
+        } catch {
+            /* ignore */
+        }
+        return new Set();
+    });
+
+    const [logoUrl, setLogoUrl] = useState<string | null>(() => props.branding?.logoUrl ?? null);
+    const [analyzing, setAnalyzing] = useState(false);
 
     const stateRef = useRef(state);
     stateRef.current = state;
+    const lockedRef = useRef(lockedKeys);
+    lockedRef.current = lockedKeys;
+
+    useEffect(() => {
+        try {
+            localStorage.setItem('theme-customizer-locks', JSON.stringify([...lockedKeys]));
+        } catch {
+            /* ignore */
+        }
+    }, [lockedKeys]);
 
     const commit = useCallback((next: ThemeState) => {
         setState(next);
@@ -170,7 +295,25 @@ function useThemeCustomizer(isOpen: boolean) {
         setState((prev) => {
             const next = { ...prev, [key]: value };
             applyThemeState(next);
+            return next;
+        });
+    }, []);
 
+    const applyPreset = useCallback((preset: ThemePreset) => {
+        setState((prev) => {
+            const next: ThemeState = {
+                ...prev,
+                dark: preset.dark,
+                primary: preset.primary,
+                light: preset.light,
+                skin: preset.skin,
+                radius: preset.radius,
+                ...(preset.font ? { font: preset.font } : {}),
+                ...(preset.layout ? { layout: preset.layout } : {}),
+                ...(preset.menuColor ? { menuColor: preset.menuColor } : {}),
+                ...(preset.menuAccent ? { menuAccent: preset.menuAccent } : {}),
+            };
+            applyThemeState(next);
             return next;
         });
     }, []);
@@ -183,8 +326,20 @@ function useThemeCustomizer(isOpen: boolean) {
         applyThemeState(stateRef.current);
     }, []);
 
+    const toggleLock = useCallback((key: LockableKey) => {
+        setLockedKeys((prev) => {
+            const next = new Set(prev);
+            if (next.has(key)) {
+                next.delete(key);
+            } else {
+                next.add(key);
+            }
+            return next;
+        });
+    }, []);
+
     const tryRandom = useCallback(() => {
-        commit(randomThemeState(stateRef.current.mode));
+        commit(randomThemeState(stateRef.current.mode, lockedRef.current, stateRef.current));
     }, [commit]);
 
     useEffect(() => {
@@ -202,7 +357,6 @@ function useThemeCustomizer(isOpen: boolean) {
             tryRandom();
         };
         document.addEventListener('keydown', handler);
-
         return () => document.removeEventListener('keydown', handler);
     }, [isOpen, tryRandom]);
 
@@ -294,6 +448,51 @@ function useThemeCustomizer(isOpen: boolean) {
         setExpanded((prev) => (prev === key ? null : key));
     }, []);
 
+    const handleLogoUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        e.target.value = '';
+
+        const xsrfCookie = document.cookie.split(';').find((c) => c.trim().startsWith('XSRF-TOKEN='));
+        const xsrfToken = xsrfCookie ? decodeURIComponent(xsrfCookie.split('=')[1]) : '';
+        const formData = new FormData();
+        formData.append('logo', file);
+
+        setAnalyzing(true);
+
+        // Extract dominant color client-side immediately for instant visual feedback
+        const clientPrimary = await extractDominantPrimary(file);
+
+        try {
+            const res = await fetch('/org/theme/analyze-logo', {
+                method: 'POST',
+                headers: {
+                    'X-XSRF-TOKEN': xsrfToken,
+                    'X-Color-Hint': clientPrimary,
+                },
+                credentials: 'include',
+                body: formData,
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = (await res.json()) as {
+                suggestion: Partial<ThemeState> & { reason?: string; ai_derived?: boolean };
+                logoUrl: string;
+            };
+            const { reason, ai_derived, ...themeValues } = data.suggestion;
+            setLogoUrl(data.logoUrl);
+            // If AI was not available, use the client-extracted primary color
+            const primary = ai_derived === false ? clientPrimary : (themeValues.primary ?? clientPrimary);
+            commit({ ...stateRef.current, ...(themeValues as Partial<ThemeState>), primary });
+            toast.success(reason ?? 'Theme applied from your logo! Adjust as needed.');
+        } catch {
+            // AI unavailable — apply client-extracted primary at minimum
+            commit({ ...stateRef.current, primary: clientPrimary });
+            toast.success('Logo color applied. Connect an AI provider for full theme suggestions.');
+        } finally {
+            setAnalyzing(false);
+        }
+    }, [commit]);
+
     return {
         state,
         saving,
@@ -301,8 +500,12 @@ function useThemeCustomizer(isOpen: boolean) {
         expanded,
         importText,
         importError,
+        lockedKeys,
+        logoUrl,
+        analyzing,
         setImportText,
         update,
+        applyPreset,
         preview,
         revertPreview,
         tryRandom,
@@ -311,10 +514,88 @@ function useThemeCustomizer(isOpen: boolean) {
         handleSave,
         handleReset,
         toggle,
+        toggleLock,
+        handleLogoUpload,
     };
 }
 
-// ─── Dimension Row (accordion) ────────────────────────────────────────────────
+// ─── Mini Live Preview ─────────────────────────────────────────────────────────
+
+function MiniPreview({ state, logoUrl }: { state: ThemeState; logoUrl?: string | null }) {
+    return (
+        <div className="mb-3 rounded-lg border border-border bg-muted/20 p-2.5" style={{ fontFamily: FONT_FAMILIES[state.font] }}>
+            <div
+                className={cn(
+                    'rounded-lg bg-card p-3',
+                    state.skin === 'shadow' && 'shadow-md border border-border/50',
+                    state.skin === 'elevated' && 'shadow-lg border border-border/30',
+                    state.skin === 'bordered' && 'border-2 border-border',
+                    state.skin === 'flat' && 'border border-border',
+                )}
+            >
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Live Preview</p>
+                {logoUrl && (
+                    <div className="mb-2 flex h-6 items-center">
+                        <img src={logoUrl} alt="" className="max-h-full max-w-[60px] object-contain opacity-80" />
+                    </div>
+                )}
+                <div className="flex flex-wrap items-center gap-1.5">
+                    <button className={cn('bg-primary px-2.5 py-1 text-[11px] font-medium text-primary-foreground', RADIUS_CLASS[state.radius])}>
+                        Button
+                    </button>
+                    <button
+                        className={cn(
+                            'border border-border bg-background px-2.5 py-1 text-[11px] font-medium text-foreground',
+                            RADIUS_CLASS[state.radius],
+                        )}
+                    >
+                        Ghost
+                    </button>
+                    <span className={cn('bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary', RADIUS_CLASS[state.radius])}>Badge</span>
+                    <span className="text-[10px] text-muted-foreground">Sample text</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── Logo Section ──────────────────────────────────────────────────────────────
+
+function LogoSection({
+    logoUrl,
+    analyzing,
+    onUpload,
+}: {
+    logoUrl: string | null;
+    analyzing: boolean;
+    onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+    return (
+        <div className="mb-3 rounded-lg border border-border bg-muted/20 p-2.5">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Logo & Auto-Theme</p>
+            {logoUrl && (
+                <div className="mb-2 flex h-10 items-center">
+                    <img src={logoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
+                </div>
+            )}
+            <label
+                className={cn(
+                    'flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border px-2 py-1.5 text-xs transition-colors',
+                    analyzing
+                        ? 'cursor-not-allowed border-primary bg-primary/10 text-primary'
+                        : 'border-border text-muted-foreground hover:border-primary hover:text-foreground',
+                )}
+            >
+                {analyzing ? <Loader2 className="h-3 w-3 animate-spin" /> : <ImageIcon className="h-3 w-3" />}
+                {analyzing ? 'Analyzing…' : logoUrl ? 'Change Logo' : 'Upload Logo'}
+                <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" className="sr-only" onChange={onUpload} disabled={analyzing} />
+            </label>
+            {analyzing && <p className="mt-1.5 text-center text-[10px] text-muted-foreground">AI is reading your logo colors…</p>}
+        </div>
+    );
+}
+
+// ─── Dimension Row (accordion) ─────────────────────────────────────────────────
 
 interface DimensionRowProps {
     label: string;
@@ -323,22 +604,52 @@ interface DimensionRowProps {
     expanded: ExpandedKey;
     onToggle: (key: ExpandedKey) => void;
     onMouseLeave?: () => void;
+    locked?: boolean;
+    onToggleLock?: () => void;
+    /** When true, system admin has locked this setting; inputs are disabled with a lock badge. */
+    systemLocked?: boolean;
     children: React.ReactNode;
 }
 
-function DimensionRow({ label, value, rowKey, expanded, onToggle, onMouseLeave, children }: DimensionRowProps) {
+function DimensionRow({ label, value, rowKey, expanded, onToggle, onMouseLeave, locked, onToggleLock, systemLocked, children }: DimensionRowProps) {
     const isExpanded = expanded === rowKey;
 
     return (
-        <div className="border-b border-border/50 last:border-0">
-            <button type="button" onClick={() => onToggle(rowKey)} className="flex w-full items-center justify-between py-2.5 text-left">
+        <div className={cn('border-b border-border/50 last:border-0', systemLocked && 'opacity-60')}>
+            <button
+                type="button"
+                onClick={() => !systemLocked && onToggle(rowKey)}
+                disabled={systemLocked}
+                className="flex w-full items-center justify-between py-2.5 text-left disabled:cursor-not-allowed"
+            >
                 <span className="text-xs text-muted-foreground">{label}</span>
                 <div className="flex items-center gap-1.5">
                     <span className="text-xs font-medium">{value}</span>
-                    <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground transition-transform duration-200', isExpanded && 'rotate-180')} />
+                    {systemLocked && (
+                        <span title="Set by system administrator" className="text-muted-foreground/60">
+                            <LockKeyhole className="h-3 w-3" />
+                        </span>
+                    )}
+                    {!systemLocked && onToggleLock !== undefined && (
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onToggleLock();
+                            }}
+                            className={cn(
+                                'rounded p-0.5 transition-colors',
+                                locked ? 'text-primary' : 'text-muted-foreground/30 hover:text-muted-foreground',
+                            )}
+                            title={locked ? "Locked (won't shuffle)" : 'Lock from shuffle'}
+                        >
+                            {locked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
+                        </button>
+                    )}
+                    {!systemLocked && <ChevronDown className={cn('h-3.5 w-3.5 text-muted-foreground transition-transform duration-200', isExpanded && 'rotate-180')} />}
                 </div>
             </button>
-            {isExpanded && (
+            {!systemLocked && isExpanded && (
                 <div className="pb-3" onMouseLeave={onMouseLeave}>
                     {children}
                 </div>
@@ -347,7 +658,7 @@ function DimensionRow({ label, value, rowKey, expanded, onToggle, onMouseLeave, 
     );
 }
 
-// ─── Option pill ──────────────────────────────────────────────────────────────
+// ─── Option pill ───────────────────────────────────────────────────────────────
 
 function Pill({
     active,
@@ -375,7 +686,7 @@ function Pill({
     );
 }
 
-// ─── Body ─────────────────────────────────────────────────────────────────────
+// ─── Body ──────────────────────────────────────────────────────────────────────
 
 interface BodyProps {
     state: ThemeState;
@@ -384,8 +695,14 @@ interface BodyProps {
     resetting: boolean;
     importText: string;
     importError: string;
+    lockedKeys: Set<LockableKey>;
+    /** Keys locked by the system admin (cannot be changed by orgs). */
+    systemLockedKeys: Set<LockableKey>;
+    logoUrl: string | null;
+    analyzing: boolean;
     setImportText: (v: string) => void;
     update: <K extends keyof ThemeState>(key: K, value: ThemeState[K]) => void;
+    applyPreset: (preset: ThemePreset) => void;
     preview: (partial: Partial<ThemeState>) => void;
     revertPreview: () => void;
     tryRandom: () => void;
@@ -394,6 +711,9 @@ interface BodyProps {
     handleSave: () => void;
     handleReset: () => void;
     toggle: (key: ExpandedKey) => void;
+    toggleLock: (key: LockableKey) => void;
+    handleLogoUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    canManageBranding: boolean;
 }
 
 function ThemeCustomizerBody({
@@ -403,8 +723,13 @@ function ThemeCustomizerBody({
     resetting,
     importText,
     importError,
+    lockedKeys,
+    systemLockedKeys,
+    logoUrl,
+    analyzing,
     setImportText,
     update,
+    applyPreset,
     preview,
     revertPreview,
     tryRandom,
@@ -413,24 +738,34 @@ function ThemeCustomizerBody({
     handleSave,
     handleReset,
     toggle,
+    toggleLock,
+    handleLogoUpload,
+    canManageBranding,
 }: BodyProps) {
-    const presetName =
-        THEME_PRESETS.find(
-            (p) => p.dark === state.dark && p.primary === state.primary && p.light === state.light && p.skin === state.skin && p.radius === state.radius,
-        )?.name ?? 'Custom';
+    const presetSlug = getPresetSlug(state);
+    const activePreset = THEME_PRESETS.find(
+        (p) => p.dark === state.dark && p.primary === state.primary && p.light === state.light && p.skin === state.skin && p.radius === state.radius,
+    );
+    const lockedCount = lockedKeys.size;
 
     return (
         <div className="flex flex-col gap-0">
+            {/* Logo & Auto-Theme */}
+            {canManageBranding && <LogoSection logoUrl={logoUrl} analyzing={analyzing} onUpload={handleLogoUpload} />}
+
+            {/* Live Preview */}
+            <MiniPreview state={state} logoUrl={logoUrl} />
+
             {/* Toolbar */}
             <div className="mb-3 flex items-center gap-1.5">
                 <button
                     type="button"
                     onClick={tryRandom}
-                    title="Try Random (R)"
+                    title={`Shuffle (R)${lockedCount > 0 ? ` · ${lockedCount} locked` : ''}`}
                     className="flex flex-1 items-center justify-center gap-1.5 rounded-md border border-border px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground"
                 >
                     <RefreshCw className="h-3 w-3" />
-                    Random
+                    Shuffle{lockedCount > 0 ? ` (${lockedCount})` : ''}
                 </button>
                 <button
                     type="button"
@@ -497,7 +832,14 @@ function ThemeCustomizerBody({
                 </DimensionRow>
 
                 {/* Preset */}
-                <DimensionRow label="Preset" value={presetName} rowKey="preset" expanded={expanded} onToggle={toggle} onMouseLeave={revertPreview}>
+                <DimensionRow
+                    label="Preset"
+                    value={activePreset?.name ?? 'Custom'}
+                    rowKey="preset"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    onMouseLeave={revertPreview}
+                >
                     <div className="grid grid-cols-3 gap-1.5">
                         {THEME_PRESETS.map((preset) => {
                             const isActive =
@@ -512,21 +854,35 @@ function ThemeCustomizerBody({
                                     key={preset.name}
                                     type="button"
                                     onMouseEnter={() =>
-                                        preview({ dark: preset.dark, primary: preset.primary, light: preset.light, skin: preset.skin, radius: preset.radius })
+                                        preview({
+                                            dark: preset.dark,
+                                            primary: preset.primary,
+                                            light: preset.light,
+                                            skin: preset.skin,
+                                            radius: preset.radius,
+                                            ...(preset.font ? { font: preset.font } : {}),
+                                            ...(preset.layout ? { layout: preset.layout } : {}),
+                                        })
                                     }
-                                    onClick={() => {
-                                        update('dark', preset.dark);
-                                        update('primary', preset.primary);
-                                        update('light', preset.light);
-                                        update('skin', preset.skin);
-                                        update('radius', preset.radius);
-                                    }}
+                                    onClick={() => applyPreset(preset)}
                                     className={cn(
-                                        'flex flex-col items-center gap-1 rounded-lg border p-2 text-xs font-medium transition-colors',
-                                        isActive ? 'border-primary bg-primary/10 text-primary' : 'border-border text-muted-foreground hover:border-primary hover:bg-muted',
+                                        'flex flex-col items-center gap-1.5 rounded-lg border p-2 text-xs font-medium transition-colors',
+                                        isActive
+                                            ? 'border-primary bg-primary/10 text-primary'
+                                            : 'border-border text-muted-foreground hover:border-primary hover:bg-muted',
                                     )}
                                 >
-                                    <span className="h-5 w-5 rounded-full border border-white/30 shadow-sm" style={{ background: PRIMARY_COLORS_HEX[preset.primary] }} />
+                                    <div className="flex items-center gap-0.5">
+                                        <span
+                                            className="h-3 w-3 rounded-full border border-white/20 shadow-sm"
+                                            style={{ background: DARK_THEME_COLORS[preset.dark] }}
+                                        />
+                                        <span className="h-3 w-3 rounded-full shadow-sm" style={{ background: PRIMARY_COLORS_HEX[preset.primary] }} />
+                                        <span
+                                            className="h-3 w-3 rounded-full border border-black/10 shadow-sm"
+                                            style={{ background: LIGHT_THEME_COLORS[preset.light] }}
+                                        />
+                                    </div>
                                     {preset.name}
                                 </button>
                             );
@@ -535,7 +891,16 @@ function ThemeCustomizerBody({
                 </DimensionRow>
 
                 {/* Layout */}
-                <DimensionRow label="Layout" value={cap(state.layout)} rowKey="layout" expanded={expanded} onToggle={toggle}>
+                <DimensionRow
+                    label="Layout"
+                    value={cap(state.layout)}
+                    rowKey="layout"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    locked={lockedKeys.has('layout')}
+                    onToggleLock={() => toggleLock('layout')}
+                    systemLocked={systemLockedKeys.has('layout')}
+                >
                     <div className="flex gap-1.5">
                         {SIDEBAR_LAYOUTS.map((l) => (
                             <Pill key={l} active={state.layout === l} onClick={() => update('layout', l)}>
@@ -546,7 +911,17 @@ function ThemeCustomizerBody({
                 </DimensionRow>
 
                 {/* Dark Palette */}
-                <DimensionRow label="Dark Palette" value={cap(state.dark)} rowKey="dark" expanded={expanded} onToggle={toggle} onMouseLeave={revertPreview}>
+                <DimensionRow
+                    label="Dark Palette"
+                    value={cap(state.dark)}
+                    rowKey="dark"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    onMouseLeave={revertPreview}
+                    locked={lockedKeys.has('dark')}
+                    onToggleLock={() => toggleLock('dark')}
+                    systemLocked={systemLockedKeys.has('dark')}
+                >
                     <div className="flex gap-2">
                         {DARK_THEMES.map((theme) => (
                             <button
@@ -566,27 +941,50 @@ function ThemeCustomizerBody({
                 </DimensionRow>
 
                 {/* Primary Color */}
-                <DimensionRow label="Primary Color" value={cap(state.primary)} rowKey="primary" expanded={expanded} onToggle={toggle} onMouseLeave={revertPreview}>
-                    <div className="flex flex-wrap gap-2">
+                <DimensionRow
+                    label="Primary Color"
+                    value={cap(state.primary)}
+                    rowKey="primary"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    onMouseLeave={revertPreview}
+                    locked={lockedKeys.has('primary')}
+                    onToggleLock={() => toggleLock('primary')}
+                    systemLocked={systemLockedKeys.has('primary')}
+                >
+                    <div className="flex flex-wrap gap-3 pb-2">
                         {PRIMARY_COLORS.map((color) => (
-                            <button
-                                key={color}
-                                type="button"
-                                title={cap(color)}
-                                onMouseEnter={() => preview({ primary: color })}
-                                onClick={() => update('primary', color)}
-                                className={cn(
-                                    'h-7 w-7 rotate-45 rounded-sm border-2 transition-transform hover:scale-110',
-                                    state.primary === color ? 'scale-110 border-foreground' : 'border-transparent',
-                                )}
-                                style={{ background: PRIMARY_COLORS_HEX[color] }}
-                            />
+                            <div key={color} className="group relative flex flex-col items-center">
+                                <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded border border-border bg-popover px-1.5 py-0.5 text-[10px] font-medium text-popover-foreground shadow-sm opacity-0 transition-opacity group-hover:opacity-100">
+                                    {cap(color)}
+                                </span>
+                                <button
+                                    type="button"
+                                    onMouseEnter={() => preview({ primary: color })}
+                                    onClick={() => update('primary', color)}
+                                    className={cn(
+                                        'h-7 w-7 rounded-full border-2 transition-transform hover:scale-110',
+                                        state.primary === color ? 'scale-110 border-foreground ring-2 ring-foreground/20' : 'border-transparent',
+                                    )}
+                                    style={{ background: PRIMARY_COLORS_HEX[color] }}
+                                />
+                            </div>
                         ))}
                     </div>
                 </DimensionRow>
 
                 {/* Light Scheme */}
-                <DimensionRow label="Light Scheme" value={cap(state.light)} rowKey="light" expanded={expanded} onToggle={toggle} onMouseLeave={revertPreview}>
+                <DimensionRow
+                    label="Light Scheme"
+                    value={cap(state.light)}
+                    rowKey="light"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    onMouseLeave={revertPreview}
+                    locked={lockedKeys.has('light')}
+                    onToggleLock={() => toggleLock('light')}
+                    systemLocked={systemLockedKeys.has('light')}
+                >
                     <div className="flex gap-1.5">
                         {LIGHT_THEMES.map((theme) => (
                             <Pill key={theme} active={state.light === theme} onClick={() => update('light', theme)} onMouseEnter={() => preview({ light: theme })}>
@@ -597,18 +995,49 @@ function ThemeCustomizerBody({
                 </DimensionRow>
 
                 {/* Font */}
-                <DimensionRow label="Font" value={FONT_LABELS[state.font] ?? state.font} rowKey="font" expanded={expanded} onToggle={toggle}>
-                    <div className="flex flex-wrap gap-1.5">
+                <DimensionRow
+                    label="Font"
+                    value={FONT_LABELS[state.font] ?? state.font}
+                    rowKey="font"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    locked={lockedKeys.has('font')}
+                    onToggleLock={() => toggleLock('font')}
+                    systemLocked={systemLockedKeys.has('font')}
+                >
+                    <div className="grid grid-cols-3 gap-1.5">
                         {FONT_OPTIONS.map((f) => (
-                            <Pill key={f} active={state.font === f} onClick={() => update('font', f)}>
-                                {FONT_LABELS[f]}
-                            </Pill>
+                            <button
+                                key={f}
+                                type="button"
+                                onClick={() => update('font', f)}
+                                className={cn(
+                                    'flex flex-col items-center gap-0.5 rounded-md border px-1.5 py-1.5 transition-colors',
+                                    state.font === f
+                                        ? 'border-primary bg-primary/10 text-primary'
+                                        : 'border-border text-muted-foreground hover:border-primary hover:bg-muted',
+                                )}
+                            >
+                                <span style={{ fontFamily: FONT_FAMILIES[f] }} className="text-base font-semibold leading-none">
+                                    Aa
+                                </span>
+                                <span className="truncate text-[10px] font-medium">{FONT_LABELS[f]}</span>
+                            </button>
                         ))}
                     </div>
                 </DimensionRow>
 
                 {/* Menu Color */}
-                <DimensionRow label="Menu Color" value={cap(state.menuColor)} rowKey="menuColor" expanded={expanded} onToggle={toggle}>
+                <DimensionRow
+                    label="Menu Color"
+                    value={cap(state.menuColor)}
+                    rowKey="menuColor"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    locked={lockedKeys.has('menuColor')}
+                    onToggleLock={() => toggleLock('menuColor')}
+                    systemLocked={systemLockedKeys.has('menuColor')}
+                >
                     <div className="flex gap-1.5">
                         {MENU_COLORS.map((c) => (
                             <Pill key={c} active={state.menuColor === c} onClick={() => update('menuColor', c)}>
@@ -619,7 +1048,16 @@ function ThemeCustomizerBody({
                 </DimensionRow>
 
                 {/* Menu Accent */}
-                <DimensionRow label="Menu Accent" value={cap(state.menuAccent)} rowKey="menuAccent" expanded={expanded} onToggle={toggle}>
+                <DimensionRow
+                    label="Menu Accent"
+                    value={cap(state.menuAccent)}
+                    rowKey="menuAccent"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    locked={lockedKeys.has('menuAccent')}
+                    onToggleLock={() => toggleLock('menuAccent')}
+                    systemLocked={systemLockedKeys.has('menuAccent')}
+                >
                     <div className="flex gap-1.5">
                         {MENU_ACCENTS.map((a) => (
                             <Pill key={a} active={state.menuAccent === a} onClick={() => update('menuAccent', a)}>
@@ -630,7 +1068,16 @@ function ThemeCustomizerBody({
                 </DimensionRow>
 
                 {/* Card Skin */}
-                <DimensionRow label="Card Skin" value={cap(state.skin)} rowKey="skin" expanded={expanded} onToggle={toggle}>
+                <DimensionRow
+                    label="Card Skin"
+                    value={cap(state.skin)}
+                    rowKey="skin"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    locked={lockedKeys.has('skin')}
+                    onToggleLock={() => toggleLock('skin')}
+                    systemLocked={systemLockedKeys.has('skin')}
+                >
                     <div className="grid grid-cols-2 gap-1.5">
                         {CARD_SKINS.map((s) => (
                             <Pill key={s} active={state.skin === s} onClick={() => update('skin', s)}>
@@ -641,7 +1088,16 @@ function ThemeCustomizerBody({
                 </DimensionRow>
 
                 {/* Radius */}
-                <DimensionRow label="Radius" value={cap(state.radius)} rowKey="radius" expanded={expanded} onToggle={toggle}>
+                <DimensionRow
+                    label="Radius"
+                    value={cap(state.radius)}
+                    rowKey="radius"
+                    expanded={expanded}
+                    onToggle={toggle}
+                    locked={lockedKeys.has('radius')}
+                    onToggleLock={() => toggleLock('radius')}
+                    systemLocked={systemLockedKeys.has('radius')}
+                >
                     <div className="flex flex-wrap gap-1.5">
                         {RADIUS_OPTIONS.map((r) => (
                             <button
@@ -663,8 +1119,14 @@ function ThemeCustomizerBody({
                 </DimensionRow>
             </div>
 
+            {/* Preset slug */}
+            <div className="mt-3 flex items-center justify-between border-t border-border/50 pt-3">
+                <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">{presetSlug}</span>
+                <span className="text-[10px] text-muted-foreground/60">R = Shuffle</span>
+            </div>
+
             {/* Actions */}
-            <div className="mt-4 space-y-2">
+            <div className="mt-3 space-y-2">
                 <button
                     type="button"
                     disabled={saving}
@@ -689,7 +1151,7 @@ function ThemeCustomizerBody({
     );
 }
 
-// ─── Public exports ───────────────────────────────────────────────────────────
+// ─── Public exports ────────────────────────────────────────────────────────────
 
 export function ThemeCustomizer() {
     const { props } = usePage<SharedData>();
@@ -701,9 +1163,23 @@ export function ThemeCustomizer() {
     return <ThemeCustomizerPanel />;
 }
 
+function buildSystemLockedKeys(lockedSettings: string[]): Set<LockableKey> {
+    const keys = new Set<LockableKey>();
+    for (const setting of lockedSettings) {
+        const key = DB_SETTING_TO_FRONTEND_KEY[setting];
+        if (key) {
+            keys.add(key);
+        }
+    }
+    return keys;
+}
+
 export function ThemeCustomizerPanel() {
+    const { props } = usePage<SharedData>();
     const [open, setOpen] = useState(false);
     const customizer = useThemeCustomizer(open);
+    const canManageBranding = props.theme?.canManageBranding ?? false;
+    const systemLockedKeys = buildSystemLockedKeys(props.theme?.lockedSettings ?? []);
 
     return (
         <>
@@ -741,7 +1217,7 @@ export function ThemeCustomizerPanel() {
                     </button>
                 </div>
                 <div className="p-4">
-                    <ThemeCustomizerBody {...customizer} />
+                    <ThemeCustomizerBody {...customizer} canManageBranding={canManageBranding} systemLockedKeys={systemLockedKeys} />
                 </div>
             </aside>
         </>
@@ -749,7 +1225,10 @@ export function ThemeCustomizerPanel() {
 }
 
 export function ThemeCustomizerInline() {
+    const { props } = usePage<SharedData>();
     const customizer = useThemeCustomizer(true);
+    const canManageBranding = props.theme?.canManageBranding ?? false;
+    const systemLockedKeys = buildSystemLockedKeys(props.theme?.lockedSettings ?? []);
 
     return (
         <div className="rounded-lg border bg-card p-4">
@@ -757,7 +1236,7 @@ export function ThemeCustomizerInline() {
                 <Palette className="h-4 w-4" />
                 <span className="text-sm font-semibold">Theme Customizer</span>
             </div>
-            <ThemeCustomizerBody {...customizer} />
+            <ThemeCustomizerBody {...customizer} canManageBranding={canManageBranding} systemLockedKeys={systemLockedKeys} />
         </div>
     );
 }

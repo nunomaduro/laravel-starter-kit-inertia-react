@@ -6,7 +6,6 @@ import {
   FileCodeIcon,
   FileIcon,
   FileImageIcon,
-  FileMusicIcon,
   FileSpreadsheetIcon,
   FileTextIcon,
   FileVideoIcon,

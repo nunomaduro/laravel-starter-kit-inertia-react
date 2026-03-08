@@ -51,6 +51,29 @@ return [
     ],
 
     /*
+     * Per-feature metadata controlling org-level delegation and plan requirements.
+     * delegate_to_orgs: true = org admin can toggle this feature org-wide
+     * plan_required: null = all plans; 'pro'|'enterprise' = plan-gated
+     */
+    'feature_metadata' => [
+        'blog' => ['delegate_to_orgs' => true,  'plan_required' => null],
+        'changelog' => ['delegate_to_orgs' => true,  'plan_required' => null],
+        'help' => ['delegate_to_orgs' => true,  'plan_required' => null],
+        'contact' => ['delegate_to_orgs' => true,  'plan_required' => null],
+        'onboarding' => ['delegate_to_orgs' => true,  'plan_required' => null],
+        'appearance_settings' => ['delegate_to_orgs' => true,  'plan_required' => null],
+        'gamification' => ['delegate_to_orgs' => true,  'plan_required' => 'pro'],
+        'api_access' => ['delegate_to_orgs' => true,  'plan_required' => 'pro'],
+        'two_factor_auth' => ['delegate_to_orgs' => false, 'plan_required' => null],
+        'impersonation' => ['delegate_to_orgs' => false, 'plan_required' => null],
+        'personal_data_export' => ['delegate_to_orgs' => false, 'plan_required' => null],
+        'registration' => ['delegate_to_orgs' => false, 'plan_required' => null],
+        'cookie_consent' => ['delegate_to_orgs' => false, 'plan_required' => null],
+        'profile_pdf_export' => ['delegate_to_orgs' => false, 'plan_required' => null],
+        'scramble_api_docs' => ['delegate_to_orgs' => false, 'plan_required' => null],
+    ],
+
+    /*
      * Map of route-middleware key to feature class for EnsureFeatureActive middleware.
      */
     'route_feature_map' => [

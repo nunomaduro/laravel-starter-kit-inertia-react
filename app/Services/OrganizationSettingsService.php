@@ -127,7 +127,7 @@ final class OrganizationSettingsService
                 'themePreset' => null,
                 'themeRadius' => null,
                 'themeFont' => null,
-                'allowUserCustomization' => false,
+                'allowUserCustomization' => true,
             ];
         }
 
@@ -135,7 +135,7 @@ final class OrganizationSettingsService
         $themePreset = null;
         $themeRadius = null;
         $themeFont = null;
-        $allowUserCustomization = false;
+        $allowUserCustomization = true;
 
         foreach ($overrides as $override) {
             $value = $this->decodePayload($override->payload, $override->is_encrypted);
@@ -160,6 +160,35 @@ final class OrganizationSettingsService
             'themeFont' => $themeFont,
             'allowUserCustomization' => $allowUserCustomization,
         ];
+    }
+
+    /**
+     * Get the per-user branding control flags for an organization (group=branding).
+     *
+     * @return array{user_can_change_colors: bool, user_can_change_font: bool, user_can_change_layout: bool, user_can_change_logo: bool}
+     */
+    public function getBrandingUserControls(Organization $organization): array
+    {
+        $overrides = $this->getOverridesForOrganization($organization)
+            ->where('group', 'branding')
+            ->whereIn('name', ['user_can_change_colors', 'user_can_change_font', 'user_can_change_layout', 'user_can_change_logo'])
+            ->keyBy('name');
+
+        return [
+            'user_can_change_colors' => (bool) $this->decodeOverrideValue($overrides->get('user_can_change_colors'), true),
+            'user_can_change_font' => (bool) $this->decodeOverrideValue($overrides->get('user_can_change_font'), true),
+            'user_can_change_layout' => (bool) $this->decodeOverrideValue($overrides->get('user_can_change_layout'), true),
+            'user_can_change_logo' => (bool) $this->decodeOverrideValue($overrides->get('user_can_change_logo'), false),
+        ];
+    }
+
+    private function decodeOverrideValue(mixed $override, mixed $default): mixed
+    {
+        if ($override === null) {
+            return $default;
+        }
+
+        return $this->decodePayload($override->payload, $override->is_encrypted);
     }
 
     private function cacheKey(Organization $organization): string

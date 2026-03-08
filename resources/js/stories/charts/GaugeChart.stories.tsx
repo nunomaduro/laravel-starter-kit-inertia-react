@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { GaugeChart } from '@/components/charts/gauge-chart';
 
@@ -34,7 +33,7 @@ export const Full: Story = {
 
 export const Grid: Story = {
     render: () => (
-        <div className="flex gap-8 flex-wrap">
+        <div className="flex flex-wrap gap-8">
             <GaugeChart value={92} label="CPU" sublabel="92%" size={150} />
             <GaugeChart value={68} label="Memory" sublabel="68%" size={150} />
             <GaugeChart value={34} label="Storage" sublabel="34%" size={150} />

@@ -150,17 +150,19 @@
     body {
         @apply bg-background text-foreground;
     }
-  .maplibregl-popup-content {
-    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+    .maplibregl-popup-content {
+        @apply rounded-none! bg-transparent! p-0! shadow-none!;
     }
-  .maplibregl-popup-tip {
-    @apply hidden!;
+    .maplibregl-popup-tip {
+        @apply hidden!;
     }
 }
 
 /* Respect OS reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;

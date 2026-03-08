@@ -1,18 +1,24 @@
-import * as React from 'react';
 import { BotIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { AssistantRuntimeProvider, type AssistantRuntimeProviderProps } from './assistant-runtime-provider';
+import { cn } from '@/lib/utils';
+import {
+    AssistantRuntimeProvider,
+    type AssistantRuntimeProviderProps,
+} from './assistant-runtime-provider';
 import { AssistantThread, type AssistantThreadProps } from './assistant-thread';
 
 export interface AssistantModalProps
-    extends Pick<AssistantRuntimeProviderProps, 'endpoint' | 'model' | 'headers' | 'systemPrompt'>,
+    extends
+        Pick<
+            AssistantRuntimeProviderProps,
+            'endpoint' | 'model' | 'headers' | 'systemPrompt'
+        >,
         Omit<AssistantThreadProps, 'className'> {
     /** Controls the open state of the modal. */
     open: boolean;
@@ -45,11 +51,11 @@ export function AssistantModal({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
                 className={cn(
-                    'flex flex-col p-0 gap-0 sm:max-w-2xl h-[80vh]',
+                    'flex h-[80vh] flex-col gap-0 p-0 sm:max-w-2xl',
                     contentClassName,
                 )}
             >
-                <DialogHeader className="border-b px-4 py-3 shrink-0">
+                <DialogHeader className="shrink-0 border-b px-4 py-3">
                     <DialogTitle className="flex items-center gap-2 text-base">
                         <BotIcon className="size-4 text-primary" />
                         {title}
@@ -66,7 +72,7 @@ export function AssistantModal({
                         placeholder={placeholder}
                         assistantName={assistantName}
                         welcomeMessage={welcomeMessage}
-                        className="flex-1 min-h-0"
+                        className="min-h-0 flex-1"
                     />
                 </AssistantRuntimeProvider>
             </DialogContent>

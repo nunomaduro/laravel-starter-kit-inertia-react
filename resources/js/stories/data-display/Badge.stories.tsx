@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { Badge } from '@/components/ui/badge';
 
@@ -11,7 +10,14 @@ const meta: Meta<typeof Badge> = {
     argTypes: {
         variant: {
             control: 'select',
-            options: ['default', 'secondary', 'destructive', 'outline', 'filled', 'soft'],
+            options: [
+                'default',
+                'secondary',
+                'destructive',
+                'outline',
+                'filled',
+                'soft',
+            ],
         },
         children: { control: 'text' },
     },
@@ -31,11 +37,21 @@ export const AllVariants: Story = {
             <Badge variant="secondary">Secondary</Badge>
             <Badge variant="destructive">Destructive</Badge>
             <Badge variant="outline">Outline</Badge>
-            <Badge variant="filled" color="success">Success</Badge>
-            <Badge variant="filled" color="warning">Warning</Badge>
-            <Badge variant="filled" color="info">Info</Badge>
-            <Badge variant="soft" color="success">Success Soft</Badge>
-            <Badge variant="soft" color="error">Error Soft</Badge>
+            <Badge variant="filled" color="success">
+                Success
+            </Badge>
+            <Badge variant="filled" color="warning">
+                Warning
+            </Badge>
+            <Badge variant="filled" color="info">
+                Info
+            </Badge>
+            <Badge variant="soft" color="success">
+                Success Soft
+            </Badge>
+            <Badge variant="soft" color="error">
+                Error Soft
+            </Badge>
         </div>
     ),
 };
@@ -44,7 +60,9 @@ export const InContext: Story = {
     render: () => (
         <div className="flex items-center gap-2">
             <span className="text-sm font-medium">Status</span>
-            <Badge variant="filled" color="success">Active</Badge>
+            <Badge variant="filled" color="success">
+                Active
+            </Badge>
         </div>
     ),
 };

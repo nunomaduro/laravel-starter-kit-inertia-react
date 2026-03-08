@@ -42,9 +42,6 @@ function Rating({
   const current = isControlled ? value : internalValue
   const displayValue = hoverValue ?? current
 
-  const getStarValue = (starIndex: number, isHalf: boolean) =>
-    precision === 0.5 ? starIndex + (isHalf ? 0 : 0.5) : starIndex
-
   const handleClick = (starValue: number) => {
     if (disabled || readOnly) return
     const next = current === starValue ? 0 : starValue

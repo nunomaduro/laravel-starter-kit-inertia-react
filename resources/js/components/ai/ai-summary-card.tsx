@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { SparklesIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export interface AiSummaryCardProps {
     /** Summary text (may contain markdown, rendered as plain text here). */
@@ -60,29 +60,39 @@ export function AiSummaryCard({
                     </CardTitle>
                     <div className="flex items-center gap-1.5">
                         {meta && (
-                            <span className="text-[10px] text-muted-foreground">{meta}</span>
+                            <span className="text-[10px] text-muted-foreground">
+                                {meta}
+                            </span>
                         )}
                         {action}
                     </div>
                 </div>
                 {source && (
-                    <Badge variant="outline" className="mt-1 h-5 w-fit px-2 text-[10px]">
+                    <Badge
+                        variant="outline"
+                        className="mt-1 h-5 w-fit px-2 text-[10px]"
+                    >
                         {source}
                     </Badge>
                 )}
             </CardHeader>
 
             <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground leading-relaxed">{summary}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                    {summary}
+                </p>
 
                 {keyPoints && keyPoints.length > 0 && (
                     <div className="space-y-1">
-                        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        <p className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
                             Key Points
                         </p>
                         <ul className="space-y-1">
                             {keyPoints.map((point, i) => (
-                                <li key={i} className="flex items-start gap-2 text-sm">
+                                <li
+                                    key={i}
+                                    className="flex items-start gap-2 text-sm"
+                                >
                                     <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
                                     {point}
                                 </li>

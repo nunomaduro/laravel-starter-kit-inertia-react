@@ -23,7 +23,6 @@ function NovelEditorWrapper({
   aiEndpoint = "/ai/complete",
   className,
   editorClassName,
-  placeholder = "Start writing...",
 }: NovelEditorProps) {
   const contentProps: Partial<EditorContentProps> = {}
 

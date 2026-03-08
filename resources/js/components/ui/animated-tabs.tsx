@@ -40,7 +40,7 @@ function AnimatedTabs({ variant = "pill", children, defaultValue, value, onValue
   }
 
   return (
-    <AnimatedTabsContext.Provider value={{ activeTab, indicatorStyle, setIndicator }}>
+    <AnimatedTabsContext value={{ activeTab, indicatorStyle, setIndicator }}>
       <TabsPrimitive.Root
         data-slot="animated-tabs"
         data-variant={variant}
@@ -51,7 +51,7 @@ function AnimatedTabs({ variant = "pill", children, defaultValue, value, onValue
       >
         {children}
       </TabsPrimitive.Root>
-    </AnimatedTabsContext.Provider>
+    </AnimatedTabsContext>
   )
 }
 
@@ -59,7 +59,7 @@ function AnimatedTabsList({
   className,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.List>) {
-  const { indicatorStyle } = React.useContext(AnimatedTabsContext)
+  const { indicatorStyle } = React.use(AnimatedTabsContext)
   const ref = React.useRef<HTMLDivElement>(null)
 
   return (
@@ -85,7 +85,7 @@ function AnimatedTabsTrigger({
   value,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
-  const { setIndicator } = React.useContext(AnimatedTabsContext)
+  const { setIndicator } = React.use(AnimatedTabsContext)
   const ref = React.useRef<HTMLButtonElement>(null)
 
   React.useLayoutEffect(() => {

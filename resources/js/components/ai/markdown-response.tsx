@@ -1,4 +1,3 @@
-import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -15,7 +14,10 @@ export interface MarkdownResponseProps {
  * Renders AI markdown responses using react-markdown with GFM support.
  * Code blocks are rendered using the `CodeBlock` component with syntax highlighting.
  */
-export function MarkdownResponse({ content, className }: MarkdownResponseProps) {
+export function MarkdownResponse({
+    content,
+    className,
+}: MarkdownResponseProps) {
     return (
         <div
             className={cn(
@@ -40,7 +42,7 @@ export function MarkdownResponse({ content, className }: MarkdownResponseProps) 
                                 <CodeBlock
                                     code={String(children).replace(/\n$/, '')}
                                     language={match[1]}
-                                    className="my-3 not-prose"
+                                    className="not-prose my-3"
                                 />
                             );
                         }

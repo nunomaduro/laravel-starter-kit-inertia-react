@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { AreaChart } from '@/components/charts/area-chart';
 
@@ -43,7 +42,11 @@ export const SingleSeries: Story = {
         xKey: 'month',
         height: 300,
     },
-    render: (args) => <div className="w-[600px]"><AreaChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[600px]">
+            <AreaChart {...args} />
+        </div>
+    ),
 };
 
 export const MultiSeries: Story = {
@@ -54,7 +57,11 @@ export const MultiSeries: Story = {
         showLegend: true,
         height: 300,
     },
-    render: (args) => <div className="w-[600px]"><AreaChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[600px]">
+            <AreaChart {...args} />
+        </div>
+    ),
 };
 
 export const Stacked: Story = {
@@ -66,7 +73,11 @@ export const Stacked: Story = {
         showLegend: true,
         height: 300,
     },
-    render: (args) => <div className="w-[600px]"><AreaChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[600px]">
+            <AreaChart {...args} />
+        </div>
+    ),
 };
 
 export const LoadingSkeleton: Story = {
@@ -77,5 +88,9 @@ export const LoadingSkeleton: Story = {
         skeleton: true,
         height: 300,
     },
-    render: (args) => <div className="w-[600px]"><AreaChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[600px]">
+            <AreaChart {...args} />
+        </div>
+    ),
 };

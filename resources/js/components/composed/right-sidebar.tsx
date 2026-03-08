@@ -1,16 +1,16 @@
-import * as React from 'react';
 import { XIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
     Sheet,
     SheetContent,
+    SheetDescription,
     SheetHeader,
     SheetTitle,
-    SheetDescription,
 } from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 
 export interface RightSidebarSection {
     id: string;
@@ -44,7 +44,9 @@ function RightSidebar({
     footer,
     className,
 }: RightSidebarProps) {
-    const [collapsedSections, setCollapsedSections] = React.useState<Set<string>>(new Set());
+    const [collapsedSections, setCollapsedSections] = React.useState<
+        Set<string>
+    >(new Set());
 
     const toggleSection = (id: string) => {
         setCollapsedSections((prev) => {
@@ -70,9 +72,15 @@ function RightSidebar({
                     <>
                         <SheetHeader className="flex flex-row items-center justify-between px-4 py-3">
                             <div>
-                                {title && <SheetTitle className="text-sm">{title}</SheetTitle>}
+                                {title && (
+                                    <SheetTitle className="text-sm">
+                                        {title}
+                                    </SheetTitle>
+                                )}
                                 {description && (
-                                    <SheetDescription className="text-xs">{description}</SheetDescription>
+                                    <SheetDescription className="text-xs">
+                                        {description}
+                                    </SheetDescription>
                                 )}
                             </div>
                             <div className="flex items-center gap-1">
@@ -103,24 +111,31 @@ function RightSidebar({
                                         {section.collapsible ? (
                                             <button
                                                 type="button"
-                                                onClick={() => toggleSection(section.id)}
+                                                onClick={() =>
+                                                    toggleSection(section.id)
+                                                }
                                                 className="flex w-full items-center justify-between text-left"
                                             >
-                                                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                                <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                                                     {section.title}
                                                 </span>
                                                 <span className="text-xs text-muted-foreground">
-                                                    {collapsedSections.has(section.id) ? '+' : '−'}
+                                                    {collapsedSections.has(
+                                                        section.id,
+                                                    )
+                                                        ? '+'
+                                                        : '−'}
                                                 </span>
                                             </button>
                                         ) : (
-                                            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                            <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                                                 {section.title}
                                             </span>
                                         )}
                                     </div>
                                 )}
-                                {(!section.collapsible || !collapsedSections.has(section.id)) && (
+                                {(!section.collapsible ||
+                                    !collapsedSections.has(section.id)) && (
                                     <div className="px-4 pb-4">
                                         {section.content}
                                     </div>

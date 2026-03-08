@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -40,11 +39,21 @@ export const WithLabel: Story = {
 export const FormGroup: Story = {
     render: () => (
         <div className="space-y-4">
-            {['Email notifications', 'Push notifications', 'SMS alerts', 'Weekly digest'].map((label, i) => (
-                <div key={label} className="flex items-center justify-between rounded-lg border border-border p-4">
+            {[
+                'Email notifications',
+                'Push notifications',
+                'SMS alerts',
+                'Weekly digest',
+            ].map((label, i) => (
+                <div
+                    key={label}
+                    className="flex items-center justify-between rounded-lg border border-border p-4"
+                >
                     <div>
                         <p className="text-sm font-medium">{label}</p>
-                        <p className="text-xs text-muted-foreground">Receive {label.toLowerCase()}</p>
+                        <p className="text-xs text-muted-foreground">
+                            Receive {label.toLowerCase()}
+                        </p>
                     </div>
                     <Switch defaultChecked={i % 2 === 0} />
                 </div>

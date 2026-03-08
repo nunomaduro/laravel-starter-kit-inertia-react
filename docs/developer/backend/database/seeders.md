@@ -49,6 +49,8 @@ Seeders for local development and testing (fake users, dummy content, test scena
 
 **When it runs**: Local and testing environments only
 
+**UsersSeeder** loads fixed users from `database/seeders/data/users.json`, then creates shared organizations (Acme, Beta Co) and attaches users for multi-org and role scenarios. All fixed users use password **`password`**. See [Testing credentials (Development)](#testing-credentials-development) below.
+
 ### Production
 Seeders for production-specific data (demo accounts, showcase data).
 
@@ -246,6 +248,29 @@ php artisan seed:environment --fresh
 ```bash
 php artisan seed:environment --force
 ```
+
+## Testing credentials (Development)
+
+After `php artisan migrate:fresh --seed` in **local** or **testing**, the following fixed users exist. Use them for manual testing, E2E, and feature verification. All use password **`password`**.
+
+| Email | Global role | Organizations | Use case |
+|-------|-------------|----------------|----------|
+| **admin@example.com** | super-admin | None | System panel (`/admin/system`), setup wizard, impersonation, view-all orgs |
+| **test@example.com** | user | 1 (personal, owner) | Regular app user; dashboard, tenant routes |
+| **admin-app@example.com** | admin | 1 (personal, owner) | Filament app panel (`/admin`) only; not system panel |
+| **owner@example.com** | user | 3 (personal + Acme + Beta Co, owner) | Owns shared orgs used for multi-org scenarios |
+| **unverified@example.com** | user | 1 (personal, owner) | Unverified email; test verification flow |
+| **onboarding@example.com** | user | 1 (personal, owner) | `onboarding_completed = false`; test onboarding redirect |
+| **multi@example.com** | user | 2 (personal owner + Acme admin) | Org switcher; multiple orgs |
+| **member@example.com** | user | 1 (Acme only, **member**) | No personal org; org.members.view only (no invite/settings/pages) |
+| **mixed@example.com** | user | 3 (personal owner + Acme admin + Beta Co member) | Different org-level roles per org |
+
+**Shared organizations (created by UsersSeeder):**
+
+- **Acme** – owned by `owner@example.com`. Members: `multi@example.com` (admin), `member@example.com` (member), `mixed@example.com` (admin).
+- **Beta Co** – owned by `owner@example.com`. Members: `mixed@example.com` (member).
+
+Additional random users are created by the factory (2 global admins, 5 regular users, 2 unverified); their emails are random (e.g. `admin@…`, `user@…`).
 
 ## Automation Commands
 

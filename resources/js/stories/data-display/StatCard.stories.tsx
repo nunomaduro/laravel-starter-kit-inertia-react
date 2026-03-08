@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { UsersIcon } from 'lucide-react';
-import React from 'react';
 
 import { StatCard } from '@/components/ui/stat-card';
 
@@ -55,11 +54,27 @@ export const Loading: Story = {
 
 export const Grid: Story = {
     render: () => (
-        <div className="grid grid-cols-2 gap-4 w-[600px]">
-            <StatCard title="Users" value="12,345" trend={{ value: 8, direction: 'up' }} />
-            <StatCard title="Revenue" value="$48,230" trend={{ value: 12.5, direction: 'up' }} />
-            <StatCard title="Churn" value="2.3%" trend={{ value: 0.5, direction: 'down' }} />
-            <StatCard title="ARR" value="$578,760" trend={{ value: 15, direction: 'up' }} />
+        <div className="grid w-[600px] grid-cols-2 gap-4">
+            <StatCard
+                title="Users"
+                value="12,345"
+                trend={{ value: 8, direction: 'up' }}
+            />
+            <StatCard
+                title="Revenue"
+                value="$48,230"
+                trend={{ value: 12.5, direction: 'up' }}
+            />
+            <StatCard
+                title="Churn"
+                value="2.3%"
+                trend={{ value: 0.5, direction: 'down' }}
+            />
+            <StatCard
+                title="ARR"
+                value="$578,760"
+                trend={{ value: 15, direction: 'up' }}
+            />
         </div>
     ),
 };

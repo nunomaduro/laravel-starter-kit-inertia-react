@@ -193,8 +193,11 @@ final class Organization extends Model
      */
     public function addMember(User $user, string $role, ?User $invitedBy = null): void
     {
-        if (! in_array($role, self::ASSIGNABLE_ORG_ROLES, true)) {
-            throw new InvalidArgumentException(sprintf("Invalid role '%s'. Must be one of: ", $role).implode(', ', self::ASSIGNABLE_ORG_ROLES));
+        $isStandardRole = in_array($role, self::ASSIGNABLE_ORG_ROLES, true);
+        $isCustomRole = str_starts_with($role, 'custom_');
+
+        if (! $isStandardRole && ! $isCustomRole) {
+            throw new InvalidArgumentException(sprintf("Invalid role '%s'. Must be one of: ", $role).implode(', ', self::ASSIGNABLE_ORG_ROLES).' — or a custom role.');
         }
 
         $this->ensureOrgRolesExist();

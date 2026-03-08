@@ -1,9 +1,9 @@
+import { Loader2Icon, MicIcon, MicOffIcon } from 'lucide-react';
 import * as React from 'react';
-import { MicIcon, MicOffIcon, Loader2Icon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 
 export type VoiceInputState = 'idle' | 'listening' | 'processing' | 'error';
 
@@ -59,7 +59,8 @@ export function VoiceInput({
     const isSupported = React.useMemo(
         () =>
             typeof window !== 'undefined' &&
-            ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window),
+            ('SpeechRecognition' in window ||
+                'webkitSpeechRecognition' in window),
         [],
     );
 
@@ -86,7 +87,9 @@ export function VoiceInput({
             onStart?.();
         };
 
-        recognition.onresult = (event: { results: { transcript: string }[][] }) => {
+        recognition.onresult = (event: {
+            results: { transcript: string }[][];
+        }) => {
             setVoiceState('processing');
             const transcript = event.results[0]?.[0]?.transcript ?? '';
             onTranscript?.(transcript);
@@ -101,7 +104,9 @@ export function VoiceInput({
 
         recognition.onend = () => {
             onStop?.();
-            setVoiceState((prev) => (prev === 'listening' ? 'processing' : prev));
+            setVoiceState((prev) =>
+                prev === 'listening' ? 'processing' : prev,
+            );
         };
 
         recognitionRef.current = recognition;
@@ -122,19 +127,36 @@ export function VoiceInput({
     }, [voiceState, start, stop]);
 
     // Cleanup on unmount
-    React.useEffect(() => () => { recognitionRef.current?.stop(); }, []);
+    React.useEffect(
+        () => () => {
+            recognitionRef.current?.stop();
+        },
+        [],
+    );
 
     const isListening = voiceState === 'listening';
     const isProcessing = voiceState === 'processing';
     const isError = voiceState === 'error';
 
-    const buttonSizeMap = { sm: 'icon-sm', default: 'icon', lg: 'icon-lg' } as const;
+    const buttonSizeMap = {
+        sm: 'icon-sm',
+        default: 'icon',
+        lg: 'icon-lg',
+    } as const;
 
     return (
-        <div className={cn('relative inline-flex items-center justify-center', className)}>
+        <div
+            className={cn(
+                'relative inline-flex items-center justify-center',
+                className,
+            )}
+        >
             {/* Pulse ring while listening */}
             {isListening && !reducedMotion && (
-                <span className="absolute inset-0 rounded-full bg-error/20 animate-ping" aria-hidden />
+                <span
+                    className="absolute inset-0 animate-ping rounded-full bg-error/20"
+                    aria-hidden
+                />
             )}
             <Button
                 type="button"
@@ -143,9 +165,15 @@ export function VoiceInput({
                 size={buttonSizeMap[size]}
                 disabled={disabled || !isSupported || isProcessing}
                 onClick={toggle}
-                aria-label={isListening ? 'Stop recording' : 'Start voice input'}
+                aria-label={
+                    isListening ? 'Stop recording' : 'Start voice input'
+                }
                 aria-pressed={isListening}
-                title={!isSupported ? 'Speech recognition not supported' : undefined}
+                title={
+                    !isSupported
+                        ? 'Speech recognition not supported'
+                        : undefined
+                }
             >
                 {isProcessing ? (
                     <Loader2Icon className="animate-spin" />

@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { FileText } from 'lucide-react';
+import { FileText, Receipt } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -9,6 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface Invoice {
     id: number;
@@ -38,9 +39,11 @@ export default function RecentInvoicesCard({
             </CardHeader>
             <CardContent>
                 {invoices.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                        No invoices yet.
-                    </p>
+                    <EmptyState
+                        icon={<Receipt className="size-5" />}
+                        title="No invoices yet"
+                        description="Your invoices will appear here after your first billing cycle."
+                    />
                 ) : (
                     <ul className="space-y-2">
                         {invoices.map((inv) => (

@@ -66,7 +66,7 @@ return [
             'url' => 'https://api.voyageai.com/v1',
         ],
         'openrouter' => [
-            'api_key' => '',
+            'api_key' => env('OPENROUTER_API_KEY', ''),
             'url' => 'https://openrouter.ai/api/v1',
             'site' => [
                 'http_referer' => null,

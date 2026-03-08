@@ -18,7 +18,9 @@ export function useReducedMotion(): boolean {
             return;
         }
 
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const mediaQuery = window.matchMedia(
+            '(prefers-reduced-motion: reduce)',
+        );
 
         const handler = (event: MediaQueryListEvent) => {
             setReducedMotion(event.matches);

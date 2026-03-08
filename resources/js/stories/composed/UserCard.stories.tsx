@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { UserCard } from '@/components/composed/user-card';
 
@@ -25,7 +24,10 @@ const meta: Meta<typeof UserCard> = {
     tags: ['autodocs'],
     parameters: { layout: 'centered' },
     argTypes: {
-        variant: { control: 'select', options: ['compact', 'default', 'detailed'] },
+        variant: {
+            control: 'select',
+            options: ['compact', 'default', 'detailed'],
+        },
         isFollowing: { control: 'boolean' },
     },
 };
@@ -38,7 +40,11 @@ export const Compact: Story = {
         user: MOCK_USER,
         variant: 'compact',
     },
-    render: (args) => <div className="w-72"><UserCard {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <UserCard {...args} />
+        </div>
+    ),
 };
 
 export const Default: Story = {
@@ -49,7 +55,11 @@ export const Default: Story = {
         onFollow: () => {},
         onEmail: () => {},
     },
-    render: (args) => <div className="w-72"><UserCard {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <UserCard {...args} />
+        </div>
+    ),
 };
 
 export const Detailed: Story = {
@@ -61,7 +71,11 @@ export const Detailed: Story = {
         onEmail: () => {},
         isFollowing: false,
     },
-    render: (args) => <div className="w-72"><UserCard {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <UserCard {...args} />
+        </div>
+    ),
 };
 
 export const Offline: Story = {
@@ -69,5 +83,9 @@ export const Offline: Story = {
         user: { ...MOCK_USER, status: 'offline' },
         variant: 'default',
     },
-    render: (args) => <div className="w-72"><UserCard {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <UserCard {...args} />
+        </div>
+    ),
 };

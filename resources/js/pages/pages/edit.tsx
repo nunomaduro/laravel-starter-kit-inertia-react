@@ -44,11 +44,17 @@ interface TemplateOption {
 
 interface Props {
     page: PageRecord | null;
-    puckJson: { root: Record<string, unknown>; content: Record<string, unknown>[] };
+    puckJson: {
+        root: Record<string, unknown>;
+        content: Record<string, unknown>[];
+    };
     templates?: TemplateOption[];
 }
 
-const emptyPuckData: { root: Record<string, unknown>; content: Record<string, unknown>[] } = { root: {}, content: [] };
+const emptyPuckData: {
+    root: Record<string, unknown>;
+    content: Record<string, unknown>[];
+} = { root: {}, content: [] };
 
 export default function PageEdit({ page, puckJson, templates = [] }: Props) {
     const isCreate = page === null;

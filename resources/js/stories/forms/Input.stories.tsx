@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +11,15 @@ const meta: Meta<typeof Input> = {
     argTypes: {
         type: {
             control: 'select',
-            options: ['text', 'email', 'password', 'number', 'search', 'tel', 'url'],
+            options: [
+                'text',
+                'email',
+                'password',
+                'number',
+                'search',
+                'tel',
+                'url',
+            ],
         },
         disabled: { control: 'boolean' },
         placeholder: { control: 'text' },
@@ -36,7 +43,11 @@ export const WithLabel: Story = {
 };
 
 export const Disabled: Story = {
-    args: { placeholder: 'Disabled input', disabled: true, value: 'Cannot edit this' },
+    args: {
+        placeholder: 'Disabled input',
+        disabled: true,
+        value: 'Cannot edit this',
+    },
 };
 
 export const Password: Story = {
@@ -47,8 +58,15 @@ export const WithError: Story = {
     render: () => (
         <div className="grid w-72 gap-1.5">
             <Label htmlFor="username">Username</Label>
-            <Input id="username" aria-invalid className="border-destructive focus-visible:ring-destructive" defaultValue="taken@" />
-            <p className="text-xs text-destructive">Username is already taken.</p>
+            <Input
+                id="username"
+                aria-invalid
+                className="border-destructive focus-visible:ring-destructive"
+                defaultValue="taken@"
+            />
+            <p className="text-xs text-destructive">
+                Username is already taken.
+            </p>
         </div>
     ),
 };

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { ThinkingIndicator } from '@/components/ai/thinking-indicator';
 
@@ -35,7 +34,9 @@ export const AllVariants: Story = {
             {(['dots', 'pulse', 'bars'] as const).map((v) => (
                 <div key={v} className="flex items-center gap-3">
                     <ThinkingIndicator variant={v} />
-                    <span className="text-sm text-muted-foreground capitalize">{v}</span>
+                    <span className="text-sm text-muted-foreground capitalize">
+                        {v}
+                    </span>
                 </div>
             ))}
         </div>

@@ -1,12 +1,11 @@
-import * as React from 'react';
 import { BotIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ThinkingIndicator } from './thinking-indicator';
-import { MarkdownResponse } from './markdown-response';
-import { ToolCallCard } from './tool-call-card';
+import { cn } from '@/lib/utils';
 import type { ToolCall } from './assistant-runtime-provider';
+import { MarkdownResponse } from './markdown-response';
+import { ThinkingIndicator } from './thinking-indicator';
+import { ToolCallCard } from './tool-call-card';
 
 export interface AiResponseCardProps {
     content: string;
@@ -31,9 +30,13 @@ export function AiResponseCard({
 }: AiResponseCardProps) {
     return (
         <div className={cn('flex items-start gap-3', className)}>
-            <Avatar className="size-8 shrink-0 mt-0.5">
+            <Avatar className="mt-0.5 size-8 shrink-0">
                 {avatarUrl ? (
-                    <img src={avatarUrl} alt={assistantName} className="size-full object-cover" />
+                    <img
+                        src={avatarUrl}
+                        alt={assistantName}
+                        className="size-full object-cover"
+                    />
                 ) : (
                     <AvatarFallback className="bg-primary/10 text-primary">
                         <BotIcon className="size-4" />
@@ -41,8 +44,10 @@ export function AiResponseCard({
                 )}
             </Avatar>
 
-            <div className="flex-1 min-w-0 space-y-2">
-                <p className="text-xs font-semibold text-muted-foreground">{assistantName}</p>
+            <div className="min-w-0 flex-1 space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground">
+                    {assistantName}
+                </p>
 
                 {/* Tool calls */}
                 {toolCalls && toolCalls.length > 0 && (

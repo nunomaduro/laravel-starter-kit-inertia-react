@@ -1,9 +1,14 @@
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
-export type ProgressRingColor = 'primary' | 'success' | 'warning' | 'error' | 'info';
+export type ProgressRingColor =
+    | 'primary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'info';
 
 const colorMap: Record<ProgressRingColor, string> = {
     primary: 'var(--primary)',
@@ -98,18 +103,20 @@ export function ProgressRing({
                 style={{ width: size, height: size }}
             >
                 {showValue && (
-                    <span className="text-sm font-semibold leading-none text-foreground">
+                    <span className="text-sm leading-none font-semibold text-foreground">
                         {Math.round(pct * 100)}%
                     </span>
                 )}
                 {label && (
-                    <span className="mt-0.5 text-xs text-muted-foreground leading-none">
+                    <span className="mt-0.5 text-xs leading-none text-muted-foreground">
                         {label}
                     </span>
                 )}
             </div>
             {sublabel && (
-                <span className="mt-1 text-xs text-muted-foreground">{sublabel}</span>
+                <span className="mt-1 text-xs text-muted-foreground">
+                    {sublabel}
+                </span>
             )}
         </div>
     );

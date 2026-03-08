@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { TokenUsageDisplay } from '@/components/ai/token-usage';
 
@@ -27,7 +26,11 @@ export const WithBudget: Story = {
         usage: { prompt: 2840, completion: 710, total: 3550 },
         maxTokens: 8192,
     },
-    render: (args) => <div className="w-72"><TokenUsageDisplay {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <TokenUsageDisplay {...args} />
+        </div>
+    ),
 };
 
 export const NearLimit: Story = {
@@ -35,5 +38,9 @@ export const NearLimit: Story = {
         usage: { prompt: 7200, completion: 600, total: 7800 },
         maxTokens: 8192,
     },
-    render: (args) => <div className="w-72"><TokenUsageDisplay {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <TokenUsageDisplay {...args} />
+        </div>
+    ),
 };

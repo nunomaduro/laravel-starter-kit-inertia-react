@@ -4,7 +4,6 @@ import { XIcon } from "lucide-react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 
 function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = React.useState(false)

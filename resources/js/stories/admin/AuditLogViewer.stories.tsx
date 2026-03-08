@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
-import { AuditLogViewer } from '@/components/admin/audit-log-viewer';
 import type { AuditLogEntry } from '@/components/admin/audit-log-viewer';
+import { AuditLogViewer } from '@/components/admin/audit-log-viewer';
 
 const MOCK_ENTRIES: AuditLogEntry[] = [
     {
@@ -68,12 +67,26 @@ type Story = StoryObj<typeof AuditLogViewer>;
 export const Default: Story = {
     args: {
         entries: MOCK_ENTRIES,
-        actionTypes: ['user.created', 'role.updated', 'login.failed', 'settings.updated', 'organization.deleted'],
+        actionTypes: [
+            'user.created',
+            'role.updated',
+            'login.failed',
+            'settings.updated',
+            'organization.deleted',
+        ],
     },
-    render: (args) => <div className="w-[700px]"><AuditLogViewer {...args} /></div>,
+    render: (args) => (
+        <div className="w-[700px]">
+            <AuditLogViewer {...args} />
+        </div>
+    ),
 };
 
 export const Empty: Story = {
     args: { entries: [] },
-    render: (args) => <div className="w-[700px]"><AuditLogViewer {...args} /></div>,
+    render: (args) => (
+        <div className="w-[700px]">
+            <AuditLogViewer {...args} />
+        </div>
+    ),
 };

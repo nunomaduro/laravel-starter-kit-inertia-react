@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { PieChart } from '@/components/charts/pie-chart';
 
@@ -30,15 +29,27 @@ type Story = StoryObj<typeof PieChart>;
 
 export const Default: Story = {
     args: { data: DATA, height: 300 },
-    render: (args) => <div className="w-[400px]"><PieChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[400px]">
+            <PieChart {...args} />
+        </div>
+    ),
 };
 
 export const Donut: Story = {
     args: { data: DATA, donut: true, height: 300 },
-    render: (args) => <div className="w-[400px]"><PieChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[400px]">
+            <PieChart {...args} />
+        </div>
+    ),
 };
 
 export const NoLegend: Story = {
     args: { data: DATA, showLegend: false, height: 300 },
-    render: (args) => <div className="w-[400px]"><PieChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[400px]">
+            <PieChart {...args} />
+        </div>
+    ),
 };

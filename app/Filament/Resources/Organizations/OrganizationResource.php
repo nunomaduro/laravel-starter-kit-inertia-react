@@ -7,6 +7,7 @@ namespace App\Filament\Resources\Organizations;
 use App\Filament\Resources\Organizations\Pages\CreateOrganization;
 use App\Filament\Resources\Organizations\Pages\EditOrganization;
 use App\Filament\Resources\Organizations\Pages\ListOrganizations;
+use App\Filament\Resources\Organizations\RelationManagers\DomainsRelationManager;
 use App\Filament\Resources\Organizations\RelationManagers\InvitationsRelationManager;
 use App\Filament\Resources\Organizations\RelationManagers\UsersRelationManager;
 use App\Filament\Resources\Organizations\Schemas\OrganizationForm;
@@ -65,6 +66,7 @@ final class OrganizationResource extends Resource
         return [
             UsersRelationManager::class,
             InvitationsRelationManager::class,
+            DomainsRelationManager::class,
         ];
     }
 

@@ -1,10 +1,10 @@
-import { type ReactNode } from "react";
-import { Map, MapControls } from "@/components/ui/map";
-import { cn } from "@/lib/utils";
+import { Map, MapControls } from '@/components/ui/map';
+import { cn } from '@/lib/utils';
+import { type ReactNode } from 'react';
 
 export const OPEN_FREE_MAP_STYLES = {
-    light: "https://tiles.openfreemap.org/styles/liberty",
-    dark: "https://tiles.openfreemap.org/styles/dark",
+    light: 'https://tiles.openfreemap.org/styles/liberty',
+    dark: 'https://tiles.openfreemap.org/styles/dark',
 };
 
 type BaseMapProps = {
@@ -26,7 +26,12 @@ export function BaseMap({
     showControls = true,
 }: BaseMapProps) {
     return (
-        <div className={cn("relative h-80 w-full overflow-hidden rounded-lg border", className)}>
+        <div
+            className={cn(
+                'relative h-80 w-full overflow-hidden rounded-lg border',
+                className,
+            )}
+        >
             <Map
                 className="size-full"
                 styles={OPEN_FREE_MAP_STYLES}

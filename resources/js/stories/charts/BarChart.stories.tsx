@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { BarChart } from '@/components/charts/bar-chart';
 
@@ -30,20 +29,55 @@ type Story = StoryObj<typeof BarChart>;
 
 export const Vertical: Story = {
     args: { data: DATA, dataKeys: ['sales'], xKey: 'quarter', height: 300 },
-    render: (args) => <div className="w-[500px]"><BarChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[500px]">
+            <BarChart {...args} />
+        </div>
+    ),
 };
 
 export const Grouped: Story = {
-    args: { data: DATA, dataKeys: ['sales', 'returns'], xKey: 'quarter', showLegend: true, height: 300 },
-    render: (args) => <div className="w-[500px]"><BarChart {...args} /></div>,
+    args: {
+        data: DATA,
+        dataKeys: ['sales', 'returns'],
+        xKey: 'quarter',
+        showLegend: true,
+        height: 300,
+    },
+    render: (args) => (
+        <div className="w-[500px]">
+            <BarChart {...args} />
+        </div>
+    ),
 };
 
 export const Horizontal: Story = {
-    args: { data: DATA, dataKeys: ['sales'], xKey: 'quarter', horizontal: true, height: 300 },
-    render: (args) => <div className="w-[500px]"><BarChart {...args} /></div>,
+    args: {
+        data: DATA,
+        dataKeys: ['sales'],
+        xKey: 'quarter',
+        horizontal: true,
+        height: 300,
+    },
+    render: (args) => (
+        <div className="w-[500px]">
+            <BarChart {...args} />
+        </div>
+    ),
 };
 
 export const Stacked: Story = {
-    args: { data: DATA, dataKeys: ['sales', 'returns'], xKey: 'quarter', stacked: true, showLegend: true, height: 300 },
-    render: (args) => <div className="w-[500px]"><BarChart {...args} /></div>,
+    args: {
+        data: DATA,
+        dataKeys: ['sales', 'returns'],
+        xKey: 'quarter',
+        stacked: true,
+        showLegend: true,
+        height: 300,
+    },
+    render: (args) => (
+        <div className="w-[500px]">
+            <BarChart {...args} />
+        </div>
+    ),
 };

@@ -1,6 +1,10 @@
 import * as React from 'react';
 
-import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels';
+import {
+    Panel,
+    Group as PanelGroup,
+    Separator as PanelResizeHandle,
+} from 'react-resizable-panels';
 
 import { SkipToContent } from '@/components/ui/skip-to-content';
 import { cn } from '@/lib/utils';
@@ -23,7 +27,14 @@ interface SplitViewProps {
  * Two-pane split view with a draggable resizer.
  * Supports horizontal (side-by-side) and vertical (top/bottom) splits.
  */
-function SplitView({ first, second, direction = 'horizontal', firstDefaultSize = 50, minSize = 15, className }: SplitViewProps) {
+function SplitView({
+    first,
+    second,
+    direction = 'horizontal',
+    firstDefaultSize = 50,
+    minSize = 15,
+    className,
+}: SplitViewProps) {
     return (
         <div className={cn('flex h-full w-full overflow-hidden', className)}>
             <SkipToContent />
@@ -35,7 +46,7 @@ function SplitView({ first, second, direction = 'horizontal', firstDefaultSize =
 
                 <PanelResizeHandle
                     className={cn(
-                        'bg-border transition-colors hover:bg-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                        'bg-border transition-colors hover:bg-primary/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
                         direction === 'horizontal' ? 'w-1' : 'h-1',
                     )}
                 />

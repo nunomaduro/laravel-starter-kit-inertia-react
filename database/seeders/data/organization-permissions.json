@@ -2,32 +2,48 @@
   "organization_permissions": {
     "org_core": {
       "permissions": [
-        {"name": "org.view", "roles": ["owner", "admin", "member"]},
-        {"name": "org.manage", "roles": ["owner"]}
+        {"name": "org.view", "roles": ["owner", "admin", "member"], "org_grantable": false},
+        {"name": "org.manage", "roles": ["owner"], "org_grantable": false}
       ]
     },
     "org_members": {
       "permissions": [
-        {"name": "org.members.view", "roles": ["owner", "admin", "member"]},
-        {"name": "org.members.invite", "roles": ["owner", "admin"]}
+        {"name": "org.members.view", "roles": ["owner", "admin", "member"], "org_grantable": true},
+        {"name": "org.members.invite", "roles": ["owner", "admin"], "org_grantable": true}
       ]
     },
     "org_billing": {
       "permissions": [
-        {"name": "org.billing.view", "roles": ["owner", "admin"]},
-        {"name": "org.billing.manage", "roles": ["owner"]}
+        {"name": "org.billing.view", "roles": ["owner", "admin"], "org_grantable": true},
+        {"name": "org.billing.manage", "roles": ["owner"], "org_grantable": false}
       ]
     },
     "org_settings": {
       "permissions": [
-        {"name": "org.settings.manage", "roles": ["owner", "admin"]}
+        {"name": "org.settings.manage", "roles": ["owner", "admin"], "org_grantable": false}
       ]
     },
     "org_pages": {
       "permissions": [
-        {"name": "org.pages.manage", "roles": ["owner", "admin"]}
+        {"name": "org.pages.manage", "roles": ["owner", "admin"], "org_grantable": true}
       ]
     }
   },
-  "metadata": {"version": "1.0.0"}
+  "role_templates": [
+    {
+      "name": "content_editor",
+      "label": "Content Editor",
+      "visible_to_orgs": true,
+      "plan_required": null,
+      "permissions": ["org.pages.manage"]
+    },
+    {
+      "name": "billing_viewer",
+      "label": "Billing Viewer",
+      "visible_to_orgs": true,
+      "plan_required": null,
+      "permissions": ["org.billing.view"]
+    }
+  ],
+  "metadata": {"version": "2.0.0"}
 }

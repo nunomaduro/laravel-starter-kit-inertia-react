@@ -32,7 +32,7 @@ final class DashboardController
             $props['orgsGrowthPercent'] = $this->weeklyGrowthPercent(fn () => Organization::query());
         }
 
-        $props['weeklyStats'] = Inertia::defer(fn () => $this->weeklyStats());
+        $props['weeklyStats'] = Inertia::defer(fn (): array => $this->weeklyStats());
 
         return Inertia::render('dashboard', $props);
     }
@@ -41,11 +41,11 @@ final class DashboardController
     private function weeklyGrowthPercent(Closure $factory): ?int
     {
         $thisWeek = $factory()
-            ->whereBetween('created_at', [Carbon::today()->subDays(6)->startOfDay(), Carbon::now()])
+            ->whereBetween('created_at', [\Illuminate\Support\Facades\Date::today()->subDays(6)->startOfDay(), \Illuminate\Support\Facades\Date::now()])
             ->count();
 
         $lastWeek = $factory()
-            ->whereBetween('created_at', [Carbon::today()->subDays(13)->startOfDay(), Carbon::today()->subDays(7)->endOfDay()])
+            ->whereBetween('created_at', [\Illuminate\Support\Facades\Date::today()->subDays(13)->startOfDay(), \Illuminate\Support\Facades\Date::today()->subDays(7)->endOfDay()])
             ->count();
 
         if ($lastWeek === 0) {
@@ -58,7 +58,7 @@ final class DashboardController
     /** @return array<int, array{name: string, value: int}> */
     private function weeklyStats(): array
     {
-        $days = collect(range(6, 0))->map(fn (int $i) => Carbon::today()->subDays($i));
+        $days = collect(range(6, 0))->map(fn (int $i) => \Illuminate\Support\Facades\Date::today()->subDays($i));
 
         $signups = User::query()
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
@@ -66,7 +66,7 @@ final class DashboardController
             ->groupBy('date')
             ->pluck('count', 'date');
 
-        return $days->map(fn (Carbon $day) => [
+        return $days->map(fn (Carbon $day): array => [
             'name' => $day->format('D'),
             'value' => (int) ($signups[$day->toDateString()] ?? 0),
         ])->values()->all();

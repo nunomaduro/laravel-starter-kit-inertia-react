@@ -1,15 +1,14 @@
-import * as React from 'react';
 import {
-    CircleIcon,
     CheckCircle2Icon,
-    XCircleIcon,
+    CircleIcon,
     Loader2Icon,
     PauseCircleIcon,
-    AlertCircleIcon,
+    XCircleIcon,
 } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 export type AgentState =
     | 'idle'
@@ -73,7 +72,7 @@ export function AgentStatus({
 
     return (
         <div
-            className={cn('rounded-lg border bg-card p-3 space-y-2', className)}
+            className={cn('space-y-2 rounded-lg border bg-card p-3', className)}
             aria-label={`${name} status: ${badge.label}`}
         >
             <div className="flex items-center justify-between gap-2">
@@ -81,7 +80,9 @@ export function AgentStatus({
                     {STATE_ICONS[state]}
                     <span className="text-sm font-medium">{name}</span>
                 </div>
-                <Badge className={cn('h-4 px-1.5 text-[10px]', badge.className)}>
+                <Badge
+                    className={cn('h-4 px-1.5 text-[10px]', badge.className)}
+                >
                     {badge.label}
                 </Badge>
             </div>
@@ -91,14 +92,18 @@ export function AgentStatus({
             )}
 
             {steps && steps.length > 0 && (
-                <ul className="space-y-1 pt-1 border-t">
+                <ul className="space-y-1 border-t pt-1">
                     {steps.map((step) => (
                         <li key={step.id} className="flex items-start gap-2">
-                            <span className="mt-0.5">{STATE_ICONS[step.state]}</span>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs font-medium truncate">{step.label}</p>
+                            <span className="mt-0.5">
+                                {STATE_ICONS[step.state]}
+                            </span>
+                            <div className="min-w-0 flex-1">
+                                <p className="truncate text-xs font-medium">
+                                    {step.label}
+                                </p>
                                 {step.detail && (
-                                    <p className="text-[10px] text-muted-foreground truncate">
+                                    <p className="truncate text-[10px] text-muted-foreground">
                                         {step.detail}
                                     </p>
                                 )}
@@ -124,7 +129,12 @@ export function AgentStatusInline({
     return (
         <span className={cn('inline-flex items-center gap-1.5', className)}>
             {STATE_ICONS[state]}
-            <span className={cn('text-xs font-medium', badge.className.split(' ')[1])}>
+            <span
+                className={cn(
+                    'text-xs font-medium',
+                    badge.className.split(' ')[1],
+                )}
+            >
                 {label ?? badge.label}
             </span>
         </span>

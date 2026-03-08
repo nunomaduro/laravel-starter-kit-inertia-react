@@ -302,11 +302,44 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     }
 
     /**
+     * @return HasMany<SocialAccount, $this>
+     */
+    public function socialAccounts(): HasMany
+    {
+        return $this->hasMany(SocialAccount::class);
+    }
+
+    /**
      * @return HasMany<UserTermsAcceptance, $this>
      */
     public function termsAcceptances(): HasMany
     {
         return $this->hasMany(UserTermsAcceptance::class);
+    }
+
+    /**
+     * @return HasMany<NotificationPreference, $this>
+     */
+    public function notificationPreferences(): HasMany
+    {
+        return $this->hasMany(NotificationPreference::class);
+    }
+
+    public function prefersChannel(string $notificationType, string $channel): bool
+    {
+        $pref = $this->notificationPreferences()
+            ->where('notification_type', $notificationType)
+            ->first();
+
+        if (! $pref) {
+            return true; // Default: all channels enabled
+        }
+
+        return match ($channel) {
+            'database' => $pref->via_database,
+            'email' => $pref->via_email,
+            default => false,
+        };
     }
 
     /**

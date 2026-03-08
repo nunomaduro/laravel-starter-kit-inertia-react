@@ -119,7 +119,8 @@ function ContactFormContent({
 export default function ContactCreate() {
     const { auth, flash } = usePage<SharedData>().props;
     const isLoggedIn = Boolean(auth?.user);
-    const flashStatus = (flash as { status?: string } | null | undefined)?.status;
+    const flashStatus = (flash as { status?: string } | null | undefined)
+        ?.status;
 
     if (isLoggedIn) {
         const breadcrumbs: BreadcrumbItem[] = [

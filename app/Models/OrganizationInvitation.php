@@ -218,12 +218,19 @@ final class OrganizationInvitation extends Model
     }
 
     /**
-     * @throws InvalidArgumentException If role is not in Organization::ASSIGNABLE_ORG_ROLES
+     * @throws InvalidArgumentException If role is not a valid org role
      */
     private function validateRole(): void
     {
-        if (! in_array($this->role, Organization::ASSIGNABLE_ORG_ROLES, true)) {
-            throw new InvalidArgumentException(sprintf("Invalid role '%s'. Must be one of: ", $this->role).implode(', ', Organization::ASSIGNABLE_ORG_ROLES));
+        if (in_array($this->role, Organization::ASSIGNABLE_ORG_ROLES, true)) {
+            return;
         }
+
+        // Custom roles (created by org admins) are also valid
+        if (str_starts_with($this->role, 'custom_')) {
+            return;
+        }
+
+        throw new InvalidArgumentException(sprintf("Invalid role '%s'. Must be one of: ", $this->role).implode(', ', Organization::ASSIGNABLE_ORG_ROLES).' — or a custom role.');
     }
 }

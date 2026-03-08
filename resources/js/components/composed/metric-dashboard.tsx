@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
-import { StatCard } from '@/components/ui/stat-card';
 import { AreaChart } from '@/components/charts/area-chart';
 import { BarChart } from '@/components/charts/bar-chart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatCard } from '@/components/ui/stat-card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 
 export interface MetricCardConfig {
     id: string;
@@ -69,7 +69,10 @@ function MetricDashboard({
     };
 
     return (
-        <div data-slot="metric-dashboard" className={cn('space-y-4', className)}>
+        <div
+            data-slot="metric-dashboard"
+            className={cn('space-y-4', className)}
+        >
             <div className={cn('grid gap-4', gridCols[columns])}>
                 {metrics.map((metric) => (
                     <StatCard
@@ -88,9 +91,14 @@ function MetricDashboard({
             {chartData.length > 0 && (
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">{chartTitle}</CardTitle>
+                        <CardTitle className="text-sm font-medium">
+                            {chartTitle}
+                        </CardTitle>
                         {periodOptions && periodOptions.length > 0 && (
-                            <Tabs value={selectedPeriod} onValueChange={handlePeriodChange}>
+                            <Tabs
+                                value={selectedPeriod}
+                                onValueChange={handlePeriodChange}
+                            >
                                 <TabsList className="h-7">
                                     {periodOptions.map((opt) => (
                                         <TabsTrigger

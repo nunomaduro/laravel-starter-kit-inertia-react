@@ -20,7 +20,15 @@ export default function DeleteUser() {
     const passwordInputRef = useRef<HTMLInputElement>(null);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 rounded-xl border border-destructive/20 p-6">
+            <div>
+                <h3 className="text-base font-semibold text-destructive">
+                    Danger Zone
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                    Irreversible and destructive actions. Proceed with caution.
+                </p>
+            </div>
             <HeadingSmall
                 title="Delete account"
                 description="Delete your account and all of its resources"

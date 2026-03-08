@@ -91,6 +91,9 @@ final class HandleInertiaRequests extends Middleware
             'seo' => $this->seoSharedData(),
             'theme' => $theme,
             'branding' => $this->resolveBranding(...),
+            'notifications' => [
+                'unread_count' => $user?->unreadNotifications()->count() ?? 0,
+            ],
         ];
     }
 
@@ -98,7 +101,7 @@ final class HandleInertiaRequests extends Middleware
      * Resolve theme from DB (settings table) so Manage Theme changes take effect immediately.
      * Bypasses Settings class cache by reading directly. Falls back to config when unavailable.
      *
-     * @return array{preset: string, base_color: string, radius: string, font: string, default_appearance: string, dark: string, primary: string, light: string, skin: string, layout: string, menuColor: string, menuAccent: string, canCustomize: bool, userMode: string}
+     * @return array{preset: string, base_color: string, radius: string, font: string, default_appearance: string, dark: string, primary: string, light: string, skin: string, layout: string, menuColor: string, menuAccent: string, canCustomize: bool, allowUserThemeCustomization: bool, userMode: string, lockedSettings: string[]}
      */
     private function resolveTheme(Request $request): array
     {
@@ -129,8 +132,40 @@ final class HandleInertiaRequests extends Middleware
                 $db[$row->name] = is_string($row->payload) ? json_decode($row->payload, true) : $row->payload;
             }
 
-            $allowUserCustomization = (bool) ($db['allow_user_theme_customization'] ?? false);
-            $canCustomize = $user !== null && ($user->isOrganizationAdmin() || $allowUserCustomization);
+            // Org overrides take precedence over global settings.
+            $organization = TenantContext::get();
+            if ($organization instanceof Organization) {
+                $orgRows = DB::table('organization_settings')
+                    ->where('organization_id', $organization->id)
+                    ->where('group', 'theme')
+                    ->get(['name', 'payload']);
+
+                foreach ($orgRows as $orgRow) {
+                    $db[$orgRow->name] = json_decode((string) $orgRow->payload, true);
+                }
+            }
+
+            $allowUserCustomization = (bool) ($db['allow_user_theme_customization'] ?? true);
+            $isOrgAdmin = $user !== null && $organization instanceof Organization && (
+                $user->isOrganizationAdmin()
+                || $user->canInOrganization('org.settings.manage', $organization)
+            );
+            $isAdmin = $user !== null && ($isOrgAdmin || $user->isSuperAdmin());
+
+            // Load org-level branding user controls
+            $orgBranding = [];
+            if ($organization instanceof Organization) {
+                $brandingRows = DB::table('organization_settings')
+                    ->where('organization_id', $organization->id)
+                    ->where('group', 'branding')
+                    ->whereIn('name', ['user_can_change_colors', 'user_can_change_font', 'user_can_change_layout', 'user_can_change_logo'])
+                    ->get(['name', 'payload']);
+                foreach ($brandingRows as $row) {
+                    $orgBranding[$row->name] = json_decode((string) $row->payload, true);
+                }
+            }
+
+            $canCustomize = $user !== null && ($isAdmin || $allowUserCustomization);
 
             $userMode = 'system';
             if ($user !== null) {
@@ -155,7 +190,26 @@ final class HandleInertiaRequests extends Middleware
                 'menuColor' => $db['menu_color'] ?? $defaults['menuColor'],
                 'menuAccent' => $db['menu_accent'] ?? $defaults['menuAccent'],
                 'canCustomize' => $canCustomize,
+                'canCustomizeGranular' => [
+                    'colors' => $isAdmin || ($allowUserCustomization && (bool) ($orgBranding['user_can_change_colors'] ?? true)),
+                    'font' => $isAdmin || ($allowUserCustomization && (bool) ($orgBranding['user_can_change_font'] ?? true)),
+                    'layout' => $isAdmin || ($allowUserCustomization && (bool) ($orgBranding['user_can_change_layout'] ?? true)),
+                    'logo' => $organization instanceof Organization && $user !== null && (
+                        $isAdmin
+                        || (($db['allow_user_logo_upload'] ?? false) && $allowUserCustomization && (bool) ($orgBranding['user_can_change_logo'] ?? false))
+                    ),
+                ],
+                'allowUserThemeCustomization' => $allowUserCustomization,
                 'userMode' => $userMode,
+                'lockedSettings' => $db['locked_settings'] ?? [],
+                'canManageBranding' => $organization instanceof Organization && $user !== null && (
+                    $user->isOrganizationAdmin()
+                    || $user->canInOrganization('org.settings.manage', $organization)
+                    || (
+                        ($db['allow_user_logo_upload'] ?? false)
+                        && ($db['allow_user_theme_customization'] ?? true)
+                    )
+                ),
             ];
         } catch (Throwable) {
             return $defaults;
@@ -177,7 +231,7 @@ final class HandleInertiaRequests extends Middleware
                 'themePreset' => null,
                 'themeRadius' => null,
                 'themeFont' => null,
-                'allowUserCustomization' => false,
+                'allowUserCustomization' => true,
             ];
         }
 

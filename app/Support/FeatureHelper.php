@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Models\Organization;
 use App\Models\User;
+use App\Services\TenantContext;
+use Illuminate\Support\Facades\DB;
 use Laravel\Pennant\Feature;
 
 /**
@@ -34,12 +37,31 @@ final class FeatureHelper
 
     /**
      * Check if a feature is active for the given user (by feature key).
-     * Returns false if the feature is globally disabled, otherwise delegates to Pennant.
+     * Resolution order:
+     *   1. globally_disabled → false
+     *   2. org override 'disabled' → false
+     *   3. org override 'enabled' → true
+     *   4. Pennant (user/default)
      */
     public static function isActiveForKey(string $featureKey, ?User $user = null): bool
     {
         if (self::isGloballyDisabled($featureKey)) {
             return false;
+        }
+
+        // Org-level override (inherit | enabled | disabled)
+        $organization = TenantContext::get();
+        if ($organization instanceof Organization) {
+            $override = self::getOrgFeatureOverride($featureKey, $organization);
+            if ($override === 'disabled') {
+                return false;
+            }
+
+            if ($override === 'enabled') {
+                return true;
+            }
+
+            // 'inherit' → fall through to Pennant
         }
 
         $featureClass = self::classForKey($featureKey);
@@ -53,6 +75,39 @@ final class FeatureHelper
         }
 
         return Feature::for($u)->active($featureClass);
+    }
+
+    /**
+     * Get the org-level feature override ('inherit' | 'enabled' | 'disabled').
+     */
+    public static function getOrgFeatureOverride(string $featureKey, Organization $organization): string
+    {
+        $payload = DB::table('organization_settings')
+            ->where('organization_id', $organization->id)
+            ->where('group', 'features')
+            ->where('name', $featureKey)
+            ->value('payload');
+
+        if ($payload === null) {
+            return 'inherit';
+        }
+
+        $value = json_decode((string) $payload, true);
+
+        return in_array($value, ['enabled', 'disabled'], true) ? $value : 'inherit';
+    }
+
+    /**
+     * Return feature metadata for delegatable features.
+     *
+     * @return array<string, array{delegate_to_orgs: bool, plan_required: string|null}>
+     */
+    public static function getDelegatableFeatures(): array
+    {
+        return array_filter(
+            config('feature-flags.feature_metadata', []),
+            fn (array $meta): bool => $meta['delegate_to_orgs'] === true,
+        );
     }
 
     /**

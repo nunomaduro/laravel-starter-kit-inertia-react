@@ -4,7 +4,6 @@ import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { ThemeCustomizerInline } from '@/components/ui/theme-customizer';
 import {
     Select,
     SelectContent,
@@ -13,6 +12,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { ThemeCustomizerInline } from '@/components/ui/theme-customizer';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import {
@@ -74,9 +74,7 @@ export default function Branding({
                         description="Logo and theme overrides for your organization"
                     />
 
-                    {props.theme?.canCustomize && (
-                        <ThemeCustomizerInline />
-                    )}
+                    {props.theme?.canCustomize && <ThemeCustomizerInline />}
 
                     <form
                         onSubmit={handleSubmit}

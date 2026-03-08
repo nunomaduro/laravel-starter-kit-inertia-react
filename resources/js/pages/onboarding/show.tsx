@@ -27,7 +27,9 @@ export default function OnboardingShow({
 
     return (
         <AppSidebarLayout>
-            <Head title={alreadyCompleted ? 'Review onboarding' : 'Get started'} />
+            <Head
+                title={alreadyCompleted ? 'Review onboarding' : 'Get started'}
+            />
             <div className="flex h-full flex-1 flex-col items-center justify-center gap-8 p-4">
                 <div className="w-full max-w-md space-y-6">
                     <div className="text-center">

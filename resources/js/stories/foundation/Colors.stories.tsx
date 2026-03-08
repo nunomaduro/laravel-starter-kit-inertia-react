@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 const PALETTE = [
     { name: 'background', var: '--color-background' },
@@ -33,7 +32,9 @@ function ColorSwatch({ name, cssVar }: { name: string; cssVar: string }) {
             />
             <div className="space-y-0.5">
                 <p className="text-xs font-medium text-foreground">{name}</p>
-                <p className="font-mono text-[10px] text-muted-foreground">{cssVar}</p>
+                <p className="font-mono text-[10px] text-muted-foreground">
+                    {cssVar}
+                </p>
             </div>
         </div>
     );
@@ -41,11 +42,14 @@ function ColorSwatch({ name, cssVar }: { name: string; cssVar: string }) {
 
 function ColorsDemo() {
     return (
-        <div className="p-6 space-y-6 bg-background text-foreground min-h-screen">
+        <div className="min-h-screen space-y-6 bg-background p-6 text-foreground">
             <div>
-                <h2 className="text-lg font-semibold mb-1">Semantic Color Tokens</h2>
-                <p className="text-sm text-muted-foreground mb-4">
-                    All colors adapt to the active theme via CSS custom properties.
+                <h2 className="mb-1 text-lg font-semibold">
+                    Semantic Color Tokens
+                </h2>
+                <p className="mb-4 text-sm text-muted-foreground">
+                    All colors adapt to the active theme via CSS custom
+                    properties.
                 </p>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                     {PALETTE.map(({ name, var: cssVar }) => (

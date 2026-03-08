@@ -1,14 +1,25 @@
-import * as React from 'react';
 import { BotIcon, XIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { AssistantRuntimeProvider, type AssistantRuntimeProviderProps } from './assistant-runtime-provider';
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
+import {
+    AssistantRuntimeProvider,
+    type AssistantRuntimeProviderProps,
+} from './assistant-runtime-provider';
 import { AssistantThread, type AssistantThreadProps } from './assistant-thread';
 
 export interface AssistantSidebarProps
-    extends Pick<AssistantRuntimeProviderProps, 'endpoint' | 'model' | 'headers' | 'systemPrompt'>,
+    extends
+        Pick<
+            AssistantRuntimeProviderProps,
+            'endpoint' | 'model' | 'headers' | 'systemPrompt'
+        >,
         Omit<AssistantThreadProps, 'className'> {
     /** Controls the open state of the sidebar. */
     open: boolean;
@@ -45,11 +56,11 @@ export function AssistantSidebar({
             <SheetContent
                 side={side}
                 className={cn(
-                    'flex flex-col gap-0 p-0 w-[400px] sm:w-[480px] sm:max-w-none',
+                    'flex w-[400px] flex-col gap-0 p-0 sm:w-[480px] sm:max-w-none',
                     contentClassName,
                 )}
             >
-                <SheetHeader className="border-b px-4 py-3 shrink-0">
+                <SheetHeader className="shrink-0 border-b px-4 py-3">
                     <div className="flex items-center justify-between">
                         <SheetTitle className="flex items-center gap-2 text-base">
                             <BotIcon className="size-4 text-primary" />
@@ -76,7 +87,7 @@ export function AssistantSidebar({
                         placeholder={placeholder}
                         assistantName={assistantName}
                         welcomeMessage={welcomeMessage}
-                        className="flex-1 min-h-0"
+                        className="min-h-0 flex-1"
                     />
                 </AssistantRuntimeProvider>
             </SheetContent>

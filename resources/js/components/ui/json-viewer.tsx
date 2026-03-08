@@ -72,7 +72,7 @@ function JsonNode({
   depth,
   maxDepth,
   defaultExpanded,
-  isRoot = false,
+  isRoot: _isRoot = false,
   keyName,
 }: {
   value: JsonValue
@@ -82,6 +82,7 @@ function JsonNode({
   isRoot?: boolean
   keyName?: string
 }) {
+  void _isRoot;
   const [expanded, setExpanded] = React.useState(defaultExpanded && depth < maxDepth)
 
   const isObject = typeof value === "object" && value !== null && !Array.isArray(value)

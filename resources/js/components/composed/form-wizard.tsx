@@ -1,10 +1,16 @@
-import * as React from 'react';
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 
 export interface FormWizardStep {
     id: string;
@@ -34,7 +40,9 @@ function FormWizard({
     showProgress = true,
 }: FormWizardProps) {
     const [currentIndex, setCurrentIndex] = React.useState(0);
-    const [completedSteps, setCompletedSteps] = React.useState<Set<number>>(new Set());
+    const [completedSteps, setCompletedSteps] = React.useState<Set<number>>(
+        new Set(),
+    );
     const [isValidating, setIsValidating] = React.useState(false);
 
     const currentStep = steps[currentIndex];
@@ -81,9 +89,9 @@ function FormWizard({
                                     i === currentIndex
                                         ? 'border-primary bg-primary text-primary-foreground'
                                         : completedSteps.has(i)
-                                          ? 'border-success bg-success text-white cursor-pointer'
+                                          ? 'cursor-pointer border-success bg-success text-white'
                                           : i < currentIndex
-                                            ? 'border-muted-foreground/50 text-muted-foreground cursor-pointer hover:border-primary'
+                                            ? 'cursor-pointer border-muted-foreground/50 text-muted-foreground hover:border-primary'
                                             : 'border-muted text-muted-foreground',
                                 )}
                                 aria-label={`Step ${i + 1}: ${step.title}`}
@@ -98,7 +106,9 @@ function FormWizard({
                                 <div
                                     className={cn(
                                         'h-0.5 flex-1 rounded-full',
-                                        i < currentIndex ? 'bg-primary' : 'bg-muted',
+                                        i < currentIndex
+                                            ? 'bg-primary'
+                                            : 'bg-muted',
                                     )}
                                 />
                             )}
@@ -106,11 +116,15 @@ function FormWizard({
                     ))}
                 </div>
                 {showProgress && (
-                    <Progress value={progressPercent} className="h-1 mt-3" />
+                    <Progress value={progressPercent} className="mt-3 h-1" />
                 )}
-                <CardTitle className="mt-2 text-base">{currentStep.title}</CardTitle>
+                <CardTitle className="mt-2 text-base">
+                    {currentStep.title}
+                </CardTitle>
                 {currentStep.description && (
-                    <p className="text-sm text-muted-foreground">{currentStep.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                        {currentStep.description}
+                    </p>
                 )}
             </CardHeader>
             <CardContent>{currentStep.content}</CardContent>
@@ -122,14 +136,20 @@ function FormWizard({
                         </Button>
                     )}
                     {!isFirst && (
-                        <Button variant="outline" size="sm" onClick={handleBack}>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleBack}
+                        >
                             <ChevronLeftIcon className="mr-1 size-4" />
                             Back
                         </Button>
                     )}
                 </div>
                 <Button size="sm" onClick={handleNext} disabled={isValidating}>
-                    {isLast ? completeLabel : (
+                    {isLast ? (
+                        completeLabel
+                    ) : (
                         <>
                             Next
                             <ChevronRightIcon className="ml-1 size-4" />

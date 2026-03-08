@@ -8,6 +8,7 @@ declare(strict_types=1);
  * after adding or changing routes.
  */
 
+use App\Http\Controllers\Api\SlugAvailabilityController;
 use App\Http\Controllers\Billing\BillingDashboardController;
 use App\Http\Controllers\Billing\CreditController;
 use App\Http\Controllers\Billing\InvoiceController;
@@ -20,10 +21,17 @@ use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Dev\ComponentShowcaseController;
+use App\Http\Controllers\Dev\PageGalleryController;
 use App\Http\Controllers\EnterpriseInquiryController;
 use App\Http\Controllers\HelpCenter\HelpCenterController;
 use App\Http\Controllers\HelpCenter\RateHelpArticleController;
+use App\Http\Controllers\Internal\CaddyAskController;
 use App\Http\Controllers\InvitationAcceptController;
+use App\Http\Controllers\Notifications\ClearAllNotificationsController;
+use App\Http\Controllers\Notifications\DeleteNotificationController;
+use App\Http\Controllers\Notifications\IndexNotificationsController;
+use App\Http\Controllers\Notifications\MarkAllNotificationsReadController;
+use App\Http\Controllers\Notifications\MarkNotificationReadController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationInvitationController;
@@ -36,7 +44,15 @@ use App\Http\Controllers\PersonalDataExportController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\Settings\AchievementsController;
+use App\Http\Controllers\Settings\AuditLogController;
 use App\Http\Controllers\Settings\BrandingController;
+use App\Http\Controllers\Settings\NotificationPreferencesController;
+use App\Http\Controllers\Settings\OrgBrandingUserControlsController;
+use App\Http\Controllers\Settings\OrgDomainsController;
+use App\Http\Controllers\Settings\OrgFeaturesController;
+use App\Http\Controllers\Settings\OrgRolesController;
+use App\Http\Controllers\Settings\OrgSlugController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\TermsAcceptController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserEmailResetNotificationController;
@@ -47,6 +63,7 @@ use App\Http\Controllers\UserPreferencesController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UsersTableController;
 use App\Http\Controllers\UserTwoFactorAuthenticationController;
+use App\Http\Middleware\InternalRequestMiddleware;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -62,6 +79,10 @@ if (app()->environment(['local', 'staging'])) {
     Route::get('dev/components', ComponentShowcaseController::class)
         ->middleware(['auth', 'feature:component_showcase'])
         ->name('dev.components');
+
+    Route::get('dev/pages', PageGalleryController::class)
+        ->middleware(['auth'])
+        ->name('dev.pages');
 }
 
 Route::get('/favicon.ico', function (): BinaryFileResponse|RedirectResponse {
@@ -179,6 +200,22 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::middleware(['tenant', 'permission:org.settings.manage'])->group(function (): void {
         Route::get('settings/branding', [BrandingController::class, 'edit'])->name('settings.branding.edit');
         Route::put('settings/branding', [BrandingController::class, 'update'])->name('settings.branding.update');
+        Route::post('settings/branding/user-controls', OrgBrandingUserControlsController::class)->name('settings.branding.user-controls');
+        Route::get('settings/audit-log', AuditLogController::class)->name('settings.audit-log');
+
+        Route::get('settings/features', [OrgFeaturesController::class, 'show'])->name('settings.features.show');
+        Route::post('settings/features', [OrgFeaturesController::class, 'update'])->name('settings.features.update');
+
+        Route::get('settings/roles', [OrgRolesController::class, 'index'])->name('settings.roles.index');
+        Route::post('settings/roles', [OrgRolesController::class, 'store'])->name('settings.roles.store');
+        Route::delete('settings/roles/{role}', [OrgRolesController::class, 'destroy'])->name('settings.roles.destroy');
+
+        Route::get('settings/general', [OrgSlugController::class, 'show'])->name('settings.general.show');
+        Route::patch('settings/general/slug', [OrgSlugController::class, 'update'])->name('settings.general.slug.update');
+        Route::get('settings/domains', [OrgDomainsController::class, 'show'])->name('settings.domains.show');
+        Route::post('settings/domains', [OrgDomainsController::class, 'store'])->name('settings.domains.store');
+        Route::delete('settings/domains/{domain}', [OrgDomainsController::class, 'destroy'])->name('settings.domains.destroy');
+        Route::post('settings/domains/{domain}/verify', [OrgDomainsController::class, 'verify'])->name('settings.domains.verify');
     });
 
     Route::middleware('tenant')->group(function (): void {
@@ -198,6 +235,15 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         ->name('profile.export-pdf');
 });
 
+Route::get('/api/slug-availability', SlugAvailabilityController::class)
+    ->middleware('auth')
+    ->name('api.slug-availability');
+
+Route::get('/internal/caddy/ask', CaddyAskController::class)
+    ->middleware(InternalRequestMiddleware::class)
+    ->withoutMiddleware([ValidateCsrfToken::class])
+    ->name('internal.caddy.ask');
+
 Route::post('webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe')->withoutMiddleware([ValidateCsrfToken::class]);
 Route::post('webhooks/paddle', PaddleWebhookController::class)->name('webhooks.paddle')->withoutMiddleware([ValidateCsrfToken::class]);
 
@@ -213,10 +259,9 @@ Route::middleware('auth')->group(function (): void {
 
     Route::patch('user/preferences', [UserPreferencesController::class, 'update'])->name('user.preferences.update');
 
-    Route::middleware('tenant')->group(function (): void {
-        Route::post('org/theme', [OrgThemeController::class, 'save'])->name('org.theme.save');
-        Route::delete('org/theme', [OrgThemeController::class, 'reset'])->name('org.theme.reset');
-    });
+    Route::post('org/theme', [OrgThemeController::class, 'save'])->name('org.theme.save');
+    Route::delete('org/theme', [OrgThemeController::class, 'reset'])->name('org.theme.reset');
+    Route::post('org/theme/analyze-logo', [OrgThemeController::class, 'analyzeLogo'])->name('org.theme.analyze-logo');
 
     Route::redirect('settings', '/settings/profile')->name('settings');
     Route::get('settings/profile', [UserProfileController::class, 'edit'])->name('user-profile.edit');
@@ -245,6 +290,17 @@ Route::middleware('auth')->group(function (): void {
     Route::get('settings/achievements', [AchievementsController::class, 'show'])
         ->middleware('feature:gamification')
         ->name('achievements.show');
+
+    Route::get('settings/notifications', [NotificationPreferencesController::class, 'show'])->name('settings.notifications.show');
+    Route::patch('settings/notifications', [NotificationPreferencesController::class, 'update'])->name('settings.notifications.update');
+
+    Route::prefix('notifications')->name('notifications.')->group(function (): void {
+        Route::get('/', IndexNotificationsController::class)->name('index');
+        Route::post('{notification}/read', MarkNotificationReadController::class)->name('read');
+        Route::post('read-all', MarkAllNotificationsReadController::class)->name('read-all');
+        Route::delete('{notification}', DeleteNotificationController::class)->name('delete');
+        Route::delete('/', ClearAllNotificationsController::class)->name('clear');
+    });
 });
 
 Route::middleware('guest')->group(function (): void {
@@ -272,6 +328,9 @@ Route::middleware('guest')->group(function (): void {
     Route::post('login', [SessionController::class, 'store'])
         ->name('login.store');
 });
+
+Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('auth.social.redirect');
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('auth.social.callback');
 
 Route::middleware('auth')->group(function (): void {
     Route::get('verify-email', [UserEmailVerificationNotificationController::class, 'create'])

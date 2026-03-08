@@ -1,6 +1,6 @@
-import { Map, MapControls, MapMarker, MapRoute } from "@/components/ui/map";
-import { cn } from "@/lib/utils";
-import { OPEN_FREE_MAP_STYLES } from "./base-map";
+import { Map, MapControls, MapMarker, MapRoute } from '@/components/ui/map';
+import { cn } from '@/lib/utils';
+import { OPEN_FREE_MAP_STYLES } from './base-map';
 
 export type RouteData = {
     id: string;
@@ -13,9 +13,9 @@ export type RouteData = {
 
 const MOCK_ROUTES: RouteData[] = [
     {
-        id: "route-1",
-        label: "Route A",
-        color: "#3b82f6",
+        id: 'route-1',
+        label: 'Route A',
+        color: '#3b82f6',
         width: 4,
         coordinates: [
             [-74.006, 40.7128],
@@ -24,9 +24,9 @@ const MOCK_ROUTES: RouteData[] = [
         ],
     },
     {
-        id: "route-2",
-        label: "Route B",
-        color: "#ef4444",
+        id: 'route-2',
+        label: 'Route B',
+        color: '#ef4444',
         width: 3,
         dashed: true,
         coordinates: [
@@ -51,7 +51,12 @@ export function RoutesMap({
     zoom = 10,
 }: RoutesMapProps) {
     return (
-        <div className={cn("relative h-80 w-full overflow-hidden rounded-lg border", className)}>
+        <div
+            className={cn(
+                'relative h-80 w-full overflow-hidden rounded-lg border',
+                className,
+            )}
+        >
             <Map
                 className="size-full"
                 styles={OPEN_FREE_MAP_STYLES}
@@ -64,7 +69,7 @@ export function RoutesMap({
                         key={route.id}
                         id={route.id}
                         coordinates={route.coordinates}
-                        color={route.color ?? "#3b82f6"}
+                        color={route.color ?? '#3b82f6'}
                         width={route.width ?? 3}
                         dashArray={route.dashed ? [4, 4] : undefined}
                     />

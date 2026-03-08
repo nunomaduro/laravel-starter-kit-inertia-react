@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { Map, MapControls, MapMarker, useMap } from "@/components/ui/map";
-import { cn } from "@/lib/utils";
-import { OPEN_FREE_MAP_STYLES } from "./base-map";
-import type MapLibreGL from "maplibre-gl";
+import { Map, MapControls, MapMarker, useMap } from '@/components/ui/map';
+import { cn } from '@/lib/utils';
+import type MapLibreGL from 'maplibre-gl';
+import { useCallback, useEffect, useState } from 'react';
+import { OPEN_FREE_MAP_STYLES } from './base-map';
 
 export type PickedLocation = {
     longitude: number;
@@ -18,11 +18,15 @@ function ClickListener({ onPick }: { onPick: (loc: PickedLocation) => void }) {
     useEffect(() => {
         if (!isLoaded || !map) return;
         const handler = (e: MapLibreGL.MapMouseEvent) => {
-            onPickRef.current({ longitude: e.lngLat.lng, latitude: e.lngLat.lat });
+            onPickRef.current({
+                longitude: e.lngLat.lng,
+                latitude: e.lngLat.lat,
+            });
         };
-        map.on("click", handler);
-        return () => { map.off("click", handler); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        map.on('click', handler);
+        return () => {
+            map.off('click', handler);
+        };
     }, [isLoaded, map]);
 
     return null;
@@ -46,7 +50,7 @@ export function LocationPicker({
     className,
     center = [-74.006, 40.7128],
     zoom = 10,
-    placeholder = "Click on the map to pick a location",
+    placeholder = 'Click on the map to pick a location',
 }: LocationPickerProps) {
     const [internal, setInternal] = useState<PickedLocation | null>(null);
     const picked = value !== undefined ? value : internal;
@@ -56,7 +60,7 @@ export function LocationPicker({
             setInternal(loc);
             onChange?.(loc);
         },
-        [onChange]
+        [onChange],
     );
 
     const handleClear = useCallback(() => {
@@ -65,7 +69,7 @@ export function LocationPicker({
     }, [onChange]);
 
     return (
-        <div className={cn("flex flex-col gap-2", className)}>
+        <div className={cn('flex flex-col gap-2', className)}>
             <div className="relative h-80 w-full overflow-hidden rounded-lg border">
                 <Map
                     className="size-full cursor-crosshair"
@@ -98,9 +102,13 @@ export function LocationPicker({
             {picked && (
                 <div className="flex items-center gap-3 rounded-md border bg-muted/40 px-3 py-2 text-sm">
                     <span className="text-muted-foreground">Lat:</span>
-                    <span className="font-mono font-medium">{picked.latitude.toFixed(6)}</span>
+                    <span className="font-mono font-medium">
+                        {picked.latitude.toFixed(6)}
+                    </span>
                     <span className="text-muted-foreground">Lng:</span>
-                    <span className="font-mono font-medium">{picked.longitude.toFixed(6)}</span>
+                    <span className="font-mono font-medium">
+                        {picked.longitude.toFixed(6)}
+                    </span>
                     <button
                         type="button"
                         className="ml-auto text-xs text-muted-foreground underline hover:text-foreground"

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { cn } from '@/lib/utils';
 
 export interface ConfidenceScoreProps {
@@ -41,17 +39,35 @@ export function ConfidenceScore({
         <div className={cn('space-y-1', className)}>
             {showLabel && (
                 <div className="flex items-center justify-between">
-                    <span className={cn('font-medium text-muted-foreground', SIZE_CLASSES[size])}>
+                    <span
+                        className={cn(
+                            'font-medium text-muted-foreground',
+                            SIZE_CLASSES[size],
+                        )}
+                    >
                         Confidence
                     </span>
-                    <span className={cn('font-semibold tabular-nums', SIZE_CLASSES[size])}>
+                    <span
+                        className={cn(
+                            'font-semibold tabular-nums',
+                            SIZE_CLASSES[size],
+                        )}
+                    >
                         {pct}%
                     </span>
                 </div>
             )}
-            <div className={cn('w-full rounded-full bg-muted overflow-hidden', SIZE_CLASSES[size])}>
+            <div
+                className={cn(
+                    'w-full overflow-hidden rounded-full bg-muted',
+                    SIZE_CLASSES[size],
+                )}
+            >
                 <div
-                    className={cn('h-full rounded-full transition-all duration-500', scoreColor(clamped))}
+                    className={cn(
+                        'h-full rounded-full transition-all duration-500',
+                        scoreColor(clamped),
+                    )}
                     style={{ width: `${pct}%` }}
                     role="meter"
                     aria-valuenow={clamped}

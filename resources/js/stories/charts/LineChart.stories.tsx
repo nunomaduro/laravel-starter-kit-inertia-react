@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { LineChart } from '@/components/charts/line-chart';
 
@@ -32,15 +31,40 @@ type Story = StoryObj<typeof LineChart>;
 
 export const Default: Story = {
     args: { data: DATA, dataKeys: ['signups'], xKey: 'week', height: 300 },
-    render: (args) => <div className="w-[500px]"><LineChart {...args} /></div>,
+    render: (args) => (
+        <div className="w-[500px]">
+            <LineChart {...args} />
+        </div>
+    ),
 };
 
 export const MultiLine: Story = {
-    args: { data: DATA, dataKeys: ['signups', 'churned'], xKey: 'week', showLegend: true, height: 300 },
-    render: (args) => <div className="w-[500px]"><LineChart {...args} /></div>,
+    args: {
+        data: DATA,
+        dataKeys: ['signups', 'churned'],
+        xKey: 'week',
+        showLegend: true,
+        height: 300,
+    },
+    render: (args) => (
+        <div className="w-[500px]">
+            <LineChart {...args} />
+        </div>
+    ),
 };
 
 export const Curved: Story = {
-    args: { data: DATA, dataKeys: ['signups'], xKey: 'week', curved: true, showDots: true, height: 300 },
-    render: (args) => <div className="w-[500px]"><LineChart {...args} /></div>,
+    args: {
+        data: DATA,
+        dataKeys: ['signups'],
+        xKey: 'week',
+        curved: true,
+        showDots: true,
+        height: 300,
+    },
+    render: (args) => (
+        <div className="w-[500px]">
+            <LineChart {...args} />
+        </div>
+    ),
 };

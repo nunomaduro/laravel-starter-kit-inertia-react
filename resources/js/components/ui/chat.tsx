@@ -30,7 +30,6 @@ function Chat({
   placeholder = "Type a message...",
   className,
   isLoading = false,
-  currentUserId,
 }: ChatProps) {
   const [input, setInput] = React.useState("")
   const bottomRef = React.useRef<HTMLDivElement>(null)

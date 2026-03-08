@@ -1,0 +1,29 @@
+import { Head } from '@inertiajs/react';
+
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: '{{ PageTitle }}', href: '/{{ routePath }}' },
+];
+
+interface {{ ComponentName }}Props {
+    // Add your page props here
+}
+
+export default function {{ ComponentName }}({}: {{ ComponentName }}Props) {
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="{{ PageTitle }}" />
+
+            <div className="flex h-full flex-1 flex-col gap-4 p-4">
+                <div className="flex flex-col gap-1">
+                    <h1 className="text-2xl font-semibold tracking-tight">{{ PageTitle }}</h1>
+                    <p className="text-muted-foreground text-sm">Page description goes here.</p>
+                </div>
+
+                {/* Page content */}
+            </div>
+        </AppLayout>
+    );
+}

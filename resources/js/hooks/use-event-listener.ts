@@ -2,13 +2,24 @@ import { type RefObject, useEffect, useRef } from 'react';
 
 type Target = EventTarget | RefObject<EventTarget | null> | null;
 
-export function useEventListener<K extends keyof WindowEventMap>(eventName: K, handler: (event: WindowEventMap[K]) => void, element?: undefined): void;
-export function useEventListener<K extends keyof HTMLElementEventMap, T extends HTMLElement>(
+export function useEventListener<K extends keyof WindowEventMap>(
+    eventName: K,
+    handler: (event: WindowEventMap[K]) => void,
+    element?: undefined,
+): void;
+export function useEventListener<
+    K extends keyof HTMLElementEventMap,
+    T extends HTMLElement,
+>(
     eventName: K,
     handler: (event: HTMLElementEventMap[K]) => void,
     element: RefObject<T | null>,
 ): void;
-export function useEventListener<K extends string>(eventName: K, handler: (event: Event) => void, element?: Target): void {
+export function useEventListener<K extends string>(
+    eventName: K,
+    handler: (event: Event) => void,
+    element?: Target,
+): void {
     const savedHandler = useRef(handler);
     savedHandler.current = handler;
 

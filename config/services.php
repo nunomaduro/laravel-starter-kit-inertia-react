@@ -46,6 +46,20 @@ return [
         'url' => env('EXAMPLE_API_URL', 'https://jsonplaceholder.typicode.com'),
     ],
 
+    // Managed via Filament: Settings > Auth
+    'google' => [
+        'client_id' => null,
+        'client_secret' => null,
+        'redirect' => env('APP_URL', 'http://localhost').'/auth/google/callback',
+    ],
+
+    // Managed via Filament: Settings > Auth
+    'github' => [
+        'client_id' => null,
+        'client_secret' => null,
+        'redirect' => env('APP_URL', 'http://localhost').'/auth/github/callback',
+    ],
+
     // Managed via Filament: Settings > Lemon Squeezy
     'lemon_squeezy' => [
         'api_key' => null,

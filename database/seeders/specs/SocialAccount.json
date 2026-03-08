@@ -1,0 +1,64 @@
+{
+    "model": "SocialAccount",
+    "table": "social_accounts",
+    "fields": {
+        "id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "user_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "provider": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "provider_id": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "token": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "refresh_token": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "token_expires_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "user": {
+            "type": "belongsTo",
+            "model": "User"
+        }
+    },
+    "value_hints": {
+        "token_expires_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        }
+    },
+    "scenarios": []
+}

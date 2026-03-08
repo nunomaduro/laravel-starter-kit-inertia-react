@@ -5,12 +5,15 @@ import React from 'react';
 // We render a simplified approximation with the same layout structure.
 function ShellLayout({ children }: { children?: React.ReactNode }) {
     return (
-        <div className="flex h-screen bg-background text-foreground overflow-hidden">
+        <div className="flex h-screen overflow-hidden bg-background text-foreground">
             {/* Sidebar placeholder */}
-            <aside className="hidden w-64 flex-shrink-0 border-r border-border bg-sidebar md:flex flex-col gap-2 p-4">
-                <div className="h-8 w-28 rounded bg-muted/60 mb-4" />
+            <aside className="hidden w-64 flex-shrink-0 flex-col gap-2 border-r border-border bg-sidebar p-4 md:flex">
+                <div className="mb-4 h-8 w-28 rounded bg-muted/60" />
                 {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-sidebar-accent">
+                    <div
+                        key={i}
+                        className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-sidebar-accent"
+                    >
                         <div className="size-4 rounded bg-muted/60" />
                         <div className="h-3 w-24 rounded bg-muted/60" />
                     </div>
@@ -32,7 +35,9 @@ function ShellLayout({ children }: { children?: React.ReactNode }) {
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                         <span>App</span>
                         <span>/</span>
-                        <span className="text-foreground font-medium">Page</span>
+                        <span className="font-medium text-foreground">
+                            Page
+                        </span>
                     </div>
                     <div className="flex-1" />
                     <div className="size-8 rounded-full bg-primary/20" />
@@ -41,7 +46,7 @@ function ShellLayout({ children }: { children?: React.ReactNode }) {
                 {/* Content */}
                 <main className="flex-1 overflow-auto p-6">
                     {children ?? (
-                        <div className="h-full rounded-xl border border-dashed border-border p-8 flex items-center justify-center text-muted-foreground text-sm">
+                        <div className="flex h-full items-center justify-center rounded-xl border border-dashed border-border p-8 text-sm text-muted-foreground">
                             Page content goes here
                         </div>
                     )}
@@ -71,9 +76,14 @@ export const WithContent: StoryObj = {
                 <h1 className="text-2xl font-bold">Dashboard</h1>
                 <div className="grid grid-cols-3 gap-4">
                     {['Users', 'Revenue', 'Orders'].map((label) => (
-                        <div key={label} className="rounded-xl border border-border bg-card p-6">
-                            <p className="text-sm text-muted-foreground">{label}</p>
-                            <p className="text-3xl font-bold mt-1">—</p>
+                        <div
+                            key={label}
+                            className="rounded-xl border border-border bg-card p-6"
+                        >
+                            <p className="text-sm text-muted-foreground">
+                                {label}
+                            </p>
+                            <p className="mt-1 text-3xl font-bold">—</p>
                         </div>
                     ))}
                 </div>

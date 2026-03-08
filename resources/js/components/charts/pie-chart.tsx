@@ -1,9 +1,15 @@
-import * as React from 'react';
-import { Cell, Legend, Pie, PieChart as RechartsPieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import {
+    Cell,
+    Legend,
+    Pie,
+    PieChart as RechartsPieChart,
+    ResponsiveContainer,
+    Tooltip,
+} from 'recharts';
 
-import { cn } from '@/lib/utils';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 import { CHART_COLORS } from './chart-colors';
 
 export interface PieChartDatum {
@@ -34,7 +40,12 @@ export function PieChart({
     const reducedMotion = useReducedMotion();
 
     if (skeleton) {
-        return <Skeleton className={cn('rounded-md', className)} style={{ height }} />;
+        return (
+            <Skeleton
+                className={cn('rounded-md', className)}
+                style={{ height }}
+            />
+        );
     }
 
     const innerRadius = donut ? '55%' : 0;
@@ -70,7 +81,10 @@ export function PieChart({
                         {data.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
-                                fill={entry.color ?? CHART_COLORS[index % CHART_COLORS.length]}
+                                fill={
+                                    entry.color ??
+                                    CHART_COLORS[index % CHART_COLORS.length]
+                                }
                             />
                         ))}
                     </Pie>

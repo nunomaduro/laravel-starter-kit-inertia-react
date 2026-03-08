@@ -62,6 +62,14 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [pages/index](./pages/index.md) | pages.index, pages.create | ✅ |
 | [pages/show](./pages/show.md) | pages.index, pages.create | ✅ |
 | [settings/branding](./settings/branding.md) | settings.branding.edit, settings.branding.update | ✅ |
-| [dev/components](./dev/components.md) | dev.components | ✅ |
+| [dev/components](docs/developer/frontend/pages/dev/components.md) | dev.components | ✅ |
+| dev/pages | dev.pages | ✅ |
+| error | N/A | ✅ |
+| [settings/audit-log](docs/developer/frontend/pages/settings/audit-log.md) | settings.audit-log | ✅ |
+| settings/features | settings.features.show, settings.features.update | ✅ |
+| settings/roles | settings.roles.index, settings.roles.store | ✅ |
+| [settings/domains](docs/developer/frontend/pages/settings/domains.md) | settings.domains.show, settings.domains.store | ✅ |
+| [settings/general](docs/developer/frontend/pages/settings/general.md) | settings.general.show, settings.general.slug.update | ✅ |
+| [settings/notifications](docs/developer/frontend/pages/settings/notifications.md) | settings.notifications.show, settings.notifications.update | ✅ |
 
 

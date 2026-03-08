@@ -1,18 +1,17 @@
-import * as React from 'react';
 import {
     Bar,
-    BarChart as RechartsBarChart,
     CartesianGrid,
     Legend,
+    BarChart as RechartsBarChart,
     ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
 } from 'recharts';
 
-import { cn } from '@/lib/utils';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 import { CHART_COLORS } from './chart-colors';
 
 export interface BarChartProps {
@@ -45,7 +44,12 @@ export function BarChart({
     const reducedMotion = useReducedMotion();
 
     if (skeleton) {
-        return <Skeleton className={cn('rounded-md', className)} style={{ height }} />;
+        return (
+            <Skeleton
+                className={cn('rounded-md', className)}
+                style={{ height }}
+            />
+        );
     }
 
     const layout = horizontal ? 'vertical' : 'horizontal';
@@ -70,14 +74,20 @@ export function BarChart({
                         <>
                             <XAxis
                                 type="number"
-                                tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+                                tick={{
+                                    fill: 'var(--muted-foreground)',
+                                    fontSize: 12,
+                                }}
                                 axisLine={false}
                                 tickLine={false}
                             />
                             <YAxis
                                 dataKey={xKey}
                                 type="category"
-                                tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+                                tick={{
+                                    fill: 'var(--muted-foreground)',
+                                    fontSize: 12,
+                                }}
                                 axisLine={{ stroke: 'var(--border)' }}
                                 tickLine={false}
                                 width={80}
@@ -87,12 +97,18 @@ export function BarChart({
                         <>
                             <XAxis
                                 dataKey={xKey}
-                                tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+                                tick={{
+                                    fill: 'var(--muted-foreground)',
+                                    fontSize: 12,
+                                }}
                                 axisLine={{ stroke: 'var(--border)' }}
                                 tickLine={false}
                             />
                             <YAxis
-                                tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
+                                tick={{
+                                    fill: 'var(--muted-foreground)',
+                                    fontSize: 12,
+                                }}
                                 axisLine={false}
                                 tickLine={false}
                             />

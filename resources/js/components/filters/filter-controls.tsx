@@ -369,11 +369,7 @@ export function RangeFilter({ value, onSubmit }: FilterControlProps) {
 }
 
 /** Single-select radio filter for option columns. */
-export function RadioFilter({
-    column,
-    value,
-    onSubmit,
-}: FilterControlProps) {
+export function RadioFilter({ column, value, onSubmit }: FilterControlProps) {
     const selected = value?.values[0] ?? '';
     const options = column.options ?? [];
 
@@ -404,7 +400,9 @@ export function RadioFilter({
                 </label>
             ))}
             {options.length === 0 && (
-                <p className="px-2 py-1 text-sm text-muted-foreground">No options.</p>
+                <p className="px-2 py-1 text-sm text-muted-foreground">
+                    No options.
+                </p>
             )}
         </div>
     );

@@ -1,11 +1,16 @@
-import * as React from 'react';
 import { CheckIcon, MinusIcon, ZapIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+} from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 export interface PricingFeature {
     label: string;
@@ -85,7 +90,10 @@ function PricingCard({
             )}
             {isCurrent && (
                 <div className="absolute -top-3 right-4">
-                    <Badge variant="outline" className="border-success text-success px-3 py-0.5 text-xs">
+                    <Badge
+                        variant="outline"
+                        className="border-success px-3 py-0.5 text-xs text-success"
+                    >
                         Current plan
                     </Badge>
                 </div>
@@ -101,7 +109,9 @@ function PricingCard({
                     <div>
                         <h3 className="text-base font-semibold">{name}</h3>
                         {description && (
-                            <p className="text-xs text-muted-foreground">{description}</p>
+                            <p className="text-xs text-muted-foreground">
+                                {description}
+                            </p>
                         )}
                     </div>
                 </div>
@@ -113,8 +123,12 @@ function PricingCard({
                         </div>
                     ) : (
                         <div className="flex items-end gap-1">
-                            <span className="text-sm font-medium text-muted-foreground">{currency}</span>
-                            <span className="text-3xl font-bold leading-none">{price}</span>
+                            <span className="text-sm font-medium text-muted-foreground">
+                                {currency}
+                            </span>
+                            <span className="text-3xl leading-none font-bold">
+                                {price}
+                            </span>
                             <span className="mb-0.5 text-sm text-muted-foreground">
                                 {billingLabel[billingPeriod]}
                             </span>
@@ -124,7 +138,8 @@ function PricingCard({
                         <p className="mt-1 text-xs text-muted-foreground">
                             or{' '}
                             <span className="font-medium text-foreground">
-                                {currency}{yearlyPrice}/yr
+                                {currency}
+                                {yearlyPrice}/yr
                             </span>{' '}
                             billed annually
                         </p>
@@ -146,7 +161,8 @@ function PricingCard({
                             <span
                                 className={cn(
                                     'text-sm leading-tight',
-                                    feature.included === false && 'text-muted-foreground',
+                                    feature.included === false &&
+                                        'text-muted-foreground',
                                 )}
                             >
                                 {feature.label}
@@ -171,7 +187,9 @@ function PricingCard({
                     {isCurrent ? 'Current plan' : ctaLabel}
                 </Button>
                 {footnote && (
-                    <p className="text-center text-[10px] text-muted-foreground">{footnote}</p>
+                    <p className="text-center text-[10px] text-muted-foreground">
+                        {footnote}
+                    </p>
                 )}
             </CardFooter>
         </Card>

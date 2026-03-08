@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
     Area,
     AreaChart,
@@ -7,8 +6,8 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 
-import { cn } from '@/lib/utils';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 import { CHART_COLORS } from './chart-colors';
 
 export interface SparklineProps {
@@ -35,7 +34,10 @@ export function Sparkline({
         return (
             <div className={cn('w-full', className)} style={{ height }}>
                 <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                    <AreaChart
+                        data={data}
+                        margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                    >
                         <Area
                             type="monotone"
                             dataKey={dataKey}
@@ -55,7 +57,10 @@ export function Sparkline({
     return (
         <div className={cn('w-full', className)} style={{ height }}>
             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
+                <LineChart
+                    data={data}
+                    margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+                >
                     <Line
                         type="monotone"
                         dataKey={dataKey}

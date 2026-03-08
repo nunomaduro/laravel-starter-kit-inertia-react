@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -32,16 +31,30 @@ export const Default: StoryObj = {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Edit Profile</DialogTitle>
-                    <DialogDescription>Make changes to your profile here. Click save when done.</DialogDescription>
+                    <DialogDescription>
+                        Make changes to your profile here. Click save when done.
+                    </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">Name</Label>
-                        <Input id="name" defaultValue="Jane Doe" className="col-span-3" />
+                        <Label htmlFor="name" className="text-right">
+                            Name
+                        </Label>
+                        <Input
+                            id="name"
+                            defaultValue="Jane Doe"
+                            className="col-span-3"
+                        />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="username" className="text-right">Username</Label>
-                        <Input id="username" defaultValue="@janedoe" className="col-span-3" />
+                        <Label htmlFor="username" className="text-right">
+                            Username
+                        </Label>
+                        <Input
+                            id="username"
+                            defaultValue="@janedoe"
+                            className="col-span-3"
+                        />
                     </div>
                 </div>
                 <DialogFooter>
@@ -62,7 +75,8 @@ export const Destructive: StoryObj = {
                 <DialogHeader>
                     <DialogTitle>Are you absolutely sure?</DialogTitle>
                     <DialogDescription>
-                        This action cannot be undone. This will permanently delete your account and remove all associated data.
+                        This action cannot be undone. This will permanently
+                        delete your account and remove all associated data.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>

@@ -1,7 +1,5 @@
-import * as React from 'react';
-
-import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export interface GaugeChartProps {
     value: number;
@@ -29,7 +27,12 @@ export function GaugeChart({
     className,
 }: GaugeChartProps) {
     if (skeleton) {
-        return <Skeleton className={cn('rounded-full', className)} style={{ width: size, height: size }} />;
+        return (
+            <Skeleton
+                className={cn('rounded-full', className)}
+                style={{ width: size, height: size }}
+            />
+        );
     }
 
     const pct = Math.min(Math.max(value / max, 0), 1);
@@ -109,8 +112,16 @@ export function GaugeChart({
             </svg>
             {(label ?? sublabel) && (
                 <div className="mt-1 text-center">
-                    {label && <p className="text-sm font-medium text-foreground">{label}</p>}
-                    {sublabel && <p className="text-xs text-muted-foreground">{sublabel}</p>}
+                    {label && (
+                        <p className="text-sm font-medium text-foreground">
+                            {label}
+                        </p>
+                    )}
+                    {sublabel && (
+                        <p className="text-xs text-muted-foreground">
+                            {sublabel}
+                        </p>
+                    )}
                 </div>
             )}
         </div>

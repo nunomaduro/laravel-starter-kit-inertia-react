@@ -1,0 +1,78 @@
+{
+    "model": "AuditLog",
+    "table": "audit_logs",
+    "fields": {
+        "id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "organization_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "actor_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "actor_type": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "action": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "subject_type": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "subject_id": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "old_value": {
+            "type": "json",
+            "nullable": true,
+            "default": null
+        },
+        "new_value": {
+            "type": "json",
+            "nullable": true,
+            "default": null
+        },
+        "ip_address": {
+            "type": "inet",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "organization": {
+            "type": "belongsTo",
+            "model": "Organization"
+        },
+        "actor": {
+            "type": "belongsTo",
+            "model": "Actor"
+        }
+    },
+    "value_hints": {
+        "created_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        }
+    },
+    "scenarios": []
+}

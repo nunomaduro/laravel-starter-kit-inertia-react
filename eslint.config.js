@@ -21,9 +21,13 @@ export default [
             'resources/js/actions/**',
             'vendor',
             'node_modules',
+            'node_modules/**',
             'public',
+            'public/**',
             'bootstrap/ssr',
             'tailwind.config.js',
+            'storybook-static',
+            'storybook-static/**',
         ],
     },
     prettier, // Turn off all rules that might conflict with Prettier

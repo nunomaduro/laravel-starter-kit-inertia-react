@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UsersIcon, DollarSignIcon, TrendingUpIcon, ActivityIcon } from 'lucide-react';
-import React from 'react';
+import {
+    ActivityIcon,
+    DollarSignIcon,
+    TrendingUpIcon,
+    UsersIcon,
+} from 'lucide-react';
 
 import { MetricDashboard } from '@/components/composed/metric-dashboard';
 
@@ -77,7 +81,11 @@ export const Default: Story = {
         ],
         columns: 4,
     },
-    render: (args) => <div className="p-6 bg-background"><MetricDashboard {...args} /></div>,
+    render: (args) => (
+        <div className="bg-background p-6">
+            <MetricDashboard {...args} />
+        </div>
+    ),
 };
 
 export const Loading: Story = {
@@ -88,7 +96,11 @@ export const Loading: Story = {
         chartXKey: 'date',
         isLoading: true,
     },
-    render: (args) => <div className="p-6 bg-background"><MetricDashboard {...args} /></div>,
+    render: (args) => (
+        <div className="bg-background p-6">
+            <MetricDashboard {...args} />
+        </div>
+    ),
 };
 
 export const BarChart: Story = {
@@ -101,5 +113,9 @@ export const BarChart: Story = {
         chartTitle: 'Revenue vs Users',
         columns: 2,
     },
-    render: (args) => <div className="p-6 bg-background"><MetricDashboard {...args} /></div>,
+    render: (args) => (
+        <div className="bg-background p-6">
+            <MetricDashboard {...args} />
+        </div>
+    ),
 };

@@ -11,8 +11,10 @@
     --text-sm-plus: 0.9375rem; /* 15px — between sm (14px) and base (16px) */
 
     /* Shadow tokens */
-    --shadow-soft: 0 1px 3px 0 oklch(0 0 0 / 0.08), 0 1px 2px -1px oklch(0 0 0 / 0.06);
-    --shadow-soft-dark: 0 1px 3px 0 oklch(0 0 0 / 0.3), 0 1px 2px -1px oklch(0 0 0 / 0.2);
+    --shadow-soft:
+        0 1px 3px 0 oklch(0 0 0 / 0.08), 0 1px 2px -1px oklch(0 0 0 / 0.06);
+    --shadow-soft-dark:
+        0 1px 3px 0 oklch(0 0 0 / 0.3), 0 1px 2px -1px oklch(0 0 0 / 0.2);
 
     /* Easing token */
     --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);

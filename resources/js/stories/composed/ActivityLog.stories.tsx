@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
-import { ActivityLog } from '@/components/composed/activity-log';
 import type { ActivityEntry } from '@/components/composed/activity-log';
+import { ActivityLog } from '@/components/composed/activity-log';
 
 const ENTRIES: ActivityEntry[] = [
     {
@@ -70,7 +69,11 @@ export const Default: Story = {
         entries: ENTRIES,
         showFilters: false,
     },
-    render: (args) => <div className="w-[500px]"><ActivityLog {...args} /></div>,
+    render: (args) => (
+        <div className="w-[500px]">
+            <ActivityLog {...args} />
+        </div>
+    ),
 };
 
 export const WithFilters: Story = {
@@ -79,7 +82,11 @@ export const WithFilters: Story = {
         showFilters: true,
         types: ['project', 'comment', 'issue', 'invite', 'delete'],
     },
-    render: (args) => <div className="w-[500px]"><ActivityLog {...args} /></div>,
+    render: (args) => (
+        <div className="w-[500px]">
+            <ActivityLog {...args} />
+        </div>
+    ),
 };
 
 export const Loading: Story = {
@@ -87,7 +94,11 @@ export const Loading: Story = {
         entries: [],
         isLoading: true,
     },
-    render: (args) => <div className="w-[500px]"><ActivityLog {...args} /></div>,
+    render: (args) => (
+        <div className="w-[500px]">
+            <ActivityLog {...args} />
+        </div>
+    ),
 };
 
 export const Empty: Story = {
@@ -95,5 +106,9 @@ export const Empty: Story = {
         entries: [],
         emptyMessage: 'No activity yet.',
     },
-    render: (args) => <div className="w-[500px]"><ActivityLog {...args} /></div>,
+    render: (args) => (
+        <div className="w-[500px]">
+            <ActivityLog {...args} />
+        </div>
+    ),
 };

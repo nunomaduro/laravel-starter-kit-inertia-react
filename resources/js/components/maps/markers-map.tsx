@@ -1,7 +1,13 @@
-import { useState } from "react";
-import { Map, MapControls, MapMarker, MarkerPopup, MarkerTooltip } from "@/components/ui/map";
-import { cn } from "@/lib/utils";
-import { OPEN_FREE_MAP_STYLES } from "./base-map";
+import {
+    Map,
+    MapControls,
+    MapMarker,
+    MarkerPopup,
+    MarkerTooltip,
+} from '@/components/ui/map';
+import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { OPEN_FREE_MAP_STYLES } from './base-map';
 
 export type MapMarkerData = {
     id: string;
@@ -13,11 +19,46 @@ export type MapMarkerData = {
 };
 
 const MOCK_MARKERS: MapMarkerData[] = [
-    { id: "1", longitude: -74.006, latitude: 40.7128, label: "New York", description: "The Big Apple", color: "#3b82f6" },
-    { id: "2", longitude: -73.9857, latitude: 40.7484, label: "Empire State", description: "Iconic skyscraper", color: "#ef4444" },
-    { id: "3", longitude: -73.9654, latitude: 40.7829, label: "Central Park", description: "Urban green space", color: "#22c55e" },
-    { id: "4", longitude: -74.0447, latitude: 40.6892, label: "Statue of Liberty", description: "Lady Liberty", color: "#f59e0b" },
-    { id: "5", longitude: -73.9442, latitude: 40.6501, label: "Brooklyn", description: "Borough of culture", color: "#8b5cf6" },
+    {
+        id: '1',
+        longitude: -74.006,
+        latitude: 40.7128,
+        label: 'New York',
+        description: 'The Big Apple',
+        color: '#3b82f6',
+    },
+    {
+        id: '2',
+        longitude: -73.9857,
+        latitude: 40.7484,
+        label: 'Empire State',
+        description: 'Iconic skyscraper',
+        color: '#ef4444',
+    },
+    {
+        id: '3',
+        longitude: -73.9654,
+        latitude: 40.7829,
+        label: 'Central Park',
+        description: 'Urban green space',
+        color: '#22c55e',
+    },
+    {
+        id: '4',
+        longitude: -74.0447,
+        latitude: 40.6892,
+        label: 'Statue of Liberty',
+        description: 'Lady Liberty',
+        color: '#f59e0b',
+    },
+    {
+        id: '5',
+        longitude: -73.9442,
+        latitude: 40.6501,
+        label: 'Brooklyn',
+        description: 'Borough of culture',
+        color: '#8b5cf6',
+    },
 ];
 
 type MarkersMapProps = {
@@ -36,7 +77,12 @@ export function MarkersMap({
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
     return (
-        <div className={cn("relative h-80 w-full overflow-hidden rounded-lg border", className)}>
+        <div
+            className={cn(
+                'relative h-80 w-full overflow-hidden rounded-lg border',
+                className,
+            )}
+        >
             <Map
                 className="size-full"
                 styles={OPEN_FREE_MAP_STYLES}
@@ -50,7 +96,11 @@ export function MarkersMap({
                         longitude={marker.longitude}
                         latitude={marker.latitude}
                         color={marker.color}
-                        onClick={() => setSelectedId(marker.id === selectedId ? null : marker.id)}
+                        onClick={() =>
+                            setSelectedId(
+                                marker.id === selectedId ? null : marker.id,
+                            )
+                        }
                     >
                         {marker.label && (
                             <MarkerTooltip>{marker.label}</MarkerTooltip>
@@ -59,9 +109,13 @@ export function MarkersMap({
                             <MarkerPopup>
                                 <div className="min-w-[120px] p-1">
                                     {marker.label && (
-                                        <p className="font-medium text-sm">{marker.label}</p>
+                                        <p className="text-sm font-medium">
+                                            {marker.label}
+                                        </p>
                                     )}
-                                    <p className="text-muted-foreground text-xs">{marker.description}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {marker.description}
+                                    </p>
                                 </div>
                             </MarkerPopup>
                         )}

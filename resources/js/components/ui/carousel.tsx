@@ -32,7 +32,7 @@ const CarouselContext = React.createContext<{
 } | null>(null)
 
 function useCarousel() {
-  const ctx = React.useContext(CarouselContext)
+  const ctx = React.use(CarouselContext)
   if (!ctx) throw new Error("useCarousel must be used within <Carousel>")
   return ctx
 }
@@ -80,7 +80,7 @@ function Carousel({
   const scrollNext = React.useCallback(() => api?.scrollNext(), [api])
 
   return (
-    <CarouselContext.Provider
+    <CarouselContext
       value={{ carouselRef, api, canScrollPrev, canScrollNext, scrollPrev, scrollNext, orientation }}
     >
       <div
@@ -113,7 +113,7 @@ function Carousel({
           </div>
         )}
       </div>
-    </CarouselContext.Provider>
+    </CarouselContext>
   )
 }
 

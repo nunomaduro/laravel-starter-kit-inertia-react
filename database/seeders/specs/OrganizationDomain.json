@@ -51,6 +51,41 @@
             "type": "timestamp",
             "nullable": true,
             "default": null
+        },
+        "status": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "cname_target": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "failure_reason": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "dns_check_attempts": {
+            "type": "int2",
+            "nullable": true,
+            "default": null
+        },
+        "last_dns_check_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "ssl_issued_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "ssl_expires_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
         }
     },
     "relationships": {
@@ -71,6 +106,22 @@
         "verified_at": {
             "type": "datetime",
             "example": "2024-01-01 00:00:00"
+        },
+        "last_dns_check_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        },
+        "ssl_issued_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        },
+        "ssl_expires_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
+        },
+        "cname_target": {
+            "type": "name",
+            "example": "John Doe"
         }
     },
     "scenarios": []

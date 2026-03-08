@@ -79,20 +79,13 @@ if (!inertiaModule.__storybookMocked) {
     });
 
     // Link – render a plain <a> tag
-    inertiaModule.Link = React.forwardRef(
-        (
-            {
-                href,
-                children,
-                ...props
-            }: { href: string; children?: React.ReactNode; [key: string]: unknown },
-            ref: React.ForwardedRef<HTMLAnchorElement>,
+    inertiaModule.Link = (
+            { ref, href, children, ...props },
         ) => (
             <a href={href} ref={ref} {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>
                 {children}
             </a>
-        ),
-    );
+        );
     inertiaModule.Link.displayName = 'Link';
 
     inertiaModule.__storybookMocked = true;

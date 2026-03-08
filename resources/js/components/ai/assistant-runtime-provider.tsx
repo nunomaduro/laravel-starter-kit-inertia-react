@@ -45,7 +45,8 @@ export interface AssistantRuntimeContextValue {
     setConfig: React.Dispatch<React.SetStateAction<AssistantRuntimeConfig>>;
 }
 
-export const AssistantRuntimeContext = React.createContext<AssistantRuntimeContextValue | null>(null);
+export const AssistantRuntimeContext =
+    React.createContext<AssistantRuntimeContextValue | null>(null);
 
 export interface AssistantRuntimeProviderProps {
     children: React.ReactNode;
@@ -61,7 +62,9 @@ function generateId(): string {
 
 function getCsrfToken(): string {
     if (typeof document === 'undefined') return '';
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]');
+    const meta = document.querySelector<HTMLMetaElement>(
+        'meta[name="csrf-token"]',
+    );
     return meta?.content ?? '';
 }
 
@@ -85,7 +88,13 @@ export function AssistantRuntimeProvider({
 
     // Keep config in sync with props
     React.useEffect(() => {
-        setConfig((prev) => ({ ...prev, endpoint, model, headers, systemPrompt }));
+        setConfig((prev) => ({
+            ...prev,
+            endpoint,
+            model,
+            headers,
+            systemPrompt,
+        }));
     }, [endpoint, model, headers, systemPrompt]);
 
     const append = React.useCallback(
@@ -146,7 +155,9 @@ export function AssistantRuntimeProvider({
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(
+                        `HTTP ${response.status}: ${response.statusText}`,
+                    );
                 }
 
                 const contentType = response.headers.get('content-type') ?? '';
@@ -177,7 +188,10 @@ export function AssistantRuntimeProvider({
                                         text?: string;
                                     };
                                     const delta =
-                                        parsed.delta ?? parsed.content ?? parsed.text ?? '';
+                                        parsed.delta ??
+                                        parsed.content ??
+                                        parsed.text ??
+                                        '';
                                     accumulated += delta;
                                     setMessages((prev) =>
                                         prev.map((m) =>
@@ -206,7 +220,11 @@ export function AssistantRuntimeProvider({
                         content?: string;
                         message?: string;
                         response?: string;
-                        usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
+                        usage?: {
+                            prompt_tokens?: number;
+                            completion_tokens?: number;
+                            total_tokens?: number;
+                        };
                     };
                     const text =
                         json.content ?? json.message ?? json.response ?? '';
@@ -219,8 +237,11 @@ export function AssistantRuntimeProvider({
                                       content: text,
                                       tokenUsage: usage
                                           ? {
-                                                prompt: usage.prompt_tokens ?? 0,
-                                                completion: usage.completion_tokens ?? 0,
+                                                prompt:
+                                                    usage.prompt_tokens ?? 0,
+                                                completion:
+                                                    usage.completion_tokens ??
+                                                    0,
                                                 total: usage.total_tokens ?? 0,
                                             }
                                           : undefined,
@@ -241,12 +262,16 @@ export function AssistantRuntimeProvider({
                     // Stopped by user
                     setMessages((prev) =>
                         prev.map((m) =>
-                            m.id === assistantId ? { ...m, isStreaming: false } : m,
+                            m.id === assistantId
+                                ? { ...m, isStreaming: false }
+                                : m,
                         ),
                     );
                 } else {
                     const errorText =
-                        err instanceof Error ? err.message : 'An error occurred.';
+                        err instanceof Error
+                            ? err.message
+                            : 'An error occurred.';
                     setMessages((prev) =>
                         prev.map((m) =>
                             m.id === assistantId
@@ -284,14 +309,14 @@ export function AssistantRuntimeProvider({
     );
 
     return (
-        <AssistantRuntimeContext.Provider value={value}>
+        <AssistantRuntimeContext value={value}>
             {children}
-        </AssistantRuntimeContext.Provider>
+        </AssistantRuntimeContext>
     );
 }
 
 export function useAssistantRuntime(): AssistantRuntimeContextValue {
-    const ctx = React.useContext(AssistantRuntimeContext);
+    const ctx = React.use(AssistantRuntimeContext);
     if (!ctx) {
         throw new Error(
             'useAssistantRuntime must be used within an AssistantRuntimeProvider',

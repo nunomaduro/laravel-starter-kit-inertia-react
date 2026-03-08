@@ -1,10 +1,10 @@
+import { CheckIcon, CopyIcon } from 'lucide-react';
 import * as React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { CheckIcon, CopyIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export interface CodeBlockProps {
     /** The source code to display. */
@@ -38,18 +38,23 @@ export function CodeBlock({
     }, [code]);
 
     return (
-        <div className={cn('group relative rounded-lg border bg-[#282c34] overflow-hidden', className)}>
+        <div
+            className={cn(
+                'group relative overflow-hidden rounded-lg border bg-[#282c34]',
+                className,
+            )}
+        >
             {/* Header */}
             {(filename ?? showCopy) && (
                 <div className="flex items-center justify-between border-b border-white/10 px-3 py-1.5">
-                    <span className="text-xs text-white/60 font-mono">
+                    <span className="font-mono text-xs text-white/60">
                         {filename ?? language}
                     </span>
                     {showCopy && (
                         <Button
                             variant="ghost"
                             size="icon-xs"
-                            className="text-white/60 hover:text-white hover:bg-white/10"
+                            className="text-white/60 hover:bg-white/10 hover:text-white"
                             onClick={handleCopy}
                             aria-label={copied ? 'Copied' : 'Copy code'}
                         >

@@ -1,6 +1,10 @@
 import * as React from 'react';
 
-import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels';
+import {
+    Panel,
+    Group as PanelGroup,
+    Separator as PanelResizeHandle,
+} from 'react-resizable-panels';
 
 import { SkipToContent } from '@/components/ui/skip-to-content';
 import { cn } from '@/lib/utils';
@@ -22,9 +26,20 @@ interface MasterDetailProps {
  * On mobile the panels stack vertically; on desktop they split side-by-side
  * with a draggable resizer powered by react-resizable-panels.
  */
-function MasterDetail({ master, detail, className, masterDefaultSize = 33, masterMinSize = 20 }: MasterDetailProps) {
+function MasterDetail({
+    master,
+    detail,
+    className,
+    masterDefaultSize = 33,
+    masterMinSize = 20,
+}: MasterDetailProps) {
     return (
-        <div className={cn('flex h-full w-full flex-col overflow-hidden', className)}>
+        <div
+            className={cn(
+                'flex h-full w-full flex-col overflow-hidden',
+                className,
+            )}
+        >
             <SkipToContent />
 
             {/* Mobile: stacked layout */}
@@ -36,12 +51,17 @@ function MasterDetail({ master, detail, className, masterDefaultSize = 33, maste
             </div>
 
             {/* Desktop: side-by-side with resizable panels */}
-            <PanelGroup orientation="horizontal" className="hidden h-full md:flex">
+            <PanelGroup
+                orientation="horizontal"
+                className="hidden h-full md:flex"
+            >
                 <Panel defaultSize={masterDefaultSize} minSize={masterMinSize}>
-                    <div className="h-full overflow-auto border-r">{master}</div>
+                    <div className="h-full overflow-auto border-r">
+                        {master}
+                    </div>
                 </Panel>
 
-                <PanelResizeHandle className="w-1 bg-border transition-colors hover:bg-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+                <PanelResizeHandle className="w-1 bg-border transition-colors hover:bg-primary/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" />
 
                 <Panel minSize={30}>
                     <main id="main-content" className="h-full overflow-auto">

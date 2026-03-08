@@ -30,8 +30,15 @@ export function formatRelativeTime(date: Date | string): string {
  * Format a number as currency.
  * @example formatCurrency(1234.5) // "$1,234.50"
  */
-export function formatCurrency(amount: number, currency = 'USD', locale?: string): string {
-    return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount);
+export function formatCurrency(
+    amount: number,
+    currency = 'USD',
+    locale?: string,
+): string {
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency,
+    }).format(amount);
 }
 
 /**
@@ -39,8 +46,15 @@ export function formatCurrency(amount: number, currency = 'USD', locale?: string
  * @example formatNumber(1200) // "1.2K"
  * @example formatNumber(3_400_000) // "3.4M"
  */
-export function formatNumber(n: number, options?: Intl.NumberFormatOptions): string {
-    return new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1, ...options }).format(n);
+export function formatNumber(
+    n: number,
+    options?: Intl.NumberFormatOptions,
+): string {
+    return new Intl.NumberFormat(undefined, {
+        notation: 'compact',
+        maximumFractionDigits: 1,
+        ...options,
+    }).format(n);
 }
 
 /**

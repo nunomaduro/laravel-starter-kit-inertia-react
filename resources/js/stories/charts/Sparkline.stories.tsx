@@ -1,12 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { Sparkline } from '@/components/charts/sparkline';
 
 const DATA = [
-    { v: 10 }, { v: 25 }, { v: 18 }, { v: 40 }, { v: 32 },
-    { v: 55 }, { v: 48 }, { v: 62 }, { v: 58 }, { v: 75 },
-    { v: 68 }, { v: 90 },
+    { v: 10 },
+    { v: 25 },
+    { v: 18 },
+    { v: 40 },
+    { v: 32 },
+    { v: 55 },
+    { v: 48 },
+    { v: 62 },
+    { v: 58 },
+    { v: 75 },
+    { v: 68 },
+    { v: 90 },
 ];
 
 const meta: Meta<typeof Sparkline> = {
@@ -25,12 +33,20 @@ type Story = StoryObj<typeof Sparkline>;
 
 export const Line: Story = {
     args: { data: DATA, dataKey: 'v', variant: 'line', height: 40 },
-    render: (args) => <div className="w-40"><Sparkline {...args} /></div>,
+    render: (args) => (
+        <div className="w-40">
+            <Sparkline {...args} />
+        </div>
+    ),
 };
 
 export const Area: Story = {
     args: { data: DATA, dataKey: 'v', variant: 'area', height: 40 },
-    render: (args) => <div className="w-40"><Sparkline {...args} /></div>,
+    render: (args) => (
+        <div className="w-40">
+            <Sparkline {...args} />
+        </div>
+    ),
 };
 
 export const InContext: Story = {

@@ -13,7 +13,14 @@ const meta: Meta<typeof Button> = {
     argTypes: {
         variant: {
             control: 'select',
-            options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
+            options: [
+                'default',
+                'destructive',
+                'outline',
+                'secondary',
+                'ghost',
+                'link',
+            ],
         },
         size: {
             control: 'select',
@@ -31,7 +38,9 @@ export const Default: Story = {
         children: 'Button',
         variant: 'default',
     },
-    render: (args) => <Button {...args}>{args.children as React.ReactNode}</Button>,
+    render: (args) => (
+        <Button {...args}>{args.children as React.ReactNode}</Button>
+    ),
 };
 
 export const Secondary: Story = {
@@ -39,7 +48,9 @@ export const Secondary: Story = {
         children: 'Secondary',
         variant: 'secondary',
     },
-    render: (args) => <Button {...args}>{args.children as React.ReactNode}</Button>,
+    render: (args) => (
+        <Button {...args}>{args.children as React.ReactNode}</Button>
+    ),
 };
 
 export const Outline: Story = {
@@ -47,7 +58,9 @@ export const Outline: Story = {
         children: 'Outline',
         variant: 'outline',
     },
-    render: (args) => <Button {...args}>{args.children as React.ReactNode}</Button>,
+    render: (args) => (
+        <Button {...args}>{args.children as React.ReactNode}</Button>
+    ),
 };
 
 export const Destructive: Story = {
@@ -55,7 +68,9 @@ export const Destructive: Story = {
         children: 'Destructive',
         variant: 'destructive',
     },
-    render: (args) => <Button {...args}>{args.children as React.ReactNode}</Button>,
+    render: (args) => (
+        <Button {...args}>{args.children as React.ReactNode}</Button>
+    ),
 };
 
 export const Ghost: Story = {
@@ -63,5 +78,7 @@ export const Ghost: Story = {
         children: 'Ghost',
         variant: 'ghost',
     },
-    render: (args) => <Button {...args}>{args.children as React.ReactNode}</Button>,
+    render: (args) => (
+        <Button {...args}>{args.children as React.ReactNode}</Button>
+    ),
 };

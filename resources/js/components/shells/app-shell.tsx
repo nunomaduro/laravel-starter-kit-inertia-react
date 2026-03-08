@@ -21,9 +21,21 @@ interface AppShellProps {
  * Primary app shell: collapsible sidebar + top header + main content + optional right panel.
  * Includes SkipToContent for accessibility and id="main-content" on <main>.
  */
-function AppShell({ sidebar, header, rightPanel, children, className, sidebarCollapsed = false }: AppShellProps) {
+function AppShell({
+    sidebar,
+    header,
+    rightPanel,
+    children,
+    className,
+    sidebarCollapsed = false,
+}: AppShellProps) {
     return (
-        <div className={cn('flex h-svh w-full overflow-hidden bg-background', className)}>
+        <div
+            className={cn(
+                'flex h-svh w-full overflow-hidden bg-background',
+                className,
+            )}
+        >
             <SkipToContent />
 
             {/* Sidebar */}
@@ -41,18 +53,27 @@ function AppShell({ sidebar, header, rightPanel, children, className, sidebarCol
             {/* Main column: header + content + right panel */}
             <div className="flex min-w-0 flex-1 flex-col">
                 {/* Top header */}
-                {header && <header className="flex h-14 shrink-0 items-center border-b bg-background px-4">{header}</header>}
+                {header && (
+                    <header className="flex h-14 shrink-0 items-center border-b bg-background px-4">
+                        {header}
+                    </header>
+                )}
 
                 {/* Content row */}
                 <div className="flex min-h-0 flex-1">
                     {/* Main content */}
-                    <main id="main-content" className="min-w-0 flex-1 overflow-auto p-4">
+                    <main
+                        id="main-content"
+                        className="min-w-0 flex-1 overflow-auto p-4"
+                    >
                         {children}
                     </main>
 
                     {/* Optional right panel */}
                     {rightPanel && (
-                        <aside className="w-80 shrink-0 overflow-auto border-l bg-muted/30 p-4">{rightPanel}</aside>
+                        <aside className="w-80 shrink-0 overflow-auto border-l bg-muted/30 p-4">
+                            {rightPanel}
+                        </aside>
                     )}
                 </div>
             </div>

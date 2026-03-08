@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Settings\ActivityLogSettings;
 use App\Settings\AiSettings;
 use App\Settings\AppSettings;
+use App\Settings\AuthSettings;
 use App\Settings\BackupSettings;
 use App\Settings\BillingSettings;
 use App\Settings\BroadcastingSettings;
@@ -275,6 +276,18 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
         FeatureFlagSettings::class => [
             'map' => [
                 'globally_disabled_modules' => 'feature-flags.globally_disabled',
+            ],
+            'orgOverridable' => false,
+        ],
+
+        // ─── Phase 4b: Auth / Social OAuth ───────────────────────
+
+        AuthSettings::class => [
+            'map' => [
+                'google_client_id' => 'services.google.client_id',
+                'google_client_secret' => 'services.google.client_secret',
+                'github_client_id' => 'services.github.client_id',
+                'github_client_secret' => 'services.github.client_secret',
             ],
             'orgOverridable' => false,
         ],

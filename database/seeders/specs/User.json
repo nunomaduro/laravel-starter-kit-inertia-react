@@ -76,6 +76,11 @@
             "type": "timestamp",
             "nullable": true,
             "default": null
+        },
+        "theme_mode": {
+            "type": "string",
+            "nullable": true,
+            "default": null
         }
     },
     "relationships": {
@@ -87,9 +92,17 @@
             "type": "hasMany",
             "model": "OwnedOrganization"
         },
+        "socialAccounts": {
+            "type": "hasMany",
+            "model": "SocialAccount"
+        },
         "termsAcceptances": {
             "type": "hasMany",
             "model": "TermsAcceptance"
+        },
+        "notificationPreferences": {
+            "type": "hasMany",
+            "model": "NotificationPreference"
         },
         "categories": {
             "type": "belongsToMany",

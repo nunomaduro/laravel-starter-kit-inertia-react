@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { BotIcon, ClockIcon, KeyboardIcon, SearchIcon } from 'lucide-react';
+import * as React from 'react';
 
 import {
     Command,
@@ -70,12 +70,14 @@ function CommandBar({
 }: CommandBarProps) {
     const [open, setOpen] = React.useState(false);
     const [inputValue, setInputValue] = React.useState('');
-    const [registeredShortcuts, setRegisteredShortcuts] = React.useState<ShortcutRegistration[]>(
-        () => getShortcuts(),
-    );
+    const [registeredShortcuts, setRegisteredShortcuts] = React.useState<
+        ShortcutRegistration[]
+    >(() => getShortcuts());
 
     React.useEffect(() => {
-        return subscribeToShortcuts(() => setRegisteredShortcuts(getShortcuts()));
+        return subscribeToShortcuts(() =>
+            setRegisteredShortcuts(getShortcuts()),
+        );
     }, []);
 
     React.useEffect(() => {
@@ -120,7 +122,11 @@ function CommandBar({
     return (
         <>
             {children}
-            <CommandDialog open={open} onOpenChange={setOpen} showCloseButton={false}>
+            <CommandDialog
+                open={open}
+                onOpenChange={setOpen}
+                showCloseButton={false}
+            >
                 <Command shouldFilter>
                     <CommandInput
                         placeholder="Search commands or ask AI..."
@@ -131,12 +137,14 @@ function CommandBar({
                         <CommandEmpty>
                             <div className="py-6 text-center">
                                 <SearchIcon className="mx-auto mb-2 size-8 text-muted-foreground/50" />
-                                <p className="text-sm text-muted-foreground">No results found.</p>
+                                <p className="text-sm text-muted-foreground">
+                                    No results found.
+                                </p>
                                 {onAiPrompt && inputValue.trim() && (
                                     <button
                                         type="button"
                                         onClick={handleAiPrompt}
-                                        className="mt-3 flex items-center gap-1.5 mx-auto rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                                        className="mx-auto mt-3 flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                                     >
                                         <BotIcon className="size-3.5" />
                                         Ask AI: &ldquo;{inputValue}&rdquo;
@@ -153,7 +161,9 @@ function CommandBar({
                                         className="gap-2"
                                     >
                                         <BotIcon className="size-4 text-primary" />
-                                        <span>Ask AI: &ldquo;{inputValue}&rdquo;</span>
+                                        <span>
+                                            Ask AI: &ldquo;{inputValue}&rdquo;
+                                        </span>
                                     </CommandItem>
                                 </CommandGroup>
                                 <CommandSeparator />
@@ -172,12 +182,16 @@ function CommandBar({
                                             }}
                                             className="gap-2"
                                         >
-                                            {item.icon ?? <ClockIcon className="size-4 text-muted-foreground" />}
+                                            {item.icon ?? (
+                                                <ClockIcon className="size-4 text-muted-foreground" />
+                                            )}
                                             <span>{item.label}</span>
                                         </CommandItem>
                                     ))}
                                 </CommandGroup>
-                                {groupedActions.length > 0 && <CommandSeparator />}
+                                {groupedActions.length > 0 && (
+                                    <CommandSeparator />
+                                )}
                             </>
                         )}
 
@@ -196,7 +210,9 @@ function CommandBar({
                                         <span>{action.label}</span>
                                         {action.shortcut && (
                                             <CommandShortcut>
-                                                {formatShortcutKeys(action.shortcut).join(' ')}
+                                                {formatShortcutKeys(
+                                                    action.shortcut,
+                                                ).join(' ')}
                                             </CommandShortcut>
                                         )}
                                     </CommandItem>
@@ -208,7 +224,10 @@ function CommandBar({
                             <>
                                 <CommandSeparator />
                                 {groupedShortcuts.map(([scope, shortcuts]) => (
-                                    <CommandGroup key={scope} heading={`Shortcuts — ${scope}`}>
+                                    <CommandGroup
+                                        key={scope}
+                                        heading={`Shortcuts — ${scope}`}
+                                    >
                                         {shortcuts.map((s) => (
                                             <CommandItem
                                                 key={s.keys}
@@ -222,8 +241,12 @@ function CommandBar({
                                                 <span>{s.description}</span>
                                                 <CommandShortcut>
                                                     <span className="flex items-center gap-0.5">
-                                                        {formatShortcutKeys(s.keys).map((key, i) => (
-                                                            <Kbd key={i}>{key}</Kbd>
+                                                        {formatShortcutKeys(
+                                                            s.keys,
+                                                        ).map((key, i) => (
+                                                            <Kbd key={i}>
+                                                                {key}
+                                                            </Kbd>
                                                         ))}
                                                     </span>
                                                 </CommandShortcut>

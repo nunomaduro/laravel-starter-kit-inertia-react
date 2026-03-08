@@ -29,7 +29,6 @@ function DescriptionList({
   ...props
 }: DescriptionListProps) {
   const isGrid = layout === "grid"
-  const isInline = layout === "inline"
 
   return (
     <dl

@@ -39,7 +39,12 @@ final class ThemeSettings extends Settings
     /** @var 'subtle'|'strong'|'bordered' */
     public string $menu_accent = 'subtle';
 
-    public bool $allow_user_theme_customization = false;
+    public bool $allow_user_theme_customization = true;
+
+    public bool $allow_user_logo_upload = false;
+
+    /** @var string[] Setting keys orgs cannot override (e.g. ['font', 'primary_color']) */
+    public array $locked_settings = [];
 
     public static function group(): string
     {

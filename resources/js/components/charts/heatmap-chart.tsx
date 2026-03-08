@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export interface HeatmapDatum {
     x: string;
@@ -28,10 +28,19 @@ export function HeatmapChart({
     cellSize = 32,
     className,
 }: HeatmapChartProps) {
-    const [tooltip, setTooltip] = React.useState<{ datum: HeatmapDatum; x: number; y: number } | null>(null);
+    const [tooltip, setTooltip] = React.useState<{
+        datum: HeatmapDatum;
+        x: number;
+        y: number;
+    } | null>(null);
 
     if (skeleton) {
-        return <Skeleton className={cn('rounded-md', className)} style={{ height: cellSize * 7 + 40 }} />;
+        return (
+            <Skeleton
+                className={cn('rounded-md', className)}
+                style={{ height: cellSize * 7 + 40 }}
+            />
+        );
     }
 
     const xLabels = xLabelsProp ?? [...new Set(data.map((d) => d.x))];
@@ -67,7 +76,7 @@ export function HeatmapChart({
                 {xLabels.map((x) => (
                     <div
                         key={x}
-                        className="flex items-center justify-center text-[10px] text-muted-foreground truncate"
+                        className="flex items-center justify-center truncate text-[10px] text-muted-foreground"
                         style={{ height: 20 }}
                     >
                         {x}
@@ -78,7 +87,7 @@ export function HeatmapChart({
                     <React.Fragment key={y}>
                         {/* Y label */}
                         <div
-                            className="flex items-center justify-end pr-2 text-[10px] text-muted-foreground truncate"
+                            className="flex items-center justify-end truncate pr-2 text-[10px] text-muted-foreground"
                             style={{ width: 60, height: cellSize }}
                         >
                             {y}
@@ -86,11 +95,12 @@ export function HeatmapChart({
                         {/* Cells */}
                         {xLabels.map((x) => {
                             const val = getCellValue(x, y);
-                            const opacity = val !== undefined ? getOpacity(val) : 0;
+                            const opacity =
+                                val !== undefined ? getOpacity(val) : 0;
                             return (
                                 <div
                                     key={x}
-                                    className="rounded-sm cursor-default transition-opacity"
+                                    className="cursor-default rounded-sm transition-opacity"
                                     style={{
                                         width: cellSize,
                                         height: cellSize,
@@ -101,7 +111,8 @@ export function HeatmapChart({
                                         if (!showTooltip || val === undefined) {
                                             return;
                                         }
-                                        const rect = e.currentTarget.getBoundingClientRect();
+                                        const rect =
+                                            e.currentTarget.getBoundingClientRect();
                                         setTooltip({
                                             datum: { x, y, value: val },
                                             x: rect.left + rect.width / 2,
@@ -118,10 +129,12 @@ export function HeatmapChart({
             {/* Tooltip */}
             {showTooltip && tooltip && (
                 <div
-                    className="fixed z-50 rounded-lg border border-border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md pointer-events-none -translate-x-1/2 -translate-y-full"
+                    className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full rounded-lg border border-border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md"
                     style={{ left: tooltip.x, top: tooltip.y - 4 }}
                 >
-                    <span className="font-medium">{tooltip.datum.x} / {tooltip.datum.y}:</span>{' '}
+                    <span className="font-medium">
+                        {tooltip.datum.x} / {tooltip.datum.y}:
+                    </span>{' '}
                     {tooltip.datum.value}
                 </div>
             )}

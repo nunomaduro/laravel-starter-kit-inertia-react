@@ -200,10 +200,11 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
-  color: _color,
+  color,
   ...props
 }: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames()
+  void color; // forwarded, not used for styling here
 
   const ref = React.useRef<HTMLButtonElement>(null)
   React.useEffect(() => {

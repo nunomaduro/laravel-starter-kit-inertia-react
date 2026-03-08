@@ -109,6 +109,12 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(OrganizationMemberAdded::class, SyncSubscriptionSeatsOnMemberChange::class);
         Event::listen(OrganizationMemberRemoved::class, SyncSubscriptionSeatsOnMemberChange::class);
         Event::listen(OrderCreated::class, AddCreditsFromLemonSqueezyOrder::class);
+
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event): void {
+            $event->extendSocialite('google', \SocialiteProviders\Google\Provider::class);
+            $event->extendSocialite('github', \SocialiteProviders\GitHub\Provider::class);
+        });
+
         User::observe(UserObserver::class);
 
         foreach ([
@@ -161,6 +167,11 @@ final class AppServiceProvider extends ServiceProvider
             'settings-nav-password',
             'settings-nav-two-factor',
             'settings-nav-appearance',
+            'settings-nav-branding',
+            'settings-nav-features',
+            'settings-nav-roles',
+            'settings-nav-audit-log',
+            'settings-nav-notifications',
             'settings-nav-data-export',
             'settings-nav-achievements',
             'settings-nav-onboarding',
@@ -168,6 +179,8 @@ final class AppServiceProvider extends ServiceProvider
             'appearance-tab-dark',
             'appearance-tab-system',
             'auth-login-button',
+            'auth-google-login',
+            'auth-github-login',
             'auth-sign-up-link',
             'auth-register-button',
             'auth-log-in-link',
@@ -185,6 +198,25 @@ final class AppServiceProvider extends ServiceProvider
             'welcome-feature-rbac',
             'welcome-feature-2fa',
             'welcome-feature-analytics',
+            'welcome-feature-audit-log',
+            'welcome-feature-flags',
+            'welcome-feature-custom-roles',
+            'welcome-feature-credits',
+            'welcome-feature-mcp',
+            'welcome-feature-workflows',
+            'welcome-feature-email-templates',
+            'welcome-feature-blog',
+            'welcome-feature-help',
+            'welcome-feature-search',
+            'welcome-feature-theming',
+            'welcome-feature-page-builder',
+            'welcome-feature-gamification',
+            'welcome-feature-datatables',
+            'welcome-feature-api',
+            'welcome-feature-data-export',
+            'welcome-feature-domains',
+            'welcome-feature-social-login',
+            'welcome-feature-notifications',
             'nav-dashboard',
             'nav-organizations',
             'nav-billing',
@@ -230,6 +262,7 @@ final class AppServiceProvider extends ServiceProvider
             'pages-edit-save',
             'pages-duplicate',
             'pages-delete',
+            'settings-nav-domains',
         ]);
     }
 

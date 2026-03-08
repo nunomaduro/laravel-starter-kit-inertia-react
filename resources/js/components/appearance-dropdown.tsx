@@ -15,11 +15,13 @@ export default function AppearanceToggleDropdown({
     className = '',
     ...props
 }: HTMLAttributes<HTMLDivElement>) {
-    const { branding } = usePage<SharedData>().props;
-    const allowUserCustomization = branding?.allowUserCustomization ?? true;
+    const { theme, branding } = usePage<SharedData>().props;
+    const allowSystem = theme?.allowUserThemeCustomization ?? true;
+    const allowOrg = branding?.allowUserCustomization ?? true;
+    const canChangeAppearance = allowSystem && allowOrg;
     const { appearance, updateAppearance } = useAppearance();
 
-    if (!allowUserCustomization) {
+    if (!canChangeAppearance) {
         return null;
     }
 

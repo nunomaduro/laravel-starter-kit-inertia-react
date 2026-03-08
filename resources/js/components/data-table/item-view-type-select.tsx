@@ -12,7 +12,10 @@ interface ItemViewTypeSelectProps {
     views?: ItemViewType[];
 }
 
-const VIEW_CONFIG: Record<ItemViewType, { icon: React.ComponentType<{ className?: string }>; label: string }> = {
+const VIEW_CONFIG: Record<
+    ItemViewType,
+    { icon: React.ComponentType<{ className?: string }>; label: string }
+> = {
     table: { icon: Table2, label: 'Table view' },
     grid: { icon: LayoutGrid, label: 'Grid view' },
     list: { icon: List, label: 'List view' },

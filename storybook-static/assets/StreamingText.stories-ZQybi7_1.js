@@ -1,0 +1,20 @@
+import{j as r}from"./jsx-runtime-u17CrQMm.js";import{r as i}from"./index-CAT4JDgN.js";import{c as u}from"./utils-BQHNewu7.js";import{u as x}from"./use-reduced-motion-Bb6b8sk-.js";import"./_commonjsHelpers-CE1G-McA.js";function a({text:e,isStreaming:p=!1,speed:d=18,className:h}){const m=x(),[g,l]=i.useState(""),t=i.useRef(0),s=i.useRef("");return i.useEffect(()=>{if(m){l(e),t.current=e.length,s.current=e;return}e.startsWith(s.current)||(l(""),t.current=0),s.current=e;const f=setInterval(()=>{t.current>=e.length||(t.current++,l(e.slice(0,t.current)))},d);return()=>clearInterval(f)},[e,d,m]),r.jsxs("span",{className:u("whitespace-pre-wrap",h),children:[g,p&&r.jsx("span",{"aria-hidden":!0,className:u("ml-px inline-block h-[1em] w-[2px] translate-y-[2px] rounded-full bg-current",!m&&"animate-pulse")})]})}a.__docgenInfo={description:"Renders text that appears to stream in character-by-character.\nWhen `isStreaming` is true a blinking cursor is shown at the end.\nRespects `prefers-reduced-motion` — when reduced motion is requested\nthe full text is shown immediately without animation.",methods:[],displayName:"StreamingText",props:{text:{required:!0,tsType:{name:"string"},description:"The full target text to display."},isStreaming:{required:!1,tsType:{name:"boolean"},description:"Whether the text is still being streamed. Shows a cursor when true.",defaultValue:{value:"false",computed:!1}},speed:{required:!1,tsType:{name:"number"},description:"Character reveal speed in ms per character (only used without reducedMotion).",defaultValue:{value:"18",computed:!1}},className:{required:!1,tsType:{name:"string"},description:""}}};const j={title:"AI/StreamingText",component:a,tags:["autodocs"],parameters:{layout:"centered"},argTypes:{text:{control:"text"},isStreaming:{control:"boolean"},speed:{control:{type:"range",min:5,max:100,step:5}}}},n={args:{text:"This is a fully loaded AI response. All characters are visible immediately.",isStreaming:!1},render:e=>r.jsx("div",{className:"max-w-sm text-sm",children:r.jsx(a,{...e})})},o={args:{text:"I am currently generating this response character by character to simulate streaming output from the AI model.",isStreaming:!0,speed:20},render:e=>r.jsx("div",{className:"max-w-sm text-sm",children:r.jsx(a,{...e})})},c={args:{text:"Based on your query, here is a comprehensive analysis of the topic. The key factors to consider are performance, scalability, and maintainability. Each of these dimensions requires careful thought and deliberate architectural decisions.",isStreaming:!1},render:e=>r.jsx("div",{className:"max-w-md text-sm leading-relaxed",children:r.jsx(a,{...e})})};n.parameters={...n.parameters,docs:{...n.parameters?.docs,source:{originalSource:`{
+  args: {
+    text: 'This is a fully loaded AI response. All characters are visible immediately.',
+    isStreaming: false
+  },
+  render: args => <div className="max-w-sm text-sm"><StreamingText {...args} /></div>
+}`,...n.parameters?.docs?.source}}};o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:`{
+  args: {
+    text: 'I am currently generating this response character by character to simulate streaming output from the AI model.',
+    isStreaming: true,
+    speed: 20
+  },
+  render: args => <div className="max-w-sm text-sm"><StreamingText {...args} /></div>
+}`,...o.parameters?.docs?.source}}};c.parameters={...c.parameters,docs:{...c.parameters?.docs,source:{originalSource:`{
+  args: {
+    text: 'Based on your query, here is a comprehensive analysis of the topic. The key factors to consider are performance, scalability, and maintainability. Each of these dimensions requires careful thought and deliberate architectural decisions.',
+    isStreaming: false
+  },
+  render: args => <div className="max-w-md text-sm leading-relaxed"><StreamingText {...args} /></div>
+}`,...c.parameters?.docs?.source}}};const I=["Static","Streaming","LongResponse"];export{c as LongResponse,n as Static,o as Streaming,I as __namedExportsOrder,j as default};

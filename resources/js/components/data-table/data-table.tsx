@@ -50,6 +50,7 @@ import {
     type VisibilityState,
     flexRender,
 } from '@tanstack/react-table';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import {
     Calendar,
     Check,
@@ -71,7 +72,6 @@ import {
     Upload,
     X,
 } from 'lucide-react';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Filters } from '../filters/filters';
 import type { FilterColumn } from '../filters/types';
@@ -167,13 +167,19 @@ export function HighlightableCell({
     if (!highlight || highlight.trim() === '') {
         return <span>{value}</span>;
     }
-    const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const regex = new RegExp(
+        `(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`,
+        'gi',
+    );
     const parts = value.split(regex);
     return (
         <span>
             {parts.map((part, i) =>
                 regex.test(part) ? (
-                    <mark key={i} className="rounded-sm bg-yellow-200 px-0.5 text-yellow-900 dark:bg-yellow-800 dark:text-yellow-100">
+                    <mark
+                        key={i}
+                        className="rounded-sm bg-yellow-200 px-0.5 text-yellow-900 dark:bg-yellow-800 dark:text-yellow-100"
+                    >
                         {part}
                     </mark>
                 ) : (
@@ -1156,7 +1162,8 @@ export function DataTable<TData extends object>({
     const virtualizer = useVirtualizer({
         count: allRows.length,
         getScrollElement: () => tableContainerRef.current,
-        estimateSize: () => (density === 'compact' ? 36 : density === 'spacious' ? 60 : 48),
+        estimateSize: () =>
+            density === 'compact' ? 36 : density === 'spacious' ? 60 : 48,
         overscan: 10,
         enabled: isVirtualScrolling,
     });
@@ -1396,7 +1403,11 @@ export function DataTable<TData extends object>({
                     isVirtualScrolling && 'overflow-y-auto',
                     className,
                 )}
-                style={isVirtualScrolling ? { height: virtualScrollHeight } : undefined}
+                style={
+                    isVirtualScrolling
+                        ? { height: virtualScrollHeight }
+                        : undefined
+                }
             >
                 {slots?.beforeTable}
                 <Table>
@@ -1524,126 +1535,158 @@ export function DataTable<TData extends object>({
                     <TableBody>
                         {allRows.length > 0 ? (
                             <>
-                            {isVirtualScrolling && totalVirtualSize > 0 && (
-                                <tr style={{ height: virtualItems[0]?.start ?? 0 }} />
-                            )}
-                            {(isVirtualScrolling ? virtualItems.map((vi) => allRows[vi.index]).filter(Boolean) : allRows).flatMap((row, index) => {
-                                const rowId = (row.original as { id?: unknown })
-                                    .id;
-                                const isExpanded =
-                                    detailRowEnabled &&
-                                    expandedRowId != null &&
-                                    String(expandedRowId) === String(rowId);
-                                const detailContent =
-                                    isExpanded && renderDetailRow
-                                        ? renderDetailRow(
-                                              row.original,
-                                              detailCache[String(rowId)] ?? {},
-                                          )
-                                        : null;
-                                const cols =
-                                    table.getVisibleLeafColumns().length;
-                                return [
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={
-                                            row.getIsSelected()
-                                                ? 'selected'
-                                                : undefined
-                                        }
-                                        className={cn(
-                                            densityRowClass,
-                                            index % 2 === 1 && 'bg-muted/40',
-                                            row.getIsSelected() &&
-                                                'bg-primary/5',
-                                            rowLink && 'cursor-pointer',
-                                            rowClassName?.(row.original),
-                                        )}
-                                        onClick={
-                                            rowLink
-                                                ? (e) => {
-                                                      const href = rowLink(
-                                                          row.original,
-                                                      );
-                                                      if (
-                                                          e.metaKey ||
-                                                          e.ctrlKey
-                                                      ) {
-                                                          window.open(href);
-                                                      } else {
-                                                          router.visit(href);
+                                {isVirtualScrolling && totalVirtualSize > 0 && (
+                                    <tr
+                                        style={{
+                                            height: virtualItems[0]?.start ?? 0,
+                                        }}
+                                    />
+                                )}
+                                {(isVirtualScrolling
+                                    ? virtualItems
+                                          .map((vi) => allRows[vi.index])
+                                          .filter(Boolean)
+                                    : allRows
+                                ).flatMap((row, index) => {
+                                    const rowId = (
+                                        row.original as { id?: unknown }
+                                    ).id;
+                                    const isExpanded =
+                                        detailRowEnabled &&
+                                        expandedRowId != null &&
+                                        String(expandedRowId) === String(rowId);
+                                    const detailContent =
+                                        isExpanded && renderDetailRow
+                                            ? renderDetailRow(
+                                                  row.original,
+                                                  detailCache[String(rowId)] ??
+                                                      {},
+                                              )
+                                            : null;
+                                    const cols =
+                                        table.getVisibleLeafColumns().length;
+                                    return [
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={
+                                                row.getIsSelected()
+                                                    ? 'selected'
+                                                    : undefined
+                                            }
+                                            className={cn(
+                                                densityRowClass,
+                                                index % 2 === 1 &&
+                                                    'bg-muted/40',
+                                                row.getIsSelected() &&
+                                                    'bg-primary/5',
+                                                rowLink && 'cursor-pointer',
+                                                rowClassName?.(row.original),
+                                            )}
+                                            onClick={
+                                                rowLink
+                                                    ? (e) => {
+                                                          const href = rowLink(
+                                                              row.original,
+                                                          );
+                                                          if (
+                                                              e.metaKey ||
+                                                              e.ctrlKey
+                                                          ) {
+                                                              window.open(href);
+                                                          } else {
+                                                              router.visit(
+                                                                  href,
+                                                              );
+                                                          }
                                                       }
-                                                  }
-                                                : undefined
-                                        }
-                                        role={rowLink ? 'link' : undefined}
-                                    >
-                                        {row.getVisibleCells().map((cell) => {
-                                            const pin = getColumnPinningProps(
-                                                cell.column,
-                                            );
-                                            const pinnedBg = getPinnedCellBg(
-                                                cell.column.getIsPinned(),
-                                                row.getIsSelected(),
-                                            );
-                                            return (
-                                                <TableCell
-                                                    key={cell.id}
-                                                    style={{
-                                                        ...pin.style,
-                                                        ...pinnedBg,
-                                                    }}
-                                                    className={cn(
-                                                        index % 2 === 1 &&
-                                                            'bg-muted/40',
-                                                        'py-2 whitespace-nowrap',
-                                                        getColumnMeta(
-                                                            cell.column
-                                                                .columnDef,
-                                                        ).type === 'number' &&
-                                                            'text-right',
-                                                        getColumnMeta(
-                                                            cell.column
-                                                                .columnDef,
-                                                        ).group &&
-                                                            groupClassName?.[
+                                                    : undefined
+                                            }
+                                            role={rowLink ? 'link' : undefined}
+                                        >
+                                            {row
+                                                .getVisibleCells()
+                                                .map((cell) => {
+                                                    const pin =
+                                                        getColumnPinningProps(
+                                                            cell.column,
+                                                        );
+                                                    const pinnedBg =
+                                                        getPinnedCellBg(
+                                                            cell.column.getIsPinned(),
+                                                            row.getIsSelected(),
+                                                        );
+                                                    return (
+                                                        <TableCell
+                                                            key={cell.id}
+                                                            style={{
+                                                                ...pin.style,
+                                                                ...pinnedBg,
+                                                            }}
+                                                            className={cn(
+                                                                index % 2 ===
+                                                                    1 &&
+                                                                    'bg-muted/40',
+                                                                'py-2 whitespace-nowrap',
                                                                 getColumnMeta(
                                                                     cell.column
                                                                         .columnDef,
-                                                                ).group!
-                                                            ],
-                                                        pin.className,
-                                                    )}
-                                                >
-                                                    {flexRender(
-                                                        cell.column.columnDef
-                                                            .cell,
-                                                        cell.getContext(),
-                                                    )}
-                                                </TableCell>
-                                            );
-                                        })}
-                                    </TableRow>,
-                                    ...(detailContent
-                                        ? [
-                                              <TableRow
-                                                  key={`${row.id}-detail`}
-                                                  className="bg-muted/20"
-                                              >
-                                                  <TableCell
-                                                      colSpan={cols}
-                                                      className="p-0"
+                                                                ).type ===
+                                                                    'number' &&
+                                                                    'text-right',
+                                                                getColumnMeta(
+                                                                    cell.column
+                                                                        .columnDef,
+                                                                ).group &&
+                                                                    groupClassName?.[
+                                                                        getColumnMeta(
+                                                                            cell
+                                                                                .column
+                                                                                .columnDef,
+                                                                        ).group!
+                                                                    ],
+                                                                pin.className,
+                                                            )}
+                                                        >
+                                                            {flexRender(
+                                                                cell.column
+                                                                    .columnDef
+                                                                    .cell,
+                                                                cell.getContext(),
+                                                            )}
+                                                        </TableCell>
+                                                    );
+                                                })}
+                                        </TableRow>,
+                                        ...(detailContent
+                                            ? [
+                                                  <TableRow
+                                                      key={`${row.id}-detail`}
+                                                      className="bg-muted/20"
                                                   >
-                                                      {detailContent}
-                                                  </TableCell>
-                                              </TableRow>,
-                                          ]
-                                        : []),
-                                ];
-                            })}
-                            {isVirtualScrolling && totalVirtualSize > 0 && virtualItems.length > 0 && (
-                                <tr style={{ height: totalVirtualSize - (virtualItems[virtualItems.length - 1]?.end ?? 0) }} />
-                            )}
+                                                      <TableCell
+                                                          colSpan={cols}
+                                                          className="p-0"
+                                                      >
+                                                          {detailContent}
+                                                      </TableCell>
+                                                  </TableRow>,
+                                              ]
+                                            : []),
+                                    ];
+                                })}
+                                {isVirtualScrolling &&
+                                    totalVirtualSize > 0 &&
+                                    virtualItems.length > 0 && (
+                                        <tr
+                                            style={{
+                                                height:
+                                                    totalVirtualSize -
+                                                    (virtualItems[
+                                                        virtualItems.length - 1
+                                                    ]?.end ?? 0),
+                                            }}
+                                        />
+                                    )}
                             </>
                         ) : (
                             <TableRow>

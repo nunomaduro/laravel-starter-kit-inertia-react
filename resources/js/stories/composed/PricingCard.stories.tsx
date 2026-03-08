@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ZapIcon } from 'lucide-react';
-import React from 'react';
 
 import { PricingCard } from '@/components/composed/pricing-card';
 
@@ -28,7 +27,10 @@ const meta: Meta<typeof PricingCard> = {
     tags: ['autodocs'],
     parameters: { layout: 'centered' },
     argTypes: {
-        billingPeriod: { control: 'select', options: ['month', 'year', 'one-time'] },
+        billingPeriod: {
+            control: 'select',
+            options: ['month', 'year', 'one-time'],
+        },
         isPopular: { control: 'boolean' },
         isCurrent: { control: 'boolean' },
         disabled: { control: 'boolean' },
@@ -48,7 +50,11 @@ export const Starter: Story = {
         ctaLabel: 'Get started',
         onSelect: () => {},
     },
-    render: (args) => <div className="w-72"><PricingCard {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <PricingCard {...args} />
+        </div>
+    ),
 };
 
 export const Popular: Story = {
@@ -65,7 +71,11 @@ export const Popular: Story = {
         icon: <ZapIcon className="size-4" />,
         onSelect: () => {},
     },
-    render: (args) => <div className="w-72"><PricingCard {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <PricingCard {...args} />
+        </div>
+    ),
 };
 
 export const Current: Story = {
@@ -79,7 +89,11 @@ export const Current: Story = {
         ctaLabel: 'Current plan',
         ctaVariant: 'outline',
     },
-    render: (args) => <div className="w-72"><PricingCard {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <PricingCard {...args} />
+        </div>
+    ),
 };
 
 export const Enterprise: Story = {
@@ -91,12 +105,16 @@ export const Enterprise: Story = {
         ctaLabel: 'Contact sales',
         ctaVariant: 'outline',
     },
-    render: (args) => <div className="w-72"><PricingCard {...args} /></div>,
+    render: (args) => (
+        <div className="w-72">
+            <PricingCard {...args} />
+        </div>
+    ),
 };
 
 export const PricingGrid: Story = {
     render: () => (
-        <div className="flex gap-4 flex-wrap justify-center">
+        <div className="flex flex-wrap justify-center gap-4">
             <div className="w-64">
                 <PricingCard
                     name="Starter"

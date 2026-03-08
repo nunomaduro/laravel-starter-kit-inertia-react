@@ -240,7 +240,7 @@ it('clearOrgOverrides removes all overrides for an org', function (): void {
 it('sends updated theme from DB to Inertia login page', function (): void {
     $this->fakeSettings(ThemeSettings::class, [
         'preset' => 'vega',
-        'radius' => 'lg',
+        'border_radius' => 'lg', // resolveTheme checks border_radius before radius
         'font' => 'geist-sans',
     ]);
 

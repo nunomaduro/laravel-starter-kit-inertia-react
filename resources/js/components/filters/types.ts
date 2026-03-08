@@ -1,6 +1,13 @@
 import type { LucideIcon } from 'lucide-react';
 
-export type FilterType = 'text' | 'number' | 'date' | 'option' | 'boolean' | 'range' | 'radio';
+export type FilterType =
+    | 'text'
+    | 'number'
+    | 'date'
+    | 'option'
+    | 'boolean'
+    | 'range'
+    | 'radio';
 
 export interface FilterColumn {
     id: string;

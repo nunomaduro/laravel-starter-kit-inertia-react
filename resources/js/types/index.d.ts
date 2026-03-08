@@ -92,8 +92,21 @@ export interface ThemeProps {
     menuAccent?: string;
     /** True when the current user may customize their personal theme. */
     canCustomize?: boolean;
+    /** System-wide: when true, users may change appearance unless org denies. When false, only org admins can. */
+    allowUserThemeCustomization?: boolean;
     /** The authenticated user's personal dark/light/system mode preference. */
     userMode?: 'dark' | 'light' | 'system';
+    /** True when the current user has org.settings.manage permission (can upload logo & trigger AI theme). */
+    canManageBranding?: boolean;
+    /** Setting keys locked by system admin (orgs cannot override these). */
+    lockedSettings?: string[];
+    /** Granular per-category customization permissions for the current user. */
+    canCustomizeGranular?: {
+        colors: boolean;
+        font: boolean;
+        layout: boolean;
+        logo: boolean;
+    };
 }
 
 export interface BrandingProps {
@@ -115,7 +128,24 @@ export interface SharedData {
     theme?: ThemeProps;
     /** Org branding (logo, theme overrides). Resolved lazily after tenant context. */
     branding?: BrandingProps;
+    /** Notification summary shared on every Inertia response. */
+    notifications?: {
+        unread_count: number;
+    };
     [key: string]: unknown;
+}
+
+export interface AppNotification {
+    id: string;
+    type: string;
+    data: {
+        title: string;
+        message: string;
+        type: 'info' | 'success' | 'warning' | 'error';
+        action_url?: string | null;
+    };
+    read_at: string | null;
+    created_at: string;
 }
 
 export interface User {
@@ -129,4 +159,24 @@ export interface User {
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface OrgDomain {
+    id: number;
+    domain: string;
+    type: 'subdomain' | 'custom';
+    status:
+        | 'pending_dns'
+        | 'dns_verified'
+        | 'ssl_provisioning'
+        | 'active'
+        | 'error'
+        | 'expired';
+    is_verified: boolean;
+    is_primary: boolean;
+    cname_target: string | null;
+    failure_reason: string | null;
+    dns_check_attempts: number;
+    ssl_expires_at: string | null;
+    verified_at: string | null;
 }

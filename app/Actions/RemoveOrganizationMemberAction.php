@@ -14,6 +14,8 @@ use function setPermissionsTeamId;
 
 final readonly class RemoveOrganizationMemberAction
 {
+    public function __construct(private RecordAuditLog $auditLog) {}
+
     /**
      * Remove a member from the organization. If the member is the owner, transfer ownership to the first admin or delete the organization if empty.
      */
@@ -28,6 +30,15 @@ final readonly class RemoveOrganizationMemberAction
             $wasOwner = $organization->isOwner($member);
 
             $organization->removeMember($member);
+
+            $this->auditLog->handle(
+                action: 'member.removed',
+                subjectType: 'user',
+                subjectId: (string) $member->id,
+                oldValue: ['role' => $previousRole, 'name' => $member->name],
+                organizationId: $organization->id,
+                actorId: $removedBy?->id,
+            );
 
             event(new OrganizationMemberRemoved($organization, $member, $previousRole, $removedBy));
 

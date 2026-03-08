@@ -54,7 +54,6 @@ import {
     XIcon,
     ZapIcon,
 } from 'lucide-react';
-import React from 'react';
 
 const ICONS = [
     { name: 'Activity', Icon: ActivityIcon },
@@ -114,20 +113,23 @@ const ICONS = [
 
 function IconsDemo() {
     return (
-        <div className="p-6 bg-background text-foreground">
-            <h2 className="text-lg font-semibold mb-1">Lucide Icons</h2>
-            <p className="text-sm text-muted-foreground mb-6">
-                This application uses <strong>lucide-react</strong> for all icons.
+        <div className="bg-background p-6 text-foreground">
+            <h2 className="mb-1 text-lg font-semibold">Lucide Icons</h2>
+            <p className="mb-6 text-sm text-muted-foreground">
+                This application uses <strong>lucide-react</strong> for all
+                icons.
             </p>
             <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10">
                 {ICONS.map(({ name, Icon }) => (
                     <div
                         key={name}
-                        className="flex flex-col items-center gap-1.5 rounded-md border border-border p-3 hover:bg-muted transition-colors"
+                        className="flex flex-col items-center gap-1.5 rounded-md border border-border p-3 transition-colors hover:bg-muted"
                         title={name}
                     >
                         <Icon className="size-5 text-foreground" />
-                        <span className="text-[10px] text-muted-foreground text-center leading-tight">{name}</span>
+                        <span className="text-center text-[10px] leading-tight text-muted-foreground">
+                            {name}
+                        </span>
                     </div>
                 ))}
             </div>

@@ -1,7 +1,5 @@
-import * as React from 'react';
-
-import { cn } from '@/lib/utils';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 
 export type ThinkingVariant = 'dots' | 'pulse' | 'bars';
 
@@ -46,7 +44,10 @@ export function ThinkingIndicator({
                             )}
                             style={
                                 !reducedMotion
-                                    ? { animationDelay: `${i * 150}ms`, animationDuration: '0.9s' }
+                                    ? {
+                                          animationDelay: `${i * 150}ms`,
+                                          animationDuration: '0.9s',
+                                      }
                                     : undefined
                             }
                         />
@@ -70,7 +71,9 @@ export function ThinkingIndicator({
                             key={i}
                             className={cn(
                                 'w-1 rounded-full bg-current opacity-70',
-                                !reducedMotion ? 'animate-[thinkBar_0.8s_ease-in-out_infinite_alternate]' : 'h-3',
+                                !reducedMotion
+                                    ? 'animate-[thinkBar_0.8s_ease-in-out_infinite_alternate]'
+                                    : 'h-3',
                             )}
                             style={
                                 !reducedMotion

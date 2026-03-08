@@ -1,11 +1,11 @@
-import * as React from 'react';
 import { MailIcon, MessageSquareIcon, UserPlusIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 export interface UserCardUser {
     id: string;
@@ -61,7 +61,10 @@ function UserCard({
         return (
             <div
                 data-slot="user-card"
-                className={cn('flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50', className)}
+                className={cn(
+                    'flex items-center gap-3 rounded-lg p-2 hover:bg-muted/50',
+                    className,
+                )}
             >
                 <div className="relative shrink-0">
                     <Avatar className="size-8">
@@ -73,7 +76,7 @@ function UserCard({
                     {user.status && (
                         <span
                             className={cn(
-                                'absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-background',
+                                'absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-background',
                                 statusColors[user.status],
                             )}
                         />
@@ -93,12 +96,22 @@ function UserCard({
     }
 
     return (
-        <Card data-slot="user-card" className={cn('overflow-hidden', className)}>
+        <Card
+            data-slot="user-card"
+            className={cn('overflow-hidden', className)}
+        >
             {variant === 'detailed' && (
                 <div className="h-20 bg-gradient-to-r from-primary/20 to-primary/5" />
             )}
-            <CardContent className={cn('p-4', variant === 'detailed' && '-mt-10')}>
-                <div className={cn('flex items-start gap-3', variant === 'detailed' && 'items-end')}>
+            <CardContent
+                className={cn('p-4', variant === 'detailed' && '-mt-10')}
+            >
+                <div
+                    className={cn(
+                        'flex items-start gap-3',
+                        variant === 'detailed' && 'items-end',
+                    )}
+                >
                     <div className="relative shrink-0">
                         <Avatar
                             className={cn(
@@ -108,7 +121,11 @@ function UserCard({
                         >
                             <AvatarImage src={user.avatar} alt={user.name} />
                             <AvatarFallback
-                                className={variant === 'detailed' ? 'text-lg' : 'text-sm'}
+                                className={
+                                    variant === 'detailed'
+                                        ? 'text-lg'
+                                        : 'text-sm'
+                                }
                             >
                                 {user.initials ?? getInitials(user.name)}
                             </AvatarFallback>
@@ -116,8 +133,10 @@ function UserCard({
                         {user.status && (
                             <span
                                 className={cn(
-                                    'absolute bottom-0.5 right-0.5 rounded-full border-2 border-background',
-                                    variant === 'detailed' ? 'size-4' : 'size-3',
+                                    'absolute right-0.5 bottom-0.5 rounded-full border-2 border-background',
+                                    variant === 'detailed'
+                                        ? 'size-4'
+                                        : 'size-3',
                                     statusColors[user.status],
                                 )}
                             />
@@ -127,37 +146,56 @@ function UserCard({
                         <div className="flex flex-wrap items-center gap-1.5">
                             <h3
                                 className={cn(
-                                    'font-semibold leading-tight',
-                                    variant === 'detailed' ? 'text-base' : 'text-sm',
+                                    'leading-tight font-semibold',
+                                    variant === 'detailed'
+                                        ? 'text-base'
+                                        : 'text-sm',
                                 )}
                             >
                                 {user.name}
                             </h3>
                             {user.badges?.map((badge) => (
-                                <Badge key={badge} variant="secondary" className="px-1.5 py-0 text-[10px]">
+                                <Badge
+                                    key={badge}
+                                    variant="secondary"
+                                    className="px-1.5 py-0 text-[10px]"
+                                >
                                     {badge}
                                 </Badge>
                             ))}
                         </div>
                         {user.role && (
-                            <p className="text-xs text-muted-foreground">{user.role}</p>
+                            <p className="text-xs text-muted-foreground">
+                                {user.role}
+                            </p>
                         )}
                         {user.email && variant === 'detailed' && (
-                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                            <p className="text-xs text-muted-foreground">
+                                {user.email}
+                            </p>
                         )}
                     </div>
                 </div>
 
                 {user.bio && variant === 'detailed' && (
-                    <p className="mt-3 text-sm text-muted-foreground">{user.bio}</p>
+                    <p className="mt-3 text-sm text-muted-foreground">
+                        {user.bio}
+                    </p>
                 )}
 
                 {user.stats && user.stats.length > 0 && (
                     <div className="mt-3 flex divide-x divide-border">
                         {user.stats.map((stat) => (
-                            <div key={stat.label} className="flex-1 px-3 first:pl-0 last:pr-0 text-center">
-                                <p className="text-sm font-semibold">{stat.value}</p>
-                                <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                            <div
+                                key={stat.label}
+                                className="flex-1 px-3 text-center first:pl-0 last:pr-0"
+                            >
+                                <p className="text-sm font-semibold">
+                                    {stat.value}
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">
+                                    {stat.label}
+                                </p>
                             </div>
                         ))}
                     </div>

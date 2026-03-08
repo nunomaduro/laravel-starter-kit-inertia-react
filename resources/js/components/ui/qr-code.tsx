@@ -1,6 +1,6 @@
 import * as React from "react"
 import { DownloadIcon } from "lucide-react"
-import { QRCodeCanvas, QRCodeSVG } from "qrcode.react"
+import { QRCodeCanvas } from "qrcode.react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

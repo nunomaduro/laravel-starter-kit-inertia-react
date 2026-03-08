@@ -6,6 +6,7 @@ namespace App\Filament\Pages;
 
 use App\Settings\ThemeSettings;
 use BackedEnum;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
@@ -68,7 +69,25 @@ final class ManageTheme extends SettingsPage
                     ->required(),
                 Toggle::make('allow_user_theme_customization')
                     ->label('Allow users to customize their own theme')
-                    ->helperText('When enabled, all authenticated users can use the theme customizer. When disabled, only organization admins can.'),
+                    ->helperText('Enabled by default so all users can change appearance. Disable to restrict to organization admins only (org admins can still deny per organization in Settings → Branding).'),
+                Toggle::make('allow_user_logo_upload')
+                    ->label('Allow users to upload their organization logo')
+                    ->helperText('When enabled, any org member who can customize their theme can also upload the organization logo and trigger AI theme suggestions. Disabled by default — only org admins can upload logos.'),
+                CheckboxList::make('locked_settings')
+                    ->label('Lock settings (orgs cannot override)')
+                    ->helperText('Locked settings are shown to org admins but cannot be changed.')
+                    ->options([
+                        'dark_color_scheme' => 'Dark color scheme',
+                        'primary_color' => 'Primary color',
+                        'light_color_scheme' => 'Light color scheme',
+                        'card_skin' => 'Card skin',
+                        'border_radius' => 'Border radius',
+                        'sidebar_layout' => 'Sidebar layout',
+                        'font' => 'Font',
+                        'menu_color' => 'Menu color',
+                        'menu_accent' => 'Menu accent',
+                    ])
+                    ->columns(3),
             ]);
     }
 }

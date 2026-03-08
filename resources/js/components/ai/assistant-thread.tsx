@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { UserIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useAssistantRuntime } from './assistant-runtime-provider';
+import { cn } from '@/lib/utils';
 import { AiResponseCard } from './ai-response-card';
+import { useAssistantRuntime } from './assistant-runtime-provider';
 import { PromptInput } from './prompt-input';
 
 export interface AssistantThreadProps {
@@ -38,9 +38,9 @@ export function AssistantThread({
         <div className={cn('flex h-full flex-col', className)}>
             {/* Message list */}
             <div className="flex-1 overflow-y-auto px-4">
-                <div className="py-4 space-y-6">
+                <div className="space-y-6 py-4">
                     {messages.length === 0 && welcomeMessage && (
-                        <p className="text-center text-sm text-muted-foreground py-8">
+                        <p className="py-8 text-center text-sm text-muted-foreground">
                             {welcomeMessage}
                         </p>
                     )}
@@ -48,11 +48,16 @@ export function AssistantThread({
                     {messages.map((message) => {
                         if (message.role === 'user') {
                             return (
-                                <div key={message.id} className="flex items-start gap-3 justify-end">
-                                    <div className="rounded-2xl rounded-tr-sm bg-primary px-4 py-2.5 text-sm text-primary-foreground max-w-[80%]">
-                                        <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                                <div
+                                    key={message.id}
+                                    className="flex items-start justify-end gap-3"
+                                >
+                                    <div className="max-w-[80%] rounded-2xl rounded-tr-sm bg-primary px-4 py-2.5 text-sm text-primary-foreground">
+                                        <p className="break-words whitespace-pre-wrap">
+                                            {message.content}
+                                        </p>
                                     </div>
-                                    <Avatar className="size-8 shrink-0 mt-0.5">
+                                    <Avatar className="mt-0.5 size-8 shrink-0">
                                         <AvatarFallback className="bg-secondary/20 text-secondary-foreground">
                                             <UserIcon className="size-4" />
                                         </AvatarFallback>

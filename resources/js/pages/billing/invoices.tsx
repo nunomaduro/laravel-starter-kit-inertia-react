@@ -1,7 +1,8 @@
+import { EmptyState } from '@/components/ui/empty-state';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { FileText } from 'lucide-react';
+import { FileText, Receipt } from 'lucide-react';
 
 import {
     Card,
@@ -58,9 +59,11 @@ export default function BillingInvoices() {
                     </CardHeader>
                     <CardContent>
                         {data.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">
-                                No invoices yet.
-                            </p>
+                            <EmptyState
+                                icon={<Receipt className="size-5" />}
+                                title="No invoices yet"
+                                description="Your invoices will appear here after your first billing cycle."
+                            />
                         ) : (
                             <ul className="space-y-2">
                                 {data.map((inv) => (

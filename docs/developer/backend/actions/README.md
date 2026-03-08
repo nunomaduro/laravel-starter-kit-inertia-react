@@ -40,5 +40,10 @@ All Actions:
 | [StoreEnterpriseInquiryAction](./StoreEnterpriseInquiryAction.md) | N/A | ✅ |
 | [BulkSoftDeleteUsers](./BulkSoftDeleteUsers.md) | N/A | ✅ |
 | [DuplicateUser](./DuplicateUser.md) | N/A | ✅ |
+| [UpdateUserThemeMode](docs/developer/backend/actions/UpdateUserThemeMode.md) | N/A | ✅ |
+| [SuggestThemeFromLogo](docs/developer/backend/actions/SuggestThemeFromLogo.md) | N/A | ✅ |
+| [RecordAuditLog](docs/developer/backend/actions/RecordAuditLog.md) | N/A | ✅ |
+| [VerifyCustomDomain](docs/developer/backend/actions/VerifyCustomDomain.md) | N/A | ✅ |
+| [FindOrCreateSocialUser](./FindOrCreateSocialUser.md) | N/A | ✅ |
 
 

@@ -1,6 +1,9 @@
 import { type RefObject, useEffect, useState } from 'react';
 
-export function useIntersectionObserver(ref: RefObject<Element | null>, options?: IntersectionObserverInit): IntersectionObserverEntry | null {
+export function useIntersectionObserver(
+    ref: RefObject<Element | null>,
+    options?: IntersectionObserverInit,
+): IntersectionObserverEntry | null {
     const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
 
     useEffect(() => {
@@ -8,7 +11,10 @@ export function useIntersectionObserver(ref: RefObject<Element | null>, options?
         if (!el) {
             return;
         }
-        const observer = new IntersectionObserver(([e]) => setEntry(e ?? null), options);
+        const observer = new IntersectionObserver(
+            ([e]) => setEntry(e ?? null),
+            options,
+        );
         observer.observe(el);
 
         return () => observer.disconnect();

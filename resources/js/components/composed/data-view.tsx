@@ -1,10 +1,16 @@
-import * as React from 'react';
 import { GridIcon, ListIcon, TableIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 export type DataViewMode = 'table' | 'grid' | 'list';
 
@@ -62,7 +68,9 @@ function DataView<T>({
     if (renderListItem) availableModes.push('list');
     if (availableModes.length === 0) availableModes.push('table');
 
-    const effectiveMode = availableModes.includes(mode) ? mode : availableModes[0];
+    const effectiveMode = availableModes.includes(mode)
+        ? mode
+        : availableModes[0];
 
     return (
         <div data-slot="data-view" className={cn('space-y-3', className)}>
@@ -83,7 +91,10 @@ function DataView<T>({
                             </SelectTrigger>
                             <SelectContent>
                                 {sortOptions.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
+                                    >
                                         {opt.label}
                                     </SelectItem>
                                 ))}
@@ -94,7 +105,11 @@ function DataView<T>({
                         <div className="ml-auto flex items-center gap-1 rounded-md border p-0.5">
                             {availableModes.includes('table') && (
                                 <Button
-                                    variant={effectiveMode === 'table' ? 'secondary' : 'ghost'}
+                                    variant={
+                                        effectiveMode === 'table'
+                                            ? 'secondary'
+                                            : 'ghost'
+                                    }
                                     size="sm"
                                     className="h-6 w-6 p-0"
                                     onClick={() => setMode('table')}
@@ -105,7 +120,11 @@ function DataView<T>({
                             )}
                             {availableModes.includes('grid') && (
                                 <Button
-                                    variant={effectiveMode === 'grid' ? 'secondary' : 'ghost'}
+                                    variant={
+                                        effectiveMode === 'grid'
+                                            ? 'secondary'
+                                            : 'ghost'
+                                    }
                                     size="sm"
                                     className="h-6 w-6 p-0"
                                     onClick={() => setMode('grid')}
@@ -116,7 +135,11 @@ function DataView<T>({
                             )}
                             {availableModes.includes('list') && (
                                 <Button
-                                    variant={effectiveMode === 'list' ? 'secondary' : 'ghost'}
+                                    variant={
+                                        effectiveMode === 'list'
+                                            ? 'secondary'
+                                            : 'ghost'
+                                    }
                                     size="sm"
                                     className="h-6 w-6 p-0"
                                     onClick={() => setMode('list')}
@@ -158,15 +181,28 @@ function DataView<T>({
                         </thead>
                         <tbody className="divide-y divide-border">
                             {items.map((item) => (
-                                <tr key={keyExtractor(item)} className="hover:bg-muted/30">
+                                <tr
+                                    key={keyExtractor(item)}
+                                    className="hover:bg-muted/30"
+                                >
                                     {columns.map((col) => (
                                         <td
                                             key={String(col.key)}
-                                            className={cn('px-3 py-2', col.className)}
+                                            className={cn(
+                                                'px-3 py-2',
+                                                col.className,
+                                            )}
                                         >
                                             {col.render
                                                 ? col.render(item)
-                                                : String((item as Record<string, unknown>)[String(col.key)] ?? '')}
+                                                : String(
+                                                      (
+                                                          item as Record<
+                                                              string,
+                                                              unknown
+                                                          >
+                                                      )[String(col.key)] ?? '',
+                                                  )}
                                         </td>
                                     ))}
                                 </tr>

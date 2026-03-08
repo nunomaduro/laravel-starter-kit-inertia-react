@@ -6,7 +6,8 @@ import type { SharedData } from '@/types';
 type Mode = 'dark' | 'light' | 'system';
 
 const prefersDark = (): boolean =>
-    typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 const applyMode = (mode: Mode): void => {
     const isDark = mode === 'dark' || (mode === 'system' && prefersDark());
@@ -27,7 +28,8 @@ export function ThemeFromProps() {
     useEffect(() => {
         const root = document.documentElement;
         const userPreset = localStorage.getItem('theme-preset');
-        const preset = branding?.themePreset ?? userPreset ?? theme.preset ?? 'default';
+        const preset =
+            branding?.themePreset ?? userPreset ?? theme.preset ?? 'default';
         const radius = branding?.themeRadius ?? theme.radius ?? 'default';
         const font = branding?.themeFont ?? theme.font ?? 'instrument-sans';
         const baseColor = theme.base_color ?? 'neutral';
@@ -77,7 +79,15 @@ export function ThemeFromProps() {
         if (theme.menuAccent) {
             root.setAttribute('data-menu-accent', theme.menuAccent);
         }
-    }, [theme.dark, theme.primary, theme.light, theme.skin, theme.layout, theme.menuColor, theme.menuAccent]);
+    }, [
+        theme.dark,
+        theme.primary,
+        theme.light,
+        theme.skin,
+        theme.layout,
+        theme.menuColor,
+        theme.menuAccent,
+    ]);
 
     // Apply user mode (dark/light/system) on mount and when it changes
     useEffect(() => {

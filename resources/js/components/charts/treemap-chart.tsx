@@ -1,9 +1,8 @@
-import * as React from 'react';
 import { ResponsiveContainer, Tooltip, Treemap } from 'recharts';
 
-import { cn } from '@/lib/utils';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 import { CHART_COLORS } from './chart-colors';
 
 export interface TreemapDatum {
@@ -32,7 +31,15 @@ function TreemapContent(props: {
     index?: number;
     depth?: number;
 }) {
-    const { x = 0, y = 0, width = 0, height = 0, name = '', index = 0, depth = 0 } = props;
+    const {
+        x = 0,
+        y = 0,
+        width = 0,
+        height = 0,
+        name = '',
+        index = 0,
+        depth = 0,
+    } = props;
     const color = CHART_COLORS[index % CHART_COLORS.length];
 
     if (depth === 0 || width < 10 || height < 10) {
@@ -46,7 +53,12 @@ function TreemapContent(props: {
                 y={y + 1}
                 width={width - 2}
                 height={height - 2}
-                style={{ fill: color, fillOpacity: 0.75, stroke: 'var(--background)', strokeWidth: 2 }}
+                style={{
+                    fill: color,
+                    fillOpacity: 0.75,
+                    stroke: 'var(--background)',
+                    strokeWidth: 2,
+                }}
                 rx={4}
             />
             {width > 40 && height > 20 && (
@@ -77,7 +89,12 @@ export function TreemapChart({
     const reducedMotion = useReducedMotion();
 
     if (skeleton) {
-        return <Skeleton className={cn('rounded-md', className)} style={{ height }} />;
+        return (
+            <Skeleton
+                className={cn('rounded-md', className)}
+                style={{ height }}
+            />
+        );
     }
 
     return (

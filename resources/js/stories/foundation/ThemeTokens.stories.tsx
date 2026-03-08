@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import {
     CARD_SKINS,
@@ -10,13 +9,24 @@ import {
     THEME_PRESETS,
 } from '@/lib/tailux-themes';
 
-function TokenGroup({ title, tokens }: { title: string; tokens: readonly string[] }) {
+function TokenGroup({
+    title,
+    tokens,
+}: {
+    title: string;
+    tokens: readonly string[];
+}) {
     return (
         <div className="space-y-2">
-            <h3 className="text-xs font-mono font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+            <h3 className="font-mono text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                {title}
+            </h3>
             <div className="flex flex-wrap gap-2">
                 {tokens.map((t) => (
-                    <span key={t} className="inline-flex items-center rounded-md border border-border bg-muted px-2.5 py-1 text-xs font-mono">
+                    <span
+                        key={t}
+                        className="inline-flex items-center rounded-md border border-border bg-muted px-2.5 py-1 font-mono text-xs"
+                    >
                         {t}
                     </span>
                 ))}
@@ -27,15 +37,21 @@ function TokenGroup({ title, tokens }: { title: string; tokens: readonly string[
 
 function ThemeTokensDemo() {
     return (
-        <div className="p-6 space-y-8 bg-background text-foreground">
+        <div className="space-y-8 bg-background p-6 text-foreground">
             <div>
-                <h2 className="text-lg font-semibold mb-1">Tailux Theme Tokens</h2>
-                <p className="text-sm text-muted-foreground mb-6">
-                    All theme dimensions available via the theme customizer and Storybook toolbar.
+                <h2 className="mb-1 text-lg font-semibold">
+                    Tailux Theme Tokens
+                </h2>
+                <p className="mb-6 text-sm text-muted-foreground">
+                    All theme dimensions available via the theme customizer and
+                    Storybook toolbar.
                 </p>
                 <div className="space-y-6">
                     <TokenGroup title="Dark Themes" tokens={DARK_THEMES} />
-                    <TokenGroup title="Primary Colors" tokens={PRIMARY_COLORS} />
+                    <TokenGroup
+                        title="Primary Colors"
+                        tokens={PRIMARY_COLORS}
+                    />
                     <TokenGroup title="Light Schemes" tokens={LIGHT_THEMES} />
                     <TokenGroup title="Card Skins" tokens={CARD_SKINS} />
                     <TokenGroup title="Border Radius" tokens={RADIUS_OPTIONS} />
@@ -43,11 +59,16 @@ function ThemeTokensDemo() {
             </div>
 
             <div>
-                <h3 className="text-sm font-semibold mb-3">Theme Presets</h3>
+                <h3 className="mb-3 text-sm font-semibold">Theme Presets</h3>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
                     {THEME_PRESETS.map((preset) => (
-                        <div key={preset.name} className="rounded-lg border border-border bg-card p-4 space-y-2">
-                            <p className="font-semibold text-sm text-card-foreground">{preset.name}</p>
+                        <div
+                            key={preset.name}
+                            className="space-y-2 rounded-lg border border-border bg-card p-4"
+                        >
+                            <p className="text-sm font-semibold text-card-foreground">
+                                {preset.name}
+                            </p>
                             <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                                 {[
                                     ['dark', preset.dark],
@@ -56,9 +77,16 @@ function ThemeTokensDemo() {
                                     ['skin', preset.skin],
                                     ['radius', preset.radius],
                                 ].map(([k, v]) => (
-                                    <div key={k} className="flex gap-1.5 items-baseline">
-                                        <span className="text-[10px] text-muted-foreground">{k}</span>
-                                        <span className="font-mono text-[10px] text-foreground">{v}</span>
+                                    <div
+                                        key={k}
+                                        className="flex items-baseline gap-1.5"
+                                    >
+                                        <span className="text-[10px] text-muted-foreground">
+                                            {k}
+                                        </span>
+                                        <span className="font-mono text-[10px] text-foreground">
+                                            {v}
+                                        </span>
                                     </div>
                                 ))}
                             </div>

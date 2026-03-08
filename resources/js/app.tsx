@@ -23,7 +23,9 @@ createInertiaApp({
             `./pages/${name}.tsx`,
             import.meta.glob('./pages/**/*.tsx'),
         ).then((module) => {
-            const Page = (module as { default: ComponentType<Record<string, unknown>> }).default;
+            const Page = (
+                module as { default: ComponentType<Record<string, unknown>> }
+            ).default;
             return function PageWithCookieBanner(
                 props: Record<string, unknown>,
             ): ReactNode {
@@ -57,10 +59,10 @@ createInertiaApp({
 // This will set light / dark mode on load...
 initializeTheme();
 
-// Page transition animation triggers
-router.on('start', () =>
-    document.documentElement.classList.add('page-transitioning'),
-);
-router.on('finish', () =>
-    document.documentElement.classList.remove('page-transitioning'),
-);
+// Page transition: fade-in the incoming page after Inertia swaps the component
+router.on('navigate', () => {
+    document.documentElement.classList.add('page-transitioning');
+    setTimeout(() => {
+        document.documentElement.classList.remove('page-transitioning');
+    }, 200);
+});

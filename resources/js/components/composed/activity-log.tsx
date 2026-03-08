@@ -1,12 +1,18 @@
-import * as React from 'react';
 import { FilterIcon } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 export interface ActivityEntry {
     id: string;
@@ -55,7 +61,10 @@ function ActivityEntryRow({ entry }: { entry: ActivityEntry }) {
             <div className="relative flex shrink-0 flex-col items-center">
                 {entry.actor ? (
                     <Avatar className="size-7">
-                        <AvatarImage src={entry.actor.avatar} alt={entry.actor.name} />
+                        <AvatarImage
+                            src={entry.actor.avatar}
+                            alt={entry.actor.name}
+                        />
                         <AvatarFallback className="text-[10px]">
                             {entry.actor.initials ??
                                 entry.actor.name
@@ -80,7 +89,9 @@ function ActivityEntryRow({ entry }: { entry: ActivityEntry }) {
                     {entry.actor && (
                         <span className="font-medium">{entry.actor.name}</span>
                     )}
-                    <span className="text-muted-foreground">{entry.action}</span>
+                    <span className="text-muted-foreground">
+                        {entry.action}
+                    </span>
                     {entry.target && (
                         <>
                             {entry.targetUrl ? (
@@ -91,24 +102,37 @@ function ActivityEntryRow({ entry }: { entry: ActivityEntry }) {
                                     {entry.target}
                                 </a>
                             ) : (
-                                <span className="font-medium">{entry.target}</span>
+                                <span className="font-medium">
+                                    {entry.target}
+                                </span>
                             )}
                         </>
                     )}
                     {entry.type && (
-                        <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
+                        <Badge
+                            variant="secondary"
+                            className="px-1.5 py-0 text-[10px]"
+                        >
                             {entry.type}
                         </Badge>
                     )}
                 </div>
                 {entry.description && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">{entry.description}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                        {entry.description}
+                    </p>
                 )}
                 {entry.metadata && Object.keys(entry.metadata).length > 0 && (
                     <div className="mt-1.5 flex flex-wrap gap-2">
                         {Object.entries(entry.metadata).map(([key, val]) => (
-                            <span key={key} className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                                {key}: <span className="font-medium text-foreground">{String(val)}</span>
+                            <span
+                                key={key}
+                                className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
+                            >
+                                {key}:{' '}
+                                <span className="font-medium text-foreground">
+                                    {String(val)}
+                                </span>
                             </span>
                         ))}
                     </div>
@@ -143,12 +167,18 @@ function ActivityLog({
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
-        onFilterChange?.({ search: e.target.value, type: typeFilter === '__all__' ? undefined : typeFilter });
+        onFilterChange?.({
+            search: e.target.value,
+            type: typeFilter === '__all__' ? undefined : typeFilter,
+        });
     };
 
     const handleTypeFilter = (value: string) => {
         setTypeFilter(value);
-        onFilterChange?.({ search, type: value === '__all__' ? undefined : value });
+        onFilterChange?.({
+            search,
+            type: value === '__all__' ? undefined : value,
+        });
     };
 
     const filtered = entries.filter((entry) => {
@@ -157,7 +187,10 @@ function ActivityLog({
             entry.action.toLowerCase().includes(search.toLowerCase()) ||
             entry.actor?.name.toLowerCase().includes(search.toLowerCase()) ||
             entry.target?.toLowerCase().includes(search.toLowerCase());
-        const matchesType = typeFilter === '__all__' || !entry.type || entry.type === typeFilter;
+        const matchesType =
+            typeFilter === '__all__' ||
+            !entry.type ||
+            entry.type === typeFilter;
         return matchesSearch && matchesType;
     });
 
@@ -173,12 +206,17 @@ function ActivityLog({
                         className="h-8 w-48 text-sm"
                     />
                     {types.length > 0 && (
-                        <Select value={typeFilter} onValueChange={handleTypeFilter}>
+                        <Select
+                            value={typeFilter}
+                            onValueChange={handleTypeFilter}
+                        >
                             <SelectTrigger className="h-8 w-36 text-sm">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="__all__">All types</SelectItem>
+                                <SelectItem value="__all__">
+                                    All types
+                                </SelectItem>
                                 {types.map((t) => (
                                     <SelectItem key={t} value={t}>
                                         {t}
@@ -200,8 +238,13 @@ function ActivityLog({
                 </div>
             ) : (
                 <div
-                    className={cn('overflow-y-auto', maxHeight && `max-h-[${maxHeight}px]`)}
-                    style={maxHeight ? { maxHeight: `${maxHeight}px` } : undefined}
+                    className={cn(
+                        'overflow-y-auto',
+                        maxHeight && `max-h-[${maxHeight}px]`,
+                    )}
+                    style={
+                        maxHeight ? { maxHeight: `${maxHeight}px` } : undefined
+                    }
                 >
                     <div className="divide-y divide-transparent">
                         {filtered.map((entry) => (
@@ -213,8 +256,13 @@ function ActivityLog({
 
             {!isLoading && filtered.length > 0 && (
                 <div className="text-center">
-                    <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
-                        {filtered.length} {filtered.length === 1 ? 'entry' : 'entries'}
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs text-muted-foreground"
+                    >
+                        {filtered.length}{' '}
+                        {filtered.length === 1 ? 'entry' : 'entries'}
                     </Button>
                 </div>
             )}

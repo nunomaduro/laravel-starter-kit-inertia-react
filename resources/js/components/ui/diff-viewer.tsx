@@ -18,7 +18,6 @@ interface DiffViewerProps {
 function DiffViewer({
   oldValue,
   newValue,
-  language,
   splitView,
   hideLineNumbers = false,
   showDiffOnly = false,
@@ -26,9 +25,6 @@ function DiffViewer({
   rightTitle,
   className,
 }: DiffViewerProps) {
-  const isDark =
-    typeof document !== "undefined" &&
-    document.documentElement.classList.contains("dark")
 
   const [isMobile, setIsMobile] = React.useState(false)
 

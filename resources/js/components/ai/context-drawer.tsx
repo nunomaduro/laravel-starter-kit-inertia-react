@@ -1,11 +1,16 @@
+import { FileTextIcon, LinkIcon, PlusIcon, XIcon } from 'lucide-react';
 import * as React from 'react';
-import { FileTextIcon, LinkIcon, XIcon, PlusIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 
 export type ContextItemType = 'document' | 'url' | 'text' | 'image';
 
@@ -67,13 +72,16 @@ export function ContextDrawer({
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent
                 side="left"
-                className={cn('flex flex-col gap-0 p-0 w-[360px]', className)}
+                className={cn('flex w-[360px] flex-col gap-0 p-0', className)}
             >
-                <SheetHeader className="border-b px-4 py-3 shrink-0">
+                <SheetHeader className="shrink-0 border-b px-4 py-3">
                     <div className="flex items-center justify-between">
                         <SheetTitle className="flex items-center gap-2 text-base">
                             {title}
-                            <Badge variant="secondary" className="h-4 px-1.5 text-[10px]">
+                            <Badge
+                                variant="secondary"
+                                className="h-4 px-1.5 text-[10px]"
+                            >
                                 {items.length}/{maxItems}
                             </Badge>
                         </SheetTitle>
@@ -87,36 +95,45 @@ export function ContextDrawer({
                         </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                        Add documents, links, or text to give the AI more context for your conversation.
+                        Add documents, links, or text to give the AI more
+                        context for your conversation.
                     </p>
                 </SheetHeader>
 
                 <div className="flex-1 overflow-y-auto">
                     {items.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center gap-2 py-12 text-center px-4">
+                        <div className="flex flex-col items-center justify-center gap-2 px-4 py-12 text-center">
                             <FileTextIcon className="size-8 text-muted-foreground/50" />
-                            <p className="text-sm text-muted-foreground">No context items yet.</p>
-                            <p className="text-xs text-muted-foreground">Add documents or links to help the AI.</p>
+                            <p className="text-sm text-muted-foreground">
+                                No context items yet.
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                                Add documents or links to help the AI.
+                            </p>
                         </div>
                     ) : (
-                        <ul className="p-3 space-y-2">
+                        <ul className="space-y-2 p-3">
                             {items.map((item, i) => (
                                 <React.Fragment key={item.id}>
                                     {i > 0 && <Separator />}
                                     <li className="flex items-start gap-3 py-1">
-                                        <span className="mt-0.5 shrink-0">{TYPE_ICONS[item.type]}</span>
-                                        <div className="flex-1 min-w-0">
+                                        <span className="mt-0.5 shrink-0">
+                                            {TYPE_ICONS[item.type]}
+                                        </span>
+                                        <div className="min-w-0 flex-1">
                                             <div className="flex items-center gap-1.5">
-                                                <p className="text-sm font-medium truncate">{item.title}</p>
+                                                <p className="truncate text-sm font-medium">
+                                                    {item.title}
+                                                </p>
                                                 <Badge
                                                     variant="outline"
-                                                    className="h-3.5 px-1 text-[9px] shrink-0"
+                                                    className="h-3.5 shrink-0 px-1 text-[9px]"
                                                 >
                                                     {TYPE_LABELS[item.type]}
                                                 </Badge>
                                             </div>
                                             {item.preview && (
-                                                <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">
+                                                <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
                                                     {item.preview}
                                                 </p>
                                             )}
@@ -131,7 +148,9 @@ export function ContextDrawer({
                                                 variant="ghost"
                                                 size="icon-xs"
                                                 className="shrink-0 text-muted-foreground hover:text-destructive"
-                                                onClick={() => onRemove(item.id)}
+                                                onClick={() =>
+                                                    onRemove(item.id)
+                                                }
                                                 aria-label={`Remove ${item.title}`}
                                             >
                                                 <XIcon className="size-3" />
@@ -145,7 +164,7 @@ export function ContextDrawer({
                 </div>
 
                 {onAdd && (
-                    <div className="border-t p-3 shrink-0">
+                    <div className="shrink-0 border-t p-3">
                         <Button
                             variant="outline"
                             size="sm"
@@ -154,7 +173,9 @@ export function ContextDrawer({
                             disabled={atLimit}
                         >
                             <PlusIcon className="size-3.5" />
-                            {atLimit ? `Limit reached (${maxItems})` : 'Add context'}
+                            {atLimit
+                                ? `Limit reached (${maxItems})`
+                                : 'Add context'}
                         </Button>
                     </div>
                 )}

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
     Legend,
     PolarAngleAxis,
@@ -10,9 +9,9 @@ import {
     Tooltip,
 } from 'recharts';
 
-import { cn } from '@/lib/utils';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { cn } from '@/lib/utils';
 import { CHART_COLORS } from './chart-colors';
 
 export interface RadarChartProps {
@@ -39,7 +38,12 @@ export function RadarChart({
     const reducedMotion = useReducedMotion();
 
     if (skeleton) {
-        return <Skeleton className={cn('rounded-md', className)} style={{ height }} />;
+        return (
+            <Skeleton
+                className={cn('rounded-md', className)}
+                style={{ height }}
+            />
+        );
     }
 
     return (

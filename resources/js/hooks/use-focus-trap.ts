@@ -18,7 +18,10 @@ const FOCUSABLE_SELECTORS = [
  * @param containerRef - Ref to the element that should contain focus
  * @param enabled      - Whether the trap is active (default: true)
  */
-export function useFocusTrap(containerRef: RefObject<HTMLElement | null>, enabled: boolean = true): void {
+export function useFocusTrap(
+    containerRef: RefObject<HTMLElement | null>,
+    enabled: boolean = true,
+): void {
     useEffect(() => {
         if (!enabled || !containerRef.current) {
             return;
@@ -27,8 +30,12 @@ export function useFocusTrap(containerRef: RefObject<HTMLElement | null>, enable
         const container = containerRef.current;
 
         const getFocusableElements = (): HTMLElement[] =>
-            Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS)).filter(
-                (el) => !el.closest('[hidden]') && el.getAttribute('aria-hidden') !== 'true',
+            Array.from(
+                container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS),
+            ).filter(
+                (el) =>
+                    !el.closest('[hidden]') &&
+                    el.getAttribute('aria-hidden') !== 'true',
             );
 
         const handleKeyDown = (event: KeyboardEvent) => {

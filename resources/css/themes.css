@@ -19,21 +19,18 @@
 }
 [data-font='inter'] {
     --app-font-sans:
-        'Inter', ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+        'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 [data-font='poppins'] {
     --app-font-sans:
-        'Poppins', ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+        'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 [data-font='outfit'] {
     --app-font-sans:
-        'Outfit', ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+        'Outfit', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 [data-font='plus-jakarta-sans'] {
     --app-font-sans:
@@ -564,7 +561,7 @@
  * ============================================================
  */
 
-[data-theme-primary='indigo'] {
+:root[data-theme-primary='indigo'] {
     --primary: oklch(0.45 0.18 265);
     --primary-foreground: oklch(0.985 0 0);
     --ring: oklch(0.45 0.18 265);
@@ -581,7 +578,7 @@
     --sidebar-ring: oklch(0.75 0.14 265);
 }
 
-[data-theme-primary='blue'] {
+:root[data-theme-primary='blue'] {
     --primary: oklch(0.45 0.18 240);
     --primary-foreground: oklch(0.985 0 0);
     --ring: oklch(0.45 0.18 240);
@@ -598,7 +595,7 @@
     --sidebar-ring: oklch(0.72 0.15 240);
 }
 
-[data-theme-primary='green'] {
+:root[data-theme-primary='green'] {
     --primary: oklch(0.45 0.16 145);
     --primary-foreground: oklch(0.985 0 0);
     --ring: oklch(0.45 0.16 145);
@@ -615,7 +612,7 @@
     --sidebar-ring: oklch(0.72 0.16 145);
 }
 
-[data-theme-primary='amber'] {
+:root[data-theme-primary='amber'] {
     --primary: oklch(0.6 0.18 75);
     --primary-foreground: oklch(0.15 0.04 75);
     --ring: oklch(0.6 0.18 75);
@@ -632,7 +629,7 @@
     --sidebar-ring: oklch(0.78 0.18 75);
 }
 
-[data-theme-primary='purple'] {
+:root[data-theme-primary='purple'] {
     --primary: oklch(0.45 0.2 295);
     --primary-foreground: oklch(0.985 0 0);
     --ring: oklch(0.45 0.2 295);
@@ -649,7 +646,7 @@
     --sidebar-ring: oklch(0.72 0.18 295);
 }
 
-[data-theme-primary='rose'] {
+:root[data-theme-primary='rose'] {
     --primary: oklch(0.52 0.22 15);
     --primary-foreground: oklch(0.985 0 0);
     --ring: oklch(0.52 0.22 15);
@@ -676,7 +673,7 @@
  * ============================================================
  */
 
-[data-theme-light='slate'] {
+:root[data-theme-light='slate'] {
     --background: oklch(0.985 0.003 255);
     --foreground: oklch(0.2 0.02 255);
     --card: oklch(1 0 0);
@@ -698,7 +695,7 @@
     --sidebar-border: oklch(0.918 0.01 255);
 }
 
-[data-theme-light='gray'] {
+:root[data-theme-light='gray'] {
     --background: oklch(0.985 0.002 250);
     --foreground: oklch(0.205 0.02 250);
     --card: oklch(1 0 0);
@@ -720,7 +717,7 @@
     --sidebar-border: oklch(0.91 0.008 250);
 }
 
-[data-theme-light='neutral'] {
+:root[data-theme-light='neutral'] {
     --background: oklch(0.985 0 0);
     --foreground: oklch(0.2 0 0);
     --card: oklch(1 0 0);

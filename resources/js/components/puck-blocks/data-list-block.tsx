@@ -1,7 +1,5 @@
 import React from 'react';
 
-import type { JSX } from 'react';
-
 export interface DataListBlockProps {
     dataSource: string;
     title?: string;
@@ -37,11 +35,12 @@ export function DataListBlock({
                                     item.name ?? item.number ?? item.id ?? i,
                                 )}
                             </span>
-                            {item.email !== undefined && item.email !== null && (
-                                <span className="text-muted-foreground">
-                                    {String(item.email)}
-                                </span>
-                            )}
+                            {item.email !== undefined &&
+                                item.email !== null && (
+                                    <span className="text-muted-foreground">
+                                        {String(item.email)}
+                                    </span>
+                                )}
                             {item.status != null && (
                                 <span className="rounded bg-muted px-1.5 py-0.5 text-xs">
                                     {String(item.status)}

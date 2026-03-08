@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-export interface KbdProps extends React.ComponentProps<'kbd'> {}
+export type KbdProps = React.ComponentProps<'kbd'>;
 
 function Kbd({ className, ...props }: KbdProps) {
     return (

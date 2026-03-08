@@ -1,0 +1,58 @@
+{
+    "model": "NotificationPreference",
+    "table": "notification_preferences",
+    "fields": {
+        "id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "user_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "notification_type": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "via_database": {
+            "type": "boolean",
+            "nullable": true,
+            "default": null
+        },
+        "via_email": {
+            "type": "boolean",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "user": {
+            "type": "belongsTo",
+            "model": "User"
+        }
+    },
+    "value_hints": {
+        "via_database": {
+            "type": "boolean",
+            "example": true
+        },
+        "via_email": {
+            "type": "email",
+            "example": "user@example.com"
+        }
+    },
+    "scenarios": []
+}

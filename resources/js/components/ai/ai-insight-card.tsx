@@ -1,9 +1,14 @@
+import {
+    LightbulbIcon,
+    MinusIcon,
+    TrendingDownIcon,
+    TrendingUpIcon,
+} from 'lucide-react';
 import * as React from 'react';
-import { LightbulbIcon, TrendingUpIcon, TrendingDownIcon, MinusIcon } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { ConfidenceScore } from './confidence-score';
 
 export type InsightTrend = 'up' | 'down' | 'neutral';
@@ -50,22 +55,35 @@ export function AiInsightCard({
     className,
 }: AiInsightCardProps) {
     return (
-        <Card className={cn('overflow-hidden', SEVERITY_CLASSES[severity], className)}>
+        <Card
+            className={cn(
+                'overflow-hidden',
+                SEVERITY_CLASSES[severity],
+                className,
+            )}
+        >
             <CardHeader className="pb-2">
                 <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2">
-                        {icon ?? <LightbulbIcon className="size-4 shrink-0 text-primary" />}
-                        <CardTitle className="text-sm font-semibold">{title}</CardTitle>
+                        {icon ?? (
+                            <LightbulbIcon className="size-4 shrink-0 text-primary" />
+                        )}
+                        <CardTitle className="text-sm font-semibold">
+                            {title}
+                        </CardTitle>
                     </div>
                     <div className="flex items-center gap-1.5">
                         {trend && TREND_ICONS[trend]}
                         <Badge
                             variant="secondary"
                             className={cn(
-                                'text-[10px] h-4 px-1.5',
-                                severity === 'success' && 'bg-success/20 text-success',
-                                severity === 'warning' && 'bg-warning/20 text-warning',
-                                severity === 'error' && 'bg-error/20 text-error',
+                                'h-4 px-1.5 text-[10px]',
+                                severity === 'success' &&
+                                    'bg-success/20 text-success',
+                                severity === 'warning' &&
+                                    'bg-warning/20 text-warning',
+                                severity === 'error' &&
+                                    'bg-error/20 text-error',
                             )}
                         >
                             {severity}
@@ -74,7 +92,9 @@ export function AiInsightCard({
                 </div>
             </CardHeader>
             <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                    {description}
+                </p>
 
                 {confidence !== undefined && (
                     <ConfidenceScore score={confidence} size="sm" />
@@ -83,7 +103,11 @@ export function AiInsightCard({
                 {tags && tags.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                         {tags.map((tag) => (
-                            <Badge key={tag} variant="outline" className="h-4 px-1.5 text-[10px]">
+                            <Badge
+                                key={tag}
+                                variant="outline"
+                                className="h-4 px-1.5 text-[10px]"
+                            >
                                 {tag}
                             </Badge>
                         ))}

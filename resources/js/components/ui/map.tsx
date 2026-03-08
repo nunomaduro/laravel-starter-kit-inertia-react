@@ -4,9 +4,8 @@ import MapLibreGL, { type PopupOptions, type MarkerOptions } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   createContext,
-  forwardRef,
   useCallback,
-  useContext,
+  use,
   useEffect,
   useId,
   useImperativeHandle,
@@ -90,7 +89,7 @@ type MapContextValue = {
 const MapContext = createContext<MapContextValue | null>(null);
 
 function useMap() {
-  const context = useContext(MapContext);
+  const context = use(MapContext);
   if (!context) {
     throw new Error("useMap must be used within a Map component");
   }
@@ -164,18 +163,8 @@ function getViewport(map: MapLibreGL.Map): MapViewport {
   };
 }
 
-const Map = forwardRef<MapRef, MapProps>(function Map(
-  {
-    children,
-    className,
-    theme: themeProp,
-    styles,
-    projection,
-    viewport,
-    onViewportChange,
-    ...props
-  },
-  ref
+const Map = function Map(
+  { ref, children, className, theme: themeProp, styles, projection, viewport, onViewportChange, ...props }: MapProps & { ref?: React.RefObject<MapRef | null> }
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [mapInstance, setMapInstance] = useState<MapLibreGL.Map | null>(null);
@@ -263,7 +252,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       setIsStyleLoaded(false);
       setMapInstance(null);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sync controlled viewport to map
@@ -319,7 +307,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   );
 
   return (
-    <MapContext.Provider value={contextValue}>
+    <MapContext value={contextValue}>
       <div
         ref={containerRef}
         className={cn("relative w-full h-full", className)}
@@ -328,9 +316,9 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
         {/* SSR-safe: children render only when map is loaded on client */}
         {mapInstance && children}
       </div>
-    </MapContext.Provider>
+    </MapContext>
   );
-});
+};
 
 type MarkerContextValue = {
   marker: MapLibreGL.Marker;
@@ -340,7 +328,7 @@ type MarkerContextValue = {
 const MarkerContext = createContext<MarkerContextValue | null>(null);
 
 function useMarkerContext() {
-  const context = useContext(MarkerContext);
+  const context = use(MarkerContext);
   if (!context) {
     throw new Error("Marker components must be used within MapMarker");
   }
@@ -440,7 +428,6 @@ function MapMarker({
 
     return markerInstance;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -452,7 +439,6 @@ function MapMarker({
       marker.remove();
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
   if (
@@ -485,9 +471,9 @@ function MapMarker({
   }
 
   return (
-    <MarkerContext.Provider value={{ marker, map }}>
+    <MarkerContext value={{ marker, map }}>
       {children}
-    </MarkerContext.Provider>
+    </MarkerContext>
   );
 }
 
@@ -544,7 +530,6 @@ function MarkerPopup({
       .setDOMContent(container);
 
     return popupInstance;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -556,7 +541,6 @@ function MarkerPopup({
     return () => {
       marker.setPopup(null);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
   if (popup.isOpen()) {
@@ -623,7 +607,6 @@ function MarkerTooltip({
     }).setMaxWidth("none");
 
     return tooltipInstance;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -644,7 +627,6 @@ function MarkerTooltip({
       marker.getElement()?.removeEventListener("mouseleave", handleMouseLeave);
       tooltip.remove();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
   if (tooltip.isOpen()) {
@@ -955,7 +937,6 @@ function MapPopup({
       .setLngLat([longitude, latitude]);
 
     return popupInstance;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -974,7 +955,6 @@ function MapPopup({
         popup.remove();
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
 
   if (popup.isOpen()) {
@@ -1099,7 +1079,6 @@ function MapRoute({
         // ignore
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, map]);
 
   // When coordinates change, update the source data
@@ -1304,7 +1283,6 @@ function MapClusterLayer<
         // ignore
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, map, sourceId]);
 
   // Update source data when data prop changes (only for non-URL data)

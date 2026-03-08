@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { ThemeCustomizerPanel } from '@/components/ui/theme-customizer';
 
@@ -29,13 +28,22 @@ export const Default: Story = {
     render: () => (
         <div className="min-h-screen bg-background p-8">
             <div className="max-w-lg space-y-4">
-                <h1 className="text-2xl font-bold text-foreground">Theme Customizer</h1>
-                <p className="text-muted-foreground text-sm">
-                    Click the palette button on the right edge of the screen to open the theme customizer panel.
-                    All changes are reflected live on this preview using CSS custom properties.
+                <h1 className="text-2xl font-bold text-foreground">
+                    Theme Customizer
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                    Click the palette button on the right edge of the screen to
+                    open the theme customizer panel. All changes are reflected
+                    live on this preview using CSS custom properties.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
-                    {['primary', 'secondary', 'muted', 'accent', 'destructive'].map((color) => (
+                    {[
+                        'primary',
+                        'secondary',
+                        'muted',
+                        'accent',
+                        'destructive',
+                    ].map((color) => (
                         <div
                             key={color}
                             className="h-12 rounded-lg border border-border"

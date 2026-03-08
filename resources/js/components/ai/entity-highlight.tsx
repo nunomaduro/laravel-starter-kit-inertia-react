@@ -1,7 +1,11 @@
 import * as React from 'react';
 
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export type EntityType =
     | 'person'
@@ -28,8 +32,10 @@ export interface EntityHighlightProps {
 
 const ENTITY_STYLES: Record<string, string> = {
     person: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300',
-    organization: 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300',
-    location: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
+    organization:
+        'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300',
+    location:
+        'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
     date: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
     product: 'bg-pink-100 text-pink-800 dark:bg-pink-900/40 dark:text-pink-300',
     keyword: 'bg-primary/10 text-primary',
@@ -78,8 +84,15 @@ function segmentize(text: string, entities: Entity[]): Segment[] {
  * Renders text with named entity spans highlighted by type.
  * Hovering a highlighted entity shows a tooltip with its type and optional description.
  */
-export function EntityHighlight({ text, entities, className }: EntityHighlightProps) {
-    const segments = React.useMemo(() => segmentize(text, entities), [text, entities]);
+export function EntityHighlight({
+    text,
+    entities,
+    className,
+}: EntityHighlightProps) {
+    const segments = React.useMemo(
+        () => segmentize(text, entities),
+        [text, entities],
+    );
 
     return (
         <span className={cn('text-sm leading-relaxed', className)}>
@@ -92,7 +105,7 @@ export function EntityHighlight({ text, entities, className }: EntityHighlightPr
                     <span
                         key={i}
                         className={cn(
-                            'inline-block rounded px-1 py-0.5 text-xs font-medium cursor-default',
+                            'inline-block cursor-default rounded px-1 py-0.5 text-xs font-medium',
                             getEntityStyle(seg.entity.type),
                         )}
                     >
@@ -105,9 +118,13 @@ export function EntityHighlight({ text, entities, className }: EntityHighlightPr
                         <Tooltip key={i}>
                             <TooltipTrigger asChild>{chip}</TooltipTrigger>
                             <TooltipContent side="top" className="text-xs">
-                                <p className="font-semibold capitalize">{seg.entity.type}</p>
+                                <p className="font-semibold capitalize">
+                                    {seg.entity.type}
+                                </p>
                                 {seg.entity.description && (
-                                    <p className="text-muted-foreground">{seg.entity.description}</p>
+                                    <p className="text-muted-foreground">
+                                        {seg.entity.description}
+                                    </p>
                                 )}
                             </TooltipContent>
                         </Tooltip>

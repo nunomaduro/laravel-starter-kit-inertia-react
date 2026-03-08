@@ -153,7 +153,9 @@ export function CommandPalette(): React.ReactElement {
 
     useEffect(() => {
         const manager = getHotkeyManager();
-        const handle = manager.register('Mod+k' as RegisterableHotkey, () => setOpen((o) => !o));
+        const handle = manager.register('Mod+k' as RegisterableHotkey, () =>
+            setOpen((o) => !o),
+        );
         return () => handle.unregister();
     }, []);
 

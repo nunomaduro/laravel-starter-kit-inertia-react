@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
 
 import { StreamingText } from '@/components/ai/streaming-text';
 
@@ -23,7 +22,11 @@ export const Static: Story = {
         text: 'This is a fully loaded AI response. All characters are visible immediately.',
         isStreaming: false,
     },
-    render: (args) => <div className="max-w-sm text-sm"><StreamingText {...args} /></div>,
+    render: (args) => (
+        <div className="max-w-sm text-sm">
+            <StreamingText {...args} />
+        </div>
+    ),
 };
 
 export const Streaming: Story = {
@@ -32,7 +35,11 @@ export const Streaming: Story = {
         isStreaming: true,
         speed: 20,
     },
-    render: (args) => <div className="max-w-sm text-sm"><StreamingText {...args} /></div>,
+    render: (args) => (
+        <div className="max-w-sm text-sm">
+            <StreamingText {...args} />
+        </div>
+    ),
 };
 
 export const LongResponse: Story = {
@@ -40,5 +47,9 @@ export const LongResponse: Story = {
         text: 'Based on your query, here is a comprehensive analysis of the topic. The key factors to consider are performance, scalability, and maintainability. Each of these dimensions requires careful thought and deliberate architectural decisions.',
         isStreaming: false,
     },
-    render: (args) => <div className="max-w-md text-sm leading-relaxed"><StreamingText {...args} /></div>,
+    render: (args) => (
+        <div className="max-w-md text-sm leading-relaxed">
+            <StreamingText {...args} />
+        </div>
+    ),
 };

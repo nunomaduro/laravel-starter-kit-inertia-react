@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
     FileIcon,
     FolderIcon,
@@ -9,8 +8,8 @@ import {
     Trash2Icon,
     UploadIcon,
 } from 'lucide-react';
+import * as React from 'react';
 
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +20,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 export interface FileItem {
     id: string;
@@ -101,10 +101,16 @@ function FileManager({
     };
 
     return (
-        <div data-slot="file-manager" className={cn('flex flex-col gap-3', className)}>
+        <div
+            data-slot="file-manager"
+            className={cn('flex flex-col gap-3', className)}
+        >
             {/* Toolbar */}
             <div className="flex flex-wrap items-center gap-2">
-                <nav className="flex items-center gap-1 text-sm" aria-label="breadcrumb">
+                <nav
+                    className="flex items-center gap-1 text-sm"
+                    aria-label="breadcrumb"
+                >
                     <button
                         type="button"
                         onClick={() => onNavigatePath?.(-1)}
@@ -195,7 +201,11 @@ function FileManager({
                         placeholder="Folder name"
                         className="h-7 text-sm"
                     />
-                    <Button size="sm" className="h-7" onClick={handleCreateFolder}>
+                    <Button
+                        size="sm"
+                        className="h-7"
+                        onClick={handleCreateFolder}
+                    >
                         Create
                     </Button>
                     <Button
@@ -377,15 +387,18 @@ function FileGridItem({
                 'group relative flex flex-col items-center gap-1.5 rounded-lg border p-3 transition-colors hover:bg-muted/50',
                 selected && 'border-primary bg-primary/5',
             )}
-            onClick={() => (item.type === 'folder' ? onNavigate?.(item) : onSelect?.(item))}
+            onClick={() =>
+                item.type === 'folder' ? onNavigate?.(item) : onSelect?.(item)
+            }
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
-                if (e.key === 'Enter')
-                    item.type === 'folder' ? onNavigate?.(item) : onSelect?.(item);
+                if (e.key === 'Enter') {
+                    (item.type === 'folder' ? onNavigate : onSelect)?.(item);
+                }
             }}
         >
-            <div className="absolute right-1 top-1">
+            <div className="absolute top-1 right-1">
                 <FileActionsMenu
                     item={item}
                     onDelete={onDelete}
@@ -414,7 +427,9 @@ function FileGridItem({
                     className="h-6 w-full px-1 text-center text-xs"
                 />
             ) : (
-                <span className="w-full truncate text-center text-xs">{item.name}</span>
+                <span className="w-full truncate text-center text-xs">
+                    {item.name}
+                </span>
             )}
             {item.size !== undefined && (
                 <Badge variant="secondary" className="px-1 py-0 text-[10px]">
@@ -446,7 +461,9 @@ function FileListRow({
                 'group cursor-pointer transition-colors hover:bg-muted/30',
                 selected && 'bg-primary/5',
             )}
-            onClick={() => (item.type === 'folder' ? onNavigate?.(item) : onSelect?.(item))}
+            onClick={() =>
+                item.type === 'folder' ? onNavigate?.(item) : onSelect?.(item)
+            }
         >
             <td className="px-3 py-2">
                 <div className="flex items-center gap-2">
@@ -480,7 +497,10 @@ function FileListRow({
             <td className="px-3 py-2 text-sm text-muted-foreground">
                 {formatDate(item.updatedAt)}
             </td>
-            <td className="px-3 py-2 text-right" onClick={(e) => e.stopPropagation()}>
+            <td
+                className="px-3 py-2 text-right"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <FileActionsMenu
                     item={item}
                     onDelete={onDelete}

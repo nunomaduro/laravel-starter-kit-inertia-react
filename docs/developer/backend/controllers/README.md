@@ -45,6 +45,17 @@ All Controllers:
 | [SearchController](docs/developer/backend/controllers/SearchController.md) | N/A | ✅ |
 | [DashboardController](./dashboardcontroller.md) | N/A | ✅ |
 | [UserPreferencesController](docs/developer/backend/controllers/UserPreferencesController.md) | N/A | ✅ |
-| OrgThemeController | N/A | ❌ |
+| [OrgThemeController](docs/developer/backend/controllers/OrgThemeController.md) | N/A | ✅ |
+| [SocialAuthController](./SocialAuthController.md) | N/A | ✅ |
+| [OrgSlugController](docs/developer/backend/controllers/OrgSlugController.md) | N/A | ✅ |
+| [OrgDomainsController](docs/developer/backend/controllers/OrgDomainsController.md) | N/A | ✅ |
+| [SlugAvailabilityController](docs/developer/backend/controllers/SlugAvailabilityController.md) | N/A | ✅ |
+| [CaddyAskController](docs/developer/backend/controllers/CaddyAskController.md) | N/A | ✅ |
+| [NotificationPreferencesController](docs/developer/backend/controllers/NotificationPreferencesController.md) | N/A | ✅ |
+| [IndexNotificationsController](docs/developer/backend/controllers/Notifications/IndexNotificationsController.md) | N/A | ✅ |
+| [MarkNotificationReadController](docs/developer/backend/controllers/Notifications/MarkNotificationReadController.md) | N/A | ✅ |
+| [MarkAllNotificationsReadController](docs/developer/backend/controllers/Notifications/MarkAllNotificationsReadController.md) | N/A | ✅ |
+| [DeleteNotificationController](docs/developer/backend/controllers/Notifications/DeleteNotificationController.md) | N/A | ✅ |
+| [ClearAllNotificationsController](docs/developer/backend/controllers/Notifications/ClearAllNotificationsController.md) | N/A | ✅ |
 
 
