@@ -6,14 +6,13 @@ namespace App\Http\Controllers\Settings;
 
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Inertia\Inertia;
 use Inertia\Response;
 
 final class AchievementsController extends Controller
 {
-    public function show(Request $request, #[CurrentUser] User $user): Response
+    public function show(#[CurrentUser] User $user): Response
     {
         $level = max(1, $user->getLevel());
         $points = $user->getPoints();
