@@ -3,17 +3,17 @@
     "table": "audit_logs",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "actor_id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -38,17 +38,17 @@
             "default": null
         },
         "old_value": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "new_value": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "ip_address": {
-            "type": "inet",
+            "type": "string",
             "nullable": true,
             "default": null
         },

@@ -3,12 +3,12 @@
     "table": "organization_invitations",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -33,7 +33,7 @@
             "default": null
         },
         "invited_by": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },

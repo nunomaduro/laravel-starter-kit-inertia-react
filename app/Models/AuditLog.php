@@ -11,7 +11,6 @@ use Override;
 final class AuditLog extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-    use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     #[Override]
     public $timestamps = false;

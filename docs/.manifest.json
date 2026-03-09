@@ -1454,7 +1454,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -1468,8 +1467,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "invitations.show",
                     "invitations.accept",
                     "cookie-consent.accept",
@@ -1969,7 +1966,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -1983,8 +1979,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "invitations.show",
                     "invitations.accept",
                     "cookie-consent.accept",
@@ -2409,7 +2403,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -2423,8 +2416,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "invitations.show",
                     "invitations.accept",
                     "cookie-consent.accept",
@@ -2790,7 +2781,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -2804,8 +2794,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "invitations.show",
                     "invitations.accept",
                     "cookie-consent.accept",
@@ -3157,7 +3145,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -3171,8 +3158,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "invitations.show",
                     "invitations.accept",
                     "cookie-consent.accept",
@@ -3697,7 +3682,6 @@
                     "data-table.saved-views.store",
                     "data-table.saved-views.update",
                     "data-table.saved-views.destroy",
-                    "telescope",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -3711,8 +3695,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "invitations.show",
                     "invitations.accept",
                     "cookie-consent.accept",
@@ -3943,9 +3925,7 @@
             "lastUpdated": "2026-03-07",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": [
-                    "dev.components"
-                ]
+                "relatedRoutes": []
             }
         },
         "dev/pages": {
@@ -3954,9 +3934,7 @@
             "developerGuide": null,
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": [
-                    "dev.pages"
-                ]
+                "relatedRoutes": []
             }
         },
         "error": {

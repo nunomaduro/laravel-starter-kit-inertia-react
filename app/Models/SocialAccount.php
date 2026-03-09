@@ -21,7 +21,6 @@ use Override;
 final class SocialAccount extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-    use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     #[Override]
     protected $fillable = [

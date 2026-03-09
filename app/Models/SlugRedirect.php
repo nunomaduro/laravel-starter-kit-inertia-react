@@ -20,7 +20,6 @@ use Override;
 final class SlugRedirect extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-    use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     #[Override]
     public $timestamps = false;

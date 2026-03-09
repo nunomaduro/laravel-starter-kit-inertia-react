@@ -3,7 +3,7 @@
     "table": "voucher_scopes",
     "fields": {
         "id": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
