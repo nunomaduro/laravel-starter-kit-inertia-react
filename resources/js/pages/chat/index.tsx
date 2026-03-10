@@ -197,8 +197,10 @@ export default function ChatPage() {
         try {
             const res = await fetch('/api/conversations', {
                 credentials: 'include',
+                headers: { Accept: 'application/json' },
             });
-            if (res.ok) {
+            const contentType = res.headers.get('content-type') ?? '';
+            if (res.ok && contentType.includes('application/json')) {
                 const json = (await res.json()) as { data: ConversationItem[] };
                 setConversations(json.data ?? []);
             }

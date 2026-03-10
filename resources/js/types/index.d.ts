@@ -132,6 +132,8 @@ export interface SharedData {
     notifications?: {
         unread_count: number;
     };
+    /** Whether the setup wizard has been completed (super-admin flow). */
+    setup_complete: boolean;
     [key: string]: unknown;
 }
 

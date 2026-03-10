@@ -4,13 +4,30 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { CommandPalette } from '@/components/command-dialog';
 import { ThemeCustomizer } from '@/components/ui/theme-customizer';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
 
 export default function AppSidebarLayout({
     children,
     breadcrumbs = [],
 }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
+    const { setup_complete } = usePage<SharedData>().props;
+
+    if (!setup_complete) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-background">
+                <div className="max-w-md space-y-3 p-8 text-center">
+                    <h1 className="text-2xl font-semibold">Setup in Progress</h1>
+                    <p className="text-muted-foreground">
+                        This application is being configured by an administrator.
+                        Please check back shortly.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <AppShell variant="sidebar">
             <CommandPalette />

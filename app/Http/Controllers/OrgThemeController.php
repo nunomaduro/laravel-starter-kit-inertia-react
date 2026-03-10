@@ -162,13 +162,13 @@ final class OrgThemeController extends Controller
         $this->authorizeGlobal($request);
 
         $settings = resolve(ThemeSettings::class);
-        $settings->dark_color_scheme = 'navy';
-        $settings->primary_color = 'indigo';
-        $settings->light_color_scheme = 'slate';
+        $settings->dark_color_scheme = '';
+        $settings->primary_color = '';
+        $settings->light_color_scheme = '';
         $settings->card_skin = 'shadow';
         $settings->border_radius = 'default';
         $settings->sidebar_layout = 'main';
-        $settings->font = 'inter';
+        $settings->font = 'instrument-sans';
         $settings->menu_color = 'default';
         $settings->menu_accent = 'subtle';
         $settings->save();

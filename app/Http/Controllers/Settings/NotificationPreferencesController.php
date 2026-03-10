@@ -22,7 +22,8 @@ final class NotificationPreferencesController extends Controller
 
         $existingPrefs = $user
             ->notificationPreferences()
-            ->pluck(null, 'notification_type')
+            ->get()
+            ->keyBy('notification_type')
             ->map(fn ($pref): array => [
                 'via_database' => $pref->via_database,
                 'via_email' => $pref->via_email,

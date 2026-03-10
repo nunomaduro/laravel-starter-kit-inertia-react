@@ -21,11 +21,13 @@ import {
     Bell,
     ClipboardList,
     Download,
+    ExternalLink,
     Globe,
     Key,
     Palette,
     RotateCcw,
     Shield,
+    ShieldCheck,
     Sparkles,
     ToggleLeft,
     UserCircle,
@@ -132,9 +134,12 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     const { features, auth } = usePage<SharedData>().props;
     const currentUrl = usePage<SharedData>().url.split('?')[0];
 
+    const isSuperAdmin = auth.roles?.includes('super-admin') ?? false;
     const isOrgAdmin =
         auth.current_organization != null &&
         (auth.can_bypass || (auth.roles?.includes('admin') ?? false));
+    const adminPanelHref = isSuperAdmin ? '/system' : '/admin';
+    const adminPanelLabel = isSuperAdmin ? 'System Panel' : 'Admin Panel';
 
     const visibleNavItems = useMemo(() => {
         const f = features ?? {};
@@ -189,6 +194,21 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                 </Button>
                             );
                         })}
+                        {(isSuperAdmin || isOrgAdmin) && (
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                asChild
+                                data-pan="settings-nav-admin-panel"
+                                className="mt-2 shrink-0 justify-start gap-2 border-t pt-2 text-muted-foreground lg:w-full lg:mt-2 lg:pt-2"
+                            >
+                                <a href={adminPanelHref}>
+                                    <ShieldCheck className="size-4 shrink-0" />
+                                    {adminPanelLabel}
+                                    <ExternalLink className="ml-auto size-3 shrink-0 opacity-50" />
+                                </a>
+                            </Button>
+                        )}
                     </nav>
                 </aside>
 

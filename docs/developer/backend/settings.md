@@ -18,7 +18,9 @@ Per-request (middleware):
 
 ### What stays in `.env` (never moves to DB)
 
-Infrastructure needed before the DB is available: `APP_KEY`, `APP_ENV`, `APP_DEBUG`, `APP_URL`, `DB_*`, `CACHE_STORE`, `SESSION_DRIVER`, `QUEUE_CONNECTION`, `BROADCAST_CONNECTION`, `REDIS_*`, `LOG_CHANNEL`, `VITE_*`.
+Infrastructure needed before the DB is available: `APP_KEY`, `APP_ENV`, `APP_DEBUG`, `APP_URL`, `DB_*`, `CACHE_STORE`, `SESSION_DRIVER`, `QUEUE_CONNECTION`, `BROADCAST_CONNECTION`, `REDIS_*`, `TYPESENSE_*`, `VITE_*`.
+
+`LOG_CHANNEL` and `LOG_LEVEL` can now also be managed via `LoggingSettings` (see table below), but the overlay applies **after** the logger is bootstrapped — meaning a cache clear + process restart is required for changes to take effect.
 
 ## Settings classes
 
@@ -27,13 +29,14 @@ Infrastructure needed before the DB is available: `APP_KEY`, `APP_ENV`, `APP_DEB
 - **Registration**: Settings in `app/Settings` are auto-discovered (see `config/settings.php` → `auto_discover_settings`).
 - **Encryption**: Classes that hold secrets define `public static function encrypted(): array` returning property names. Spatie encrypts these at rest using `APP_KEY`.
 
-### All settings groups (27)
+### All settings groups (29)
 
 | Class | Group | Config Target | Org-Overridable | Filament Page |
 |-------|-------|---------------|:---:|---|
 | `AppSettings` | app | `app.*` | No | Settings > App |
-| `AuthSettings` | auth | — | No | Settings > Auth |
-| `SeoSettings` | seo | — | No | Settings > SEO |
+| `AuthSettings` | auth | `services.google.*`, `services.github.*`, `session.lifetime` | No | Settings > Auth |
+| `SeoSettings` | seo | `seo.*` | No | Settings > SEO |
+| `LoggingSettings` | logging | `logging.default`, `logging.channels.single.level`, `logging.channels.slack.*` | No | Settings > Logging |
 | `BillingSettings` | billing | `billing.*` | Yes | Settings > Billing |
 | `MailSettings` | mail | `mail.*` | Yes | Settings > Mail |
 | `TenancySettings` | tenancy | `tenancy.*` | No | Settings > Tenancy |
@@ -58,6 +61,25 @@ Infrastructure needed before the DB is available: `APP_KEY`, `APP_ENV`, `APP_DEB
 | `BackupSettings` | backup | `backup.*` | No | Settings > Backup |
 | `MediaSettings` | media | `media-library.*` | No | Settings > Media |
 | `SetupWizardSettings` | setup-wizard | — | No | Internal (setup completion state) |
+
+#### `AuthSettings` properties
+
+| Property | Type | Default | Notes |
+|---|---|---|---|
+| `registration_enabled` | `bool` | `true` | Toggle public registration |
+| `email_verification_required` | `bool` | `false` | Require email confirmation before login |
+| `google_oauth_enabled` | `bool` | `false` | Enable Google social login |
+| `google_client_id` | `string` | `''` | Overlaid → `services.google.client_id` |
+| `google_client_secret` | `string` | `''` | Encrypted; overlaid → `services.google.client_secret` |
+| `github_oauth_enabled` | `bool` | `false` | Enable GitHub social login |
+| `github_client_id` | `string` | `''` | Overlaid → `services.github.client_id` |
+| `github_client_secret` | `string` | `''` | Encrypted; overlaid → `services.github.client_secret` |
+| `two_factor_enforcement` | `string` | `'optional'` | `optional` \| `required` \| `admins_only` |
+| `session_lifetime` | `int` | `120` | Minutes; overlaid → `session.lifetime` |
+| `password_min_length` | `int` | `8` | Minimum password character count |
+| `password_require_uppercase` | `bool` | `false` | Enforce uppercase in passwords |
+| `password_require_numbers` | `bool` | `false` | Enforce digit in passwords |
+| `password_require_symbols` | `bool` | `false` | Enforce symbol in passwords |
 
 ## Key components
 
@@ -100,7 +122,7 @@ Encrypted values use `Crypt::encryptString(json_encode($value))` and are decrypt
 
 ## Filament UI
 
-- **Settings pages**: 26 pages in `app/Filament/Pages/Manage*.php` extending `SettingsPage`.
+- **Settings pages**: 29 pages in `app/Filament/Pages/Manage*.php` extending `SettingsPage`.
 - **Organization Overrides**: `ManageOrganizationOverrides` — a custom Page with `HasTable` showing all per-org overrides. Has "Add Override" action and delete per-row.
 - **Creation**: `php artisan make:filament-settings-page PageName "App\\Settings\\SettingsClass" --generate`
 - Form field names must match the property names on the settings class.
@@ -151,6 +173,22 @@ if (!$auth->registration_enabled) {
 |---------|---------|
 | `settings:cache` | Warm the org settings cache for all organizations |
 | `settings:clear-cache [--org=ID]` | Clear the org settings cache (all or specific org) |
+| `app:install` | Run initial application setup (app, mail, optional AI) and mark setup complete; see [Setup wizard and CLI install](#setup-wizard-and-cli-install) below. |
+
+### Setup wizard and CLI install
+
+Initial configuration is driven by **Setup Wizard** (`SetupWizardSettings`). Super-admins are redirected to the Filament setup wizard at `/system/setup-wizard` until setup is marked complete. The wizard writes to the same settings classes (App, Mail, Billing, Stripe, Prism, AI) and calls `SettingsOverlayServiceProvider::applyOverlay()` on completion.
+
+For **CI, headless, or scripted installs**, use the Artisan command:
+
+```bash
+php artisan app:install --non-interactive
+```
+
+- **`--non-interactive`** — Use defaults or option values; no prompts. Idempotent: if setup is already complete, exits 0 without writing.
+- **Options** (optional): `--site-name=`, `--url=`, `--mail-mailer=`, `--mail-from=`, `--mail-from-name=`.
+
+Without `--non-interactive`, the command prompts for site name, URL, mailer (and SMTP details if needed), from address/name, and optionally AI provider and API key. All values are persisted to the `settings` table only (no `.env` changes).
 
 ## Caching
 

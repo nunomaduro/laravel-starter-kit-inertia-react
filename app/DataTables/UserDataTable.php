@@ -65,7 +65,7 @@ final class UserDataTable extends AbstractDataTable
     {
         $status = match (true) {
             $model->trashed() => UserStatusEnum::Deleted,
-            $model->onboarding_completed => UserStatusEnum::Active,
+            $model->email_verified_at !== null => UserStatusEnum::Active,
             default => UserStatusEnum::Pending,
         };
 
@@ -90,6 +90,7 @@ final class UserDataTable extends AbstractDataTable
         return [
             ColumnBuilder::make('_index', '#')
                 ->rowIndex()
+                ->visible(false)
                 ->group('Identity')
                 ->build(),
             ColumnBuilder::make('id', 'ID')
@@ -121,9 +122,9 @@ final class UserDataTable extends AbstractDataTable
                 ->build(),
             ColumnBuilder::make('status', 'Status')
                 ->badge([
-                    ['label' => 'Active', 'value' => 'active', 'variant' => 'default'],
-                    ['label' => 'Pending', 'value' => 'pending', 'variant' => 'secondary'],
-                    ['label' => 'Deleted', 'value' => 'deleted', 'variant' => 'destructive'],
+                    ['label' => 'Active', 'value' => 'active', 'variant' => 'success'],
+                    ['label' => 'Pending', 'value' => 'pending', 'variant' => 'warning'],
+                    ['label' => 'Deleted', 'value' => 'deleted', 'variant' => 'danger'],
                 ])
                 ->filterable()
                 ->description('Active, pending, or deleted (soft-delete)')
@@ -138,12 +139,10 @@ final class UserDataTable extends AbstractDataTable
                 ->build(),
             ColumnBuilder::make('organizations_count', 'Orgs')
                 ->number()
-                ->suffix(' org(s)')
                 ->group('Status')
                 ->build(),
-            ColumnBuilder::make('first_organization_name', 'First org')
+            ColumnBuilder::make('first_organization_name', 'Primary org')
                 ->text()
-                ->description('First organization (relational demo)')
                 ->group('Status')
                 ->build(),
             ColumnBuilder::make('created_at', 'Created at')
@@ -326,13 +325,13 @@ final class UserDataTable extends AbstractDataTable
                 'column' => 'onboarding_completed',
                 'operator' => 'eq',
                 'value' => true,
-                'row' => ['class' => 'bg-emerald-50/50 dark:bg-emerald-950/20'],
+                'row' => ['class' => 'bg-emerald-50 dark:bg-emerald-950/30'],
             ],
             [
                 'column' => 'onboarding_completed',
                 'operator' => 'eq',
                 'value' => false,
-                'row' => ['class' => 'bg-amber-50/30 dark:bg-amber-950/10'],
+                'row' => ['class' => 'bg-amber-50 dark:bg-amber-950/20'],
             ],
         ];
     }
@@ -345,7 +344,7 @@ final class UserDataTable extends AbstractDataTable
     public static function tableOptions(): array
     {
         return [
-            'pollingInterval' => 30,
+            'pollingInterval' => 60,
             'deferLoading' => true,
             'softDeletesEnabled' => true,
             'detailDisplay' => 'drawer',
@@ -398,14 +397,29 @@ final class UserDataTable extends AbstractDataTable
         ];
     }
 
-    /** @return array{user: array{id: int, name: string, email: string, created_at: string|null}} */
+    /**
+     * @return array{user: array{id: int, name: string, email: string, avatar: string|null, status: string, onboarding_completed: bool, email_verified_at: string|null, organizations: list<array{id: int, name: string}>, created_at: string|null}}
+     */
     public static function showProps(User $user): array
     {
+        $user->loadMissing('organizations:id,name');
+
+        $status = match (true) {
+            $user->trashed() => 'deleted',
+            $user->email_verified_at !== null => 'active',
+            default => 'pending',
+        };
+
         return [
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'avatar' => $user->avatar,
+                'status' => $status,
+                'onboarding_completed' => $user->onboarding_completed,
+                'email_verified_at' => $user->email_verified_at?->format('Y-m-d H:i'),
+                'organizations' => $user->organizations->map(fn ($org): array => ['id' => $org->id, 'name' => $org->name])->values()->all(),
                 'created_at' => $user->created_at?->toIso8601String(),
             ],
         ];

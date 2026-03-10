@@ -24,6 +24,7 @@ import {
     BookOpen,
     Building2,
     CreditCard,
+    ExternalLink,
     FileText,
     Folder,
     LayoutGrid,
@@ -31,6 +32,7 @@ import {
     Mail,
     Megaphone,
     MessageCircle,
+    ShieldCheck,
     Users,
 } from 'lucide-react';
 import { useMemo } from 'react';
@@ -211,6 +213,12 @@ export function AppSidebar() {
         ],
     );
 
+    const adminPanelHref = isSuperAdmin ? '/system' : '/admin';
+    const adminPanelLabel = isSuperAdmin ? 'System Panel' : 'Admin Panel';
+    const canSeeAdminPanel =
+        isSuperAdmin ||
+        permissions.includes('access admin panel');
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -232,6 +240,19 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={visibleMainNavItems} />
+                {canSeeAdminPanel && (
+                    <div className="px-2 pb-2">
+                        <a
+                            href={adminPanelHref}
+                            data-pan="nav-admin-panel"
+                            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        >
+                            <ShieldCheck className="size-4 shrink-0" />
+                            <span>{adminPanelLabel}</span>
+                            <ExternalLink className="ml-auto size-3 shrink-0 opacity-50" />
+                        </a>
+                    </div>
+                )}
             </SidebarContent>
 
             <SidebarFooter>

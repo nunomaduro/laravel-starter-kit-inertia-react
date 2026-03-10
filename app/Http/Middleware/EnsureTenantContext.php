@@ -27,7 +27,10 @@ final class EnsureTenantContext
                 ], 403);
             }
 
-            return to_route('dashboard');
+            return to_route('dashboard')->with('flash', [
+                'type' => 'warning',
+                'message' => 'Please select an organization to access this page.',
+            ]);
         }
 
         return $next($request);

@@ -54,14 +54,20 @@ export function ThemeFromProps() {
 
         if (theme.dark) {
             root.setAttribute('data-theme-dark', theme.dark);
+        } else {
+            root.removeAttribute('data-theme-dark');
         }
 
         if (theme.primary) {
             root.setAttribute('data-theme-primary', theme.primary);
+        } else {
+            root.removeAttribute('data-theme-primary');
         }
 
         if (theme.light) {
             root.setAttribute('data-theme-light', theme.light);
+        } else {
+            root.removeAttribute('data-theme-light');
         }
 
         if (theme.skin) {

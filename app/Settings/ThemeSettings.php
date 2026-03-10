@@ -14,17 +14,17 @@ final class ThemeSettings extends Settings
 
     public string $radius = 'default';
 
-    /** @var 'inter'|'geist'|'poppins'|'outfit'|'plus-jakarta-sans' */
-    public string $font = 'inter';
+    /** @var 'instrument-sans'|'inter'|'geist'|'poppins'|'outfit'|'plus-jakarta-sans' */
+    public string $font = 'instrument-sans';
 
     /** @var 'light'|'dark'|'system' */
     public string $default_appearance = 'system';
 
-    public string $dark_color_scheme = 'navy';
+    public string $dark_color_scheme = '';
 
-    public string $primary_color = 'indigo';
+    public string $primary_color = '';
 
-    public string $light_color_scheme = 'slate';
+    public string $light_color_scheme = '';
 
     public string $card_skin = 'shadow';
 

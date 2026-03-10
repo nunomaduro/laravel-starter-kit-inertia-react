@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Pages;
 
-use App\Providers\SettingsOverlayServiceProvider;
 use App\Settings\AppSettings;
 use App\Settings\SetupWizardSettings;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -86,14 +87,37 @@ final class ManageApp extends SettingsPage
             ]);
     }
 
-    protected function afterSave(): void
+    /**
+     * @return array<int, Action>
+     */
+    protected function getHeaderActions(): array
     {
-        $wizard = resolve(SetupWizardSettings::class);
-        if (! $wizard->setup_completed) {
-            $wizard->setup_completed = true;
-            $wizard->completed_steps = ['app'];
-            $wizard->save();
-            SettingsOverlayServiceProvider::applyOverlay();
-        }
+        return [
+            Action::make('reRunWizard')
+                ->label('Re-run Setup Wizard')
+                ->icon(Heroicon::OutlinedRocketLaunch)
+                ->color('warning')
+                ->requiresConfirmation()
+                ->modalHeading('Re-run Setup Wizard?')
+                ->modalDescription(
+                    'This will mark setup as incomplete and take you to the wizard. '.
+                    'All current settings are preserved — the wizard simply lets you review and update them.'
+                )
+                ->modalSubmitActionLabel('Yes, re-run wizard')
+                ->action(function (): void {
+                    $wizard = resolve(SetupWizardSettings::class);
+                    $wizard->setup_completed = false;
+                    $wizard->completed_steps = [];
+                    $wizard->save();
+
+                    Notification::make()
+                        ->title('Setup wizard reset')
+                        ->body('Redirecting you to the setup wizard.')
+                        ->warning()
+                        ->send();
+
+                    $this->redirect(route('filament.system.pages.setup-wizard'));
+                }),
+        ];
     }
 }

@@ -43,7 +43,7 @@ final class AdminPanelProvider extends PanelProvider
             ->favicon(asset('favicon.svg'))
             ->font('Inter Variable', null, null, [])
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Indigo,
             ])
             ->globalSearch()
             ->darkMode()
@@ -97,6 +97,7 @@ final class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
                 EnsureSetupComplete::class,
             ])
-            ->renderHook(PanelsRenderHook::SIDEBAR_LOGO_AFTER, fn (): View => view('filament.components.organization-switcher'));
+            ->renderHook(PanelsRenderHook::SIDEBAR_LOGO_AFTER, fn (): View => view('filament.components.organization-switcher'))
+            ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, fn (): View => view('filament.components.back-to-app'));
     }
 }

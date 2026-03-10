@@ -7,6 +7,7 @@ use App\Http\Middleware\AdditionalSecurityHeaders;
 use App\Http\Middleware\ApplyOrganizationSettings;
 use App\Http\Middleware\AutoPermissionMiddleware;
 use App\Http\Middleware\EnforceIpWhitelist;
+use App\Http\Middleware\EnforceTwoFactor;
 use App\Http\Middleware\EnsureCountryAllowed;
 use App\Http\Middleware\EnsureFeatureActive;
 use App\Http\Middleware\EnsureOnboardingComplete;
@@ -74,6 +75,7 @@ return Application::configure(basePath: dirname(__DIR__))
             CacheResponse::class,
             AutoPermissionMiddleware::class,
             ThrottleTwoFactorManagement::class,
+            EnforceTwoFactor::class,
             EnsureOnboardingComplete::class,
             EnsureTermsAccepted::class,
         ];

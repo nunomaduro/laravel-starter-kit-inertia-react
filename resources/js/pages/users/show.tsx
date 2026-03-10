@@ -1,12 +1,25 @@
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
+import type { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Building2, CheckCircle2, Clock, Mail, ShieldCheck, User } from 'lucide-react';
+
+interface Organization {
+    id: number;
+    name: string;
+}
 
 interface UserShape {
     id: number;
     name: string;
     email: string;
+    avatar: string | null;
+    status: string;
+    onboarding_completed: boolean;
+    email_verified_at: string | null;
+    organizations: Organization[];
     created_at: string | null;
 }
 
@@ -14,39 +27,142 @@ interface Props {
     user: UserShape;
 }
 
+const STATUS_BADGE: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' }> = {
+    active: { label: 'Active', variant: 'success' },
+    pending: { label: 'Pending', variant: 'warning' },
+    deleted: { label: 'Deleted', variant: 'danger' },
+};
+
 export default function UserShowPage({ user }: Props) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: 'Users', href: '/users' },
+        { title: user.name, href: `/users/${user.id}` },
+    ];
+
+    const status = STATUS_BADGE[user.status] ?? { label: user.status, variant: 'warning' as const };
+    const initials = user.name
+        .split(' ')
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
+
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
             <Head title={user.name} />
-            <div className="flex h-full flex-1 flex-col gap-4 p-4">
-                <div className="flex items-center gap-2">
+            <div className="flex h-full flex-1 flex-col gap-6 p-4 md:p-6">
+                {/* Header */}
+                <div className="flex items-center gap-3">
                     <Button variant="ghost" size="icon" asChild>
-                        <Link href="/users">
+                        <Link href="/users" aria-label="Back to users">
                             <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
-                    <h1 className="text-2xl font-bold tracking-tight">
-                        {user.name}
-                    </h1>
+                    <div className="flex items-center gap-3">
+                        {user.avatar ? (
+                            <img
+                                src={user.avatar}
+                                alt={user.name}
+                                className="h-10 w-10 rounded-full object-cover ring-1 ring-border"
+                            />
+                        ) : (
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground ring-1 ring-border">
+                                {initials}
+                            </div>
+                        )}
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h1 className="text-xl font-semibold tracking-tight">
+                                    {user.name}
+                                </h1>
+                                <Badge variant={status.variant}>{status.label}</Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">#{user.id}</p>
+                        </div>
+                    </div>
                 </div>
-                <dl className="grid gap-2 text-sm">
-                    <div>
-                        <dt className="font-medium text-muted-foreground">
+
+                <Separator />
+
+                {/* Details grid */}
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <dl className="space-y-1">
+                        <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                            <Mail className="h-3.5 w-3.5" />
                             Email
                         </dt>
-                        <dd>{user.email}</dd>
-                    </div>
-                    {user.created_at && (
-                        <div>
-                            <dt className="font-medium text-muted-foreground">
-                                Created at
+                        <dd className="text-sm">
+                            <a
+                                href={`mailto:${user.email}`}
+                                className="text-primary hover:underline"
+                            >
+                                {user.email}
+                            </a>
+                        </dd>
+                    </dl>
+
+                    <dl className="space-y-1">
+                        <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                            <ShieldCheck className="h-3.5 w-3.5" />
+                            Email verified
+                        </dt>
+                        <dd className="text-sm">
+                            {user.email_verified_at
+                                ? new Date(user.email_verified_at).toLocaleString()
+                                : <span className="text-muted-foreground">Not verified</span>}
+                        </dd>
+                    </dl>
+
+                    <dl className="space-y-1">
+                        <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            Onboarding
+                        </dt>
+                        <dd className="text-sm">
+                            {user.onboarding_completed ? (
+                                <span className="text-emerald-600 dark:text-emerald-400">Completed</span>
+                            ) : (
+                                <span className="text-amber-600 dark:text-amber-400">Incomplete</span>
+                            )}
+                        </dd>
+                    </dl>
+
+                    <dl className="space-y-1">
+                        <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                            <Clock className="h-3.5 w-3.5" />
+                            Member since
+                        </dt>
+                        <dd className="text-sm">
+                            {user.created_at
+                                ? new Date(user.created_at).toLocaleDateString(undefined, {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                  })
+                                : '—'}
+                        </dd>
+                    </dl>
+
+                    {user.organizations.length > 0 && (
+                        <dl className="space-y-1 sm:col-span-2">
+                            <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                                <Building2 className="h-3.5 w-3.5" />
+                                Organizations
                             </dt>
-                            <dd>
-                                {new Date(user.created_at).toLocaleDateString()}
+                            <dd className="flex flex-wrap gap-1.5 text-sm">
+                                {user.organizations.map((org) => (
+                                    <span
+                                        key={org.id}
+                                        className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                                    >
+                                        <User className="h-3 w-3" />
+                                        {org.name}
+                                    </span>
+                                ))}
                             </dd>
-                        </div>
+                        </dl>
                     )}
-                </dl>
+                </div>
             </div>
         </AppSidebarLayout>
     );

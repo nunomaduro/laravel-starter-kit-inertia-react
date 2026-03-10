@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
+import type { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { Copy, Keyboard, Trash2, UserPlus, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -39,6 +40,8 @@ interface Props {
     tableData?: DataTableResponse<UsersTableRow>;
     searchableColumns: string[];
 }
+
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Users', href: '/users' }];
 
 export default function UsersTablePage({
     tableData,
@@ -96,31 +99,10 @@ export default function UsersTablePage({
                 {
                     label: 'Send email',
                     onClick: (row) => {
-                        window.location.href = `mailto:${row.email}`;
-                    },
-                },
-                {
-                    label: 'Log activity',
-                    onClick: (row) => {
-                        console.info('Log activity for user', row.id);
+                        window.open(`mailto:${row.email}`, '_blank');
                     },
                 },
             ],
-        },
-        {
-            label: 'Deactivate',
-            variant: 'destructive',
-            confirm: {
-                title: 'Deactivate user?',
-                description:
-                    'They will no longer be able to sign in until reactivated.',
-                confirmLabel: 'Deactivate',
-                cancelLabel: 'Cancel',
-                variant: 'destructive',
-            },
-            onClick: (row) => {
-                console.info('Deactivate user', row.id);
-            },
         },
     ];
 
@@ -171,7 +153,7 @@ export default function UsersTablePage({
 
     if (!tableData) {
         return (
-            <AppSidebarLayout>
+            <AppSidebarLayout breadcrumbs={breadcrumbs}>
                 <Head title="Users" />
                 <div
                     className="flex h-full flex-1 flex-col gap-4 p-4"
@@ -190,7 +172,7 @@ export default function UsersTablePage({
     }
 
     return (
-        <AppSidebarLayout>
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
             <div
                 className="flex h-full flex-1 flex-col gap-4 p-4"
@@ -226,29 +208,42 @@ export default function UsersTablePage({
                     bulkActions={bulkActions}
                     headerActions={headerActions}
                     renderDetailRow={(row, detail) => (
-                        <div className="grid grid-cols-2 gap-4 p-4 text-sm">
+                        <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-3">
                             {detail?.email_verified_at != null && (
-                                <div>
-                                    <span className="font-medium text-muted-foreground">
+                                <div className="space-y-0.5">
+                                    <p className="text-xs font-medium text-muted-foreground">
                                         Email verified
-                                    </span>
-                                    <p>{String(detail.email_verified_at)}</p>
+                                    </p>
+                                    <p>
+                                        {new Date(
+                                            String(detail.email_verified_at),
+                                        ).toLocaleString()}
+                                    </p>
                                 </div>
                             )}
                             {detail?.updated_at != null && (
-                                <div>
-                                    <span className="font-medium text-muted-foreground">
+                                <div className="space-y-0.5">
+                                    <p className="text-xs font-medium text-muted-foreground">
                                         Last updated
-                                    </span>
-                                    <p>{String(detail.updated_at)}</p>
+                                    </p>
+                                    <p>
+                                        {new Date(
+                                            String(detail.updated_at),
+                                        ).toLocaleString()}
+                                    </p>
                                 </div>
                             )}
                             {detail?.organizations_count != null && (
-                                <div>
-                                    <span className="font-medium text-muted-foreground">
+                                <div className="space-y-0.5">
+                                    <p className="text-xs font-medium text-muted-foreground">
                                         Organizations
-                                    </span>
-                                    <p>{String(detail.organizations_count)}</p>
+                                    </p>
+                                    <p>
+                                        {detail.organizations_count}{' '}
+                                        {detail.organizations_count === 1
+                                            ? 'org'
+                                            : 'orgs'}
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -293,6 +288,7 @@ export default function UsersTablePage({
                                             size="icon"
                                             className="h-8 w-8"
                                             title="Keyboard shortcuts"
+                                            aria-label="Keyboard shortcuts"
                                         >
                                             <Keyboard className="h-4 w-4" />
                                         </Button>
@@ -351,7 +347,7 @@ export default function UsersTablePage({
                                 e.preventDefault();
                                 const { row, subject, body } = messageDialog;
                                 const mailto = `mailto:${row.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                                window.location.href = mailto;
+                                window.open(mailto, '_blank');
                                 setMessageDialog(null);
                             }}
                         >

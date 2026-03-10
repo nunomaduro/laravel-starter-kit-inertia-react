@@ -28,11 +28,15 @@ import {
     YAxis,
 } from 'recharts';
 
+const SYSTEM = {
+    root: '/system',
+    mailTemplates: '/system/mail-templates',
+    analytics: '/system/analytics/product',
+    contactSubmissions: '/system/contact-submissions',
+} as const;
+
 const ADMIN = {
-    root: '/admin',
-    mailTemplates: '/admin/mail-templates',
     analytics: '/admin/analytics/product',
-    contactSubmissions: '/admin/contact-submissions',
 } as const;
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -240,11 +244,11 @@ function SuperAdminDashboard({
 
     return (
         <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className={`grid gap-4 sm:grid-cols-2 ${showContact ? 'lg:grid-cols-3' : 'lg:grid-cols-2'}`}>
                 <StatCard
                     label="Total users"
                     value={usersCount}
-                    href={`${ADMIN.root}/users`}
+                    href={`${SYSTEM.root}/users`}
                     icon={Users}
                     dataPan="dashboard-admin-users"
                     trend={toTrend(usersGrowthPercent)}
@@ -252,7 +256,7 @@ function SuperAdminDashboard({
                 <StatCard
                     label="Organizations"
                     value={orgsCount}
-                    href={`${ADMIN.root}/organizations`}
+                    href={`${SYSTEM.root}/organizations`}
                     icon={BarChart3}
                     dataPan="dashboard-admin-orgs"
                     trend={toTrend(orgsGrowthPercent)}
@@ -261,9 +265,10 @@ function SuperAdminDashboard({
                     <StatCard
                         label="Contact submissions"
                         value={contactSubmissionsCount}
-                        href={ADMIN.contactSubmissions}
+                        href={SYSTEM.contactSubmissions}
                         icon={Mail}
                         dataPan="dashboard-admin-contact"
+                        trend={null}
                     />
                 )}
             </div>
@@ -294,13 +299,13 @@ function SuperAdminDashboard({
                         },
                         {
                             label: 'Email templates',
-                            href: ADMIN.mailTemplates,
+                            href: SYSTEM.mailTemplates,
                             icon: Mail,
                             dataPan: 'dashboard-quick-email-templates',
                         },
                         {
                             label: 'Product analytics',
-                            href: ADMIN.analytics,
+                            href: SYSTEM.analytics,
                             icon: BarChart3,
                             dataPan: 'dashboard-quick-product-analytics',
                         },

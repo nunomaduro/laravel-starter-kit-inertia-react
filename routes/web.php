@@ -25,6 +25,7 @@ use App\Http\Controllers\Dev\PageGalleryController;
 use App\Http\Controllers\EnterpriseInquiryController;
 use App\Http\Controllers\HelpCenter\HelpCenterController;
 use App\Http\Controllers\HelpCenter\RateHelpArticleController;
+use App\Http\Controllers\InstallController;
 use App\Http\Controllers\Internal\CaddyAskController;
 use App\Http\Controllers\InvitationAcceptController;
 use App\Http\Controllers\Notifications\ClearAllNotificationsController;
@@ -63,6 +64,7 @@ use App\Http\Controllers\UserPreferencesController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UsersTableController;
 use App\Http\Controllers\UserTwoFactorAuthenticationController;
+use App\Http\Middleware\EnsureNotInstalled;
 use App\Http\Middleware\InternalRequestMiddleware;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\JsonResponse;
@@ -74,6 +76,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Honeypot\ProtectAgainstSpam;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
+// Web installer — accessible before auth; EnsureNotInstalled redirects to /admin once done
+Route::middleware(EnsureNotInstalled::class)->group(function (): void {
+    Route::get('install', [InstallController::class, 'show'])->name('install');
+    Route::post('install', [InstallController::class, 'store'])->name('install.store');
+});
 
 if (app()->environment(['local', 'staging'])) {
     Route::get('dev/components', ComponentShowcaseController::class)

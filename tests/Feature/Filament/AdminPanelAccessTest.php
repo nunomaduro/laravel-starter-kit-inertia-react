@@ -69,7 +69,7 @@ it('redirects guest to login when visiting admin', function (): void {
     $response->assertRedirect('/admin/login');
 });
 
-it('redirects super-admin to manage-app when setup not complete', function (): void {
+it('redirects super-admin to setup wizard when setup not complete', function (): void {
     /** @var TestCase $test */
     $test = $this;
     $settings = resolve(SetupWizardSettings::class);
@@ -80,7 +80,7 @@ it('redirects super-admin to manage-app when setup not complete', function (): v
 
     $response = $test->get('/admin');
 
-    $response->assertRedirect('/admin/manage-app');
+    $response->assertRedirect('/system/setup-wizard');
 });
 
 it('allows super-admin to access system panel', function (): void {
@@ -89,6 +89,16 @@ it('allows super-admin to access system panel', function (): void {
     actsAsFilamentAdmin($test, 'super-admin');
 
     $response = $test->get('/system');
+
+    $response->assertOk();
+});
+
+it('allows super-admin to access ManageApp page when setup is complete', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get(route('filament.system.pages.manage-app'));
 
     $response->assertOk();
 });

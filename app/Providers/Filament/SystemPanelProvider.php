@@ -18,8 +18,10 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -97,6 +99,7 @@ final class SystemPanelProvider extends PanelProvider
                 Authenticate::class,
                 EnsureSetupComplete::class,
                 EnsureSuperAdmin::class,
-            ]);
+            ])
+            ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, fn (): View => view('filament.components.back-to-app'));
     }
 }

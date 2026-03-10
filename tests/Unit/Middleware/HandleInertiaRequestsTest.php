@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Models\User;
+use App\Settings\SetupWizardSettings;
 use Illuminate\Http\Request;
 
 it('shares app name from config', function (): void {
@@ -103,4 +104,34 @@ it('includes parent shared data', function (): void {
 
     // Parent Inertia middleware shares 'errors' by default
     expect($shared)->toHaveKey('errors');
+});
+
+it('shares setup_complete true when setup wizard is completed', function (): void {
+    $settings = resolve(SetupWizardSettings::class);
+    $settings->setup_completed = true;
+    $settings->save();
+
+    $middleware = new HandleInertiaRequests();
+    $request = Request::create('/', 'GET');
+    $shared = $middleware->share($request);
+
+    expect($shared)->toHaveKey('setup_complete');
+    $value = $shared['setup_complete'];
+    expect($value)->toBeCallable();
+    expect($value())->toBeTrue();
+});
+
+it('shares setup_complete false when setup wizard is not completed', function (): void {
+    $settings = resolve(SetupWizardSettings::class);
+    $settings->setup_completed = false;
+    $settings->save();
+
+    $middleware = new HandleInertiaRequests();
+    $request = Request::create('/', 'GET');
+    $shared = $middleware->share($request);
+
+    expect($shared)->toHaveKey('setup_complete');
+    $value = $shared['setup_complete'];
+    expect($value)->toBeCallable();
+    expect($value())->toBeFalse();
 });

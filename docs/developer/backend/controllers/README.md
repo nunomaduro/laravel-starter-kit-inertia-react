@@ -57,5 +57,6 @@ All Controllers:
 | [MarkAllNotificationsReadController](docs/developer/backend/controllers/Notifications/MarkAllNotificationsReadController.md) | N/A | ✅ |
 | [DeleteNotificationController](docs/developer/backend/controllers/Notifications/DeleteNotificationController.md) | N/A | ✅ |
 | [ClearAllNotificationsController](docs/developer/backend/controllers/Notifications/ClearAllNotificationsController.md) | N/A | ✅ |
+| InstallController | N/A | ❌ |
 
 

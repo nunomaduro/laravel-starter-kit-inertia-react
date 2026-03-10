@@ -24,6 +24,7 @@ use App\Observers\UserObserver;
 use App\Policies\ShareablePolicy;
 use App\Services\PaymentGateway\PaymentGatewayManager;
 use App\Services\PrismService;
+use App\Settings\AuthSettings;
 use App\Settings\SeoSettings;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +36,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 use LemonSqueezy\Laravel\Events\OrderCreated;
 use Machour\DataTable\Http\Controllers\DataTableDetailRowController;
 use Machour\DataTable\Http\Controllers\DataTableExportController;
@@ -73,6 +75,7 @@ final class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->configurePasswordDefaults();
         $this->configurePan();
 
         $this->registerSeoViewComposer();
@@ -158,6 +161,36 @@ final class AppServiceProvider extends ServiceProvider
         $model = $arguments[0] ?? null;
 
         return $model instanceof User;
+    }
+
+    /**
+     * Configure Password::defaults() based on the DB-backed password policy in AuthSettings.
+     * All form requests that use Password::defaults() will automatically pick up this policy.
+     */
+    private function configurePasswordDefaults(): void
+    {
+        Password::defaults(function (): Password {
+            try {
+                $auth = resolve(AuthSettings::class);
+                $rule = Password::min($auth->password_min_length > 0 ? $auth->password_min_length : 8);
+
+                if ($auth->password_require_uppercase) {
+                    $rule = $rule->mixedCase();
+                }
+
+                if ($auth->password_require_numbers) {
+                    $rule = $rule->numbers();
+                }
+
+                if ($auth->password_require_symbols) {
+                    $rule = $rule->symbols();
+                }
+
+                return $rule;
+            } catch (Throwable) {
+                return Password::min(8);
+            }
+        });
     }
 
     private function configurePan(): void
@@ -263,6 +296,8 @@ final class AppServiceProvider extends ServiceProvider
             'pages-duplicate',
             'pages-delete',
             'settings-nav-domains',
+            'nav-admin-panel',
+            'settings-nav-admin-panel',
         ]);
     }
 

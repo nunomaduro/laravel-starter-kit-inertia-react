@@ -38,3 +38,6 @@ yarn-error.log
 /.github/skills/
 /.junie/skills/
 .chief/
+
+# Install progress
+storage/app/.install-progress.json

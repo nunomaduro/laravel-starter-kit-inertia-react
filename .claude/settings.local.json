@@ -197,7 +197,9 @@
       "Bash(python3 /Users/apple/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py \"avatar photo upload profile settings SaaS\" --design-system -p \"Profile Settings\")",
       "Bash(python3 /Users/apple/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py \"avatar upload photo preview drag drop interaction\" --domain ux -n 5)",
       "Bash(npx tsc --noEmit 2>&1 | head -20)",
-      "Bash(python3 /Users/apple/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py \"sidebar nav links contrast readability muted text\" --domain ux -n 4)"
+      "Bash(python3 /Users/apple/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py \"sidebar nav links contrast readability muted text\" --domain ux -n 4)",
+      "mcp__browser-tools__takeScreenshot",
+      "Bash(python3 /Users/apple/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py \"SaaS admin data table users list search filter pagination enterprise\" --design-system -p \"Users DataTable\" 2>&1)"
     ]
   },
   "enableAllProjectMcpServers": true,

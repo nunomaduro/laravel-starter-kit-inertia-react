@@ -11,7 +11,6 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -66,7 +65,7 @@ final class DashboardController
             ->groupBy('date')
             ->pluck('count', 'date');
 
-        return $days->map(fn (Carbon $day): array => [
+        return $days->map(fn (\Carbon\CarbonImmutable $day): array => [
             'name' => $day->format('D'),
             'value' => (int) ($signups[$day->toDateString()] ?? 0),
         ])->values()->all();

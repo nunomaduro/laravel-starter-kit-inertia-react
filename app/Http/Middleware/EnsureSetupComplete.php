@@ -11,8 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
- * Redirects super-admins to the App settings page when initial setup hasn't been completed.
- * Once they save App settings, setup is marked complete. Scoped to the Filament admin panel.
+ * Redirects super-admins to the Setup Wizard when initial setup has not been completed.
  */
 final class EnsureSetupComplete
 {
@@ -53,10 +52,6 @@ final class EnsureSetupComplete
             return $next($request);
         }
 
-        $manageAppRoute = str_starts_with((string) $currentRoute, 'filament.system.')
-            ? 'filament.system.pages.manage-app'
-            : 'filament.admin.pages.manage-app';
-
-        return to_route($manageAppRoute);
+        return redirect()->to(route('filament.system.pages.setup-wizard'));
     }
 }

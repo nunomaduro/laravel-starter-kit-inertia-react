@@ -12,7 +12,9 @@ use App\Settings\MailSettings;
 use App\Settings\PrismSettings;
 use App\Settings\SetupWizardSettings;
 use App\Settings\StripeSettings;
+use App\Settings\TenancySettings;
 use BackedEnum;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -20,6 +22,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
@@ -76,9 +79,12 @@ final class SetupWizard extends Page implements HasForms
         $prism = resolve(PrismSettings::class);
         $ai = resolve(AiSettings::class);
 
+        $tenancy = resolve(TenancySettings::class);
+
         $this->form->fill([
             // Step 1: App Basics
             'site_name' => $app->site_name,
+            'url' => $app->url,
             'timezone' => $app->timezone,
             'locale' => $app->locale,
             'fallback_locale' => $app->fallback_locale,
@@ -93,6 +99,15 @@ final class SetupWizard extends Page implements HasForms
             'from_address' => $mail->from_address,
             'from_name' => $mail->from_name,
 
+            // Step 2b: Tenancy
+            'tenancy_enabled' => $tenancy->enabled,
+            'tenancy_term' => $tenancy->term,
+            'tenancy_term_plural' => $tenancy->term_plural,
+            'tenancy_allow_user_org_creation' => $tenancy->allow_user_org_creation,
+            'tenancy_default_org_name' => $tenancy->default_org_name,
+            'tenancy_auto_create_personal_org' => $tenancy->auto_create_personal_org,
+            'tenancy_invitation_expires_in_days' => $tenancy->invitation_expires_in_days,
+
             // Step 3: Billing
             'default_gateway' => $billing->default_gateway,
             'currency' => $billing->currency,
@@ -104,8 +119,16 @@ final class SetupWizard extends Page implements HasForms
             // Step 4: AI
             'prism_default_provider' => $prism->default_provider,
             'prism_default_model' => $prism->default_model,
-            'openrouter_api_key' => $prism->openrouter_api_key,
+            'prism_openai_api_key' => $prism->openai_api_key,
+            'prism_anthropic_api_key' => $prism->anthropic_api_key,
+            'prism_groq_api_key' => $prism->groq_api_key,
+            'prism_xai_api_key' => $prism->xai_api_key,
+            'prism_gemini_api_key' => $prism->gemini_api_key,
+            'prism_deepseek_api_key' => $prism->deepseek_api_key,
+            'prism_mistral_api_key' => $prism->mistral_api_key,
+            'prism_openrouter_api_key' => $prism->openrouter_api_key,
             'ai_default_provider' => $ai->default_provider,
+            'ai_cohere_api_key' => $ai->cohere_api_key,
         ]);
     }
 
@@ -115,6 +138,7 @@ final class SetupWizard extends Page implements HasForms
             ->schema([
                 Wizard::make([
                     $this->appBasicsStep(),
+                    $this->tenancyStep(),
                     $this->mailStep(),
                     $this->billingStep(),
                     $this->aiStep(),
@@ -135,6 +159,7 @@ final class SetupWizard extends Page implements HasForms
         $data = $this->form->getState();
 
         $this->saveAppSettings($data);
+        $this->saveTenancySettings($data);
         $this->saveMailSettings($data);
         $this->saveBillingSettings($data);
         $this->saveAiSettings($data);
@@ -163,6 +188,12 @@ final class SetupWizard extends Page implements HasForms
                 TextInput::make('site_name')
                     ->label('Site name')
                     ->required(),
+                TextInput::make('url')
+                    ->label('Application URL')
+                    ->url()
+                    ->required()
+                    ->placeholder('https://example.com')
+                    ->helperText('Full public URL used for links in emails, webhooks, and OAuth callbacks.'),
                 TextInput::make('timezone')
                     ->label('Timezone')
                     ->required(),
@@ -201,6 +232,46 @@ final class SetupWizard extends Page implements HasForms
             ->columns(2);
     }
 
+    private function tenancyStep(): Step
+    {
+        return Step::make('Tenancy')
+            ->description('Configure multi-tenancy and organization settings')
+            ->schema([
+                Section::make('Operating Mode')
+                    ->schema([
+                        \Filament\Forms\Components\Toggle::make('tenancy_enabled')
+                            ->label('Enable multi-tenancy')
+                            ->helperText('When enabled, users belong to organizations. Disable for single-tenant / internal-tool deployments.')
+                            ->live(),
+                        TextInput::make('tenancy_term')
+                            ->label('Organization term (singular)')
+                            ->placeholder('Organization')
+                            ->helperText('e.g. "Workspace", "Team", "Company"'),
+                        TextInput::make('tenancy_term_plural')
+                            ->label('Organization term (plural)')
+                            ->placeholder('Organizations'),
+                    ])
+                    ->columns(2),
+                Section::make('Organization Defaults')
+                    ->schema([
+                        TextInput::make('tenancy_default_org_name')
+                            ->label('Default organization name pattern')
+                            ->helperText('Use {name} as placeholder for the user\'s name. e.g. "{name}\'s Workspace"'),
+                        TextInput::make('tenancy_invitation_expires_in_days')
+                            ->label('Invitation expires in (days)')
+                            ->numeric(),
+                        \Filament\Forms\Components\Toggle::make('tenancy_allow_user_org_creation')
+                            ->label('Allow users to create organizations'),
+                        \Filament\Forms\Components\Toggle::make('tenancy_auto_create_personal_org')
+                            ->label('Auto-create personal organization on registration'),
+                    ])
+                    ->columns(2),
+            ])
+            ->afterValidation(function (): void {
+                $this->saveTenancySettings($this->form->getState());
+            });
+    }
+
     private function mailStep(): Step
     {
         return Step::make('Mail')
@@ -218,9 +289,11 @@ final class SetupWizard extends Page implements HasForms
                                 'sendmail' => 'Sendmail',
                                 'log' => 'Log',
                             ])
-                            ->required(),
+                            ->required()
+                            ->live(),
                     ]),
                 Section::make('SMTP Configuration')
+                    ->visible(fn (Get $get): bool => $get('mailer') === 'smtp')
                     ->schema([
                         TextInput::make('smtp_host')
                             ->label('SMTP host'),
@@ -322,13 +395,54 @@ final class SetupWizard extends Page implements HasForms
                                 'gemini' => 'Gemini',
                                 'deepseek' => 'DeepSeek',
                             ])
-                            ->required(),
+                            ->required()
+                            ->live(),
                         TextInput::make('prism_default_model')
                             ->label('Default model'),
-                        TextInput::make('openrouter_api_key')
+                        TextInput::make('prism_openrouter_api_key')
                             ->label('OpenRouter API key')
                             ->password()
-                            ->revealable(),
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'openrouter'),
+                        TextInput::make('prism_openai_api_key')
+                            ->label('OpenAI API key')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'openai'),
+                        TextInput::make('prism_anthropic_api_key')
+                            ->label('Anthropic API key')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'anthropic'),
+                        TextInput::make('prism_groq_api_key')
+                            ->label('Groq API key')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'groq'),
+                        TextInput::make('prism_xai_api_key')
+                            ->label('xAI API key')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'xai'),
+                        TextInput::make('prism_gemini_api_key')
+                            ->label('Gemini API key')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'gemini'),
+                        TextInput::make('prism_deepseek_api_key')
+                            ->label('DeepSeek API key')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'deepseek'),
+                        TextInput::make('prism_mistral_api_key')
+                            ->label('Mistral API key')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'mistral'),
+                        Placeholder::make('prism_ollama_placeholder')
+                            ->label('Ollama')
+                            ->content('Ollama runs locally and does not require an API key.')
+                            ->visible(fn (Get $get): bool => $get('prism_default_provider') === 'ollama'),
                     ]),
                 Section::make('Laravel AI SDK')
                     ->schema([
@@ -343,7 +457,16 @@ final class SetupWizard extends Page implements HasForms
                                 'xai' => 'xAI',
                                 'cohere' => 'Cohere',
                             ])
-                            ->required(),
+                            ->required()
+                            ->live(),
+                        TextInput::make('ai_cohere_api_key')
+                            ->label('Cohere API key')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get): bool => $get('ai_default_provider') === 'cohere'),
+                        Placeholder::make('ai_shared_prism_placeholder')
+                            ->content("This provider's API key is shared with the Prism configuration above.")
+                            ->visible(fn (Get $get): bool => $get('ai_default_provider') !== 'cohere'),
                     ]),
             ])
             ->afterValidation(function (): void {
@@ -367,9 +490,24 @@ final class SetupWizard extends Page implements HasForms
     {
         $settings = resolve(AppSettings::class);
         $settings->site_name = $data['site_name'];
+        $settings->url = $data['url'];
         $settings->timezone = $data['timezone'];
         $settings->locale = $data['locale'];
         $settings->fallback_locale = $data['fallback_locale'];
+        $settings->save();
+    }
+
+    /** @param array<string, mixed> $data */
+    private function saveTenancySettings(array $data): void
+    {
+        $settings = resolve(TenancySettings::class);
+        $settings->enabled = (bool) ($data['tenancy_enabled'] ?? true);
+        $settings->term = $data['tenancy_term'] ?: 'Organization';
+        $settings->term_plural = $data['tenancy_term_plural'] ?: 'Organizations';
+        $settings->allow_user_org_creation = (bool) ($data['tenancy_allow_user_org_creation'] ?? true);
+        $settings->default_org_name = $data['tenancy_default_org_name'] ?: "{name}'s Workspace";
+        $settings->auto_create_personal_org = (bool) ($data['tenancy_auto_create_personal_org'] ?? true);
+        $settings->invitation_expires_in_days = (int) ($data['tenancy_invitation_expires_in_days'] ?? 7);
         $settings->save();
     }
 
@@ -410,11 +548,19 @@ final class SetupWizard extends Page implements HasForms
         $prism = resolve(PrismSettings::class);
         $prism->default_provider = $data['prism_default_provider'];
         $prism->default_model = $data['prism_default_model'] ?? 'deepseek/deepseek-r1-0528:free';
-        $prism->openrouter_api_key = $data['openrouter_api_key'];
+        $prism->openrouter_api_key = $data['prism_openrouter_api_key'] ?? null;
+        $prism->openai_api_key = $data['prism_openai_api_key'] ?? null;
+        $prism->anthropic_api_key = $data['prism_anthropic_api_key'] ?? null;
+        $prism->groq_api_key = $data['prism_groq_api_key'] ?? null;
+        $prism->xai_api_key = $data['prism_xai_api_key'] ?? null;
+        $prism->gemini_api_key = $data['prism_gemini_api_key'] ?? null;
+        $prism->deepseek_api_key = $data['prism_deepseek_api_key'] ?? null;
+        $prism->mistral_api_key = $data['prism_mistral_api_key'] ?? null;
         $prism->save();
 
         $ai = resolve(AiSettings::class);
         $ai->default_provider = $data['ai_default_provider'];
+        $ai->cohere_api_key = $data['ai_cohere_api_key'] ?? null;
         $ai->save();
     }
 }

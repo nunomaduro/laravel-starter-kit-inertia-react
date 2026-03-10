@@ -89,6 +89,7 @@ final class HandleInertiaRequests extends Middleware
                 'lifetimeDays' => (int) config('cookie-consent.cookie_lifetime', 365 * 20),
             ] : null,
             'seo' => $this->seoSharedData(),
+            'setup_complete' => $this->resolveSetupState(...),
             'theme' => $theme,
             'branding' => $this->resolveBranding(...),
             'notifications' => [
@@ -109,11 +110,11 @@ final class HandleInertiaRequests extends Middleware
             'preset' => config('theme.preset', 'default'),
             'base_color' => config('theme.base_color', 'neutral'),
             'radius' => config('theme.radius', 'default'),
-            'font' => config('theme.font', 'inter'),
+            'font' => config('theme.font', 'instrument-sans'),
             'default_appearance' => config('theme.default_appearance', 'system'),
-            'dark' => 'navy',
-            'primary' => 'indigo',
-            'light' => 'slate',
+            'dark' => '',
+            'primary' => '',
+            'light' => '',
             'skin' => 'shadow',
             'layout' => 'main',
             'menuColor' => 'default',
@@ -213,6 +214,15 @@ final class HandleInertiaRequests extends Middleware
             ];
         } catch (Throwable) {
             return $defaults;
+        }
+    }
+
+    private function resolveSetupState(): bool
+    {
+        try {
+            return resolve(\App\Settings\SetupWizardSettings::class)->setup_completed;
+        } catch (Throwable) {
+            return true; // Fail open when settings table unavailable (e.g. fresh install)
         }
     }
 

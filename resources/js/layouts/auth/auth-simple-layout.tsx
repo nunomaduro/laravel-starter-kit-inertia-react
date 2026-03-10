@@ -27,7 +27,7 @@ export default function AuthSimpleLayout({
     return (
         <div className="flex min-h-svh">
             {/* Left branding panel — hidden on mobile */}
-            <div className="hidden flex-col items-center justify-center gap-8 bg-muted/50 p-10 md:flex md:w-1/2">
+            <div className="hidden flex-col items-center justify-center gap-8 bg-muted/50 p-10 md:flex md:w-1/2 md:min-h-svh">
                 <div className="w-full max-w-sm space-y-6">
                     <Link
                         href={home()}

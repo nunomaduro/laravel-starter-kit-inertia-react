@@ -47,17 +47,19 @@ return [
     ],
 
     // Managed via Filament: Settings > Auth
+    // Redirect URLs are computed at boot by SettingsOverlayServiceProvider from the DB-backed app.url.
     'google' => [
         'client_id' => null,
         'client_secret' => null,
-        'redirect' => env('APP_URL', 'http://localhost').'/auth/google/callback',
+        'redirect' => 'http://localhost/auth/google/callback',
     ],
 
     // Managed via Filament: Settings > Auth
+    // Redirect URLs are computed at boot by SettingsOverlayServiceProvider from the DB-backed app.url.
     'github' => [
         'client_id' => null,
         'client_secret' => null,
-        'redirect' => env('APP_URL', 'http://localhost').'/auth/github/callback',
+        'redirect' => 'http://localhost/auth/github/callback',
     ],
 
     // Managed via Filament: Settings > Lemon Squeezy

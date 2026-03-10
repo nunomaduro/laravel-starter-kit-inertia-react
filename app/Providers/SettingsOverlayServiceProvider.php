@@ -15,8 +15,10 @@ use App\Settings\CookieConsentSettings;
 use App\Settings\FeatureFlagSettings;
 use App\Settings\FilesystemSettings;
 use App\Settings\ImpersonateSettings;
+use App\Settings\InfrastructureSettings;
 use App\Settings\IntegrationsSettings;
 use App\Settings\LemonSqueezySettings;
+use App\Settings\LoggingSettings;
 use App\Settings\MailSettings;
 use App\Settings\MediaSettings;
 use App\Settings\MemorySettings;
@@ -27,6 +29,7 @@ use App\Settings\PermissionSettings;
 use App\Settings\PrismSettings;
 use App\Settings\ScoutSettings;
 use App\Settings\SecuritySettings;
+use App\Settings\SeoSettings;
 use App\Settings\StripeSettings;
 use App\Settings\TenancySettings;
 use App\Settings\ThemeSettings;
@@ -95,6 +98,18 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
                 'geo_allowed_countries' => 'billing.geo_allowed_countries',
             ],
             'orgOverridable' => true,
+        ],
+
+        InfrastructureSettings::class => [
+            'map' => [
+                'cache_driver' => 'cache.default',
+                'session_driver' => 'session.driver',
+                'queue_connection' => 'queue.default',
+                'redis_host' => 'database.redis.default.host',
+                'redis_port' => 'database.redis.default.port',
+                'redis_password' => 'database.redis.default.password',
+            ],
+            'orgOverridable' => false,
         ],
 
         MailSettings::class => [
@@ -288,6 +303,7 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
                 'google_client_secret' => 'services.google.client_secret',
                 'github_client_id' => 'services.github.client_id',
                 'github_client_secret' => 'services.github.client_secret',
+                'session_lifetime' => 'session.lifetime',
             ],
             'orgOverridable' => false,
         ],
@@ -359,6 +375,25 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
             ],
             'orgOverridable' => false,
         ],
+
+        SeoSettings::class => [
+            'map' => [
+                'meta_title' => 'seo.meta_title',
+                'meta_description' => 'seo.meta_description',
+                'og_image' => 'seo.og_image',
+            ],
+            'orgOverridable' => false,
+        ],
+
+        LoggingSettings::class => [
+            'map' => [
+                'default_channel' => 'logging.default',
+                'log_level' => 'logging.channels.single.level',
+                'slack_webhook_url' => 'logging.channels.slack.url',
+                'slack_log_level' => 'logging.channels.slack.level',
+            ],
+            'orgOverridable' => false,
+        ],
     ];
 
     /**
@@ -397,6 +432,12 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
                 continue;
             }
         }
+
+        // Recompute OAuth redirect URLs from the DB-backed app.url so they are always correct
+        // regardless of whether APP_URL is set in .env.
+        $appUrl = mb_rtrim((string) config('app.url', 'http://localhost'), '/');
+        config()->set('services.google.redirect', $appUrl.'/auth/google/callback');
+        config()->set('services.github.redirect', $appUrl.'/auth/github/callback');
 
         // Cross-map PrismSettings API keys to Laravel AI SDK config
         try {
