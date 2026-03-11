@@ -97,13 +97,22 @@
         .btn { width: 100%; padding: 0.6875rem 1rem; border-radius: 8px; border: none; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: opacity 0.15s; margin-top: 1.25rem; }
         .btn:hover { opacity: 0.88; }
         .btn-primary { background: #fff; color: #0f0f0f; }
+        .btn-express { background: transparent; border: 1px solid #525252; color: #a3a3a3; margin-top: 0; }
+        .btn-secondary { background: transparent; border: 1px solid #525252; color: #a3a3a3; margin-top: 0.5rem; }
         .btn-skip { background: transparent; border: 1px solid #2a2a2a; color: #525252; }
         .btn-link { background: none; border: none; padding: 0; font-size: 0.8125rem; color: #737373; cursor: pointer; }
         .btn-link:hover { color: #a3a3a3; }
+        .back-row { margin-bottom: 1rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; color: #737373; text-decoration: none; cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; }
+        .back-link:hover { color: #a3a3a3; }
 
         /* ── Alerts ─────────────────────────────────────── */
         .alert { background: #1c0a0a; border: 1px solid #7f1d1d; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8125rem; color: #fca5a5; margin-bottom: 1.25rem; }
         .info-box { background: #0a0f1c; border: 1px solid #1e3a5f; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8125rem; color: #93c5fd; margin-bottom: 1rem; line-height: 1.6; }
+        .test-result { border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8125rem; margin-top: 0.75rem; display: none; }
+        .test-result.visible { display: block; }
+        .test-result.success { background: #052e16; border: 1px solid #166534; color: #86efac; }
+        .test-result.error { background: #1c0a0a; border: 1px solid #7f1d1d; color: #fca5a5; }
 
         /* ── Modules grid ───────────────────────────────── */
         .select-all-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
@@ -162,6 +171,16 @@
         </div>
     @endif
 
+    @if ($currentIdx > 0)
+        <div class="back-row">
+            @php
+                $optionalAndDemo = ['tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'demo'];
+                $backUrl = in_array($step, $optionalAndDemo) ? route('install', ['back' => 1]) : route('install', ['step' => $allSteps[$currentIdx - 1]]);
+            @endphp
+            <a href="{{ $backUrl }}" class="back-link">← Back</a>
+        </div>
+    @endif
+
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- Step 1: Database --}}
     {{-- ══════════════════════════════════════════════════ --}}
@@ -170,33 +189,40 @@
         <h1>Database</h1>
         <p class="subtitle">Choose where your application stores data. SQLite requires no server and is perfect for getting started.</p>
 
+        <form method="POST" action="{{ route('install.express') }}" style="margin-bottom:1.25rem">
+            @csrf
+            <button type="submit" class="btn btn-express">Express install — SQLite + defaults, no demo data →</button>
+        </form>
+        <p class="hint" style="margin-top:-0.75rem;margin-bottom:1rem">Uses SQLite, creates admin (admin@example.com / password), app name &quot;My App&quot;, skips optional steps. Change password after first login.</p>
+
+        @php $dbDriver = old('driver', 'pgsql'); @endphp
         <form method="POST" action="{{ route('install.store') }}" id="db-form">
             @csrf
             <input type="hidden" name="step" value="database">
             <div class="radio-group">
                 <label class="radio-option">
-                    <input type="radio" name="driver" value="sqlite" checked onchange="toggleDb(this)">
+                    <input type="radio" name="driver" value="sqlite" @checked($dbDriver === 'sqlite') onchange="toggleDb(this)">
                     <div>
                         <div class="radio-label">SQLite</div>
                         <div class="radio-desc">File-based, zero configuration. Perfect for local and small deployments.</div>
                     </div>
                 </label>
                 <label class="radio-option">
-                    <input type="radio" name="driver" value="pgsql" onchange="toggleDb(this)">
+                    <input type="radio" name="driver" value="pgsql" @checked($dbDriver === 'pgsql') onchange="toggleDb(this)">
                     <div>
                         <div class="radio-label">PostgreSQL</div>
                         <div class="radio-desc">Recommended for production. Full-featured relational database.</div>
                     </div>
                 </label>
                 <label class="radio-option">
-                    <input type="radio" name="driver" value="mysql" onchange="toggleDb(this)">
+                    <input type="radio" name="driver" value="mysql" @checked($dbDriver === 'mysql') onchange="toggleDb(this)">
                     <div>
                         <div class="radio-label">MySQL / MariaDB</div>
                         <div class="radio-desc">Widely supported relational database.</div>
                     </div>
                 </label>
             </div>
-            <div class="extra-fields" id="server-fields" style="display:none">
+            <div class="extra-fields" id="server-fields" style="display:{{ $dbDriver === 'sqlite' ? 'none' : 'block' }}">
                 <div class="two-col">
                     <div class="field"><label>Host</label><input type="text" name="db_host" value="{{ old('db_host', '127.0.0.1') }}"></div>
                     <div class="field"><label>Port</label><input type="number" name="db_port" id="db-port" value="{{ old('db_port', '5432') }}"></div>
@@ -207,7 +233,9 @@
                     <div class="field"><label>Password</label><input type="password" name="db_password"></div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Test connection &amp; continue →</button>
+            <button type="button" class="btn btn-secondary" data-test-connection data-step="database" data-form-id="db-form" data-result-id="test-result-database">Test connection</button>
+            <div id="test-result-database" class="test-result" role="status" aria-live="polite"></div>
+            <button type="submit" class="btn btn-primary">Continue →</button>
         </form>
         <script>
             function toggleDb(r) {
@@ -244,8 +272,8 @@
         <form method="POST" action="{{ route('install.store') }}">
             @csrf
             <input type="hidden" name="step" value="admin">
-            <div class="field"><label>Full name</label><input type="text" name="name" value="{{ old('name') }}" required autofocus></div>
-            <div class="field"><label>Email address</label><input type="email" name="email" value="{{ old('email') }}" required></div>
+            <div class="field"><label>Full name</label><input type="text" name="name" value="{{ old('name', 'Admin') }}" required autofocus></div>
+            <div class="field"><label>Email address</label><input type="email" name="email" value="{{ old('email', 'admin@example.com') }}" required></div>
             <div class="two-col">
                 <div class="field"><label>Password</label><input type="password" name="password" required><p class="hint">Min 8 characters</p></div>
                 <div class="field"><label>Confirm password</label><input type="password" name="password_confirmation" required></div>
@@ -265,11 +293,12 @@
             <input type="hidden" name="step" value="app">
             <div class="field"><label>Application name</label><input type="text" name="site_name" value="{{ old('site_name', 'My App') }}" required autofocus></div>
             <div class="field"><label>Application URL</label><input type="url" name="url" value="{{ old('url', request()->root()) }}" required placeholder="https://example.com"><p class="hint">Used for emails, OAuth callbacks, and webhooks.</p></div>
+            @php $timezone = old('timezone', 'UTC'); @endphp
             <div class="field">
                 <label>Timezone</label>
                 <select name="timezone">
                     @foreach (timezone_identifiers_list() as $tz)
-                        <option value="{{ $tz }}" {{ $tz === 'UTC' ? 'selected' : '' }}>{{ $tz }}</option>
+                        <option value="{{ $tz }}" @selected($tz === $timezone)>{{ $tz }}</option>
                     @endforeach
                 </select>
             </div>
@@ -351,6 +380,8 @@
                     <div class="field"><label>Redis port</label><input type="number" name="redis_port" value="{{ old('redis_port', '6379') }}"></div>
                 </div>
                 <div class="field"><label>Redis password <span style="color:#525252">(leave blank if none)</span></label><input type="password" name="redis_password"></div>
+                <button type="button" class="btn btn-secondary" data-test-connection data-step="infrastructure" data-form-id="infra-form" data-result-id="test-result-infrastructure">Test connection</button>
+                <div id="test-result-infrastructure" class="test-result" role="status" aria-live="polite"></div>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
@@ -376,39 +407,48 @@
         <form method="POST" action="{{ route('install.store') }}" id="mail-form">
             @csrf
             <input type="hidden" name="step" value="mail">
+            @php
+                $mailer = old('mailer', 'smtp');
+                $smtpHost = old('smtp_host', '127.0.0.1');
+                $smtpPort = old('smtp_port', '2525');
+                $smtpUsername = old('smtp_username', config('app.name'));
+                $smtpEncryption = old('smtp_encryption', '');
+            @endphp
             <div class="field">
                 <label>Mail driver</label>
                 <select name="mailer" onchange="toggleMail(this.value)">
-                    <option value="log">Log (development only)</option>
-                    <option value="smtp">SMTP</option>
+                    <option value="log" @selected($mailer === 'log')>Log (development only)</option>
+                    <option value="smtp" @selected($mailer === 'smtp')>SMTP</option>
                     <option value="ses">Amazon SES</option>
                     <option value="postmark">Postmark</option>
                     <option value="resend">Resend</option>
                     <option value="mailgun">Mailgun</option>
                 </select>
             </div>
-            <div id="smtp-fields" style="display:none">
+            <div id="smtp-fields" style="display:{{ $mailer === 'smtp' ? 'block' : 'none' }}">
                 <div class="two-col">
-                    <div class="field"><label>SMTP host</label><input type="text" name="smtp_host" value="{{ old('smtp_host', 'smtp.mailtrap.io') }}"></div>
-                    <div class="field"><label>SMTP port</label><input type="number" name="smtp_port" value="{{ old('smtp_port', '587') }}"></div>
+                    <div class="field"><label>SMTP host</label><input type="text" name="smtp_host" value="{{ $smtpHost }}" placeholder="127.0.0.1"></div>
+                    <div class="field"><label>SMTP port</label><input type="number" name="smtp_port" value="{{ $smtpPort }}" placeholder="2525"></div>
                 </div>
                 <div class="two-col">
-                    <div class="field"><label>Username</label><input type="text" name="smtp_username" value="{{ old('smtp_username') }}"></div>
-                    <div class="field"><label>Password</label><input type="password" name="smtp_password"></div>
+                    <div class="field"><label>Username</label><input type="text" name="smtp_username" value="{{ $smtpUsername }}" placeholder="{{ config('app.name') }}"></div>
+                    <div class="field"><label>Password</label><input type="password" name="smtp_password" placeholder="Optional for Herd"></div>
                 </div>
                 <div class="field">
                     <label>Encryption</label>
                     <select name="smtp_encryption">
-                        <option value="tls">TLS (port 587)</option>
-                        <option value="ssl">SSL (port 465)</option>
-                        <option value="">None</option>
+                        <option value="tls" @selected($smtpEncryption === 'tls')>TLS (port 587)</option>
+                        <option value="ssl" @selected($smtpEncryption === 'ssl')>SSL (port 465)</option>
+                        <option value="" @selected($smtpEncryption === '')>None (Herd / port 2525)</option>
                     </select>
                 </div>
+                <button type="button" class="btn btn-secondary" data-test-connection data-step="mail" data-form-id="mail-form" data-result-id="test-result-mail">Test connection</button>
+                <div id="test-result-mail" class="test-result" role="status" aria-live="polite"></div>
             </div>
             <div class="section-label">From address</div>
             <div class="two-col">
-                <div class="field"><label>From email</label><input type="email" name="from_address" value="{{ old('from_address') }}" placeholder="hello@example.com"></div>
-                <div class="field"><label>From name</label><input type="text" name="from_name" value="{{ old('from_name', config('app.name')) }}"></div>
+                <div class="field"><label>From email</label><input type="email" name="from_address" value="{{ old('from_address', 'hello@example.com') }}" placeholder="hello@example.com"></div>
+                <div class="field"><label>From name</label><input type="text" name="from_name" value="{{ old('from_name', config('app.name', 'My App')) }}"></div>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
@@ -456,13 +496,16 @@
                     <div class="field"><label>Port</label><input type="number" name="typesense_port" value="{{ old('typesense_port', '8108') }}"></div>
                 </div>
                 <div class="field"><label>API key</label><input type="text" name="typesense_api_key" value="{{ old('typesense_api_key') }}" placeholder="LARAVEL-HERD or your key"></div>
+                @php $typesenseProtocol = old('typesense_protocol', 'http'); @endphp
                 <div class="field">
                     <label>Protocol</label>
                     <select name="typesense_protocol">
-                        <option value="http">HTTP</option>
-                        <option value="https">HTTPS</option>
+                        <option value="http" @selected($typesenseProtocol === 'http')>HTTP</option>
+                        <option value="https" @selected($typesenseProtocol === 'https')>HTTPS</option>
                     </select>
                 </div>
+                <button type="button" class="btn btn-secondary" data-test-connection data-step="search" data-form-id="search-form" data-result-id="test-result-search">Test connection</button>
+                <div id="test-result-search" class="test-result" role="status" aria-live="polite"></div>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
@@ -488,24 +531,25 @@
         <form method="POST" action="{{ route('install.store') }}" id="ai-form">
             @csrf
             <input type="hidden" name="step" value="ai">
+            @php $aiProvider = old('provider', 'openrouter'); @endphp
             <div class="field">
                 <label>Default provider</label>
                 <select name="provider" onchange="toggleAi(this.value)">
-                    <option value="">None / skip</option>
-                    <option value="openrouter" selected>OpenRouter (free models available)</option>
-                    <option value="openai">OpenAI</option>
-                    <option value="anthropic">Anthropic (Claude)</option>
-                    <option value="groq">Groq</option>
-                    <option value="gemini">Google Gemini</option>
-                    <option value="xai">xAI (Grok)</option>
-                    <option value="deepseek">DeepSeek</option>
-                    <option value="mistral">Mistral</option>
-                    <option value="ollama">Ollama (local, no key needed)</option>
+                    <option value="" @selected($aiProvider === '')>None / skip</option>
+                    <option value="openrouter" @selected($aiProvider === 'openrouter')>OpenRouter (free models available)</option>
+                    <option value="openai" @selected($aiProvider === 'openai')>OpenAI</option>
+                    <option value="anthropic" @selected($aiProvider === 'anthropic')>Anthropic (Claude)</option>
+                    <option value="groq" @selected($aiProvider === 'groq')>Groq</option>
+                    <option value="gemini" @selected($aiProvider === 'gemini')>Google Gemini</option>
+                    <option value="xai" @selected($aiProvider === 'xai')>xAI (Grok)</option>
+                    <option value="deepseek" @selected($aiProvider === 'deepseek')>DeepSeek</option>
+                    <option value="mistral" @selected($aiProvider === 'mistral')>Mistral</option>
+                    <option value="ollama" @selected($aiProvider === 'ollama')>Ollama (local, no key needed)</option>
                 </select>
             </div>
             <div id="ai-key-field">
                 <div class="field"><label>API key</label><input type="password" name="api_key" placeholder="sk-..."><p class="hint">Leave blank for Ollama.</p></div>
-                <div class="field"><label>Default model <span style="color:#525252">(optional)</span></label><input type="text" name="model" value="{{ old('model') }}" placeholder="e.g. gpt-4o, claude-3-5-sonnet, deepseek/deepseek-r1-0528:free"></div>
+                <div class="field"><label>Default model <span style="color:#525252">(optional)</span></label><input type="text" name="model" value="{{ old('model', '') }}" placeholder="e.g. gpt-4o, claude-3-5-sonnet, deepseek/deepseek-r1-0528:free"></div>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
@@ -616,11 +660,12 @@
                 <div class="field"><label>Host</label><input type="text" name="reverb_host" value="{{ old('reverb_host', 'localhost') }}"></div>
                 <div class="field"><label>Port</label><input type="number" name="reverb_port" value="{{ old('reverb_port', '8080') }}"></div>
             </div>
+            @php $reverbScheme = old('reverb_scheme', 'http'); @endphp
             <div class="field">
                 <label>Scheme</label>
                 <select name="reverb_scheme">
-                    <option value="http">http (local)</option>
-                    <option value="https">https (production)</option>
+                    <option value="http" @selected($reverbScheme === 'http')>http (local)</option>
+                    <option value="https" @selected($reverbScheme === 'https')>https (production)</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
@@ -646,7 +691,7 @@
             <div class="field"><label>Page title</label><input type="text" name="meta_title" value="{{ old('meta_title', $appName) }}" maxlength="70"><p class="hint">Recommended: ≤ 60 characters</p></div>
             <div class="field">
                 <label>Meta description</label>
-                <textarea name="meta_description" rows="3" maxlength="160" style="width:100%;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;padding:0.625rem 0.75rem;font-size:0.875rem;color:#e5e5e5;resize:vertical;font-family:inherit">{{ old('meta_description') }}</textarea>
+                <textarea name="meta_description" rows="3" maxlength="160" style="width:100%;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;padding:0.625rem 0.75rem;font-size:0.875rem;color:#e5e5e5;resize:vertical;font-family:inherit">{{ old('meta_description', '') }}</textarea>
                 <p class="hint">Recommended: ≤ 160 characters</p>
             </div>
             <div class="field"><label>Open Graph image URL <span style="color:#525252">(optional)</span></label><input type="url" name="og_image" value="{{ old('og_image') }}" placeholder="https://example.com/og-image.png"><p class="hint">Ideal: 1200×630 px</p></div>
@@ -670,12 +715,13 @@
             @csrf
             <input type="hidden" name="step" value="monitoring">
             <div class="field"><label>Sentry DSN</label><input type="text" name="sentry_dsn" value="{{ old('sentry_dsn') }}" placeholder="https://...@sentry.io/..."></div>
+            @php $sentryRate = old('sentry_sample_rate', '1.0'); @endphp
             <div class="field">
                 <label>Error sample rate</label>
                 <select name="sentry_sample_rate">
-                    <option value="1.0" selected>1.0 — capture all errors</option>
-                    <option value="0.5">0.5 — capture 50%</option>
-                    <option value="0.1">0.1 — capture 10% (high-traffic)</option>
+                    <option value="1.0" @selected($sentryRate === '1.0' || $sentryRate === 1.0)>1.0 — capture all errors</option>
+                    <option value="0.5" @selected($sentryRate === '0.5' || $sentryRate === 0.5)>0.5 — capture 50%</option>
+                    <option value="0.1" @selected($sentryRate === '0.1' || $sentryRate === 0.1)>0.1 — capture 10% (high-traffic)</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
@@ -735,5 +781,40 @@
     @endif
 
 </div>
+<script>
+(function() {
+    var testUrl = '{{ route("install.test-connection") }}';
+    var token = document.querySelector('input[name="_token"]');
+    document.querySelectorAll('[data-test-connection]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var step = this.getAttribute('data-step');
+            var formId = this.getAttribute('data-form-id');
+            var resultId = this.getAttribute('data-result-id');
+            var form = document.getElementById(formId);
+            var resultEl = document.getElementById(resultId);
+            if (!form || !resultEl) return;
+            var fd = new FormData(form);
+            fd.set('step', step);
+            if (token) fd.set('_token', token.value);
+            resultEl.textContent = '';
+            resultEl.className = 'test-result';
+            resultEl.classList.remove('success', 'error', 'visible');
+            btn.disabled = true;
+            fetch(testUrl, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
+                .then(function(r) { return r.json().then(function(j) { return { ok: r.ok, body: j }; }); })
+                .then(function(_ref) {
+                    var ok = _ref.ok, body = _ref.body;
+                    resultEl.classList.add('visible', ok ? 'success' : 'error');
+                    resultEl.textContent = ok ? 'Connection successful.' : (body.message || 'Connection failed.');
+                })
+                .catch(function(e) {
+                    resultEl.classList.add('visible', 'error');
+                    resultEl.textContent = e.message || 'Connection check failed.';
+                })
+                .finally(function() { btn.disabled = false; });
+        });
+    });
+})();
+</script>
 </body>
 </html>

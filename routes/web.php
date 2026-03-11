@@ -81,6 +81,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 Route::middleware(EnsureNotInstalled::class)->group(function (): void {
     Route::get('install', [InstallController::class, 'show'])->name('install');
     Route::post('install', [InstallController::class, 'store'])->name('install.store');
+    Route::post('install/express', [InstallController::class, 'express'])->name('install.express');
+    Route::post('install/test-connection', [InstallController::class, 'testConnection'])->name('install.test-connection');
 });
 
 if (app()->environment(['local', 'staging'])) {

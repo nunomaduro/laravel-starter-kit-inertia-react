@@ -17,13 +17,18 @@ use App\Settings\ScoutSettings;
 use App\Settings\SeoSettings;
 use App\Settings\SetupWizardSettings;
 use App\Settings\TenancySettings;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -129,12 +134,121 @@ final class InstallController extends Controller
         ],
     ];
 
+    /** All steps in order (required then optional then demo). */
+    private const array STEP_ORDER = [
+        'database', 'migrate', 'admin', 'app',
+        'tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social',
+        'storage', 'broadcasting', 'seo', 'monitoring', 'demo',
+    ];
+
     public function show(): View|RedirectResponse
     {
+        $resolved = $this->resolveStep();
+
+        if (request()->boolean('back')) {
+            $optionalAndDemo = array_merge(self::OPTIONAL_STEPS, ['demo']);
+            if (in_array($resolved, $optionalAndDemo, true)) {
+                $done = session('install_optional_done', []);
+                array_pop($done);
+                session(['install_optional_done' => array_values($done)]);
+
+                return redirect()->route('install');
+            }
+        }
+
+        $step = $resolved;
+        $requestedStep = request()->query('step');
+        if (is_string($requestedStep) && $requestedStep !== '') {
+            $resolvedIdx = array_search($resolved, self::STEP_ORDER, true);
+            $requestedIdx = array_search($requestedStep, self::STEP_ORDER, true);
+            if ($resolvedIdx !== false && $requestedIdx !== false && $requestedIdx <= $resolvedIdx) {
+                $step = $requestedStep;
+            }
+        }
+
         return view('install.index', [
-            'step' => $this->resolveStep(),
+            'step' => $step,
             'modules' => self::MODULES,
         ]);
+    }
+
+    /**
+     * Express install: SQLite, default admin (admin@example.com / password), app name, skip optional steps, no demo data.
+     */
+    public function express(Request $request): RedirectResponse
+    {
+        if (empty(config('app.key'))) {
+            Artisan::call('key:generate', ['--force' => true]);
+        }
+
+        $envPath = base_path('.env');
+        $env = is_file($envPath) ? (string) file_get_contents($envPath) : '';
+        if (! preg_match('/^APP_ENV=/m', $env)) {
+            $env = $this->setEnvVar($env, 'APP_ENV', 'local');
+        }
+
+        $dbPath = database_path('database.sqlite');
+        if (! file_exists($dbPath)) {
+            touch($dbPath);
+        }
+        $env = $this->setEnvVar($env, 'DB_CONNECTION', 'sqlite');
+        $env = $this->removeEnvVar($env, 'DB_HOST');
+        $env = $this->removeEnvVar($env, 'DB_PORT');
+        $env = $this->removeEnvVar($env, 'DB_DATABASE');
+        $env = $this->removeEnvVar($env, 'DB_USERNAME');
+        $env = $this->removeEnvVar($env, 'DB_PASSWORD');
+        file_put_contents($envPath, $env);
+        config(['database.default' => 'sqlite']);
+        DB::purge();
+
+        if (! $this->isDatabaseReachable()) {
+            return redirect()->route('install')
+                ->withErrors(['db' => 'Could not connect to SQLite. Check storage permissions.'])
+                ->withInput();
+        }
+
+        Artisan::call('migrate', ['--force' => true]);
+        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\RolesAndPermissionsSeeder', '--force' => true]);
+        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\GamificationSeeder', '--force' => true]);
+        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\MailTemplatesSeeder', '--force' => true]);
+
+        $user = User::query()->create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+        ]);
+        $user->syncRoles(['super-admin']);
+
+        $app = resolve(AppSettings::class);
+        $app->site_name = 'My App';
+        $app->url = $request->root();
+        $app->timezone = 'UTC';
+        $app->save();
+
+        DB::table('settings')->where('group', MailSettings::group())->delete();
+        App::forgetInstance(MailSettings::class);
+        resolve(\Spatie\LaravelSettings\SettingsMapper::class)->save(MailSettings::class, collect([
+            'mailer' => 'smtp',
+            'smtp_host' => '127.0.0.1',
+            'smtp_port' => 2525,
+            'smtp_username' => config('app.name', 'My App'),
+            'smtp_password' => null,
+            'smtp_encryption' => null,
+            'from_address' => 'hello@example.com',
+            'from_name' => 'My App',
+        ]));
+
+        session(['install_optional_done' => self::OPTIONAL_STEPS]);
+
+        $wizard = resolve(SetupWizardSettings::class);
+        $wizard->setup_completed = true;
+        $wizard->completed_steps = ['app', 'mail', 'billing', 'ai', 'complete'];
+        $wizard->save();
+
+        SettingsOverlayServiceProvider::applyOverlay();
+
+        return redirect('/admin')->with('install.express', true);
     }
 
     public function store(Request $request): RedirectResponse
@@ -157,6 +271,30 @@ final class InstallController extends Controller
             'demo' => $this->handleDemo($request),
             default => redirect()->route('install'),
         };
+    }
+
+    /**
+     * Test a connection for the given installer step (database, infrastructure, mail, search).
+     * Expects step + form fields in the request. Returns JSON { "ok": true } or { "ok": false, "message": "..." }.
+     */
+    public function testConnection(Request $request): JsonResponse
+    {
+        $request->validate(['step' => 'required|in:database,infrastructure,mail,search']);
+
+        $step = $request->input('step');
+
+        try {
+            match ($step) {
+                'database' => $this->testDatabaseConnection($request),
+                'infrastructure' => $this->testInfrastructureConnection($request),
+                'mail' => $this->testMailConnection($request),
+                'search' => $this->testSearchConnection($request),
+            };
+
+            return response()->json(['ok' => true]);
+        } catch (Throwable $e) {
+            return response()->json(['ok' => false, 'message' => $e->getMessage()], 422);
+        }
     }
 
     // ─── Required step handlers ────────────────────────────────────────────────
@@ -363,6 +501,8 @@ final class InstallController extends Controller
 
             if ($password !== '') {
                 $env = $this->setEnvVar($env, 'REDIS_PASSWORD', $password);
+            } else {
+                $env = $this->removeEnvVar($env, 'REDIS_PASSWORD');
             }
 
             $env = $this->setEnvVar($env, 'CACHE_STORE', 'redis');
@@ -370,33 +510,42 @@ final class InstallController extends Controller
             $env = $this->setEnvVar($env, 'QUEUE_CONNECTION', 'redis');
             file_put_contents($envPath, $env);
 
-            config([
-                'cache.default' => 'redis',
-                'session.driver' => 'redis',
-                'queue.default' => 'redis',
-                'database.redis.default.host' => $host,
-                'database.redis.default.port' => (int) $port,
-                'database.redis.default.password' => $password ?: null,
-            ]);
+            // Do not change config() here: the current request still uses cookie/database
+            // session, so the session (including install_optional_done) is persisted.
+            // Next request will read .env and use Redis.
         }
     }
 
     private function saveMail(Request $request): void
     {
-        $mail = resolve(MailSettings::class);
-        $mail->mailer = (string) $request->input('mailer', 'log');
-        $mail->from_address = (string) $request->input('from_address', '');
-        $mail->from_name = (string) $request->input('from_name', '');
+        $mailer = (string) $request->input('mailer', 'log');
+        $fromAddress = (string) $request->input('from_address', '');
+        $fromName = (string) $request->input('from_name', '');
 
-        if ($mail->mailer === 'smtp') {
-            $mail->smtp_host = (string) $request->input('smtp_host', '');
-            $mail->smtp_port = (int) $request->input('smtp_port', 587);
-            $mail->smtp_username = (string) $request->input('smtp_username', '');
-            $mail->smtp_password = (string) $request->input('smtp_password', '');
-            $mail->smtp_encryption = (string) $request->input('smtp_encryption', 'tls');
+        $properties = collect([
+            'mailer' => $mailer,
+            'smtp_host' => $mailer === 'smtp' ? (string) $request->input('smtp_host', '') : '127.0.0.1',
+            'smtp_port' => $mailer === 'smtp' ? (int) $request->input('smtp_port', 587) : 2525,
+            'smtp_username' => $mailer === 'smtp' ? (string) $request->input('smtp_username', '') : null,
+            'smtp_password' => $mailer === 'smtp' ? (string) $request->input('smtp_password', '') : null,
+            'smtp_encryption' => $mailer === 'smtp' ? $this->normalizeSmtpEncryption($request->input('smtp_encryption')) : null,
+            'from_address' => $fromAddress !== '' ? $fromAddress : 'hello@example.com',
+            'from_name' => $fromName !== '' ? $fromName : 'Example',
+        ]);
+
+        DB::table('settings')->where('group', MailSettings::group())->delete();
+        App::forgetInstance(MailSettings::class);
+
+        resolve(\Spatie\LaravelSettings\SettingsMapper::class)->save(MailSettings::class, $properties);
+    }
+
+    private function normalizeSmtpEncryption(mixed $value): ?string
+    {
+        if ($value === '' || $value === null) {
+            return null;
         }
 
-        $mail->save();
+        return (string) $value;
     }
 
     private function saveSearch(Request $request): void
@@ -540,6 +689,108 @@ final class InstallController extends Controller
         }
 
         return 'demo';
+    }
+
+    private function testDatabaseConnection(Request $request): void
+    {
+        $driver = $request->input('driver', 'pgsql');
+
+        if ($driver === 'sqlite') {
+            $path = $request->input('db_database', database_path('database.sqlite'));
+            if (! is_string($path) || $path === '') {
+                $path = database_path('database.sqlite');
+            }
+            if (! str_contains($path, DIRECTORY_SEPARATOR)) {
+                $path = database_path($path);
+            }
+            config(['database.default' => 'sqlite', 'database.connections.sqlite.database' => $path]);
+            DB::purge('sqlite');
+            DB::connection()->getPdo();
+
+            return;
+        }
+
+        $validated = Validator::make($request->all(), [
+            'db_host' => 'required|string',
+            'db_port' => 'required|numeric',
+            'db_database' => 'required|string',
+            'db_username' => 'required|string',
+            'db_password' => 'nullable|string',
+        ])->validate();
+
+        config([
+            'database.default' => $driver,
+            "database.connections.{$driver}.host" => $validated['db_host'],
+            "database.connections.{$driver}.port" => $validated['db_port'],
+            "database.connections.{$driver}.database" => $validated['db_database'],
+            "database.connections.{$driver}.username" => $validated['db_username'],
+            "database.connections.{$driver}.password" => $validated['db_password'] ?? '',
+        ]);
+        DB::purge($driver);
+        DB::connection()->getPdo();
+    }
+
+    private function testInfrastructureConnection(Request $request): void
+    {
+        if ($request->input('driver') !== 'redis') {
+            return;
+        }
+
+        $host = $request->input('redis_host', '127.0.0.1');
+        $port = (int) $request->input('redis_port', 6379);
+        $password = $request->input('redis_password');
+
+        config([
+            'database.redis.default' => array_filter([
+                'host' => $host,
+                'port' => $port,
+                'password' => $password !== '' && $password !== null ? $password : null,
+                'database' => 0,
+            ], fn ($v) => $v !== null),
+        ]);
+        Redis::purge('default');
+        Redis::connection()->ping();
+    }
+
+    private function testMailConnection(Request $request): void
+    {
+        if ($request->input('mailer') !== 'smtp') {
+            return;
+        }
+
+        $host = $request->input('smtp_host', '127.0.0.1');
+        $port = (int) $request->input('smtp_port', 2525);
+
+        $socket = @fsockopen($host, $port, $errno, $errstr, 5);
+        if ($socket === false) {
+            throw new RuntimeException("Could not reach SMTP server {$host}:{$port} — {$errstr} (errno {$errno})");
+        }
+        fclose($socket);
+    }
+
+    private function testSearchConnection(Request $request): void
+    {
+        if ($request->input('driver') !== 'typesense') {
+            return;
+        }
+
+        $host = $request->input('typesense_host', 'localhost');
+        $port = (int) $request->input('typesense_port', 8108);
+        $protocol = $request->input('typesense_protocol', 'http');
+        $apiKey = $request->input('typesense_api_key', '');
+
+        if ($apiKey === '') {
+            throw new RuntimeException('Typesense API key is required.');
+        }
+
+        $url = "{$protocol}://{$host}:{$port}/health";
+        $response = Http::withHeaders(['X-TYPESENSE-API-KEY' => $apiKey])
+            ->timeout(5)
+            ->get($url);
+
+        if (! $response->successful()) {
+            throw new RuntimeException("Typesense returned HTTP {$response->status()}.");
+        }
     }
 
     // ─── .env helpers ────────────────────────────────────────────────────────

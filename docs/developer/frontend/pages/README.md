@@ -71,6 +71,6 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [settings/domains](docs/developer/frontend/pages/settings/domains.md) | settings.domains.show, settings.domains.store | ✅ |
 | [settings/general](docs/developer/frontend/pages/settings/general.md) | settings.general.show, settings.general.slug.update | ✅ |
 | [settings/notifications](docs/developer/frontend/pages/settings/notifications.md) | settings.notifications.show, settings.notifications.update | ✅ |
-| notifications/index | notifications.index | ❌ |
+| notifications/index | notifications.index | ✅ |
 
 

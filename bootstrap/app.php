@@ -21,6 +21,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\ResolveDomainMiddleware;
 use App\Http\Middleware\ServeFavicon;
 use App\Http\Middleware\SetTenantContext;
+use App\Http\Middleware\StopTelescopeForInstaller;
 use App\Http\Middleware\ThrottleTwoFactorManagement;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -83,6 +84,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(
             append: $webAppend,
             prepend: [
+                StopTelescopeForInstaller::class,
                 ServeFavicon::class,
                 ResolveDomainMiddleware::class,
             ],
