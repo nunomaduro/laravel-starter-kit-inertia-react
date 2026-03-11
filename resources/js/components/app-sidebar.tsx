@@ -21,12 +21,14 @@ import organizations from '@/routes/organizations';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
+    Bell,
     BookOpen,
     Building2,
     CreditCard,
     ExternalLink,
     FileText,
     Folder,
+    FolderTree,
     LayoutGrid,
     LifeBuoy,
     Mail,
@@ -59,11 +61,32 @@ const mainNavItems: NavItem[] = [
         dataPan: 'nav-users',
     },
     {
+        title: 'Announcements',
+        href: '/announcements',
+        icon: Bell,
+        permission: ['announcements.manage_global', 'announcements.manage'],
+        dataPan: 'nav-announcements',
+    },
+    {
         title: 'Organizations',
         href: organizations.index.url(),
         icon: Building2,
         tenancyRequired: true,
         dataPan: 'nav-organizations',
+    },
+    {
+        title: 'Organizations (table)',
+        href: '/organizations/list',
+        icon: Building2,
+        tenancyRequired: true,
+        dataPan: 'nav-organizations-table',
+    },
+    {
+        title: 'Categories',
+        href: '/categories',
+        icon: FolderTree,
+        tenancyRequired: true,
+        dataPan: 'nav-categories',
     },
     {
         title: 'Pages',
@@ -86,6 +109,14 @@ const mainNavItems: NavItem[] = [
         permission: 'blog.index',
         feature: 'blog',
         dataPan: 'nav-blog',
+    },
+    {
+        title: 'Posts',
+        href: '/posts',
+        icon: FileText,
+        permission: 'blog.index',
+        feature: 'blog',
+        dataPan: 'nav-posts',
     },
     {
         title: 'Changelog',

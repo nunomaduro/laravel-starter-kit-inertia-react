@@ -72,5 +72,9 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [settings/general](docs/developer/frontend/pages/settings/general.md) | settings.general.show, settings.general.slug.update | ✅ |
 | [settings/notifications](docs/developer/frontend/pages/settings/notifications.md) | settings.notifications.show, settings.notifications.update | ✅ |
 | notifications/index | notifications.index | ✅ |
+| [announcements/table](./announcements/table.md) | announcements.table | ✅ |
+| [categories/table](./categories/table.md) | categories.table | ✅ |
+| [organizations/table](./organizations/table.md) | organizations.list | ✅ |
+| [posts/table](./posts/table.md) | posts.table | ✅ |
 
 

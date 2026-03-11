@@ -59,5 +59,9 @@ All Controllers:
 | [ClearAllNotificationsController](docs/developer/backend/controllers/Notifications/ClearAllNotificationsController.md) | N/A | ✅ |
 | [InstallController](docs/developer/backend/controllers/InstallController.md) | N/A | ✅ |
 | [HealthController](./healthcontroller.md) | N/A | ✅ |
+| [AnnouncementsTableController](./announcementstablecontroller.md) | N/A | ✅ |
+| [CategoriesTableController](./categoriestablecontroller.md) | N/A | ✅ |
+| [OrganizationsTableController](./organizationstablecontroller.md) | N/A | ✅ |
+| [PostsTableController](./poststablecontroller.md) | N/A | ✅ |
 
 

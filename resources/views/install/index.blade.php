@@ -759,6 +759,11 @@
                 <div class="field"><label>API key</label><input type="password" name="api_key" placeholder="sk-..."><p class="hint">Leave blank for Ollama.</p></div>
                 <div class="field"><label>Default model <span style="color:#525252">(optional)</span></label><input type="text" name="model" value="{{ old('model', '') }}" placeholder="e.g. gpt-4o, claude-3-5-sonnet, deepseek/deepseek-r1-0528:free"></div>
             </div>
+            <div class="field">
+                <label>Thesys C1 API key <span style="color:#525252">(optional)</span></label>
+                <input type="password" name="thesys_api_key" value="{{ old('thesys_api_key') }}" placeholder="Used for DataTable Visualize and other Thesys features">
+                <p class="hint">Get a key at <a href="https://www.thesys.dev" target="_blank" rel="noopener">thesys.dev</a>. Skip to disable; add later in .env as <code>THESYS_API_KEY</code>.</p>
+            </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
         <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">

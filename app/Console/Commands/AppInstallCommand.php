@@ -9,7 +9,9 @@ use App\Providers\SettingsOverlayServiceProvider;
 use App\Settings\AiSettings;
 use App\Settings\AppSettings;
 use App\Settings\AuthSettings;
+use App\Settings\BillingSettings;
 use App\Settings\BroadcastingSettings;
+use App\Settings\FeatureFlagSettings;
 use App\Settings\FilesystemSettings;
 use App\Settings\InfrastructureSettings;
 use App\Settings\MailSettings;
@@ -80,6 +82,10 @@ final class AppInstallCommand extends Command
     private const string PHASE_SEO = 'seo';
 
     private const string PHASE_MONITORING = 'monitoring';
+
+    private const string PHASE_BILLING = 'billing';
+
+    private const string PHASE_FEATURES = 'features';
 
     private const string PHASE_DEMO = 'demo';
 
@@ -199,6 +205,9 @@ final class AppInstallCommand extends Command
                             {--typesense-port= : Typesense port (default: 8108)}
                             {--ai-provider= : Default AI provider (openrouter|openai|anthropic|gemini|groq|xai|deepseek|mistral|ollama)}
                             {--ai-api-key= : API key for the chosen AI provider}
+                            {--default-gateway= : Billing default gateway (stripe|paddle|lemon_squeezy)}
+                            {--currency= : Billing currency (usd|eur|gbp)}
+                            {--trial-days= : Default trial days for subscriptions}
                             {--demo : Install all demo modules}
                             {--no-demo : Skip demo data entirely}
                             {--modules= : Comma-separated module keys (users,organizations,billing,content,marketing,developer)}';
@@ -525,7 +534,33 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // Phase 17 — Demo Data
+        // Phase 17 — Billing (optional, mirrors web installer)
+        // ════════════════════════════════════════════════════════
+        $hasBillingFlag = $this->option('default-gateway') !== null || $this->option('currency') !== null || $this->option('trial-days') !== null;
+
+        if (! $this->runPhase(self::PHASE_BILLING, 'Billing', $resume, optional: true)) {
+            if ($hasBillingFlag) {
+                $this->configureBilling($nonInteractive);
+            } elseif (! $nonInteractive && confirm('  Configure billing defaults (gateway, currency, trial)?', default: false)) {
+                $this->configureBilling(false);
+            }
+
+            $this->completePhase(self::PHASE_BILLING);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // Phase 18 — Feature flags (optional, mirrors web installer)
+        // ════════════════════════════════════════════════════════
+        if (! $this->runPhase(self::PHASE_FEATURES, 'Feature Flags', $resume, optional: true)) {
+            if (! $nonInteractive && confirm('  Configure which features to enable globally?', default: false)) {
+                $this->configureFeatures(false);
+            }
+
+            $this->completePhase(self::PHASE_FEATURES);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // Phase 19 — Demo Data
         // ════════════════════════════════════════════════════════
         if (! $this->runPhase(self::PHASE_DEMO, 'Demo Data', $resume, optional: true)) {
             $this->installDemoData($nonInteractive);
@@ -533,7 +568,7 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // Phase 18 — Finalize
+        // Phase 20 — Finalize
         // ════════════════════════════════════════════════════════
         note('Finalizing');
 
@@ -1076,6 +1111,17 @@ final class AppInstallCommand extends Command
         }
 
         info('  AI configured — default: '.$provider);
+
+        if (! $nonInteractive && confirm('  Add Thesys C1 API key (optional; DataTable Visualize and other Thesys features)?', default: false)) {
+            $thesysKey = password('  Thesys API key');
+            if ($thesysKey !== '') {
+                $envPath = base_path('.env');
+                $env = file_exists($envPath) ? (string) file_get_contents($envPath) : '';
+                $env = $this->setEnvVar($env, 'THESYS_API_KEY', $thesysKey);
+                file_put_contents($envPath, $env);
+                info('  THESYS_API_KEY written to .env');
+            }
+        }
     }
 
     // ─── Social Auth ──────────────────────────────────────────────────────────
@@ -1194,6 +1240,83 @@ final class AppInstallCommand extends Command
         $monitoring->save();
 
         info('  Sentry error tracking configured');
+    }
+
+    // ─── Billing (mirrors web installer saveBilling) ───────────────────────────
+
+    private function configureBilling(bool $nonInteractive = false): void
+    {
+        $gateway = $nonInteractive
+            ? (string) ($this->option('default-gateway') ?: 'stripe')
+            : select(
+                '  Default gateway',
+                [
+                    'stripe' => 'Stripe',
+                    'paddle' => 'Paddle',
+                    'lemon_squeezy' => 'Lemon Squeezy',
+                ],
+                default: 'stripe',
+            );
+
+        $currency = $nonInteractive
+            ? (string) ($this->option('currency') ?: 'usd')
+            : select('  Currency', ['usd' => 'USD', 'eur' => 'EUR', 'gbp' => 'GBP'], default: 'usd');
+
+        $trialDays = $nonInteractive
+            ? (int) ($this->option('trial-days') ?: 14)
+            : (int) text('  Trial days', default: '14', required: true);
+
+        $billing = resolve(BillingSettings::class);
+        $billing->default_gateway = $gateway;
+        $billing->currency = $currency;
+        $billing->trial_days = $trialDays;
+        $billing->save();
+
+        info('  Billing defaults saved — configure keys later in Settings → Billing.');
+    }
+
+    // ─── Feature flags (mirrors web installer saveFeatures) ─────────────────────
+
+    private function configureFeatures(bool $nonInteractive = false): void
+    {
+        $labels = [
+            'registration' => 'Registration (public sign-up)',
+            'api_access' => 'API access',
+            'blog' => 'Blog',
+            'changelog' => 'Changelog',
+            'help' => 'Help center',
+            'contact' => 'Contact form',
+            'onboarding' => 'Onboarding wizard',
+            'two_factor_auth' => 'Two-factor authentication',
+            'impersonation' => 'User impersonation (super-admin)',
+            'personal_data_export' => 'Personal data export',
+            'cookie_consent' => 'Cookie consent banner',
+            'profile_pdf_export' => 'Profile PDF export',
+            'scramble_api_docs' => 'Scramble API docs',
+            'appearance_settings' => 'Appearance settings',
+            'gamification' => 'Gamification (badges, points)',
+        ];
+
+        $allKeys = array_keys(config('feature-flags.inertia_features', []));
+        $options = [];
+        foreach ($allKeys as $key) {
+            $options[$key] = $labels[$key] ?? str_replace('_', ' ', ucfirst((string) $key));
+        }
+
+        $enabled = $nonInteractive
+            ? $allKeys
+            : multiselect(
+                '  Features to enable (space to toggle, enter to confirm)',
+                $options,
+                default: $allKeys,
+            );
+
+        $disabled = array_values(array_diff($allKeys, $enabled));
+        $settings = resolve(FeatureFlagSettings::class);
+        $settings->globally_disabled_modules = $disabled;
+        $settings->save();
+
+        info('  Feature flags saved — '.count($enabled).' enabled, '.count($disabled).' disabled.');
     }
 
     // ─── Connection checks ────────────────────────────────────────────────────

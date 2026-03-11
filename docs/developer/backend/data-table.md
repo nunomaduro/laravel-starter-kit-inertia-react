@@ -30,11 +30,23 @@ Server-side DataTables for **Laravel + Inertia.js + React** are provided by **ma
 
 URL state is bookmarkable: `?filter[column]=operator:value&sort=-column&page=1&per_page=25`. Column visibility and order are persisted in localStorage per `tableName`.
 
+## Tables and feature index
+
+| Table | Route | Page | Features demonstrated |
+|-------|--------|------|------------------------|
+| **Users** | `GET /users` | `users/table.tsx` | Full showcase: sort, filter, pagination, inline edit, toggle, export, import, detail row, quick views, soft deletes, enum/async filters, select-all, bulk/row/header actions, action groups, form-in-action, grouping, rules, **AI** (NLQ, insights, suggest, column summary, enrich, **Thesys Visualize**). |
+| **Announcements** | `GET /announcements` | `announcements/table.tsx` | Reorder (position), badges (level, scope), toggle (is_active), enum filters, date range, relational (organization name, creator name), export, quick views. |
+| **Posts** | `GET /posts` | `posts/table.tsx` | Badge (draft/published), number (views), relational (author name), dates, quick views, export. |
+| **Organizations** | `GET /organizations/list` | `organizations/table.tsx` | Relational (owner name), export, soft deletes (filter trashed). |
+| **Categories** | `GET /categories` | `categories/table.tsx` | Cascading filters (type → name), async filter (type), export. |
+
+**AI and Thesys (opt-in):** The Users table has **HasAi** and is registered with `DataTableAiController`. The server passes `dataTableAi: { aiBaseUrl, thesysEnabled }` only when configured: **aiBaseUrl** is set when an AI backend (Laravel AI SDK or Prism) is available and configured; **thesysEnabled** is true only when the app-level Thesys API key is set (`THESYS_API_KEY` in `.env` or `config('services.thesys.api_key')`). If no AI backend or key is configured, the AI panel is hidden; if the Thesys key is missing, the Visualize tab is hidden. Everything is opt-in — no runtime errors when keys are absent. See [Opt-in AI and Thesys](#opt-in-ai-and-thesys) below.
+
 ## Users example
 
 - **Backend**: `App\DataTables\UserDataTable` defines DTO (id, name, email, avatar, onboarding_completed, created_at, updated_at), `tableColumns()`, `tableBaseQuery()` (User::query()), and `fromModel(User $model)`.
-- **Route**: `GET /users` (name: `users.table`) under auth renders `users/table` with `UserDataTable::makeTable($request)` as `tableData`.
-- **Frontend**: `resources/js/pages/users/table.tsx` renders `<DataTable tableData={tableData} tableName="users" />` inside `AppSidebarLayout`.
+- **Route**: `GET /users` (name: `users.table`) under auth renders `users/table` with `UserDataTable::inertiaProps($request)` (includes `tableData`, `searchableColumns`, and `dataTableAi` when AI/Thesys are configured).
+- **Frontend**: `resources/js/pages/users/table.tsx` renders `<DataTable tableData={tableData} tableName="users" ... />`; when `dataTableAi` is present it passes `aiBaseUrl` and `aiThesys` so the AI panel and Visualize tab are shown only when configured.
 
 ## Showcase (Users table – maximum package usage)
 
@@ -106,6 +118,22 @@ The Users table is used to demonstrate the full set of features so the app can s
 
 - **Detail drawer/modal**: When `config.detailDisplay` is `'drawer'` or `'modal'`, the expand button opens a Sheet or Dialog with `renderDetailRow` content instead of expanding inline.
 - **Bulk action confirm**: Bulk actions can set `confirm: { title, description, confirmLabel, cancelLabel, variant }`; the DataTable shows a confirm dialog before calling `onClick(selectedRows)`.
+
+## Opt-in AI and Thesys
+
+DataTable AI (NLQ, insights, suggest, column summary, enrich) and the **Thesys C1 Visualize** tab are **opt-in**:
+
+- **AI panel**: Shown only when an AI backend is available (Laravel AI SDK or Prism) and configured (provider + API key or Ollama). The controller passes `dataTableAi.aiBaseUrl` only in that case; the frontend does not render the AI panel when `aiBaseUrl` is missing.
+- **Thesys Visualize tab**: Shown only when the app-level Thesys API key is set (`THESYS_API_KEY` in `.env`). The controller sets `dataTableAi.thesysEnabled` from `config('services.thesys.api_key')`; the frontend passes `aiThesys={true}` only when enabled. The same key is used for any other Thesys C1 features in the app.
+- **Installer**: The web installer (AI step) and CLI `app:install` (AI phase) offer an **optional, skippable** field for the Thesys C1 API key. If omitted, Thesys features are disabled; you can add `THESYS_API_KEY` to `.env` later. Express install accepts optional `thesys_api_key` in the request.
+
+If no AI provider/key is set, AI features are disabled; if the Thesys key is not set, the Visualize tab is hidden. No runtime errors when keys are absent.
+
+**Using the Thesys key elsewhere:** The key is stored app-wide. Use `config('services.thesys.api_key')` and `config('services.thesys.model')` (default `c1-nightly`) anywhere you need to call Thesys C1 (e.g. other generative UI features). Set `THESYS_API_KEY` and optionally `THESYS_MODEL` in `.env`.
+
+## Showcase coverage
+
+This app demonstrates: **core** (sort, filter, pagination, URL state, column types), **relational** columns, **editing** (inline edit, toggle, reorder), **export/import**, **row features** (detail row, soft deletes, quick views, cascading/async filters), **actions** (row, bulk, header, groups, confirm), and **AI** (when configured). Not every package feature is showcased (e.g. layout switcher, virtual scroll, saved views DB, PDF export, Kanban).
 - **Status badge**: Users table uses `renderCell` for column `status` to render a `Badge` (active = default, pending = secondary, deleted = destructive).
 - **Bulk soft-delete**: Route `POST /users/bulk-soft-delete` (name: `users.bulk-soft-delete`); request body `ids[]`; uses `BulkSoftDeleteUsers` action. Users page has a "Delete selected" bulk action with confirm that posts to this route.
 

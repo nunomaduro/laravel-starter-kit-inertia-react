@@ -38,14 +38,15 @@ use Throwable;
 /**
  * Web installer — mirrors every phase of `php artisan app:install`.
  *
- * Step order (15 total):
+ * Step order (17 total):
  *   database → migrate → admin → app
  *   → tenancy → infrastructure → mail → search → ai
  *   → social → storage → broadcasting → seo → monitoring
- *   → demo
+ *   → billing → features → demo
  *
- * The first 4 steps are required. Steps 5–14 are optional (each has a Skip button).
+ * The first 4 steps are required. Steps 5–16 are optional (each has a Skip button).
  * Completed optional steps are tracked in the session under `install_optional_done`.
+ * Billing and features are synced with CLI (configureBilling / configureFeatures).
  */
 final class InstallController extends Controller
 {
@@ -205,6 +206,7 @@ final class InstallController extends Controller
             'ai_provider' => ['nullable', 'string', 'in:openrouter,openai,anthropic,groq,gemini,xai,deepseek,mistral,ollama'],
             'ai_api_key' => ['nullable', 'string', 'max:1024'],
             'ai_model' => ['nullable', 'string', 'max:255'],
+            'thesys_api_key' => ['nullable', 'string', 'max:1024'],
         ], [
             'preset.in' => 'The preset must be one of: saas, internal, ai_first.',
             'tenancy.in' => 'The tenancy must be single or multi.',
@@ -436,11 +438,16 @@ final class InstallController extends Controller
             }
         }
 
+        $thesysKey = $request->input('thesys_api_key');
+        if (is_string($thesysKey) && Str::length(mb_trim($thesysKey)) > 0) {
+            $options['thesys_api_key'] = mb_trim($thesysKey);
+        }
+
         return $options;
     }
 
     /**
-     * @param  array{tenancy?: string, demo?: string, single_org_name?: string, site_name?: string, locale?: string, fallback_locale?: string, ai_provider?: string, ai_api_key?: string, ai_model?: string}  $options
+     * @param  array{tenancy?: string, demo?: string, single_org_name?: string, site_name?: string, locale?: string, fallback_locale?: string, ai_provider?: string, ai_api_key?: string, ai_model?: string, thesys_api_key?: string}  $options
      */
     private function runExpressInstallSteps(string $progressFile, string $appUrl, array $options = []): void
     {
@@ -567,6 +574,14 @@ final class InstallController extends Controller
                 }
 
                 $prism->save();
+            }
+
+            $thesysKey = $options['thesys_api_key'] ?? null;
+            if (is_string($thesysKey) && $thesysKey !== '') {
+                $envPath = base_path('.env');
+                $env = is_file($envPath) ? (string) file_get_contents($envPath) : '';
+                $env = $this->setEnvVar($env, 'THESYS_API_KEY', $thesysKey);
+                file_put_contents($envPath, $env);
             }
 
             $demo = $options['demo'] ?? 'none';
@@ -998,6 +1013,13 @@ final class InstallController extends Controller
         }
 
         $prism->save();
+
+        if ($request->filled('thesys_api_key')) {
+            $envPath = base_path('.env');
+            $env = is_file($envPath) ? (string) file_get_contents($envPath) : '';
+            $env = $this->setEnvVar($env, 'THESYS_API_KEY', (string) $request->input('thesys_api_key'));
+            file_put_contents($envPath, $env);
+        }
     }
 
     private function saveSocial(Request $request): void

@@ -36,6 +36,16 @@ declare namespace DataTable {
         bulleted?: boolean;
         stacked?: unknown[] | null;
         rowIndex?: boolean;
+        avatarColumn?: string | null;
+        hasDynamicSuffix?: boolean;
+        computedFrom?: unknown[] | null;
+        colSpan?: number | null;
+        autoHeight?: boolean;
+        valueGetter?: string | null;
+        valueFormatter?: string | null;
+        headerFilter?: boolean;
+        sparkline?: string | null;
+        treeParent?: string | null;
     }
 
     export interface DataTableResponse {
@@ -53,6 +63,10 @@ declare namespace DataTable {
         reorderUrl?: string | null;
         importUrl?: string | null;
         groupByColumn?: string | null;
+        pinnedTopRows?: unknown[] | null;
+        pinnedBottomRows?: unknown[] | null;
+        actionRules?: unknown[] | null;
+        analytics?: unknown[] | null;
     }
 
     export interface DataTableMeta {
@@ -76,12 +90,57 @@ declare namespace DataTable {
         columns?: unknown[] | null;
     }
 
+    export interface AnnouncementDataTable {
+        id: number;
+        title: string;
+        level: string;
+        scope: string;
+        is_active: boolean;
+        starts_at?: string | null;
+        ends_at?: string | null;
+        organization_name?: string | null;
+        creator_name?: string | null;
+        created_at?: string | null;
+    }
+
+    export interface CategoryDataTable {
+        id: number;
+        name: string;
+        slug: string;
+        type: string;
+        parent_id?: number | null;
+        parent_name?: string | null;
+        created_at?: string | null;
+    }
+
+    export interface OrganizationDataTable {
+        id: number;
+        name: string;
+        slug: string;
+        owner_name?: string | null;
+        created_at?: string | null;
+    }
+
+    export interface PostDataTable {
+        id: number;
+        title: string;
+        is_published: boolean;
+        published_at?: string | null;
+        views: number;
+        author_name?: string | null;
+        created_at?: string | null;
+    }
+
     export interface UserDataTable {
         id: number;
+        hash_id: string;
         name: string;
         email: string;
         avatar?: string | null;
+        status: string;
         onboarding_completed: boolean;
+        organizations_count: number;
+        first_organization_name?: string | null;
         created_at?: string | null;
         updated_at?: string | null;
     }

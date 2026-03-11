@@ -11,6 +11,7 @@ import {
     Bell,
     BookOpen,
     Bot,
+    Broadcast,
     Building2,
     ClipboardList,
     CloudCog,
@@ -19,12 +20,14 @@ import {
     Download,
     FileText,
     Globe,
+    ImageIcon,
     Key,
     Layout,
     Lock,
     Mail,
     Megaphone,
     MessageCircle,
+    MessageSquare,
     Palette,
     Rocket,
     Search,
@@ -202,6 +205,20 @@ const featureGroups: FeatureGroup[] = [
                     'In-app announcement banners with audience targeting. Create and schedule in Filament; dismissible by users.',
                 dataPan: 'welcome-feature-announcements',
             },
+            {
+                icon: MessageSquare,
+                title: 'Contact Form',
+                description:
+                    'Feature-flagged contact form with spam protection. Submissions stored and manageable from the admin panel.',
+                dataPan: 'welcome-feature-contact',
+            },
+            {
+                icon: Broadcast,
+                title: 'Real-time Broadcasting',
+                description:
+                    'Laravel Reverb and Echo for WebSockets. Real-time notifications and live updates; optional installer step.',
+                dataPan: 'welcome-feature-broadcasting',
+            },
         ],
     },
     {
@@ -241,6 +258,13 @@ const featureGroups: FeatureGroup[] = [
                 dataPan: 'welcome-feature-theming',
             },
             {
+                icon: ImageIcon,
+                title: 'Org Branding',
+                description:
+                    'Per-organization logo, colors, and favicon. Each tenant can customize their branding; applied across the app when in context.',
+                dataPan: 'welcome-feature-org-branding',
+            },
+            {
                 icon: Layout,
                 title: 'Page Builder',
                 description:
@@ -270,7 +294,7 @@ const featureGroups: FeatureGroup[] = [
                 icon: Table,
                 title: 'Server-side DataTables',
                 description:
-                    'TanStack Table powered data tables with server-side sorting, filtering, pagination, inline edits, and exports.',
+                    'Full-featured tables: sort, filter, pagination, inline edit, toggle, reorder, export/import, quick views, detail row, soft deletes, cascading filters. Optional AI panel (NLQ, insights, suggest, column summary, enrich) and Thesys Visualize when configured.',
                 dataPan: 'welcome-feature-datatables',
             },
             {

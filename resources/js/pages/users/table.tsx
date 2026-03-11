@@ -38,9 +38,15 @@ export interface UsersTableRow {
     updated_at: string | null;
 }
 
+interface DataTableAiProps {
+    aiBaseUrl: string | null;
+    thesysEnabled: boolean;
+}
+
 interface Props {
     tableData?: DataTableResponse<UsersTableRow>;
     searchableColumns: string[];
+    dataTableAi?: DataTableAiProps;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Users', href: '/users' }];
@@ -48,6 +54,7 @@ const breadcrumbs: BreadcrumbItem[] = [{ title: 'Users', href: '/users' }];
 export default function UsersTablePage({
     tableData,
     searchableColumns = [],
+    dataTableAi,
 }: Props) {
     const [shortcutsOpen, setShortcutsOpen] = useState(false);
     const [messageDialog, setMessageDialog] = useState<{
@@ -192,6 +199,8 @@ export default function UsersTablePage({
                     searchableColumns={searchableColumns}
                     debounceMs={300}
                     partialReloadKey="tableData"
+                    aiBaseUrl={dataTableAi?.aiBaseUrl ?? undefined}
+                    aiThesys={dataTableAi?.thesysEnabled ?? false}
                     rowLink={(row) => `/users/${row.hash_id}`}
                     emptyState={
                         <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">

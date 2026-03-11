@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\DataTables\AnnouncementDataTable;
+use App\DataTables\CategoryDataTable;
+use App\DataTables\OrganizationDataTable;
+use App\DataTables\PostDataTable;
 use App\DataTables\UserDataTable;
 use App\Events\OrganizationMemberAdded;
 use App\Events\OrganizationMemberRemoved;
@@ -38,10 +42,14 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use LemonSqueezy\Laravel\Events\OrderCreated;
+use Machour\DataTable\Http\Controllers\DataTableAiController;
+use Machour\DataTable\Http\Controllers\DataTableAsyncFilterController;
+use Machour\DataTable\Http\Controllers\DataTableCascadingFilterController;
 use Machour\DataTable\Http\Controllers\DataTableDetailRowController;
 use Machour\DataTable\Http\Controllers\DataTableExportController;
 use Machour\DataTable\Http\Controllers\DataTableImportController;
 use Machour\DataTable\Http\Controllers\DataTableInlineEditController;
+use Machour\DataTable\Http\Controllers\DataTableReorderController;
 use Machour\DataTable\Http\Controllers\DataTableSelectAllController;
 use Machour\DataTable\Http\Controllers\DataTableToggleController;
 use Pan\PanConfiguration;
@@ -121,7 +129,9 @@ final class AppServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
 
         foreach ([
+            DataTableAiController::class,
             DataTableExportController::class,
+            DataTableAsyncFilterController::class,
             DataTableInlineEditController::class,
             DataTableToggleController::class,
             DataTableSelectAllController::class,
@@ -129,6 +139,25 @@ final class AppServiceProvider extends ServiceProvider
             DataTableImportController::class,
         ] as $controller) {
             $controller::register('users', UserDataTable::class);
+        }
+
+        foreach ([
+            DataTableExportController::class,
+            DataTableToggleController::class,
+            DataTableReorderController::class,
+        ] as $controller) {
+            $controller::register('announcements', AnnouncementDataTable::class);
+        }
+
+        DataTableExportController::register('posts', PostDataTable::class);
+        DataTableExportController::register('organizations', OrganizationDataTable::class);
+
+        foreach ([
+            DataTableExportController::class,
+            DataTableAsyncFilterController::class,
+            DataTableCascadingFilterController::class,
+        ] as $controller) {
+            $controller::register('categories', CategoryDataTable::class);
         }
     }
 
@@ -252,12 +281,19 @@ final class AppServiceProvider extends ServiceProvider
             'welcome-feature-social-login',
             'welcome-feature-notifications',
             'welcome-feature-announcements',
+            'welcome-feature-contact',
+            'welcome-feature-broadcasting',
+            'welcome-feature-org-branding',
             'welcome-feature-impersonation',
             'welcome-feature-visibility-sharing',
             'welcome-feature-backups',
             'welcome-feature-installer',
             'nav-dashboard',
+            'nav-announcements',
+            'nav-posts',
             'nav-organizations',
+            'nav-organizations-table',
+            'nav-categories',
             'nav-billing',
             'nav-blog',
             'nav-changelog',
@@ -295,6 +331,10 @@ final class AppServiceProvider extends ServiceProvider
             'dashboard-chart',
             'admin-org-switcher',
             'users-table',
+            'announcements-table',
+            'posts-table',
+            'organizations-table',
+            'categories-table',
             'pages-index',
             'pages-create',
             'pages-edit-preview',

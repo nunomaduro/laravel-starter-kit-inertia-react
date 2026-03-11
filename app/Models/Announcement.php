@@ -21,6 +21,7 @@ use Override;
  * @property \Carbon\Carbon|null $starts_at
  * @property \Carbon\Carbon|null $ends_at
  * @property bool $is_active
+ * @property int|null $position
  * @property int|null $created_by
  * @property int|null $governor_owned_by
  * @property \Carbon\Carbon $created_at
@@ -45,6 +46,7 @@ final class Announcement extends Model
         'starts_at',
         'ends_at',
         'is_active',
+        'position',
         'created_by',
         'governor_owned_by',
     ];

@@ -675,6 +675,9 @@ export function DataTable<TData extends object>({
     rowLink,
     prefix,
     partialReloadKey,
+    /* Accepted for API compatibility; AI panel rendered by parent when set. */
+    aiBaseUrl, // eslint-disable-line @typescript-eslint/no-unused-vars
+    aiThesys, // eslint-disable-line @typescript-eslint/no-unused-vars
     actions,
     bulkActions,
     headerActions,

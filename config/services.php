@@ -70,4 +70,19 @@ return [
         'generic_variant_id' => null,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Thesys (C1 generative UI)
+    |--------------------------------------------------------------------------
+    |
+    | API key from https://www.thesys.dev — used for DataTable AI Visualize and
+    | any other Thesys C1 features. Set THESYS_API_KEY in .env (optional);
+    | when empty, Thesys-dependent features are disabled.
+    |
+    */
+    'thesys' => [
+        'api_key' => env('THESYS_API_KEY'),
+        'model' => env('THESYS_MODEL', 'c1-nightly'),
+    ],
+
 ];

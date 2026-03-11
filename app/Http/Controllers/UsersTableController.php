@@ -21,7 +21,10 @@ final class UsersTableController extends Controller
     {
         $this->authorizeViewUsers($request);
 
-        return Inertia::render('users/table', UserDataTable::inertiaProps($request));
+        $props = UserDataTable::inertiaProps($request);
+        $props['dataTableAi'] = $this->dataTableAiProps();
+
+        return Inertia::render('users/table', $props);
     }
 
     public function bulkSoftDelete(BulkSoftDeleteUsersRequest $request, BulkSoftDeleteUsers $action): RedirectResponse
@@ -44,6 +47,24 @@ final class UsersTableController extends Controller
         $this->ensureCanViewUser($user, $request);
 
         return Inertia::render('users/show', UserDataTable::showProps($user));
+    }
+
+    /**
+     * Opt-in AI props: only expose AI panel / Thesys when configured.
+     * When no AI backend or no Thesys key, those features are disabled.
+     *
+     * @return array{aiBaseUrl: string|null, thesysEnabled: bool}
+     */
+    private function dataTableAiProps(): array
+    {
+        $aiBackend = class_exists(\Laravel\Ai\Contracts\Agent::class)
+            || class_exists(\PrismPHP\Prism::class);
+        $thesysKey = (bool) config('services.thesys.api_key');
+
+        return [
+            'aiBaseUrl' => $aiBackend ? url('/data-table/ai/users') : null,
+            'thesysEnabled' => $thesysKey,
+        ];
     }
 
     private function authorizeViewUsers(Request $request): void

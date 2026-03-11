@@ -8,6 +8,7 @@ declare(strict_types=1);
  * after adding or changing routes.
  */
 
+use App\Http\Controllers\AnnouncementsTableController;
 use App\Http\Controllers\Api\SlugAvailabilityController;
 use App\Http\Controllers\Billing\BillingDashboardController;
 use App\Http\Controllers\Billing\CreditController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Billing\PaddleWebhookController;
 use App\Http\Controllers\Billing\PricingController;
 use App\Http\Controllers\Billing\StripeWebhookController;
 use App\Http\Controllers\Blog\BlogController;
+use App\Http\Controllers\CategoriesTableController;
 use App\Http\Controllers\Changelog\ChangelogController;
 use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\CookieConsentController;
@@ -38,11 +40,13 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationInvitationController;
 use App\Http\Controllers\OrganizationMemberController;
+use App\Http\Controllers\OrganizationsTableController;
 use App\Http\Controllers\OrganizationSwitchController;
 use App\Http\Controllers\OrgThemeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\PersonalDataExportController;
+use App\Http\Controllers\PostsTableController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\Settings\AchievementsController;
@@ -169,6 +173,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
 
+    Route::get('announcements', [AnnouncementsTableController::class, 'index'])->name('announcements.table');
+    Route::get('categories', [CategoriesTableController::class, 'index'])->name('categories.table');
+    Route::get('posts', [PostsTableController::class, 'index'])->name('posts.table');
     Route::get('users', [UsersTableController::class, 'index'])->name('users.table');
     Route::post('users/bulk-soft-delete', [UsersTableController::class, 'bulkSoftDelete'])->name('users.bulk-soft-delete');
     Route::post('users/{user}/duplicate', [UsersTableController::class, 'duplicate'])->name('users.duplicate');
@@ -178,6 +185,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::post('organizations/switch', OrganizationSwitchController::class)
             ->middleware('throttle:20,1')
             ->name('organizations.switch');
+        Route::get('organizations/list', [OrganizationsTableController::class, 'index'])->name('organizations.list');
         Route::resource('organizations', OrganizationController::class)->except(['edit']);
         Route::get('organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
         Route::get('organizations/{organization}/members', [OrganizationMemberController::class, 'index'])->name('organizations.members.index');

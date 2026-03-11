@@ -18,6 +18,7 @@ use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Machour\DataTable\AbstractDataTable;
 use Machour\DataTable\Columns\ColumnBuilder;
+use Machour\DataTable\Concerns\HasAi;
 use Machour\DataTable\Concerns\HasAuditLog;
 use Machour\DataTable\Concerns\HasExport;
 use Machour\DataTable\Concerns\HasImport;
@@ -35,6 +36,7 @@ use Throwable;
 #[TypeScript]
 final class UserDataTable extends AbstractDataTable
 {
+    use HasAi;
     use HasAuditLog;
     use HasExport;
     use HasImport;

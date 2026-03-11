@@ -1239,6 +1239,62 @@
                 ],
                 "rendersPages": []
             }
+        },
+        "AnnouncementsTableController": {
+            "documented": true,
+            "path": "./announcementstablecontroller.md",
+            "relationships": {
+                "usesActions": [],
+                "usesFormRequests": [],
+                "relatedRoutes": [
+                    "announcements.table"
+                ],
+                "rendersPages": [
+                    "announcements/table"
+                ]
+            }
+        },
+        "CategoriesTableController": {
+            "documented": true,
+            "path": "./categoriestablecontroller.md",
+            "relationships": {
+                "usesActions": [],
+                "usesFormRequests": [],
+                "relatedRoutes": [
+                    "categories.table"
+                ],
+                "rendersPages": [
+                    "categories/table"
+                ]
+            }
+        },
+        "OrganizationsTableController": {
+            "documented": true,
+            "path": "./organizationstablecontroller.md",
+            "relationships": {
+                "usesActions": [],
+                "usesFormRequests": [],
+                "relatedRoutes": [
+                    "organizations.list"
+                ],
+                "rendersPages": [
+                    "organizations/table"
+                ]
+            }
+        },
+        "PostsTableController": {
+            "documented": true,
+            "path": "./poststablecontroller.md",
+            "relationships": {
+                "usesActions": [],
+                "usesFormRequests": [],
+                "relatedRoutes": [
+                    "posts.table"
+                ],
+                "rendersPages": [
+                    "posts/table"
+                ]
+            }
         }
     },
     "pages": {
@@ -1478,11 +1534,15 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "announcements.table",
+                    "categories.table",
+                    "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
+                    "organizations.list",
                     "organizations.index",
                     "organizations.create",
                     "organizations.store",
@@ -2061,11 +2121,15 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "announcements.table",
+                    "categories.table",
+                    "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
+                    "organizations.list",
                     "organizations.index",
                     "organizations.create",
                     "organizations.store",
@@ -2569,11 +2633,15 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "announcements.table",
+                    "categories.table",
+                    "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
+                    "organizations.list",
                     "organizations.index",
                     "organizations.create",
                     "organizations.store",
@@ -3018,11 +3086,15 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "announcements.table",
+                    "categories.table",
+                    "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
+                    "organizations.list",
                     "organizations.index",
                     "organizations.create",
                     "organizations.store",
@@ -3453,11 +3525,15 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "announcements.table",
+                    "categories.table",
+                    "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
+                    "organizations.list",
                     "organizations.index",
                     "organizations.create",
                     "organizations.store",
@@ -4061,11 +4137,15 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "announcements.table",
+                    "categories.table",
+                    "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
+                    "organizations.list",
                     "organizations.index",
                     "organizations.create",
                     "organizations.store",
@@ -4495,6 +4575,58 @@
             },
             "path": "docs/developer/frontend/pages/notifications-index.md",
             "lastUpdated": "2026-03-10"
+        },
+        "announcements/table": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./announcements/table.md",
+            "relationships": {
+                "renderedBy": [
+                    "AnnouncementsTableController"
+                ],
+                "relatedRoutes": [
+                    "announcements.table"
+                ]
+            }
+        },
+        "categories/table": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./categories/table.md",
+            "relationships": {
+                "renderedBy": [
+                    "CategoriesTableController"
+                ],
+                "relatedRoutes": [
+                    "categories.table"
+                ]
+            }
+        },
+        "organizations/table": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./organizations/table.md",
+            "relationships": {
+                "renderedBy": [
+                    "OrganizationsTableController"
+                ],
+                "relatedRoutes": [
+                    "organizations.list"
+                ]
+            }
+        },
+        "posts/table": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./posts/table.md",
+            "relationships": {
+                "renderedBy": [
+                    "PostsTableController"
+                ],
+                "relatedRoutes": [
+                    "posts.table"
+                ]
+            }
         }
     },
     "routes": {

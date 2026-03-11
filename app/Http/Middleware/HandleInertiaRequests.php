@@ -255,6 +255,7 @@ final class HandleInertiaRequests extends Middleware
                 }
             })
             ->orderByRaw('CASE WHEN organization_id IS NULL THEN 0 ELSE 1 END')
+            ->orderBy('position')
             ->orderBy('created_at', 'desc');
 
         return $query->get(['id', 'title', 'body', 'level'])

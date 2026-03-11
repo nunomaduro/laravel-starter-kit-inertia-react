@@ -178,6 +178,10 @@ export interface DataTableProps<TData extends object> {
     prefix?: string;
     /** Inertia partial reload key (e.g. 'tableData') for efficient refetches. */
     partialReloadKey?: string;
+    /** Base URL for DataTable AI endpoints (e.g. /data-table/ai/users). Enables AI panel when set. */
+    aiBaseUrl?: string;
+    /** When true, AI panel includes Thesys Visualize tab. Requires aiBaseUrl. */
+    aiThesys?: boolean;
     actions?: DataTableAction<TData>[];
     bulkActions?: DataTableBulkAction<TData>[];
     headerActions?: DataTableHeaderAction[];

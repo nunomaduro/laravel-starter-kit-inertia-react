@@ -57,7 +57,7 @@ return [
     | toggle, detail-row, etc).
     |
     */
-    'middleware' => ['web'],
+    'middleware' => ['web', 'auth'],
 
     /*
     |--------------------------------------------------------------------------
@@ -119,6 +119,26 @@ return [
     'rate_limit' => [
         'inline_edit' => 60,
         'toggle' => 60,
+        'export' => 10,
+        'import' => 5,
+        'ai' => 30,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | AI Features (Laravel AI SDK or Prism PHP)
+    |--------------------------------------------------------------------------
+    |
+    | Configure AI-powered features for data tables. Thesys C1 (Visualize tab)
+    | uses the app-level Thesys API key from config('services.thesys.api_key').
+    |
+    */
+    'ai' => [
+        'model' => env('DATA_TABLE_AI_MODEL'),
+        'max_tokens' => null,
+        'sample_size' => 50,
+        'thesys_api_key' => config('services.thesys.api_key'),
+        'thesys_model' => config('services.thesys.model'),
     ],
 
     /*

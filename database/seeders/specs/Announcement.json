@@ -66,6 +66,11 @@
             "type": "integer",
             "nullable": true,
             "default": null
+        },
+        "position": {
+            "type": "integer",
+            "nullable": true,
+            "default": null
         }
     },
     "relationships": {
