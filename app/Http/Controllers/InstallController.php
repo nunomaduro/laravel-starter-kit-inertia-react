@@ -8,7 +8,9 @@ use App\Models\User;
 use App\Providers\SettingsOverlayServiceProvider;
 use App\Settings\AppSettings;
 use App\Settings\AuthSettings;
+use App\Settings\BillingSettings;
 use App\Settings\BroadcastingSettings;
+use App\Settings\FeatureFlagSettings;
 use App\Settings\FilesystemSettings;
 use App\Settings\MailSettings;
 use App\Settings\MonitoringSettings;
@@ -22,6 +24,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -58,6 +61,8 @@ final class InstallController extends Controller
         'broadcasting',
         'seo',
         'monitoring',
+        'billing',
+        'features',
     ];
 
     /**
@@ -139,7 +144,7 @@ final class InstallController extends Controller
     private const array STEP_ORDER = [
         'database', 'migrate', 'admin', 'app',
         'tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social',
-        'storage', 'broadcasting', 'seo', 'monitoring', 'demo',
+        'storage', 'broadcasting', 'seo', 'monitoring', 'billing', 'features', 'demo',
     ];
 
     public function show(): View|RedirectResponse
@@ -170,6 +175,7 @@ final class InstallController extends Controller
         return view('install.index', [
             'step' => $step,
             'modules' => self::MODULES,
+            'featureFlags' => $this->installFeatureFlagsList(),
         ]);
     }
 
@@ -179,6 +185,31 @@ final class InstallController extends Controller
      */
     public function express(Request $request): JsonResponse
     {
+        try {
+            $wizard = resolve(SetupWizardSettings::class);
+            if ($wizard->setup_completed) {
+                return response()->json(['error' => 'Already installed.'], 409);
+            }
+        } catch (Throwable) {
+            // Settings table not yet available — proceed with install
+        }
+
+        $validator = Validator::make($request->all(), [
+            'preset' => ['nullable', 'string', 'in:saas,internal,ai_first'],
+            'tenancy' => ['nullable', 'string', 'in:single,multi'],
+            'demo' => ['nullable', 'string', 'in:none,minimal,full'],
+            'single_org_name' => ['nullable', 'string', 'max:255'],
+            'locale' => ['nullable', 'string', 'max:20'],
+            'fallback_locale' => ['nullable', 'string', 'max:20'],
+        ], [
+            'preset.in' => 'The preset must be one of: saas, internal, ai_first.',
+            'tenancy.in' => 'The tenancy must be single or multi.',
+            'demo.in' => 'The demo must be none, minimal, or full.',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => 'The given data was invalid.', 'errors' => $validator->errors()], 422);
+        }
+
         if (empty(config('app.key'))) {
             Artisan::call('key:generate', ['--force' => true]);
         }
@@ -203,6 +234,7 @@ final class InstallController extends Controller
         $env = $this->removeEnvVar($env, 'DB_PASSWORD');
         file_put_contents($envPath, $env);
         config(['database.default' => 'sqlite']);
+        config(['database.connections.sqlite.database' => $dbPath]);
         DB::purge();
 
         if (! $this->isDatabaseReachable()) {
@@ -212,15 +244,16 @@ final class InstallController extends Controller
         $filename = 'install_progress_'.Str::uuid().'.json';
         $progressFile = storage_path('app/'.$filename);
 
-        file_put_contents($progressFile, json_encode(['status' => 'running', 'steps' => []]));
+        $expressOptions = $this->resolveExpressOptions($request);
+        file_put_contents($progressFile, json_encode(['status' => 'running', 'steps' => [], 'options' => $expressOptions]));
 
         $appUrl = $request->root();
 
         // Run install steps after the HTTP response is sent. app()->terminating() callbacks
         // are called in Kernel::terminate() (public/index.php after $response->send()),
         // so the browser receives the JSON immediately and can start polling.
-        app()->terminating(function () use ($progressFile, $appUrl): void {
-            $this->runExpressInstallSteps($progressFile, $appUrl);
+        app()->terminating(function () use ($progressFile, $appUrl, $expressOptions): void {
+            $this->runExpressInstallSteps($progressFile, $appUrl, $expressOptions);
         });
 
         session(['install_optional_done' => self::OPTIONAL_STEPS]);
@@ -247,8 +280,38 @@ final class InstallController extends Controller
 
         $json = file_get_contents($progressFile);
         $state = is_string($json) ? (json_decode($json, true) ?? []) : [];
+        $status = $state['status'] ?? 'running';
+        if (in_array($status, ['done', 'error'], true)) {
+            @unlink($progressFile);
+        }
 
         return response()->json($state);
+    }
+
+    /**
+     * One-time auto-login after express install. Validates signed token and redirects to /admin.
+     */
+    public function complete(Request $request): RedirectResponse
+    {
+        $token = $request->query('token');
+        if (! is_string($token) || $token === '') {
+            return redirect()->to('/admin');
+        }
+        try {
+            $payload = Crypt::decrypt($token);
+        } catch (Throwable) {
+            return redirect()->to('/admin');
+        }
+        if (! is_array($payload) || empty($payload['user_id']) || empty($payload['expires']) || (int) $payload['expires'] < time()) {
+            return redirect()->to('/admin');
+        }
+        $user = User::query()->find((int) $payload['user_id']);
+        if (! $user) {
+            return redirect()->to('/admin');
+        }
+        auth()->login($user, true);
+
+        return redirect()->to('/admin');
     }
 
     public function store(Request $request): RedirectResponse
@@ -268,6 +331,8 @@ final class InstallController extends Controller
             'broadcasting' => $this->handleOptional('broadcasting', fn () => $this->saveBroadcasting($request)),
             'seo' => $this->handleOptional('seo', fn () => $this->saveSeo($request)),
             'monitoring' => $this->handleOptional('monitoring', fn () => $this->saveMonitoring($request)),
+            'billing' => $this->handleOptional('billing', fn () => $this->saveBilling($request)),
+            'features' => $this->handleOptional('features', fn () => $this->saveFeatures($request)),
             'demo' => $this->handleDemo($request),
             default => redirect()->route('install'),
         };
@@ -299,7 +364,51 @@ final class InstallController extends Controller
 
     // ─── Express install worker ───────────────────────────────────────────────
 
-    private function runExpressInstallSteps(string $progressFile, string $appUrl): void
+    /**
+     * Resolve express install options from request. Accepts tenancy, demo, single_org_name,
+     * and optional preset (saas, internal, ai_first) which supplies defaults when tenancy/demo omitted.
+     *
+     * @return array{tenancy: string, demo: string, single_org_name?: string}
+     */
+    private function resolveExpressOptions(Request $request): array
+    {
+        $tenancy = $request->input('tenancy');
+        $demo = $request->input('demo');
+        $preset = $request->input('preset');
+        $singleOrgName = $request->input('single_org_name');
+
+        if (in_array($preset, ['saas', 'internal', 'ai_first'], true)) {
+            if (! in_array($tenancy, ['single', 'multi'], true)) {
+                $tenancy = $preset === 'internal' ? 'single' : 'multi';
+            }
+            if (! in_array($demo, ['none', 'minimal', 'full'], true)) {
+                $demo = $preset === 'ai_first' ? 'minimal' : 'none';
+            }
+        }
+
+        $tenancy = in_array($tenancy, ['single', 'multi'], true) ? $tenancy : 'multi';
+        $demo = in_array($demo, ['none', 'minimal', 'full'], true) ? $demo : 'none';
+
+        $options = ['tenancy' => $tenancy, 'demo' => $demo];
+        if ($tenancy === 'single' && is_string($singleOrgName) && Str::length(mb_trim($singleOrgName)) > 0) {
+            $options['single_org_name'] = mb_trim($singleOrgName);
+        }
+        $locale = $request->input('locale');
+        if (is_string($locale) && Str::length(mb_trim($locale)) > 0) {
+            $options['locale'] = mb_trim($locale);
+        }
+        $fallbackLocale = $request->input('fallback_locale');
+        if (is_string($fallbackLocale) && Str::length(mb_trim($fallbackLocale)) > 0) {
+            $options['fallback_locale'] = mb_trim($fallbackLocale);
+        }
+
+        return $options;
+    }
+
+    /**
+     * @param  array{tenancy?: string, demo?: string, single_org_name?: string, locale?: string, fallback_locale?: string}  $options
+     */
+    private function runExpressInstallSteps(string $progressFile, string $appUrl, array $options = []): void
     {
         try {
             $this->writeProgress($progressFile, 'migrate', 'running');
@@ -351,34 +460,79 @@ final class InstallController extends Controller
             $app->site_name = 'My App';
             $app->url = $appUrl;
             $app->timezone = 'UTC';
+            if (isset($options['locale']) && $options['locale'] !== '') {
+                $app->locale = $options['locale'];
+            }
+            if (isset($options['fallback_locale']) && $options['fallback_locale'] !== '') {
+                $app->fallback_locale = $options['fallback_locale'];
+            }
             $app->save();
 
-            DB::table('settings')->where('group', MailSettings::group())->delete();
+            $this->ensureMailSettingsExist();
             App::forgetInstance(MailSettings::class);
-            resolve(\Spatie\LaravelSettings\SettingsMapper::class)->save(MailSettings::class, collect([
-                'mailer' => 'smtp',
-                'smtp_host' => '127.0.0.1',
-                'smtp_port' => 2525,
-                'smtp_username' => 'My App',
-                'smtp_password' => null,
-                'smtp_encryption' => null,
-                'from_address' => 'hello@example.com',
-                'from_name' => 'My App',
-            ]));
+
+            $mail = resolve(MailSettings::class);
+            $mail->mailer = 'smtp';
+            $mail->smtp_host = '127.0.0.1';
+            $mail->smtp_port = 2525;
+            $mail->smtp_username = 'My App';
+            $mail->smtp_password = null;
+            $mail->smtp_encryption = null;
+            $mail->from_address = 'hello@example.com';
+            $mail->from_name = 'My App';
+            $mail->save();
 
             $wizard = resolve(SetupWizardSettings::class);
             $wizard->setup_completed = true;
             $wizard->completed_steps = ['app', 'mail', 'billing', 'ai', 'complete'];
             $wizard->save();
 
+            $tenancy = resolve(TenancySettings::class);
+            if (($options['tenancy'] ?? 'multi') === 'single') {
+                $tenancy->enabled = false;
+                $tenancy->allow_user_org_creation = false;
+                $tenancy->default_org_name = Str::length((string) ($options['single_org_name'] ?? '')) > 0
+                    ? (string) $options['single_org_name']
+                    : 'My Organization';
+            }
+            $tenancy->save();
+
+            $demo = $options['demo'] ?? 'none';
+            if ($demo !== 'none') {
+                $this->writeProgress($progressFile, 'demo', 'running');
+                $modules = $demo === 'minimal' ? ['users', 'organizations', 'content'] : array_keys(self::MODULES);
+                foreach ($modules as $key) {
+                    $module = self::MODULES[$key] ?? null;
+                    if ($module === null) {
+                        continue;
+                    }
+                    foreach ($module['seeders'] as $seederClass) {
+                        try {
+                            Artisan::call('db:seed', ['--class' => $seederClass, '--force' => true]);
+                        } catch (Throwable) {
+                            // Non-fatal
+                        }
+                    }
+                }
+                $this->writeProgress($progressFile, 'demo', 'done');
+            }
+
             SettingsOverlayServiceProvider::applyOverlay();
 
             $this->writeProgress($progressFile, 'settings', 'done');
 
+            session()->put('show_next_steps', true);
+
+            $loginToken = Crypt::encrypt([
+                'user_id' => $userId,
+                'expires' => time() + 300,
+            ]);
+            $redirectUrl = url()->route('install.complete', ['token' => $loginToken], true);
+
             $this->writeProgressFile($progressFile, [
                 'status' => 'done',
                 'steps' => $this->readProgressFile($progressFile)['steps'] ?? [],
-                'redirect' => '/admin',
+                'redirect' => $redirectUrl,
             ]);
 
         } catch (Throwable $e) {
@@ -524,12 +678,21 @@ final class InstallController extends Controller
             'site_name' => 'required|string|max:255',
             'url' => 'required|url',
             'timezone' => 'nullable|string|timezone',
+            'locale' => 'nullable|string|max:12',
+            'fallback_locale' => 'nullable|string|max:12',
+            'preset' => 'nullable|string|in:none,saas,internal,ai_first',
         ])->validate();
+
+        if (! empty($validated['preset'])) {
+            session()->put('install_preset', $validated['preset']);
+        }
 
         $app = resolve(AppSettings::class);
         $app->site_name = $validated['site_name'];
         $app->url = $validated['url'];
         $app->timezone = $validated['timezone'] ?? 'UTC';
+        $app->locale = $validated['locale'] ?? 'en';
+        $app->fallback_locale = $validated['fallback_locale'] ?? 'en';
         $app->save();
 
         $mail = resolve(MailSettings::class);
@@ -568,6 +731,8 @@ final class InstallController extends Controller
 
         SettingsOverlayServiceProvider::applyOverlay();
 
+        session()->put('show_next_steps', true);
+
         return redirect('/admin');
     }
 
@@ -597,9 +762,21 @@ final class InstallController extends Controller
     private function saveTenancy(Request $request): void
     {
         $tenancy = resolve(TenancySettings::class);
-        $tenancy->enabled = $request->boolean('enabled', true);
-        $tenancy->allow_user_org_creation = $request->boolean('allow_user_org_creation', true);
-        $tenancy->auto_create_personal_org = $request->boolean('auto_create_personal_org', true);
+        $enabled = $request->boolean('enabled', true);
+        $tenancy->enabled = $enabled;
+        $tenancy->default_org_name = (string) $request->input('default_org_name', "{name}'s Workspace");
+        if (! $enabled) {
+            $tenancy->allow_user_org_creation = false;
+            $singleOrgName = (string) $request->input('single_org_name', '');
+            if ($singleOrgName !== '') {
+                $tenancy->default_org_name = $singleOrgName;
+            }
+        } else {
+            $tenancy->allow_user_org_creation = $request->boolean('allow_user_org_creation', true);
+        }
+        $tenancy->auto_create_personal_org = $request->boolean('auto_create_personal_org_for_admins', true);
+        $tenancy->auto_create_personal_org_for_admins = $request->boolean('auto_create_personal_org_for_admins', true);
+        $tenancy->auto_create_personal_org_for_members = $request->boolean('auto_create_personal_org_for_members', false);
         $tenancy->save();
     }
 
@@ -651,10 +828,46 @@ final class InstallController extends Controller
             'from_name' => $fromName !== '' ? $fromName : 'Example',
         ]);
 
-        DB::table('settings')->where('group', MailSettings::group())->delete();
+        $this->ensureMailSettingsExist();
         App::forgetInstance(MailSettings::class);
 
-        resolve(\Spatie\LaravelSettings\SettingsMapper::class)->save(MailSettings::class, $properties);
+        $mail = resolve(MailSettings::class);
+        $mail->mailer = $properties['mailer'];
+        $mail->smtp_host = $properties['smtp_host'];
+        $mail->smtp_port = $properties['smtp_port'];
+        $mail->smtp_username = $properties['smtp_username'];
+        $mail->smtp_password = $properties['smtp_password'];
+        $mail->smtp_encryption = $properties['smtp_encryption'];
+        $mail->from_address = $properties['from_address'];
+        $mail->from_name = $properties['from_name'];
+        $mail->save();
+    }
+
+    private function ensureMailSettingsExist(): void
+    {
+        $now = now();
+
+        $defaults = [
+            ['name' => 'mailer',           'payload' => '"log"'],
+            ['name' => 'smtp_host',        'payload' => '"127.0.0.1"'],
+            ['name' => 'smtp_port',        'payload' => '2525'],
+            ['name' => 'smtp_username',    'payload' => 'null'],
+            ['name' => 'smtp_password',    'payload' => json_encode(Crypt::encryptString(json_encode(null)))],
+            ['name' => 'smtp_encryption',  'payload' => 'null'],
+            ['name' => 'from_address',     'payload' => '"hello@example.com"'],
+            ['name' => 'from_name',        'payload' => '"Example"'],
+        ];
+
+        foreach ($defaults as $row) {
+            DB::table('settings')->insertOrIgnore([
+                'group' => MailSettings::group(),
+                'name' => $row['name'],
+                'payload' => $row['payload'],
+                'locked' => false,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+        }
     }
 
     private function normalizeSmtpEncryption(mixed $value): ?string
@@ -770,6 +983,60 @@ final class InstallController extends Controller
         $mon->sentry_dsn = $request->filled('sentry_dsn') ? (string) $request->input('sentry_dsn') : null;
         $mon->sentry_sample_rate = (float) $request->input('sentry_sample_rate', 1.0);
         $mon->save();
+    }
+
+    private function saveBilling(Request $request): void
+    {
+        $billing = resolve(BillingSettings::class);
+        $billing->default_gateway = (string) $request->input('default_gateway', 'stripe');
+        $billing->currency = (string) $request->input('currency', 'usd');
+        $billing->trial_days = (int) $request->input('trial_days', 14);
+        $billing->save();
+    }
+
+    private function saveFeatures(Request $request): void
+    {
+        $allKeys = array_keys(config('feature-flags.inertia_features', []));
+        $enabledRaw = $request->input('feature_enabled', []);
+        $enabled = is_array($enabledRaw) ? array_keys(array_filter($enabledRaw)) : [];
+        $disabled = array_values(array_diff($allKeys, $enabled));
+
+        $settings = resolve(FeatureFlagSettings::class);
+        $settings->globally_disabled_modules = $disabled;
+        $settings->save();
+    }
+
+    /**
+     * Feature keys and labels for the install feature-flags step (super-admin level).
+     *
+     * @return array<int, array{key: string, label: string}>
+     */
+    private function installFeatureFlagsList(): array
+    {
+        $labels = [
+            'registration' => 'Registration (public sign-up)',
+            'api_access' => 'API access',
+            'blog' => 'Blog',
+            'changelog' => 'Changelog',
+            'help' => 'Help center',
+            'contact' => 'Contact form',
+            'onboarding' => 'Onboarding wizard',
+            'two_factor_auth' => 'Two-factor authentication',
+            'impersonation' => 'User impersonation (super-admin)',
+            'personal_data_export' => 'Personal data export',
+            'cookie_consent' => 'Cookie consent banner',
+            'profile_pdf_export' => 'Profile PDF export',
+            'scramble_api_docs' => 'Scramble API docs',
+            'appearance_settings' => 'Appearance settings',
+            'gamification' => 'Gamification (badges, points)',
+        ];
+        $keys = array_keys(config('feature-flags.inertia_features', []));
+        $list = [];
+        foreach ($keys as $key) {
+            $list[] = ['key' => $key, 'label' => $labels[$key] ?? str_replace('_', ' ', ucfirst($key))];
+        }
+
+        return $list;
     }
 
     // ─── Step resolver ────────────────────────────────────────────────────────

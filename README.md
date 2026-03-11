@@ -76,10 +76,10 @@ bunx playwright install
 
 ### Verify Installation
 
-Run a quick sanity check (health + tests):
+Run `php artisan env:validate` to check required environment variables (e.g. `APP_KEY`, `DB_*`, `APP_URL`). Use `--production` to warn when session/cache/queue use file/sync in production. Then run `php artisan app:health` to verify subsystems (database, cache, queue, mail, etc.), and `composer test` for the test suite.
 
 ```bash
-php artisan app:health && composer test
+php artisan env:validate && php artisan app:health && composer test
 ```
 
 You should see health checks and all tests passing. For the full suite (coverage, type coverage, lint, static analysis), run `composer test:full`.

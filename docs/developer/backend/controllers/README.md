@@ -58,5 +58,6 @@ All Controllers:
 | [DeleteNotificationController](docs/developer/backend/controllers/Notifications/DeleteNotificationController.md) | N/A | ✅ |
 | [ClearAllNotificationsController](docs/developer/backend/controllers/Notifications/ClearAllNotificationsController.md) | N/A | ✅ |
 | [InstallController](docs/developer/backend/controllers/InstallController.md) | N/A | ✅ |
+| [HealthController](./healthcontroller.md) | N/A | ✅ |
 
 

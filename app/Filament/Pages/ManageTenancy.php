@@ -67,8 +67,12 @@ final class ManageTenancy extends SettingsPage
                             ->label('Allow user org creation'),
                         TextInput::make('default_org_name')
                             ->label('Default org name'),
-                        Toggle::make('auto_create_personal_org')
-                            ->label('Auto create personal org'),
+                        Toggle::make('auto_create_personal_org_for_admins')
+                            ->label('Auto-create personal workspace (for org admins)')
+                            ->helperText('Users who register or are added as admins get a personal org.'),
+                        Toggle::make('auto_create_personal_org_for_members')
+                            ->label('Auto-create personal workspace (for org members)')
+                            ->helperText('Users who join only as members (e.g. via invite) get a personal org.'),
                     ]),
                 Section::make('Invitations')
                     ->schema([
@@ -93,6 +97,9 @@ final class ManageTenancy extends SettingsPage
                     ->schema([
                         Toggle::make('super_admin_can_view_all')
                             ->label('Super admin can view all'),
+                        Toggle::make('super_admin_default_share_new_to_all_orgs')
+                            ->label('Default "Share to all organizations" on for shareable data')
+                            ->helperText('When creating items in shareable (visibility) models, this option is checked by default for super-admins.'),
                     ]),
             ]);
     }

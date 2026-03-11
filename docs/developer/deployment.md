@@ -4,9 +4,22 @@ This guide covers deploying the Laravel + Inertia React application to productio
 
 ## Health and readiness
 
-For load balancers, Kubernetes, or other orchestrators, use the **health/readiness endpoint**:
+For load balancers, Kubernetes, or other orchestrators, use the health endpoints as the health or readiness URL for probes.
 
-- **GET `/up`** — Returns `200` with `{"status":"ok","checks":{"app":true,"database":true}` when the app and database are reachable. Returns `503` with `"status":"degraded"` if the database check fails. No authentication required.
+- **GET `/up`** (liveness) — Returns `200` with `{"status":"ok","checks":{"app":true,"database":true}}` when the app and database are reachable. Returns `503` with `"status":"degraded"` if the database check fails. Use for Kubernetes liveness probe or simple load balancer health. No authentication required.
+- **GET `/up/ready`** (readiness) — Returns `200` with `{"status":"ok","checks":{"app":true,"database":true,"cache":true}}` when the app, database, and cache are reachable. Returns `503` if any check fails. Use for Kubernetes readiness probe so traffic is not sent until cache (and thus the app) is ready. No authentication required.
+
+Example Kubernetes probes: liveness `httpGet /up`, readiness `httpGet /up/ready`.
+
+### Application health check (CLI)
+
+For CI, local verification, or production runbooks, run the comprehensive health check:
+
+```bash
+php artisan app:health
+```
+
+Use `--json` for scriptable output. Exit code `0` = all checks passed; `1` = one or more failures. Use `--fail-on-warn` to treat warnings as failures (e.g. in CI). In production, you can run this from cron or a monitoring script and alert on non-zero exit.
 
 ## Laravel Cloud
 
@@ -41,7 +54,7 @@ APP_KEY=base64:...
 
 ### Session and cache
 
-Use `database` or `redis` for session and cache in production (avoid `file` for multi-server). Example:
+Use `database` or `redis` for session and cache in production. The **file** driver for cache, session, or queue is not supported in multi-server production; Redis (or equivalent) is required for Horizon and Reverb. Example:
 
 ```bash
 SESSION_DRIVER=database
@@ -79,6 +92,10 @@ npm run build
 
 Ensure `APP_URL` in `.env` matches the production domain so Vite-generated asset URLs are correct. Build output goes to `public/build/`.
 
+## Response cache
+
+When response cache is enabled (Settings > Performance or `responsecache.enabled`), only **guest GET** requests are cached. Admin, API, auth, and `pages`/`p/*` routes are excluded. Cache is invalidated by **TTL only** (default 7 days); there is no tag-based purge. To purge after updating public content (e.g. blog, changelog), run `php artisan responsecache:clear` or clear the application cache.
+
 ## Caching
 
 After deployment, run:
@@ -96,6 +113,31 @@ Clear caches when you change config, routes, or views:
 php artisan optimize:clear
 # or individually: config:clear, route:clear, view:clear, cache:clear
 ```
+
+## Web installer and express install
+
+When the app is not yet installed (no completed setup wizard), the **web installer** at **GET `/install`** guides you through database, migrations, admin user, app settings, optional steps (tenancy, mail, billing, feature flags, etc.), and demo data. Use it for first-time setup in a browser.
+
+**Availability:** Install routes (including express) are only available when **`APP_ENV`** is **`local`** or **`testing`**; in production or staging they return 404. They are rate-limited (10 requests per minute per IP). Progress files are deleted when status is read as `done` or `error`. Express returns 409 if already installed; invalid body returns 422.
+
+**Express install** (POST `/install/express`) skips the wizard: it configures SQLite and `.env`, then runs migrations, essential seeders, creates a default admin (`admin@example.com` / `password`), and saves app/mail/setup settings in the background. The response is JSON `{ "progressFile": "install_progress_<uuid>.json" }`; poll **GET `/install/express/status?key=<progressFile>`** until `status` is `done` or `error`, then redirect to `redirect` (e.g. `/admin`).
+
+Express accepts an optional JSON body to customize run:
+
+| Parameter | Values | Effect |
+|-----------|--------|--------|
+| `tenancy` | `multi`, `single` | Single = one organization, no user org creation |
+| `demo` | `none`, `minimal`, `full` | Minimal = users, organizations, content seeders; full = all demo modules |
+| `single_org_name` | string | When `tenancy` is `single`, used as default organization name |
+| `preset` | `saas`, `internal`, `ai_first` | If `tenancy`/`demo` are omitted: `internal` → single-tenant, no demo; `saas` → multi, no demo; `ai_first` → multi, minimal demo |
+
+Example (single-tenant, no demo, custom org name):
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"tenancy":"single","demo":"none","single_org_name":"Acme Corp"}' https://yourapp.test/install/express
+```
+
+**Install presets** (step-by-step wizard): On the App step you can choose a preset (None, SaaS, Internal tool, AI-first). The preset prefills later steps (e.g. Internal → single-tenant default on Tenancy, hint to skip Billing, Registration unchecked on Feature flags). You can still change any value.
 
 ## First-run and post-deploy
 
@@ -117,6 +159,10 @@ For scheduled tasks (e.g. `personal-data-export:clean`), add to the server cront
 ```
 
 If you use Horizon with Redis, the scheduler is still run by this cron entry; Horizon does not replace it for application scheduled tasks.
+
+## Webhook security
+
+Stripe (`POST /webhooks/stripe`), Paddle (`POST /webhooks/paddle`), and Lemon Squeezy (`POST /lemon-squeezy/webhook`) endpoints are excluded from CSRF. Each verifies the request signature (Stripe-Signature, Paddle-Signature, or Lemon Squeezy HMAC) before processing. Do not disable signature verification; keep webhook secrets in config and never expose them to the client.
 
 ## Security hardening
 

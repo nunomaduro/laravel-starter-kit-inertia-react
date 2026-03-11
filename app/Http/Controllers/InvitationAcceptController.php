@@ -28,6 +28,10 @@ final readonly class InvitationAcceptController
             return to_route('home')->withErrors(['invitation' => __('This invitation has expired or was cancelled.')]);
         }
 
+        if (! auth()->check()) {
+            session(['invitation_accept_role' => $invitation->role]);
+        }
+
         $invitation->load(['organization', 'inviter']);
 
         return Inertia::render('invitations/accept', [

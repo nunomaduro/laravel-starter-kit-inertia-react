@@ -67,10 +67,33 @@ return [
     |--------------------------------------------------------------------------
     |
     | When enabled, a personal organization is automatically created for
-    | each new user during registration.
+    | each new user during registration. Superseded by the for_admins and
+    | for_members variants when set (e.g. via Settings or install).
     |
     */
     'auto_create_personal_organization' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto-Create Personal Organization (for admins)
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, a personal organization is created for users who register
+    | or are created as org admins (e.g. self-registration, invited as admin).
+    |
+    */
+    'auto_create_personal_organization_for_admins' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto-Create Personal Organization (for members)
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, a personal organization is created for users who join
+    | only as members (e.g. invited as member and register to accept).
+    |
+    */
+    'auto_create_personal_organization_for_members' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -137,6 +160,10 @@ return [
 
         // Session key for super-admin view-all mode
         'view_all_session_key' => 'view_all_organizations',
+
+        // When true, create/edit forms for shareable (HasVisibility) models default
+        // "Share to all organizations" to on for super-admins
+        'default_share_new_to_all_orgs' => true,
     ],
 
 ];

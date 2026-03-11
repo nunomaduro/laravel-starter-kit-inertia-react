@@ -31,6 +31,12 @@ The database schema and internal logic stay the same. Users still have a persona
 - **OrganizationSwitcher** – Renders only when `tenancy_enabled`; also hidden because `organizations` is empty in single-tenant mode.
 - **Filament** – Tenant menu (sidebar/topbar) is hidden when tenancy is disabled via published Blade views.
 
+## Install and presets
+
+When using the **web installer** (`/install`), you can choose an **Install preset** on the App step. The **Internal tool** preset sets single-organization by default on the Tenancy step and suggests skipping billing and disabling registration, API access, and contact form on the Feature flags step.
+
+**Express install** (POST `/install/express`) accepts a `preset` body parameter: `internal` → single-tenant, no demo; `saas` → multi-tenant, no demo; `ai_first` → multi-tenant, minimal demo. You can also pass `tenancy`, `demo`, and `single_org_name` explicitly. See [Deployment](../../deployment.md#web-installer-and-express-install) and [InstallController](./controllers/InstallController.md).
+
 ## When to Use
 
 - **Single-tenant** – Internal tools, company software, one organization.

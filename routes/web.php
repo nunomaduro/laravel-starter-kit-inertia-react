@@ -23,6 +23,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Dev\ComponentShowcaseController;
 use App\Http\Controllers\Dev\PageGalleryController;
 use App\Http\Controllers\EnterpriseInquiryController;
+use App\Http\Controllers\HealthController;
 use App\Http\Controllers\HelpCenter\HelpCenterController;
 use App\Http\Controllers\HelpCenter\RateHelpArticleController;
 use App\Http\Controllers\InstallController;
@@ -67,23 +68,24 @@ use App\Http\Controllers\UserTwoFactorAuthenticationController;
 use App\Http\Middleware\EnsureNotInstalled;
 use App\Http\Middleware\InternalRequestMiddleware;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Honeypot\ProtectAgainstSpam;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-// Web installer — accessible before auth; EnsureNotInstalled redirects to /admin once done
-Route::middleware(EnsureNotInstalled::class)->group(function (): void {
-    Route::get('install', [InstallController::class, 'show'])->name('install');
-    Route::post('install', [InstallController::class, 'store'])->name('install.store');
-    Route::post('install/express', [InstallController::class, 'express'])->name('install.express');
-    Route::get('install/express/status', [InstallController::class, 'expressStatus'])->name('install.express.status');
-    Route::post('install/test-connection', [InstallController::class, 'testConnection'])->name('install.test-connection');
+// Web installer — only when APP_ENV is local/testing; rate-limited
+Route::middleware(['install.env', 'throttle:install'])->group(function (): void {
+    Route::get('install/complete', [InstallController::class, 'complete'])->name('install.complete');
+    Route::middleware(EnsureNotInstalled::class)->group(function (): void {
+        Route::get('install', [InstallController::class, 'show'])->name('install');
+        Route::post('install', [InstallController::class, 'store'])->name('install.store');
+        Route::post('install/express', [InstallController::class, 'express'])->name('install.express');
+        Route::get('install/express/status', [InstallController::class, 'expressStatus'])->name('install.express.status');
+        Route::post('install/test-connection', [InstallController::class, 'testConnection'])->name('install.test-connection');
+    });
 });
 
 if (app()->environment(['local', 'staging'])) {
@@ -114,19 +116,8 @@ Route::get('robots.txt', function (): Response {
     ]);
 })->name('robots');
 
-Route::get('up', function (): JsonResponse {
-    $checks = ['app' => true];
-    try {
-        DB::connection()->getPdo();
-        $checks['database'] = true;
-    } catch (Throwable) {
-        $checks['database'] = false;
-    }
-
-    $ok = ! in_array(false, $checks, true);
-
-    return response()->json(['status' => $ok ? 'ok' : 'degraded', 'checks' => $checks], $ok ? 200 : 503);
-})->name('up');
+Route::get('up/ready', [HealthController::class, 'ready'])->name('up.ready');
+Route::get('up', [HealthController::class, 'up'])->name('up');
 
 Route::get('/', fn () => Inertia::render('welcome'))->name('home');
 
@@ -337,6 +328,7 @@ Route::middleware('guest')->group(function (): void {
     Route::get('login', [SessionController::class, 'create'])
         ->name('login');
     Route::post('login', [SessionController::class, 'store'])
+        ->middleware('throttle:login')
         ->name('login.store');
 });
 

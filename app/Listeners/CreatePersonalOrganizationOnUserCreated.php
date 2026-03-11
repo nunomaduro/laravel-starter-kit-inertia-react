@@ -16,7 +16,18 @@ final readonly class CreatePersonalOrganizationOnUserCreated
 
     public function handle(UserCreated $event): void
     {
-        if (! config('tenancy.auto_create_personal_organization', true)) {
+        $invitedAsRole = session('invitation_accept_role');
+        if ($invitedAsRole === 'member') {
+            $create = config('tenancy.auto_create_personal_organization_for_members', false);
+        } else {
+            $create = config('tenancy.auto_create_personal_organization_for_admins', config('tenancy.auto_create_personal_organization', true));
+        }
+
+        if (session()->has('invitation_accept_role')) {
+            session()->forget('invitation_accept_role');
+        }
+
+        if (! $create) {
             return;
         }
 

@@ -51,6 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: ['webhooks/*', 'lemon-squeezy/*']);
 
         $middleware->alias([
+            'install.env' => App\Http\Middleware\EnsureInstallEnvironment::class,
             'feature' => EnsureFeatureActive::class,
             'registration.enabled' => EnsureRegistrationEnabled::class,
             'permission' => PermissionMiddleware::class,

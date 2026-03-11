@@ -33,7 +33,7 @@
         .logo-icon svg { width: 18px; height: 18px; }
         .logo-name { font-size: 1rem; font-weight: 600; color: #fff; }
 
-        /* ── Progress bar (15 steps — use bar instead of dots) ── */
+        /* ── Progress bar (17 steps — use bar instead of dots) ── */
         .progress-wrap { margin-bottom: 1.75rem; }
         .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
         .progress-step-name { font-size: 0.75rem; font-weight: 600; color: #a3a3a3; text-transform: uppercase; letter-spacing: 0.06em; }
@@ -97,7 +97,9 @@
         .btn { width: 100%; padding: 0.6875rem 1rem; border-radius: 8px; border: none; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: opacity 0.15s; margin-top: 1.25rem; }
         .btn:hover { opacity: 0.88; }
         .btn-primary { background: #fff; color: #0f0f0f; }
-        .btn-express { background: transparent; border: 1px solid #525252; color: #a3a3a3; margin-top: 0; }
+        .btn-express { background: transparent; border: 1px solid #525252; color: #a3a3a3; margin-top: 0; display: flex; flex-direction: column; gap: 0.25rem; align-items: center; padding: 0.875rem 1rem; height: auto; }
+        .btn-express .btn-express-title { font-size: 0.875rem; font-weight: 500; }
+        .btn-express .btn-express-desc { font-size: 0.75rem; color: #525252; font-weight: 400; }
         .btn-secondary { background: transparent; border: 1px solid #525252; color: #a3a3a3; margin-top: 0.5rem; }
         .btn-skip { background: transparent; border: 1px solid #2a2a2a; color: #525252; }
         .btn-link { background: none; border: none; padding: 0; font-size: 0.8125rem; color: #737373; cursor: pointer; }
@@ -141,13 +143,13 @@
 
     {{-- Progress bar --}}
     @php
-        $allSteps = ['database', 'migrate', 'admin', 'app', 'tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'demo'];
+        $allSteps = ['database', 'migrate', 'admin', 'app', 'tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'billing', 'features', 'demo'];
         $stepLabels = [
             'database' => 'Database', 'migrate' => 'Tables', 'admin' => 'Admin', 'app' => 'App',
             'tenancy' => 'Tenancy', 'infrastructure' => 'Infrastructure', 'mail' => 'Mail',
             'search' => 'Search', 'ai' => 'AI', 'social' => 'Social Auth',
             'storage' => 'Storage', 'broadcasting' => 'Broadcasting', 'seo' => 'SEO',
-            'monitoring' => 'Monitoring', 'demo' => 'Demo Data',
+            'monitoring' => 'Monitoring', 'billing' => 'Billing', 'features' => 'Feature flags', 'demo' => 'Demo Data',
         ];
         $currentIdx = array_search($step, $allSteps);
         $total = count($allSteps);
@@ -174,7 +176,7 @@
     @if ($currentIdx > 0)
         <div class="back-row">
             @php
-                $optionalAndDemo = ['tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'demo'];
+                $optionalAndDemo = ['tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'billing', 'features', 'demo'];
                 $backUrl = in_array($step, $optionalAndDemo) ? route('install', ['back' => 1]) : route('install', ['step' => $allSteps[$currentIdx - 1]]);
             @endphp
             <a href="{{ $backUrl }}" class="back-link">← Back</a>
@@ -189,8 +191,72 @@
         <h1>Database</h1>
         <p class="subtitle">Choose where your application stores data. SQLite requires no server and is perfect for getting started.</p>
 
-        <button type="button" class="btn btn-express" id="express-btn" onclick="startExpressInstall()">Express install — SQLite + defaults, no demo data →</button>
-        <p class="hint" style="margin-top:-0.75rem;margin-bottom:1rem">Uses SQLite, creates admin (admin@example.com / password), app name &quot;My App&quot;, skips optional steps. Change password after first login.</p>
+        <button type="button" class="btn btn-express" id="express-btn" onclick="startExpressInstall({})">
+            <span class="btn-express-title">Express install — SQLite + defaults, no demo data →</span>
+            <span class="btn-express-desc">Uses SQLite, creates admin (admin@example.com / password), app name "My App", skips optional steps. Change password after first login.</span>
+        </button>
+        <div class="field" style="margin-top:1rem">
+            <label>Or express with options</label>
+            <div class="two-col" style="align-items:end;gap:0.75rem;flex-wrap:wrap">
+                <div class="field" style="margin-bottom:0">
+                    <label style="font-size:0.75rem;color:#737373">Preset</label>
+                    <select id="express-preset" onchange="expressPresetChange()">
+                        <option value="">None — set below</option>
+                        <option value="saas">SaaS</option>
+                        <option value="internal">Internal tool</option>
+                        <option value="ai_first">AI-first</option>
+                    </select>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label style="font-size:0.75rem;color:#737373">Tenancy</label>
+                    <select id="express-tenancy" onchange="toggleExpressSingleOrg()">
+                        <option value="multi">Multi-organization</option>
+                        <option value="single">Single-organization</option>
+                    </select>
+                </div>
+                <div class="field" style="margin-bottom:0;display:none" id="express-single-org-wrap">
+                    <label style="font-size:0.75rem;color:#737373">Organization name</label>
+                    <input type="text" id="express-single-org-name" placeholder="My Organization">
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label style="font-size:0.75rem;color:#737373">Demo data</label>
+                    <select id="express-demo">
+                        <option value="none">None</option>
+                        <option value="minimal">Minimal (users, orgs, content)</option>
+                        <option value="full">Full (all modules)</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="startExpressWithOptions()">Express with options →</button>
+            </div>
+        </div>
+        <script>
+            function expressPresetChange() {
+                var p = document.getElementById('express-preset').value;
+                var t = document.getElementById('express-tenancy');
+                var d = document.getElementById('express-demo');
+                if (p === 'internal') { t.value = 'single'; d.value = 'none'; }
+                else if (p === 'saas') { t.value = 'multi'; d.value = 'none'; }
+                else if (p === 'ai_first') { t.value = 'multi'; d.value = 'minimal'; }
+                toggleExpressSingleOrg();
+            }
+            function toggleExpressSingleOrg() {
+                var wrap = document.getElementById('express-single-org-wrap');
+                wrap.style.display = document.getElementById('express-tenancy').value === 'single' ? 'block' : 'none';
+            }
+            function startExpressWithOptions() {
+                var opts = {
+                    tenancy: document.getElementById('express-tenancy').value,
+                    demo: document.getElementById('express-demo').value
+                };
+                var preset = document.getElementById('express-preset').value;
+                if (preset) opts.preset = preset;
+                if (opts.tenancy === 'single') {
+                    var nameEl = document.getElementById('express-single-org-name');
+                    if (nameEl && nameEl.value.trim()) opts.single_org_name = nameEl.value.trim();
+                }
+                startExpressInstall(opts);
+            }
+        </script>
 
         @php $dbDriver = old('driver', 'pgsql'); @endphp
         <form method="POST" action="{{ route('install.store') }}" id="db-form">
@@ -299,6 +365,51 @@
                     @endforeach
                 </select>
             </div>
+            @php $locale = old('locale', 'en'); $fallback = old('fallback_locale', 'en'); @endphp
+            <div class="field">
+                <label>Install preset</label>
+                <select name="preset">
+                    <option value="none" @selected((old('preset', session('install_preset', 'none'))) === 'none')>None — configure each step manually</option>
+                    <option value="saas" @selected((old('preset', session('install_preset'))) === 'saas')>SaaS — multi-tenant, billing, optional AI</option>
+                    <option value="internal" @selected((old('preset', session('install_preset'))) === 'internal')>Internal tool — single-tenant, no billing</option>
+                    <option value="ai_first" @selected((old('preset', session('install_preset'))) === 'ai_first')>AI-first — multi-tenant, AI enabled</option>
+                </select>
+                <p class="hint">Presets prefill later steps; you can still change any value.</p>
+            </div>
+            <div class="two-col">
+                <div class="field">
+                    <label>Locale</label>
+                    <select name="locale">
+                        <option value="en" @selected($locale === 'en')>English</option>
+                        <option value="es" @selected($locale === 'es')>Spanish</option>
+                        <option value="fr" @selected($locale === 'fr')>French</option>
+                        <option value="de" @selected($locale === 'de')>German</option>
+                        <option value="pt" @selected($locale === 'pt')>Portuguese</option>
+                        <option value="it" @selected($locale === 'it')>Italian</option>
+                        <option value="nl" @selected($locale === 'nl')>Dutch</option>
+                        <option value="ja" @selected($locale === 'ja')>Japanese</option>
+                        <option value="ko" @selected($locale === 'ko')>Korean</option>
+                        <option value="zh" @selected($locale === 'zh')>Chinese</option>
+                        <option value="ar" @selected($locale === 'ar')>Arabic</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Fallback locale</label>
+                    <select name="fallback_locale">
+                        <option value="en" @selected($fallback === 'en')>English</option>
+                        <option value="es" @selected($fallback === 'es')>Spanish</option>
+                        <option value="fr" @selected($fallback === 'fr')>French</option>
+                        <option value="de" @selected($fallback === 'de')>German</option>
+                        <option value="pt" @selected($fallback === 'pt')>Portuguese</option>
+                        <option value="it" @selected($fallback === 'it')>Italian</option>
+                        <option value="nl" @selected($fallback === 'nl')>Dutch</option>
+                        <option value="ja" @selected($fallback === 'ja')>Japanese</option>
+                        <option value="ko" @selected($fallback === 'ko')>Korean</option>
+                        <option value="zh" @selected($fallback === 'zh')>Chinese</option>
+                        <option value="ar" @selected($fallback === 'ar')>Arabic</option>
+                    </select>
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary">Continue →</button>
         </form>
 
@@ -308,33 +419,44 @@
     @elseif ($step === 'tenancy')
 
         <h1>Tenancy mode <span class="badge-opt">optional</span></h1>
-        <p class="subtitle">Choose how your app handles organizations. Can be changed later in Settings → Tenancy.</p>
-        <form method="POST" action="{{ route('install.store') }}">
+        <p class="subtitle">Choose how your app handles organizations. Single-organization hides org UI; change later in Settings → Tenancy.</p>
+        <form method="POST" action="{{ route('install.store') }}" id="tenancy-form">
             @csrf
             <input type="hidden" name="step" value="tenancy">
+            @php $preset = session('install_preset', 'none'); $tenancyEnabled = old('enabled', $preset === 'internal' ? '0' : '1'); @endphp
             <div class="radio-group">
                 <label class="radio-option">
-                    <input type="radio" name="enabled" value="1" checked>
+                    <input type="radio" name="enabled" value="1" @checked($tenancyEnabled === '1') onchange="toggleTenancyMode(this)">
                     <div>
                         <div class="radio-label">Multi-organization</div>
                         <div class="radio-desc">Users can create and belong to multiple organizations. Ideal for SaaS, teams, and B2B apps.</div>
                     </div>
                 </label>
                 <label class="radio-option">
-                    <input type="radio" name="enabled" value="0">
+                    <input type="radio" name="enabled" value="0" @checked($tenancyEnabled === '0') onchange="toggleTenancyMode(this)">
                     <div>
                         <div class="radio-label">Single-organization</div>
-                        <div class="radio-desc">One organization for all users. Hides org management UI. Ideal for internal tools.</div>
+                        <div class="radio-desc">One organization for all users. Org switcher and management are hidden. Ideal for internal tools.</div>
                     </div>
                 </label>
             </div>
-            <div class="toggle-row">
-                <div><div class="toggle-label">Users can create organizations</div><div class="radio-desc">Allow non-admin users to create their own orgs.</div></div>
-                <div class="toggle-wrap"><input type="checkbox" name="allow_user_org_creation" value="1" checked></div>
+            <div id="tenancy-multi-options">
+                <div class="field"><label>Default personal workspace name</label><input type="text" name="default_org_name" value="{{ old('default_org_name', "{name}'s Workspace") }}" placeholder="{name}'s Workspace"><p class="hint">Use {name} for the user's name.</p></div>
+                <div class="toggle-row">
+                    <div><div class="toggle-label">Users can create organizations</div><div class="radio-desc">Allow non-admin users to create their own orgs.</div></div>
+                    <div class="toggle-wrap"><input type="checkbox" name="allow_user_org_creation" value="1" checked></div>
+                </div>
+                <div class="toggle-row" style="padding-top:0.625rem">
+                    <div><div class="toggle-label">Auto-create personal workspace (for org admins)</div><div class="radio-desc">Users who register or are added as admins get a personal org.</div></div>
+                    <div class="toggle-wrap"><input type="checkbox" name="auto_create_personal_org_for_admins" value="1" checked></div>
+                </div>
+                <div class="toggle-row" style="padding-top:0.625rem">
+                    <div><div class="toggle-label">Auto-create personal workspace (for org members)</div><div class="radio-desc">Users who join only as members (e.g. via invite) get a personal org.</div></div>
+                    <div class="toggle-wrap"><input type="checkbox" name="auto_create_personal_org_for_members" value="1"></div>
+                </div>
             </div>
-            <div class="toggle-row" style="padding-top:0.625rem">
-                <div><div class="toggle-label">Auto-create personal workspace</div><div class="radio-desc">Each new user gets a personal org on registration.</div></div>
-                <div class="toggle-wrap"><input type="checkbox" name="auto_create_personal_org" value="1" checked></div>
+            <div id="tenancy-single-options" style="display:none">
+                <div class="field"><label>Organization name</label><input type="text" name="single_org_name" value="{{ old('single_org_name') }}" placeholder="My Company"><p class="hint">The single workspace name shown in the app.</p></div>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
@@ -344,6 +466,17 @@
             <input type="hidden" name="skip" value="1">
             <button type="submit" class="btn btn-skip">Skip — keep defaults →</button>
         </form>
+        <script>
+            function toggleTenancyMode(radio) {
+                var multi = document.getElementById('tenancy-multi-options');
+                var single = document.getElementById('tenancy-single-options');
+                if (radio.value === '1') { multi.style.display = 'block'; single.style.display = 'none'; } else { multi.style.display = 'none'; single.style.display = 'block'; }
+            }
+            (function() {
+                var r = document.querySelector('#tenancy-form input[name="enabled"]:checked');
+                if (r) toggleTenancyMode(r);
+            })();
+        </script>
 
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- Step 6: Infrastructure --}}
@@ -731,7 +864,103 @@
         </form>
 
     {{-- ══════════════════════════════════════════════════ --}}
-    {{-- Step 15: Demo data --}}
+    {{-- Step 15: Billing --}}
+    {{-- ══════════════════════════════════════════════════ --}}
+    @elseif ($step === 'billing')
+
+        <h1>Billing <span class="badge-opt">optional</span></h1>
+        <p class="subtitle">Default payment gateway and trial. Configure keys later in Settings → Billing / Stripe / Paddle / Lemon Squeezy.</p>
+        @php
+            $preset = session('install_preset', 'none');
+            $gateway = old('default_gateway', 'stripe');
+            $currency = old('currency', 'usd');
+            $trialDays = old('trial_days', 14);
+        @endphp
+        @if ($preset === 'internal')
+            <div class="info-box">Internal tool preset: consider skipping billing (no payment gateway needed).</div>
+        @endif
+        <form method="POST" action="{{ route('install.store') }}">
+            @csrf
+            <input type="hidden" name="step" value="billing">
+            <div class="field">
+                <label>Default gateway</label>
+                <select name="default_gateway">
+                    <option value="stripe" @selected($gateway === 'stripe')>Stripe</option>
+                    <option value="paddle" @selected($gateway === 'paddle')>Paddle</option>
+                    <option value="lemon_squeezy" @selected($gateway === 'lemon_squeezy')>Lemon Squeezy</option>
+                </select>
+            </div>
+            <div class="two-col">
+                <div class="field">
+                    <label>Currency</label>
+                    <select name="currency">
+                        <option value="usd" @selected($currency === 'usd')>USD</option>
+                        <option value="eur" @selected($currency === 'eur')>EUR</option>
+                        <option value="gbp" @selected($currency === 'gbp')>GBP</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Trial days</label>
+                    <input type="number" name="trial_days" value="{{ $trialDays }}" min="0" max="365">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
+        </form>
+        <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">
+            @csrf
+            <input type="hidden" name="step" value="billing">
+            <input type="hidden" name="skip" value="1">
+            <button type="submit" class="btn btn-skip">Skip — keep defaults →</button>
+        </form>
+
+    {{-- ══════════════════════════════════════════════════ --}}
+    {{-- Step 16: Feature flags (super-admin) --}}
+    {{-- ══════════════════════════════════════════════════ --}}
+    @elseif ($step === 'features')
+
+        <h1>Feature flags <span class="badge-opt">optional</span></h1>
+        <p class="subtitle">Globally enable or disable features. Uncheck to disable a feature for the whole app. Change later in Settings → Feature Flag Settings.</p>
+        @php
+            $preset = session('install_preset', 'none');
+            $disabledByPreset = $preset === 'internal' ? ['registration', 'api_access', 'contact'] : [];
+        @endphp
+        @if ($preset === 'internal')
+            <div class="info-box">Internal tool preset: registration, API access, and contact form are unchecked by default.</div>
+        @endif
+        <form method="POST" action="{{ route('install.store') }}">
+            @csrf
+            <input type="hidden" name="step" value="features">
+            <div class="select-all-row">
+                <button type="button" class="btn-link" onclick="selectAllFeatures(true)">Enable all</button>
+                <span style="color:#2a2a2a">·</span>
+                <button type="button" class="btn-link" onclick="selectAllFeatures(false)">Disable all</button>
+            </div>
+            <div class="modules-grid" style="grid-template-columns: 1fr;">
+                @foreach ($featureFlags ?? [] as $ff)
+                    <label class="module-option">
+                        <input type="checkbox" name="feature_enabled[{{ $ff['key'] }}]" value="1" @checked(!in_array($ff['key'], $disabledByPreset))>
+                        <div>
+                            <div class="module-label">{{ $ff['label'] }}</div>
+                        </div>
+                    </label>
+                @endforeach
+            </div>
+            <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
+        </form>
+        <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">
+            @csrf
+            <input type="hidden" name="step" value="features">
+            <input type="hidden" name="skip" value="1">
+            <button type="submit" class="btn btn-skip">Skip — enable all →</button>
+        </form>
+        <script>
+            function selectAllFeatures(val) {
+                document.querySelectorAll('form input[name^="feature_enabled"]').forEach(cb => cb.checked = val);
+            }
+        </script>
+
+    {{-- ══════════════════════════════════════════════════ --}}
+    {{-- Step 17: Demo data --}}
     {{-- ══════════════════════════════════════════════════ --}}
     @elseif ($step === 'demo')
 
@@ -859,14 +1088,14 @@ var EXPRESS_STEPS = [
     {key:'mail_tpl',     label:'Seeding mail templates'},
     {key:'admin',        label:'Creating admin user'},
     {key:'settings',     label:'Saving application settings'},
+    {key:'demo',         label:'Seeding demo data'},
 ];
 
-function startExpressInstall() {
-    var btn     = document.getElementById('express-btn');
+function startExpressInstall(options) {
+    options = options || {};
     var overlay = document.getElementById('express-overlay');
-    if (!btn || !overlay) return;
-
-    btn.disabled = true;
+    if (!overlay) return;
+    document.querySelectorAll('.btn-express, .btn-secondary').forEach(function(b) { b.disabled = true; });
     overlay.style.display = 'flex';
 
     fetch(EXPRESS_URL, {
@@ -876,7 +1105,7 @@ function startExpressInstall() {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}),
+        body: JSON.stringify(options),
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {

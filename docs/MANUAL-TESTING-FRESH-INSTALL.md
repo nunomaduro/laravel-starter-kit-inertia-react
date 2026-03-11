@@ -76,6 +76,19 @@ Keep this running in a separate terminal for the steps below.
 8. **Installer locked**  
    - Visit `/install` again. You should be redirected to `/admin` (EnsureNotInstalled).
 
+**Note:** The web installer and express install are only available when `APP_ENV=local` (or `testing`). In production or staging, install routes return 404.
+
+### Express install with options
+
+On the **Database** step you can use **Express install** (SQLite + defaults) or **Express with options**:
+
+- **Preset**: None, SaaS, Internal tool, AI-first — sets tenancy and demo defaults.
+- **Tenancy**: Multi- or single-organization.
+- **Demo data**: None, minimal (users/orgs/content), or full.
+- **Organization name**: When single-tenant, the default org name.
+
+After express completes you are redirected to `/install/complete?token=...` and automatically logged in as the created admin, then sent to `/admin`. Progress files are removed once status is `done` or `error`.
+
 ---
 
 ## Part 3b: Test the **CLI installer** (optional, from a second reset)
@@ -133,7 +146,8 @@ If you want to test the TUI instead of (or after) the web installer, reset again
 | Goal              | Command / action                          |
 |-------------------|-------------------------------------------|
 | Reset to fresh    | `./scripts/fresh-clone-reset.sh`          |
-| Web installer     | Visit `/install` in the browser           |
+| Web installer     | Visit `/install` (only when `APP_ENV=local`) |
+| Express install   | POST `/install/express` with optional body (tenancy, demo, preset, single_org_name, locale) |
 | CLI installer     | `php artisan app:install`                 |
 | Health check      | `php artisan app:health`                 |
 | Re-run migrations | `php artisan migrate:fresh` (destructive) |

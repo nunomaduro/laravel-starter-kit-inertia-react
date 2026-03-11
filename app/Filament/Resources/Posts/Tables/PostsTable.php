@@ -23,6 +23,7 @@ final class PostsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with('author'))
             ->defaultSort('published_at', 'desc')
             ->defaultPaginationPageOption(10)
             ->paginationPageOptions([10, 25, 50])

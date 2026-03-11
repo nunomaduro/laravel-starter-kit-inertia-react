@@ -11,6 +11,18 @@ The application uses [Spatie Laravel Activity Log](https://spatie.be/docs/larave
 - **User impersonation**: When a super-admin or org admin starts or ends impersonating another user, `impersonation_started` and `impersonation_ended` are logged via `App\Listeners\LogImpersonationEvents` (causer: impersonator, subject: impersonated user; properties: `impersonator_name`, `impersonated_name`, `impersonator_id`, `impersonated_id`). **While impersonating**, all activity (model changes, RBAC, etc.) uses the **impersonator** as causer via `AppServiceProvider::registerActivityLogImpersonationCauser()` (Spatie `CauserResolver`) and `ActivityLogRbac` using that resolver. See Filament docs for how impersonation is enabled.
 - **Request context**: IP address and user agent are added to each activity via the `SetActivityContextTap` (enabled in config and applied by `ActivityLogObserver`).
 
+## Audited actions (high-impact flows)
+
+The following high-impact flows are performed through paths that trigger activity logging:
+
+- **Role/permission assign or revoke**: Via Filament User/Role resources and `ActivityLogRbac` — `roles_assigned`, `roles_updated`, `permissions_assigned`, `permissions_updated`.
+- **Billing (subscription change, refund)**: Via Stripe/Paddle/Lemon Squeezy webhooks and billing controllers; ensure any subscription or refund actions that mutate state go through code paths that log (or add custom `ActivityType` and log where needed).
+- **Tenant/org create or delete**: Organization and tenant lifecycle; ensure create/delete actions use `LogsActivity` on the model or log a custom event.
+- **Two-factor enable/disable**: `two_factor_enabled`, `two_factor_disabled`, `two_factor_confirmed`, `recovery_codes_regenerated` via Fortify action wrappers.
+- **User impersonation**: `impersonation_started`, `impersonation_ended` via `LogImpersonationEvents`.
+
+When adding new sensitive operations, add an `ActivityType` case and log as described in “Implementing activity logging in new modules” below.
+
 ## Configuration
 
 - **Spatie config**: `config/activitylog.php` (table name, default log name, `activity_logger_taps` for the context tap).

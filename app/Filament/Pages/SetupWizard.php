@@ -105,7 +105,8 @@ final class SetupWizard extends Page implements HasForms
             'tenancy_term_plural' => $tenancy->term_plural,
             'tenancy_allow_user_org_creation' => $tenancy->allow_user_org_creation,
             'tenancy_default_org_name' => $tenancy->default_org_name,
-            'tenancy_auto_create_personal_org' => $tenancy->auto_create_personal_org,
+            'tenancy_auto_create_personal_org_for_admins' => $tenancy->auto_create_personal_org_for_admins,
+            'tenancy_auto_create_personal_org_for_members' => $tenancy->auto_create_personal_org_for_members,
             'tenancy_invitation_expires_in_days' => $tenancy->invitation_expires_in_days,
 
             // Step 3: Billing
@@ -262,8 +263,12 @@ final class SetupWizard extends Page implements HasForms
                             ->numeric(),
                         \Filament\Forms\Components\Toggle::make('tenancy_allow_user_org_creation')
                             ->label('Allow users to create organizations'),
-                        \Filament\Forms\Components\Toggle::make('tenancy_auto_create_personal_org')
-                            ->label('Auto-create personal organization on registration'),
+                        \Filament\Forms\Components\Toggle::make('tenancy_auto_create_personal_org_for_admins')
+                            ->label('Auto-create personal workspace (for org admins)')
+                            ->helperText('Users who register or are added as admins get a personal org.'),
+                        \Filament\Forms\Components\Toggle::make('tenancy_auto_create_personal_org_for_members')
+                            ->label('Auto-create personal workspace (for org members)')
+                            ->helperText('Users who join only as members (e.g. via invite) get a personal org.'),
                     ])
                     ->columns(2),
             ])
@@ -506,7 +511,9 @@ final class SetupWizard extends Page implements HasForms
         $settings->term_plural = $data['tenancy_term_plural'] ?: 'Organizations';
         $settings->allow_user_org_creation = (bool) ($data['tenancy_allow_user_org_creation'] ?? true);
         $settings->default_org_name = $data['tenancy_default_org_name'] ?: "{name}'s Workspace";
-        $settings->auto_create_personal_org = (bool) ($data['tenancy_auto_create_personal_org'] ?? true);
+        $settings->auto_create_personal_org_for_admins = (bool) ($data['tenancy_auto_create_personal_org_for_admins'] ?? true);
+        $settings->auto_create_personal_org_for_members = (bool) ($data['tenancy_auto_create_personal_org_for_members'] ?? false);
+        $settings->auto_create_personal_org = $settings->auto_create_personal_org_for_admins;
         $settings->invitation_expires_in_days = (int) ($data['tenancy_invitation_expires_in_days'] ?? 7);
         $settings->save();
     }

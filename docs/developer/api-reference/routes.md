@@ -4,6 +4,12 @@ This document lists all available routes in the application.
 
 **Last Updated**: 2026-03-08
 
+## API versioning
+
+- The application API is versioned under **`/api/v1`**. All current endpoints live in this prefix.
+- **Breaking changes** will be introduced either under a new path (e.g. `/api/v2`) or after a documented deprecation period for the existing version.
+- To opt in to a future version, use the version in the URL path (e.g. `GET /api/v2/...`). Header-based version negotiation is not used by default.
+
 ## New Routes (added 2026-03-08)
 
 ### Workspace URL & Custom Domains
