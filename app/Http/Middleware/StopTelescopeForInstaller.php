@@ -23,8 +23,12 @@ final class StopTelescopeForInstaller
             // which throws a PDO exception when telescope_entries table doesn't exist yet.
             config(['telescope.enabled' => false]);
             Telescope::stopRecording();
-            // Use cookie session so CSRF and step state persist without DB
+            // Use cookie session so CSRF and step state persist without DB.
             config(['session.driver' => 'cookie']);
+            // Use array cache so Governor's ParseCustomPolicyActions middleware (registered
+            // globally via pushMiddleware) does not query the "cache" table, which may not
+            // exist yet on a fresh database connection during the install flow.
+            config(['cache.default' => 'array']);
         }
 
         return $next($request);

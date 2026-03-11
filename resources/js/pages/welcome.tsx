@@ -11,7 +11,6 @@ import {
     Bell,
     BookOpen,
     Bot,
-    Broadcast,
     Building2,
     ClipboardList,
     CloudCog,
@@ -29,6 +28,7 @@ import {
     MessageCircle,
     MessageSquare,
     Palette,
+    RadioTower,
     Rocket,
     Search,
     Share2,
@@ -213,7 +213,7 @@ const featureGroups: FeatureGroup[] = [
                 dataPan: 'welcome-feature-contact',
             },
             {
-                icon: Broadcast,
+                icon: RadioTower,
                 title: 'Real-time Broadcasting',
                 description:
                     'Laravel Reverb and Echo for WebSockets. Real-time notifications and live updates; optional installer step.',

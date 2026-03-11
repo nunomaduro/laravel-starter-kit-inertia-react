@@ -3,12 +3,12 @@
     "table": "organization_domains",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -68,7 +68,7 @@
             "default": null
         },
         "dns_check_attempts": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },

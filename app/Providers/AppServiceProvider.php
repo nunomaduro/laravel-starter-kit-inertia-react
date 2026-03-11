@@ -66,6 +66,23 @@ final class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // Alias for machour/laravel-data-table: package may resolve ColumnBuilder to root namespace.
+        if (class_exists(\Machour\DataTable\Columns\ColumnBuilder::class)) {
+            class_alias(\Machour\DataTable\Columns\ColumnBuilder::class, \Machour\DataTable\ColumnBuilder::class);
+        }
+
+        // Disable Telescope, DB cache, and DB session BEFORE registering TelescopeServiceProvider
+        // so its boot() returns early and never calls startRecording() (which queries the cache table).
+        // Also prevents Governor's ParseCustomPolicyActions from querying the cache table.
+        // This runs before any boot() or middleware, making it the earliest possible interception point.
+        if ($this->isInstallRequest()) {
+            config([
+                'telescope.enabled' => false,
+                'cache.default' => 'array',
+                'session.driver' => 'cookie',
+            ]);
+        }
+
         if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
@@ -167,6 +184,10 @@ final class AppServiceProvider extends ServiceProvider
 
     private function userHasBypassPermissions(object $user): bool
     {
+        if (method_exists($user, 'hasRole') && $user->hasRole('super-admin')) {
+            return true;
+        }
+
         return (bool) DB::table('model_has_permissions')
             ->join('permissions', 'model_has_permissions.permission_id', '=', 'permissions.id')
             ->where('permissions.name', 'bypass-permissions')
@@ -476,5 +497,16 @@ final class AppServiceProvider extends ServiceProvider
         }
 
         Artisan::call('migrate', ['--force' => true]);
+    }
+
+    /**
+     * Detect if the current request targets an install route.
+     * Used in register() to disable Telescope/cache/session before service providers boot.
+     */
+    private function isInstallRequest(): bool
+    {
+        $path = $this->app->make('request')->path();
+
+        return $path === 'install' || str_starts_with($path, 'install/');
     }
 }

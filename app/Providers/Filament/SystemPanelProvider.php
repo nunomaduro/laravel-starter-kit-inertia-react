@@ -49,8 +49,10 @@ final class SystemPanelProvider extends PanelProvider
             ->globalSearch()
             ->darkMode()
             ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('14rem')
+            ->collapsedSidebarWidth('3.5rem')
             ->spa()
-            ->maxContentWidth(Width::SevenExtraLarge)
+            ->maxContentWidth(Width::Full)
             ->databaseNotifications()
             ->navigationGroups([
                 NavigationGroup::make('Platform'),
@@ -100,6 +102,7 @@ final class SystemPanelProvider extends PanelProvider
                 EnsureSetupComplete::class,
                 EnsureSuperAdmin::class,
             ])
-            ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, fn (): View => view('filament.components.back-to-app'));
+            ->renderHook(PanelsRenderHook::SIDEBAR_NAV_START, fn (): View => view('filament.components.back-to-app'))
+            ->renderHook(PanelsRenderHook::STYLES_AFTER, fn (): View => view('filament.components.system-panel-sidebar-styles'));
     }
 }

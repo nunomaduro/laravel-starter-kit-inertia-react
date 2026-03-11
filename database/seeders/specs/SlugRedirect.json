@@ -3,7 +3,7 @@
     "table": "slug_redirects",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -13,7 +13,7 @@
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

@@ -3,7 +3,7 @@
     "table": "shareables",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -13,7 +13,7 @@
             "default": null
         },
         "shareable_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -23,7 +23,7 @@
             "default": null
         },
         "target_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -33,7 +33,7 @@
             "default": null
         },
         "shared_by": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

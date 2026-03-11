@@ -3,7 +3,7 @@
     "table": "enterprise_inquiries",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

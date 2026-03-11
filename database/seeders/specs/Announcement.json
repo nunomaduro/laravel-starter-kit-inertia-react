@@ -3,7 +3,7 @@
     "table": "announcements",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -28,7 +28,7 @@
             "default": null
         },
         "organization_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -48,7 +48,7 @@
             "default": null
         },
         "created_by": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -63,7 +63,7 @@
             "default": null
         },
         "governor_owned_by": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

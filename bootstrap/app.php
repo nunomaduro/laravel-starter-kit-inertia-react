@@ -18,6 +18,7 @@ use App\Http\Middleware\EnsureTenantContext;
 use App\Http\Middleware\EnsureTermsAccepted;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\RedirectToInstallerIfNotSetup;
 use App\Http\Middleware\ResolveDomainMiddleware;
 use App\Http\Middleware\ServeFavicon;
 use App\Http\Middleware\SetTenantContext;
@@ -85,10 +86,14 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureTermsAccepted::class,
         ];
 
+        // Must run before package global middleware (e.g. Governor's ParseCustomPolicyActions
+        // which is pushed via pushMiddleware and runs before web group middleware).
+        $middleware->prepend(StopTelescopeForInstaller::class);
+
         $middleware->web(
             append: $webAppend,
             prepend: [
-                StopTelescopeForInstaller::class,
+                RedirectToInstallerIfNotSetup::class,
                 ServeFavicon::class,
                 ResolveDomainMiddleware::class,
             ],

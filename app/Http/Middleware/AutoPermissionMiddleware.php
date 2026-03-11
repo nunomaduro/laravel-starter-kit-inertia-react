@@ -56,7 +56,7 @@ final class AutoPermissionMiddleware
 
         throw_unless(method_exists($user, 'hasPermissionTo'), UnauthorizedException::missingTraitHasRoles($user));
 
-        if ($user->can('bypass-permissions')) {
+        if ($user->hasRole('super-admin') || $user->can('bypass-permissions')) {
             return $next($request);
         }
 

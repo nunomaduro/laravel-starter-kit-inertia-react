@@ -3,12 +3,12 @@
     "table": "plans",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "name": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
@@ -18,7 +18,7 @@
             "default": null
         },
         "description": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
@@ -43,7 +43,7 @@
             "default": null
         },
         "trial_period": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
@@ -53,7 +53,7 @@
             "default": null
         },
         "invoice_period": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
@@ -63,7 +63,7 @@
             "default": null
         },
         "grace_period": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
@@ -73,27 +73,27 @@
             "default": null
         },
         "prorate_day": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
         "prorate_period": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
         "prorate_extend_due": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
         "active_subscribers_limit": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
         "sort_order": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },

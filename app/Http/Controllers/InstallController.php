@@ -150,6 +150,8 @@ final class InstallController extends Controller
 
     public function show(): View|RedirectResponse
     {
+        $this->syncMigrateDoneFromTerminatingCallback();
+
         $resolved = $this->resolveStep();
 
         if (request()->boolean('back')) {
@@ -164,14 +166,25 @@ final class InstallController extends Controller
         }
 
         $step = $resolved;
+        $resolvedIdx = array_search($resolved, self::STEP_ORDER, true);
+
         $requestedStep = request()->query('step');
         if (is_string($requestedStep) && $requestedStep !== '') {
-            $resolvedIdx = array_search($resolved, self::STEP_ORDER, true);
             $requestedIdx = array_search($requestedStep, self::STEP_ORDER, true);
             if ($resolvedIdx !== false && $requestedIdx !== false && $requestedIdx <= $resolvedIdx) {
                 $step = $requestedStep;
             }
+        } elseif ($resolvedIdx !== false) {
+            $lastStep = session('install_last_step');
+            if (is_string($lastStep) && $lastStep !== '') {
+                $lastIdx = array_search($lastStep, self::STEP_ORDER, true);
+                if ($lastIdx !== false && $lastIdx >= $resolvedIdx) {
+                    $step = $lastStep;
+                }
+            }
         }
+
+        session(['install_last_step' => $step]);
 
         return view('install.index', [
             'step' => $step,
@@ -828,8 +841,22 @@ final class InstallController extends Controller
 
             session(['install_migrate_done' => true]);
             $this->writeMigrateProgress($progressFile, 'Done.', true);
+            file_put_contents(storage_path('app/install_migrate_completed'), (string) time(), LOCK_EX);
         } catch (Throwable $throwable) {
             $this->writeMigrateProgress($progressFile, $throwable->getMessage(), true, $throwable->getMessage());
+        }
+    }
+
+    /**
+     * When migrate runs in a terminating callback, session is not persisted. A sentinel file is written
+     * instead; sync it into the session on the next request so the wizard advances.
+     */
+    private function syncMigrateDoneFromTerminatingCallback(): void
+    {
+        $sentinel = storage_path('app/install_migrate_completed');
+        if (is_file($sentinel)) {
+            session(['install_migrate_done' => true]);
+            @unlink($sentinel);
         }
     }
 
@@ -845,14 +872,25 @@ final class InstallController extends Controller
             'password.confirmed' => 'Passwords do not match.',
         ])->validate();
 
-        $user = User::query()->create([
+        $now = now()->toDateTimeString();
+        $userId = DB::table('users')->insertGetId([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'email_verified_at' => now(),
+            'email_verified_at' => $now,
+            'created_at' => $now,
+            'updated_at' => $now,
         ]);
 
-        $user->syncRoles(['super-admin']);
+        $superAdminRole = DB::table('roles')->where('name', 'super-admin')->whereNull('organization_id')->first();
+        if ($superAdminRole) {
+            DB::table('model_has_roles')->insertOrIgnore([
+                'role_id' => $superAdminRole->id,
+                'model_type' => User::class,
+                'model_id' => $userId,
+                'organization_id' => 0,
+            ]);
+        }
 
         return to_route('install');
     }
@@ -1017,7 +1055,18 @@ final class InstallController extends Controller
         $this->ensureMailSettingsExist();
         App::forgetInstance(MailSettings::class);
 
-        $mail = resolve(MailSettings::class);
+        try {
+            $mail = resolve(MailSettings::class);
+        } catch (Throwable $e) {
+            if ($this->isDecryptUnserializeError($e)) {
+                $this->fixMailSettingsSmtpPasswordPayload();
+                App::forgetInstance(MailSettings::class);
+                $mail = resolve(MailSettings::class);
+            } else {
+                throw $e;
+            }
+        }
+
         $mail->mailer = $properties['mailer'];
         $mail->smtp_host = $properties['smtp_host'];
         $mail->smtp_port = $properties['smtp_port'];
@@ -1029,6 +1078,21 @@ final class InstallController extends Controller
         $mail->save();
     }
 
+    private function isDecryptUnserializeError(Throwable $e): bool
+    {
+        $message = $e->getMessage();
+
+        return str_contains($message, 'unserialize()') || str_contains($message, 'decrypt');
+    }
+
+    private function fixMailSettingsSmtpPasswordPayload(): void
+    {
+        DB::table('settings')
+            ->where('group', MailSettings::group())
+            ->where('name', 'smtp_password')
+            ->update(['payload' => json_encode(Crypt::encrypt(null)), 'updated_at' => now()]);
+    }
+
     private function ensureMailSettingsExist(): void
     {
         $now = now();
@@ -1038,7 +1102,7 @@ final class InstallController extends Controller
             ['name' => 'smtp_host',        'payload' => '"127.0.0.1"'],
             ['name' => 'smtp_port',        'payload' => '2525'],
             ['name' => 'smtp_username',    'payload' => 'null'],
-            ['name' => 'smtp_password',    'payload' => json_encode(Crypt::encryptString(json_encode(null)))],
+            ['name' => 'smtp_password',    'payload' => json_encode(Crypt::encrypt(null))],
             ['name' => 'smtp_encryption',  'payload' => 'null'],
             ['name' => 'from_address',     'payload' => '"hello@example.com"'],
             ['name' => 'from_name',        'payload' => '"Example"'],

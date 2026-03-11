@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "082d85732774808597387c65663f0d8e",
+    "content-hash": "8d6dd884150fdda82d4a107e0174d563",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -8547,16 +8547,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "3.11.1",
+            "version": "3.11.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CarbonPHP/carbon.git",
-                "reference": "f438fcc98f92babee98381d399c65336f3a3827f"
+                "reference": "57d696f4ec76d8560cc13b9d16ec01afc4379d04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/f438fcc98f92babee98381d399c65336f3a3827f",
-                "reference": "f438fcc98f92babee98381d399c65336f3a3827f",
+                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/57d696f4ec76d8560cc13b9d16ec01afc4379d04",
+                "reference": "57d696f4ec76d8560cc13b9d16ec01afc4379d04",
                 "shasum": ""
             },
             "require": {
@@ -8648,7 +8648,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-29T09:26:29+00:00"
+            "time": "2026-03-10T21:43:48+00:00"
         },
         {
             "name": "nette/php-generator",

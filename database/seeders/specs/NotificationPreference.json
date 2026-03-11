@@ -3,12 +3,12 @@
     "table": "notification_preferences",
     "fields": {
         "id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
         "user_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
