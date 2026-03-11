@@ -34,6 +34,7 @@ use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -83,6 +84,9 @@ final class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->ensureSqliteDatabaseExists();
+        $this->runMigrationsIfNeededForInstaller();
+
         $this->configurePasswordDefaults();
         $this->configurePan();
 
@@ -428,5 +432,49 @@ final class AppServiceProvider extends ServiceProvider
 
             return $this->app->make(\Illuminate\Contracts\Auth\Factory::class)->guard(config('activitylog.default_auth_driver'))->user();
         });
+    }
+
+    /**
+     * Create the SQLite database file if the default connection is SQLite and the file does not exist.
+     * Allows the app (and installer) to boot when .env has no DB_* and Laravel falls back to sqlite.
+     */
+    private function ensureSqliteDatabaseExists(): void
+    {
+        if (config('database.default') !== 'sqlite') {
+            return;
+        }
+
+        $path = config('database.connections.sqlite.database');
+        if ($path === null || $path === ':memory:') {
+            return;
+        }
+
+        if (! file_exists($path)) {
+            touch($path);
+        }
+    }
+
+    /**
+     * Run migrations when in local with a fresh SQLite DB so the installer can load (middleware needs cache table).
+     */
+    private function runMigrationsIfNeededForInstaller(): void
+    {
+        if (! $this->app->environment('local')) {
+            return;
+        }
+
+        if (config('database.default') !== 'sqlite') {
+            return;
+        }
+
+        try {
+            if (Schema::hasTable('migrations')) {
+                return;
+            }
+        } catch (Throwable) {
+            return;
+        }
+
+        Artisan::call('migrate', ['--force' => true]);
     }
 }

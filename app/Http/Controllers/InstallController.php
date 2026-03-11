@@ -67,14 +67,14 @@ final class InstallController extends Controller
     ];
 
     /**
-     * Demo module definitions — mirrors AppInstallCommand.
+     * Demo module definitions — keep in sync with AppInstallCommand::MODULES.
      *
      * @var array<string, array{label: string, description: string, seeders: list<string>}>
      */
     private const array MODULES = [
         'users' => [
             'label' => 'Users',
-            'description' => 'Sample user accounts (admin, demo users)',
+            'description' => 'Sample user accounts (admin, demo, regular users)',
             'seeders' => [\Database\Seeders\Development\UsersSeeder::class],
         ],
         'organizations' => [
@@ -88,7 +88,7 @@ final class InstallController extends Controller
         ],
         'billing' => [
             'label' => 'Billing & Subscriptions',
-            'description' => 'Plans, gateways, subscriptions, credits, invoices',
+            'description' => 'Plans, gateways, subscriptions, credits, invoices, refunds',
             'seeders' => [
                 \Database\Seeders\Development\PlanSeeder::class,
                 \Database\Seeders\Development\PaymentGatewaySeeder::class,
@@ -105,7 +105,7 @@ final class InstallController extends Controller
         ],
         'content' => [
             'label' => 'Content',
-            'description' => 'Blog posts, pages, help articles, changelog, categories',
+            'description' => 'Blog posts, pages, help articles, changelog entries, categories',
             'seeders' => [
                 \Database\Seeders\Development\CategorySeeder::class,
                 \Database\Seeders\Development\PostSeeder::class,
@@ -117,7 +117,7 @@ final class InstallController extends Controller
         ],
         'marketing' => [
             'label' => 'Marketing & CRM',
-            'description' => 'Affiliates, contact forms, enterprise inquiries, vouchers',
+            'description' => 'Affiliates, contact submissions, enterprise inquiries, vouchers',
             'seeders' => [
                 \Database\Seeders\Development\AffiliateSeeder::class,
                 \Database\Seeders\Development\AffiliateCommissionSeeder::class,
@@ -129,7 +129,7 @@ final class InstallController extends Controller
         ],
         'developer' => [
             'label' => 'Developer Samples',
-            'description' => 'Visibility demos, model flags, shareables, webhooks, embeddings',
+            'description' => 'Model flags, visibility demos, shareables, webhooks, embeddings',
             'seeders' => [
                 \Database\Seeders\Development\ModelFlagSeeder::class,
                 \Database\Seeders\Development\VisibilityDemoSeeder::class,
@@ -292,6 +292,51 @@ final class InstallController extends Controller
         }
 
         return response()->json($state);
+    }
+
+    /**
+     * Start the migrate step in the background; returns a progress key for polling.
+     */
+    public function migrateRun(): JsonResponse
+    {
+        $progressKey = 'install_migrate_'.Str::random(16).'.json';
+        $progressFile = storage_path('app/'.$progressKey);
+        $this->writeMigrateProgress($progressFile, 'Starting…', false);
+
+        app()->terminating(function () use ($progressFile): void {
+            $this->runMigrateStepsWithProgress($progressFile);
+        });
+
+        return response()->json(['progress_key' => $progressKey]);
+    }
+
+    /**
+     * Poll status of the migrate step.
+     */
+    public function migrateStatus(Request $request): JsonResponse
+    {
+        $key = (string) $request->query('key', '');
+        if ($key === '' || ! str_starts_with($key, 'install_migrate_') || ! str_ends_with($key, '.json')) {
+            return response()->json(['error' => 'Invalid key.'], 400);
+        }
+        $progressFile = storage_path('app/'.$key);
+        if (! file_exists($progressFile)) {
+            return response()->json(['message' => 'Pending…', 'done' => false]);
+        }
+        $data = json_decode((string) file_get_contents($progressFile), true);
+        if (! is_array($data)) {
+            return response()->json(['message' => 'Running…', 'done' => false]);
+        }
+        $done = $data['done'] ?? false;
+        if ($done) {
+            @unlink($progressFile);
+        }
+
+        return response()->json([
+            'message' => $data['message'] ?? 'Running…',
+            'done' => $done,
+            'error' => $data['error'] ?? null,
+        ]);
     }
 
     /**
@@ -724,6 +769,8 @@ final class InstallController extends Controller
                 ->withInput();
         }
 
+        session(['install_database_done' => true]);
+
         return to_route('install');
     }
 
@@ -739,7 +786,47 @@ final class InstallController extends Controller
             // Non-fatal
         }
 
+        session(['install_migrate_done' => true]);
+
         return to_route('install');
+    }
+
+    private function writeMigrateProgress(string $progressFile, string $message, bool $done, ?string $error = null): void
+    {
+        $data = ['message' => $message, 'done' => $done];
+        if ($error !== null) {
+            $data['error'] = $error;
+        }
+        file_put_contents($progressFile, json_encode($data), LOCK_EX);
+    }
+
+    private function runMigrateStepsWithProgress(string $progressFile): void
+    {
+        try {
+            $this->writeMigrateProgress($progressFile, 'Running migrations…', false);
+            Artisan::call('migrate', ['--force' => true]);
+
+            $this->writeMigrateProgress($progressFile, 'Seeding roles & permissions…', false);
+            Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\RolesAndPermissionsSeeder::class, '--force' => true]);
+
+            $this->writeMigrateProgress($progressFile, 'Seeding gamification levels…', false);
+            Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\GamificationSeeder::class, '--force' => true]);
+
+            $this->writeMigrateProgress($progressFile, 'Seeding email templates…', false);
+            Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\MailTemplatesSeeder::class, '--force' => true]);
+
+            $this->writeMigrateProgress($progressFile, 'Seeding Governor…', false);
+            try {
+                Artisan::call('db:seed', ['--class' => \GeneaLabs\LaravelGovernor\Database\Seeders\LaravelGovernorDatabaseSeeder::class, '--force' => true]);
+            } catch (Throwable) {
+                // Non-fatal
+            }
+
+            session(['install_migrate_done' => true]);
+            $this->writeMigrateProgress($progressFile, 'Done.', true);
+        } catch (Throwable $e) {
+            $this->writeMigrateProgress($progressFile, $e->getMessage(), true, $e->getMessage());
+        }
     }
 
     private function handleAdmin(Request $request): RedirectResponse
@@ -1145,11 +1232,15 @@ final class InstallController extends Controller
 
     private function resolveStep(): string
     {
+        if (! session('install_database_done', false)) {
+            return 'database';
+        }
+
         if (! $this->isDatabaseReachable()) {
             return 'database';
         }
 
-        if (! $this->migrationsRan()) {
+        if (! session('install_migrate_done', false) || ! $this->migrationsRan()) {
             return 'migrate';
         }
 

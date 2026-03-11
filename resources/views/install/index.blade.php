@@ -192,11 +192,11 @@
         <p class="subtitle">Choose where your application stores data. SQLite requires no server and is perfect for getting started.</p>
 
         <button type="button" class="btn btn-express" id="express-btn" onclick="startExpressInstall({})">
-            <span class="btn-express-title">Express install — SQLite + defaults, no demo data →</span>
+            <span class="btn-express-title">Quick install — SQLite + defaults, no demo data →</span>
             <span class="btn-express-desc">Uses SQLite, creates admin (admin@example.com / password), app name "My App", skips optional steps. Change password after first login.</span>
         </button>
         <div class="field" style="margin-top:1rem">
-            <label>Or express with options</label>
+            <label>Quick install with custom settings</label>
             <div class="two-col" style="align-items:end;gap:0.75rem;flex-wrap:wrap">
                 <div class="field" style="margin-bottom:0">
                     <label style="font-size:0.75rem;color:#737373">Preset</label>
@@ -281,7 +281,7 @@
                     <label style="font-size:0.75rem;color:#737373">Default model (optional)</label>
                     <input type="text" id="express-ai-model" placeholder="e.g. openai/gpt-4o">
                 </div>
-                <button type="button" class="btn btn-secondary" onclick="startExpressWithOptions()">Express with options →</button>
+                <button type="button" class="btn btn-secondary" onclick="startExpressWithOptions()">Run quick install with these settings →</button>
             </div>
         </div>
         <script>
@@ -396,12 +396,42 @@
 
         <h1>Create tables</h1>
         <p class="subtitle">This creates all database tables, seeds roles &amp; permissions, gamification levels, and email templates.</p>
-        <div class="info-box">Database connected. This takes a few seconds.</div>
-        <form method="POST" action="{{ route('install.store') }}">
-            @csrf
-            <input type="hidden" name="step" value="migrate">
-            <button type="submit" class="btn btn-primary">Run setup →</button>
-        </form>
+        <div class="info-box" id="migrate-status-box">Database connected. Click Run setup to create tables and seed data.</div>
+        <div class="field" style="margin-top:1rem">
+            <button type="button" class="btn btn-primary" id="migrate-run-btn" data-migrate-run-url="{{ route('install.migrate.run') }}" data-migrate-status-url="{{ route('install.migrate.status') }}" data-csrf="{{ csrf_token() }}">Run setup →</button>
+        </div>
+        <script>
+        (function() {
+            var btn = document.getElementById('migrate-run-btn');
+            var box = document.getElementById('migrate-status-box');
+            if (!btn || !box) return;
+            var runUrl = btn.getAttribute('data-migrate-run-url');
+            var statusUrl = btn.getAttribute('data-migrate-status-url');
+            btn.addEventListener('click', function() {
+                btn.disabled = true;
+                box.textContent = 'Starting…';
+                fetch(runUrl, { method: 'POST', headers: { 'X-CSRF-TOKEN': btn.getAttribute('data-csrf'), 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: '{}' })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (data.error) { box.textContent = data.error; btn.disabled = false; return; }
+                        var key = data.progress_key;
+                        function poll() {
+                            fetch(statusUrl + '?key=' + encodeURIComponent(key), { headers: { 'Accept': 'application/json' } })
+                                .then(function(r) { return r.json(); })
+                                .then(function(s) {
+                                    box.textContent = s.message || 'Running…';
+                                    if (s.error) { box.textContent = 'Error: ' + s.error; btn.disabled = false; return; }
+                                    if (s.done) { box.textContent = 'Done. Redirecting…'; window.location.href = '{{ route('install') }}'; return; }
+                                    setTimeout(poll, 400);
+                                })
+                                .catch(function() { box.textContent = 'Could not check status.'; setTimeout(poll, 1000); });
+                        }
+                        setTimeout(poll, 300);
+                    })
+                    .catch(function() { box.textContent = 'Failed to start setup.'; btn.disabled = false; });
+            });
+        })();
+        </script>
 
     {{-- ══════════════════════════════════════════════════ --}}
     {{-- Step 3: Admin --}}

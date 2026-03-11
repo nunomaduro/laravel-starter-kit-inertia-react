@@ -91,7 +91,7 @@ final class AppInstallCommand extends Command
 
     private const string PROGRESS_FILE = '.install-progress.json';
 
-    // ─── Module definitions ───────────────────────────────────────────────────
+    // ─── Module definitions (keep in sync with InstallController::MODULES) ───
 
     /** @var array<string, array{label: string, description: string, seeders: list<string>}> */
     private const array MODULES = [

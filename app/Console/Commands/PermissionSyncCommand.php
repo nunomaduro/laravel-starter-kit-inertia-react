@@ -38,7 +38,7 @@ final class PermissionSyncCommand extends Command
 
         $config = $this->loadOrganizationPermissions();
         $targetNames = $this->collectPermissionNames($config);
-        $current = Permission::query()->where('name', 'like', 'org.%')->pluck('name')->all();
+        $current = Permission::query()->where('guard_name', 'web')->whereIn('name', $targetNames)->pluck('name')->all();
         $toCreate = array_diff($targetNames, $current);
 
         $silent = (bool) $this->option('silent');
@@ -49,7 +49,7 @@ final class PermissionSyncCommand extends Command
             }
 
             if (! $dryRun) {
-                Permission::create(['name' => $name, 'guard_name' => 'web']);
+                Permission::query()->firstOrCreate(['name' => $name, 'guard_name' => 'web']);
             }
         }
 
