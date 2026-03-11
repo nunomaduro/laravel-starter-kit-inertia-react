@@ -39,6 +39,6 @@ final class RedirectToInstallerIfNotSetup
             // Settings/DB not available — show installer
         }
 
-        return redirect()->route('install');
+        return to_route('install');
     }
 }

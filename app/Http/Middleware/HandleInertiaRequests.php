@@ -76,7 +76,7 @@ final class HandleInertiaRequests extends Middleware
                 'user' => $user,
                 'permissions' => $user?->getAllPermissions()->pluck('name')->all() ?? [],
                 'roles' => $user?->getRoleNames()->all() ?? [],
-                'can_bypass' => $user ? ($user->can('bypass-permissions') || $user->hasRole('super-admin')) : false,
+                'can_bypass' => $user && ($user->can('bypass-permissions') || $user->hasRole('super-admin')),
                 'tenancy_enabled' => $tenancyEnabled,
                 'current_organization' => $currentOrganization?->only(['id', 'name', 'slug']),
                 'organizations' => $tenancyEnabled ? $userOrganizations : [],

@@ -507,6 +507,6 @@ final class AppServiceProvider extends ServiceProvider
     {
         $path = $this->app->make('request')->path();
 
-        return $path === 'install' || str_starts_with($path, 'install/');
+        return $path === 'install' || str_starts_with((string) $path, 'install/');
     }
 }

@@ -1057,13 +1057,13 @@ final class InstallController extends Controller
 
         try {
             $mail = resolve(MailSettings::class);
-        } catch (Throwable $e) {
-            if ($this->isDecryptUnserializeError($e)) {
+        } catch (Throwable $throwable) {
+            if ($this->isDecryptUnserializeError($throwable)) {
                 $this->fixMailSettingsSmtpPasswordPayload();
                 App::forgetInstance(MailSettings::class);
                 $mail = resolve(MailSettings::class);
             } else {
-                throw $e;
+                throw $throwable;
             }
         }
 

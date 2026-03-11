@@ -16,7 +16,7 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 require __DIR__.'/../vendor/autoload.php';
 
 // Auto-generate APP_KEY for web installer in local env (before Laravel boots).
-$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+$requestUri = Illuminate\Support\Facades\Request::server('REQUEST_URI') ?? '/';
 $requestPath = mb_rtrim((string) parse_url((string) $requestUri, PHP_URL_PATH), '/') ?: '/';
 if ($requestPath === '/install') {
     (static function (string $basePath): void {
