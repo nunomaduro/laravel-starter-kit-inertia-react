@@ -1,8 +1,8 @@
 import SessionController from '@/actions/App/Http/Controllers/SessionController';
-import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
@@ -34,8 +34,11 @@ export default function Login({
                 {({ processing, errors }) => (
                     <>
                         <div className="grid gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                            <FormField
+                                label="Email address"
+                                htmlFor="email"
+                                error={errors.email}
+                            >
                                 <Input
                                     id="email"
                                     type="email"
@@ -46,22 +49,24 @@ export default function Login({
                                     autoComplete="email"
                                     placeholder="email@example.com"
                                 />
-                                <InputError message={errors.email} />
-                            </div>
+                            </FormField>
 
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
-                                    {canResetPassword && (
+                            <FormField
+                                label="Password"
+                                htmlFor="password"
+                                error={errors.password}
+                                labelAction={
+                                    canResetPassword ? (
                                         <TextLink
                                             href={request()}
-                                            className="ml-auto text-sm"
+                                            className="text-sm"
                                             tabIndex={5}
                                         >
                                             Forgot password?
                                         </TextLink>
-                                    )}
-                                </div>
+                                    ) : undefined
+                                }
+                            >
                                 <Input
                                     id="password"
                                     type="password"
@@ -71,8 +76,7 @@ export default function Login({
                                     autoComplete="current-password"
                                     placeholder="Password"
                                 />
-                                <InputError message={errors.password} />
-                            </div>
+                            </FormField>
 
                             <div className="flex items-center space-x-3">
                                 <Checkbox

@@ -6,11 +6,11 @@ import { Form, Head, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
 import HoneypotFields from '@/components/honeypot-fields';
-import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 
@@ -47,8 +47,11 @@ function ContactFormContent({
                     <>
                         <HoneypotFields />
                         <div className="grid gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                            <FormField
+                                label="Name"
+                                htmlFor="name"
+                                error={errors.name}
+                            >
                                 <Input
                                     id="name"
                                     type="text"
@@ -59,10 +62,12 @@ function ContactFormContent({
                                     placeholder="Your name"
                                     defaultValue={user?.name}
                                 />
-                                <InputError message={errors.name} />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
+                            </FormField>
+                            <FormField
+                                label="Email"
+                                htmlFor="email"
+                                error={errors.email}
+                            >
                                 <Input
                                     id="email"
                                     type="email"
@@ -72,10 +77,12 @@ function ContactFormContent({
                                     placeholder="you@example.com"
                                     defaultValue={user?.email}
                                 />
-                                <InputError message={errors.email} />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="subject">Subject</Label>
+                            </FormField>
+                            <FormField
+                                label="Subject"
+                                htmlFor="subject"
+                                error={errors.subject}
+                            >
                                 <Input
                                     id="subject"
                                     type="text"
@@ -83,20 +90,21 @@ function ContactFormContent({
                                     name="subject"
                                     placeholder="Subject"
                                 />
-                                <InputError message={errors.subject} />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="message">Message</Label>
-                                <textarea
+                            </FormField>
+                            <FormField
+                                label="Message"
+                                htmlFor="message"
+                                error={errors.message}
+                            >
+                                <Textarea
                                     id="message"
                                     name="message"
                                     required
                                     rows={5}
-                                    className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="min-h-[120px]"
                                     placeholder="Your message..."
                                 />
-                                <InputError message={errors.message} />
-                            </div>
+                            </FormField>
                             <Button type="submit" className="w-full">
                                 {processing && (
                                     <LoaderCircle className="h-4 w-4 animate-spin" />

@@ -189,10 +189,7 @@
         <h1>Database</h1>
         <p class="subtitle">Choose where your application stores data. SQLite requires no server and is perfect for getting started.</p>
 
-        <form method="POST" action="{{ route('install.express') }}" style="margin-bottom:1.25rem">
-            @csrf
-            <button type="submit" class="btn btn-express">Express install — SQLite + defaults, no demo data →</button>
-        </form>
+        <button type="button" class="btn btn-express" id="express-btn" onclick="startExpressInstall()">Express install — SQLite + defaults, no demo data →</button>
         <p class="hint" style="margin-top:-0.75rem;margin-bottom:1rem">Uses SQLite, creates admin (admin@example.com / password), app name &quot;My App&quot;, skips optional steps. Change password after first login.</p>
 
         @php $dbDriver = old('driver', 'pgsql'); @endphp
@@ -781,6 +778,41 @@
     @endif
 
 </div>
+<!-- Express install progress overlay -->
+<div id="express-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:none;align-items:center;justify-content:center;">
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:14px;padding:2.5rem;width:100%;max-width:420px;margin:1rem;">
+        <div style="font-size:1rem;font-weight:600;color:#fff;margin-bottom:0.375rem;">Express Install</div>
+        <div style="font-size:0.8125rem;color:#737373;margin-bottom:1.75rem;">Setting everything up — this takes about 30–60 seconds.</div>
+
+        <ul id="express-steps" style="list-style:none;display:flex;flex-direction:column;gap:0.625rem;margin-bottom:1.75rem;">
+            @php
+            $expressSteps = [
+                ['key' => 'migrate',      'label' => 'Running migrations'],
+                ['key' => 'roles',        'label' => 'Seeding roles & permissions'],
+                ['key' => 'gamification', 'label' => 'Seeding gamification data'],
+                ['key' => 'mail_tpl',     'label' => 'Seeding mail templates'],
+                ['key' => 'admin',        'label' => 'Creating admin user'],
+                ['key' => 'settings',     'label' => 'Saving application settings'],
+            ];
+            @endphp
+            @foreach($expressSteps as $es)
+            <li id="express-step-{{ $es['key'] }}" style="display:flex;align-items:center;gap:0.625rem;font-size:0.875rem;color:#737373;">
+                <span class="step-icon" style="width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="opacity:0.3"><circle cx="10" cy="10" r="7"/></svg>
+                </span>
+                <span>{{ $es['label'] }}</span>
+            </li>
+            @endforeach
+        </ul>
+
+        <div style="height:4px;background:#262626;border-radius:999px;overflow:hidden;margin-bottom:1rem;">
+            <div id="express-bar" style="height:100%;width:0%;background:#3b82f6;border-radius:999px;transition:width 0.4s ease;"></div>
+        </div>
+
+        <div id="express-status-msg" style="font-size:0.8125rem;color:#737373;text-align:center;min-height:1.25em;"></div>
+    </div>
+</div>
+
 <script>
 (function() {
     var testUrl = '{{ route("install.test-connection") }}';
@@ -815,6 +847,138 @@
         });
     });
 })();
+
+var EXPRESS_URL        = '{{ route("install.express") }}';
+var EXPRESS_STATUS_URL = '{{ route("install.express.status") }}';
+var EXPRESS_TOKEN      = '{{ csrf_token() }}';
+
+var EXPRESS_STEPS = [
+    {key:'migrate',      label:'Running migrations'},
+    {key:'roles',        label:'Seeding roles & permissions'},
+    {key:'gamification', label:'Seeding gamification data'},
+    {key:'mail_tpl',     label:'Seeding mail templates'},
+    {key:'admin',        label:'Creating admin user'},
+    {key:'settings',     label:'Saving application settings'},
+];
+
+function startExpressInstall() {
+    var btn     = document.getElementById('express-btn');
+    var overlay = document.getElementById('express-overlay');
+    if (!btn || !overlay) return;
+
+    btn.disabled = true;
+    overlay.style.display = 'flex';
+
+    fetch(EXPRESS_URL, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': EXPRESS_TOKEN,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.error) {
+            showExpressError(data.error);
+            return;
+        }
+        pollExpressStatus(data.progressFile, 0);
+    })
+    .catch(function(e) {
+        showExpressError(e.message || 'Failed to start install.');
+    });
+}
+
+function pollExpressStatus(cacheKey, attempt) {
+    if (attempt > 120) {
+        showExpressError('Install timed out. Please try again.');
+        return;
+    }
+    fetch(EXPRESS_STATUS_URL + '?key=' + encodeURIComponent(cacheKey), {
+        headers: { 'Accept': 'application/json' },
+    })
+    .then(function(r) {
+        // Non-2xx (e.g., 401 Unauthenticated from /admin, or HTML redirect) means
+        // EnsureNotInstalled middleware intercepted the request after install completed.
+        if (!r.ok) {
+            window.location.href = '/admin';
+            return null;
+        }
+        var ct = r.headers.get('Content-Type') || '';
+        if (ct.indexOf('application/json') === -1) {
+            window.location.href = '/admin';
+            return null;
+        }
+        return r.json();
+    })
+    .then(function(state) {
+        if (!state) { return; }
+        updateExpressUI(state);
+        if (state.status === 'done') {
+            document.getElementById('express-status-msg').textContent = 'Done! Redirecting…';
+            setTimeout(function() {
+                window.location.href = state.redirect || '/admin';
+            }, 800);
+        } else if (state.status === 'error') {
+            showExpressError(state.message || 'An error occurred during install.');
+        } else {
+            setTimeout(function() { pollExpressStatus(cacheKey, attempt + 1); }, 1000);
+        }
+    })
+    .catch(function() {
+        setTimeout(function() { pollExpressStatus(cacheKey, attempt + 1); }, 2000);
+    });
+}
+
+function updateExpressUI(state) {
+    var steps = state.steps || {};
+    var done  = 0;
+    EXPRESS_STEPS.forEach(function(s) {
+        var el     = document.getElementById('express-step-' + s.key);
+        var status = steps[s.key] || 'pending';
+        if (!el) return;
+
+        var iconEl = el.querySelector('.step-icon');
+
+        if (status === 'done') {
+            el.style.color = '#22c55e';
+            iconEl.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>';
+            done++;
+        } else if (status === 'running') {
+            el.style.color = '#3b82f6';
+            iconEl.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="animation:spin 1s linear infinite"><path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd"/></svg>';
+        } else {
+            el.style.color = '#737373';
+            iconEl.innerHTML = '<svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18" style="opacity:0.3"><circle cx="10" cy="10" r="7"/></svg>';
+        }
+    });
+
+    var pct = Math.round((done / EXPRESS_STEPS.length) * 100);
+    var bar = document.getElementById('express-bar');
+    if (bar) bar.style.width = pct + '%';
+
+    var msgEl = document.getElementById('express-status-msg');
+    var running = Object.keys(steps).find(function(k) { return steps[k] === 'running'; });
+    if (msgEl && running) {
+        var match = EXPRESS_STEPS.find(function(s) { return s.key === running; });
+        msgEl.textContent = match ? match.label + '…' : '';
+    }
+}
+
+function showExpressError(msg) {
+    var btn     = document.getElementById('express-btn');
+    var overlay = document.getElementById('express-overlay');
+    var msgEl   = document.getElementById('express-status-msg');
+    if (overlay) overlay.style.display = 'none';
+    if (btn) { btn.disabled = false; }
+    if (msgEl) { msgEl.textContent = ''; }
+    alert('Express install failed: ' + msg);
+}
 </script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
 </body>
 </html>

@@ -27,10 +27,12 @@ interface Props {
     user: UserShape;
 }
 
-const STATUS_BADGE: Record<string, { label: string; variant: 'success' | 'warning' | 'danger' }> = {
-    active: { label: 'Active', variant: 'success' },
-    pending: { label: 'Pending', variant: 'warning' },
-    deleted: { label: 'Deleted', variant: 'danger' },
+type BadgeColor = 'success' | 'warning' | 'error';
+
+const STATUS_BADGE: Record<string, { label: string; color: BadgeColor }> = {
+    active: { label: 'Active', color: 'success' },
+    pending: { label: 'Pending', color: 'warning' },
+    deleted: { label: 'Deleted', color: 'error' },
 };
 
 export default function UserShowPage({ user }: Props) {
@@ -39,7 +41,7 @@ export default function UserShowPage({ user }: Props) {
         { title: user.name, href: `/users/${user.id}` },
     ];
 
-    const status = STATUS_BADGE[user.status] ?? { label: user.status, variant: 'warning' as const };
+    const status = STATUS_BADGE[user.status] ?? { label: user.status, color: 'warning' as const };
     const initials = user.name
         .split(' ')
         .map((n) => n[0])
@@ -75,7 +77,7 @@ export default function UserShowPage({ user }: Props) {
                                 <h1 className="text-xl font-semibold tracking-tight">
                                     {user.name}
                                 </h1>
-                                <Badge variant={status.variant}>{status.label}</Badge>
+                                <Badge variant="filled" color={status.color}>{status.label}</Badge>
                             </div>
                             <p className="text-sm text-muted-foreground">#{user.id}</p>
                         </div>

@@ -10,8 +10,8 @@ import { type z, type ZodObject, type ZodRawShape } from "zod"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { FormField } from "@/components/ui/form-field"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
 type FieldConfig = {
   label?: string
@@ -34,6 +34,8 @@ interface AutoFormProps<TSchema extends AnyZodObject> {
   submitLabel?: string
   className?: string
   children?: (form: UseFormReturn<z.infer<TSchema>>) => React.ReactNode
+  /** Server-side validation errors (e.g. from Inertia page.props.errors). Applied to form state when present. */
+  serverErrors?: Record<string, string>
 }
 
 function AutoForm<TSchema extends AnyZodObject>({
@@ -44,12 +46,21 @@ function AutoForm<TSchema extends AnyZodObject>({
   submitLabel = "Submit",
   className,
   children,
+  serverErrors,
 }: AutoFormProps<TSchema>) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const form = useForm<any>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues as DefaultValues<FieldValues>,
   })
+
+  React.useEffect(() => {
+    if (serverErrors && Object.keys(serverErrors).length > 0) {
+      Object.entries(serverErrors).forEach(([key, message]) => {
+        form.setError(key, { type: "server", message })
+      })
+    }
+  }, [serverErrors, form])
 
   const shape = schema.shape
 
@@ -68,12 +79,12 @@ function AutoForm<TSchema extends AnyZodObject>({
             .replace(/([A-Z])/g, " $1")
             .replace(/^./, (s) => s.toUpperCase())
         const error = form.formState.errors[key]
+        const errorMessage = error?.message ? String(error.message) : undefined
 
         if (config?.component) {
           const CustomComponent = config.component
           return (
-            <div key={key} className="space-y-1.5">
-              <Label htmlFor={key}>{label}</Label>
+            <FormField key={key} label={label} htmlFor={key} error={errorMessage}>
               <CustomComponent
                 field={{
                   value: form.watch(key),
@@ -82,28 +93,24 @@ function AutoForm<TSchema extends AnyZodObject>({
                 }}
                 label={label}
               />
-              {error && (
-                <p className="text-xs text-destructive">{String(error.message)}</p>
-              )}
-            </div>
+            </FormField>
           )
         }
 
         return (
-          <div key={key} className="space-y-1.5">
-            <Label htmlFor={key}>{label}</Label>
+          <FormField
+            key={key}
+            label={label}
+            htmlFor={key}
+            description={config?.description}
+            error={errorMessage}
+          >
             <Input
               id={key}
               {...form.register(key)}
               {...config?.inputProps}
             />
-            {config?.description && (
-              <p className="text-xs text-muted-foreground">{config.description}</p>
-            )}
-            {error && (
-              <p className="text-xs text-destructive">{String(error.message)}</p>
-            )}
-          </div>
+          </FormField>
         )
       })}
       {children?.(form as UseFormReturn<z.infer<TSchema>>)}

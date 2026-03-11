@@ -4,10 +4,9 @@ import organizations from '@/routes/organizations';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 
-import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Organizations', href: organizations.index.url() },
@@ -42,8 +41,11 @@ export default function OrganizationsCreate() {
                 >
                     {({ processing, errors }) => (
                         <>
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                            <FormField
+                                label="Name"
+                                htmlFor="name"
+                                error={errors.name}
+                            >
                                 <Input
                                     id="name"
                                     name="name"
@@ -52,8 +54,7 @@ export default function OrganizationsCreate() {
                                     autoFocus
                                     placeholder="Acme Inc."
                                 />
-                                <InputError message={errors.name} />
-                            </div>
+                            </FormField>
                             <div className="flex gap-2">
                                 <Button type="submit" disabled={processing}>
                                     {processing ? 'Creating…' : 'Create'}

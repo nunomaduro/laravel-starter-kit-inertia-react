@@ -27,12 +27,22 @@ function DiffViewer({
 }: DiffViewerProps) {
 
   const [isMobile, setIsMobile] = React.useState(false)
+  const [isDark, setIsDark] = React.useState(false)
 
   React.useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
     check()
     window.addEventListener("resize", check)
     return () => window.removeEventListener("resize", check)
+  }, [])
+
+  React.useEffect(() => {
+    const el = document.documentElement
+    const check = () => setIsDark(el.classList.contains("dark"))
+    check()
+    const obs = new MutationObserver(check)
+    obs.observe(el, { attributes: true, attributeFilter: ["class"] })
+    return () => obs.disconnect()
   }, [])
 
   const useSplit = splitView ?? !isMobile

@@ -1,5 +1,4 @@
 import UserPasswordController from '@/actions/App/Http/Controllers/UserPasswordController';
-import InputError from '@/components/input-error';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { type BreadcrumbItem } from '@/types';
@@ -9,8 +8,8 @@ import { useRef } from 'react';
 
 import HeadingSmall from '@/components/heading-small';
 import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { edit } from '@/routes/password';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -59,62 +58,52 @@ export default function Password() {
                     >
                         {({ errors, processing, recentlySuccessful }) => (
                             <>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="current_password">
-                                        Current password
-                                    </Label>
-
+                                <FormField
+                                    label="Current password"
+                                    htmlFor="current_password"
+                                    error={errors.current_password}
+                                >
                                     <Input
                                         id="current_password"
                                         ref={currentPasswordInputRef}
                                         name="current_password"
                                         type="password"
-                                        className="mt-1 block w-full"
+                                        className="block w-full"
                                         autoComplete="current-password"
                                         placeholder="Current password"
                                     />
+                                </FormField>
 
-                                    <InputError
-                                        message={errors.current_password}
-                                    />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label htmlFor="password">
-                                        New password
-                                    </Label>
-
+                                <FormField
+                                    label="New password"
+                                    htmlFor="password"
+                                    error={errors.password}
+                                >
                                     <Input
                                         id="password"
                                         ref={passwordInputRef}
                                         name="password"
                                         type="password"
-                                        className="mt-1 block w-full"
+                                        className="block w-full"
                                         autoComplete="new-password"
                                         placeholder="New password"
                                     />
+                                </FormField>
 
-                                    <InputError message={errors.password} />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label htmlFor="password_confirmation">
-                                        Confirm password
-                                    </Label>
-
+                                <FormField
+                                    label="Confirm password"
+                                    htmlFor="password_confirmation"
+                                    error={errors.password_confirmation}
+                                >
                                     <Input
                                         id="password_confirmation"
                                         name="password_confirmation"
                                         type="password"
-                                        className="mt-1 block w-full"
+                                        className="block w-full"
                                         autoComplete="new-password"
                                         placeholder="Confirm password"
                                     />
-
-                                    <InputError
-                                        message={errors.password_confirmation}
-                                    />
-                                </div>
+                                </FormField>
 
                                 <div className="flex items-center gap-4">
                                     <Button

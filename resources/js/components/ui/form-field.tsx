@@ -13,6 +13,8 @@ interface FormFieldProps {
   className?: string
   children: React.ReactNode
   horizontal?: boolean
+  /** Renders next to the label (e.g. "Forgot password?" link). */
+  labelAction?: React.ReactNode
 }
 
 function FormField({
@@ -25,6 +27,7 @@ function FormField({
   className,
   children,
   horizontal = false,
+  labelAction,
 }: FormFieldProps) {
   return (
     <div
@@ -36,9 +39,12 @@ function FormField({
     >
       {label && (
         <div className={cn(horizontal && "w-40 shrink-0 pt-2")}>
-          <Label htmlFor={htmlFor} className={cn(required && "after:ml-0.5 after:text-destructive after:content-['*']")}>
-            {label}
-          </Label>
+          <div className={cn(labelAction && "flex items-center justify-between gap-2")}>
+            <Label htmlFor={htmlFor} className={cn(required && "after:ml-0.5 after:text-destructive after:content-['*']")}>
+              {label}
+            </Label>
+            {labelAction}
+          </div>
           {description && (
             <p className="text-muted-foreground mt-0.5 text-xs">{description}</p>
           )}

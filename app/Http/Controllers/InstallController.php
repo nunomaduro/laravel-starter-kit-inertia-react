@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use RuntimeException;
 use Throwable;
@@ -173,9 +174,10 @@ final class InstallController extends Controller
     }
 
     /**
-     * Express install: SQLite, default admin (admin@example.com / password), app name, skip optional steps, no demo data.
+     * Express install: prepares SQLite and .env synchronously, then spawns a background
+     * process to run migrations and seeders. Returns JSON so the browser can poll for progress.
      */
-    public function express(Request $request): RedirectResponse
+    public function express(Request $request): JsonResponse
     {
         if (empty(config('app.key'))) {
             Artisan::call('key:generate', ['--force' => true]);
@@ -183,6 +185,7 @@ final class InstallController extends Controller
 
         $envPath = base_path('.env');
         $env = is_file($envPath) ? (string) file_get_contents($envPath) : '';
+
         if (! preg_match('/^APP_ENV=/m', $env)) {
             $env = $this->setEnvVar($env, 'APP_ENV', 'local');
         }
@@ -191,6 +194,7 @@ final class InstallController extends Controller
         if (! file_exists($dbPath)) {
             touch($dbPath);
         }
+
         $env = $this->setEnvVar($env, 'DB_CONNECTION', 'sqlite');
         $env = $this->removeEnvVar($env, 'DB_HOST');
         $env = $this->removeEnvVar($env, 'DB_PORT');
@@ -202,53 +206,49 @@ final class InstallController extends Controller
         DB::purge();
 
         if (! $this->isDatabaseReachable()) {
-            return redirect()->route('install')
-                ->withErrors(['db' => 'Could not connect to SQLite. Check storage permissions.'])
-                ->withInput();
+            return response()->json(['error' => 'Could not connect to SQLite. Check storage permissions.'], 422);
         }
 
-        Artisan::call('migrate', ['--force' => true]);
-        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\RolesAndPermissionsSeeder', '--force' => true]);
-        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\GamificationSeeder', '--force' => true]);
-        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\MailTemplatesSeeder', '--force' => true]);
+        $filename = 'install_progress_'.Str::uuid().'.json';
+        $progressFile = storage_path('app/'.$filename);
 
-        $user = User::query()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
-        $user->syncRoles(['super-admin']);
+        file_put_contents($progressFile, json_encode(['status' => 'running', 'steps' => []]));
 
-        $app = resolve(AppSettings::class);
-        $app->site_name = 'My App';
-        $app->url = $request->root();
-        $app->timezone = 'UTC';
-        $app->save();
+        $appUrl = $request->root();
 
-        DB::table('settings')->where('group', MailSettings::group())->delete();
-        App::forgetInstance(MailSettings::class);
-        resolve(\Spatie\LaravelSettings\SettingsMapper::class)->save(MailSettings::class, collect([
-            'mailer' => 'smtp',
-            'smtp_host' => '127.0.0.1',
-            'smtp_port' => 2525,
-            'smtp_username' => config('app.name', 'My App'),
-            'smtp_password' => null,
-            'smtp_encryption' => null,
-            'from_address' => 'hello@example.com',
-            'from_name' => 'My App',
-        ]));
+        // Run install steps after the HTTP response is sent. app()->terminating() callbacks
+        // are called in Kernel::terminate() (public/index.php after $response->send()),
+        // so the browser receives the JSON immediately and can start polling.
+        app()->terminating(function () use ($progressFile, $appUrl): void {
+            $this->runExpressInstallSteps($progressFile, $appUrl);
+        });
 
         session(['install_optional_done' => self::OPTIONAL_STEPS]);
 
-        $wizard = resolve(SetupWizardSettings::class);
-        $wizard->setup_completed = true;
-        $wizard->completed_steps = ['app', 'mail', 'billing', 'ai', 'complete'];
-        $wizard->save();
+        return response()->json(['progressFile' => $filename]);
+    }
 
-        SettingsOverlayServiceProvider::applyOverlay();
+    /**
+     * Poll the progress of a background express install.
+     */
+    public function expressStatus(Request $request): JsonResponse
+    {
+        $filename = (string) $request->query('key', '');
 
-        return redirect('/admin')->with('install.express', true);
+        if ($filename === '' || ! str_starts_with($filename, 'install_progress_') || ! str_ends_with($filename, '.json')) {
+            return response()->json(['error' => 'Invalid key.'], 400);
+        }
+
+        $progressFile = storage_path('app/'.$filename);
+
+        if (! file_exists($progressFile)) {
+            return response()->json(['status' => 'pending', 'steps' => []]);
+        }
+
+        $json = file_get_contents($progressFile);
+        $state = is_string($json) ? (json_decode($json, true) ?? []) : [];
+
+        return response()->json($state);
     }
 
     public function store(Request $request): RedirectResponse
@@ -295,6 +295,124 @@ final class InstallController extends Controller
         } catch (Throwable $e) {
             return response()->json(['ok' => false, 'message' => $e->getMessage()], 422);
         }
+    }
+
+    // ─── Express install worker ───────────────────────────────────────────────
+
+    private function runExpressInstallSteps(string $progressFile, string $appUrl): void
+    {
+        try {
+            $this->writeProgress($progressFile, 'migrate', 'running');
+            Artisan::call('migrate', ['--force' => true]);
+            $this->writeProgress($progressFile, 'migrate', 'done');
+
+            $this->writeProgress($progressFile, 'roles', 'running');
+            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\RolesAndPermissionsSeeder', '--force' => true]);
+            $this->writeProgress($progressFile, 'roles', 'done');
+
+            $this->writeProgress($progressFile, 'gamification', 'running');
+            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\GamificationSeeder', '--force' => true]);
+            $this->writeProgress($progressFile, 'gamification', 'done');
+
+            $this->writeProgress($progressFile, 'mail_tpl', 'running');
+            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\MailTemplatesSeeder', '--force' => true]);
+            $this->writeProgress($progressFile, 'mail_tpl', 'done');
+
+            $this->writeProgress($progressFile, 'admin', 'running');
+            // Use raw DB insert to bypass ALL model events/observers (Scout, userstamps, etc.)
+            // which may hang in the terminating callback due to missing auth/tenant context.
+            $now = now()->toDateTimeString();
+            $userId = DB::table('users')->insertGetId([
+                'name' => 'Admin',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('password'),
+                'email_verified_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+            // Directly assign super-admin role — bypasses OrganizationTeamResolver (returns 0,
+            // not null, without tenant context) which deadlocks the permission cache flush.
+            $superAdminRole = DB::table('roles')->where('name', 'super-admin')->whereNull('organization_id')->first();
+            if ($superAdminRole) {
+                // organization_id = 0 means "global" (no org context).
+                // The column is NOT NULL, and OrganizationTeamResolver returns 0 when no tenant is set.
+                DB::table('model_has_roles')->insertOrIgnore([
+                    'role_id' => $superAdminRole->id,
+                    'model_type' => 'App\\Models\\User',
+                    'model_id' => $userId,
+                    'organization_id' => 0,
+                ]);
+            }
+            $this->writeProgress($progressFile, 'admin', 'done');
+
+            $this->writeProgress($progressFile, 'settings', 'running');
+
+            $app = resolve(AppSettings::class);
+            $app->site_name = 'My App';
+            $app->url = $appUrl;
+            $app->timezone = 'UTC';
+            $app->save();
+
+            DB::table('settings')->where('group', MailSettings::group())->delete();
+            App::forgetInstance(MailSettings::class);
+            resolve(\Spatie\LaravelSettings\SettingsMapper::class)->save(MailSettings::class, collect([
+                'mailer' => 'smtp',
+                'smtp_host' => '127.0.0.1',
+                'smtp_port' => 2525,
+                'smtp_username' => 'My App',
+                'smtp_password' => null,
+                'smtp_encryption' => null,
+                'from_address' => 'hello@example.com',
+                'from_name' => 'My App',
+            ]));
+
+            $wizard = resolve(SetupWizardSettings::class);
+            $wizard->setup_completed = true;
+            $wizard->completed_steps = ['app', 'mail', 'billing', 'ai', 'complete'];
+            $wizard->save();
+
+            SettingsOverlayServiceProvider::applyOverlay();
+
+            $this->writeProgress($progressFile, 'settings', 'done');
+
+            $this->writeProgressFile($progressFile, [
+                'status' => 'done',
+                'steps' => $this->readProgressFile($progressFile)['steps'] ?? [],
+                'redirect' => '/admin',
+            ]);
+
+        } catch (Throwable $e) {
+            $this->writeProgressFile($progressFile, [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'steps' => $this->readProgressFile($progressFile)['steps'] ?? [],
+            ]);
+        }
+    }
+
+    private function writeProgress(string $progressFile, string $stepKey, string $status): void
+    {
+        $state = $this->readProgressFile($progressFile);
+        $state['steps'][$stepKey] = $status;
+        $this->writeProgressFile($progressFile, $state);
+    }
+
+    /** @return array<string, mixed> */
+    private function readProgressFile(string $progressFile): array
+    {
+        if (! file_exists($progressFile)) {
+            return ['status' => 'running', 'steps' => []];
+        }
+
+        $json = file_get_contents($progressFile);
+
+        return is_string($json) ? (json_decode($json, true) ?? []) : [];
+    }
+
+    /** @param array<string, mixed> $data */
+    private function writeProgressFile(string $progressFile, array $data): void
+    {
+        file_put_contents($progressFile, json_encode($data), LOCK_EX);
     }
 
     // ─── Required step handlers ────────────────────────────────────────────────

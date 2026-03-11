@@ -21,6 +21,7 @@ import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import { Copy, Keyboard, Trash2, UserPlus, Users } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 
 export interface UsersTableRow {
@@ -207,47 +208,52 @@ export default function UsersTablePage({
                     actions={rowActions}
                     bulkActions={bulkActions}
                     headerActions={headerActions}
-                    renderDetailRow={(row, detail) => (
-                        <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-3">
-                            {detail?.email_verified_at != null && (
-                                <div className="space-y-0.5">
-                                    <p className="text-xs font-medium text-muted-foreground">
-                                        Email verified
-                                    </p>
-                                    <p>
-                                        {new Date(
-                                            String(detail.email_verified_at),
-                                        ).toLocaleString()}
-                                    </p>
-                                </div>
-                            )}
-                            {detail?.updated_at != null && (
-                                <div className="space-y-0.5">
-                                    <p className="text-xs font-medium text-muted-foreground">
-                                        Last updated
-                                    </p>
-                                    <p>
-                                        {new Date(
-                                            String(detail.updated_at),
-                                        ).toLocaleString()}
-                                    </p>
-                                </div>
-                            )}
-                            {detail?.organizations_count != null && (
-                                <div className="space-y-0.5">
-                                    <p className="text-xs font-medium text-muted-foreground">
-                                        Organizations
-                                    </p>
-                                    <p>
-                                        {detail.organizations_count}{' '}
-                                        {detail.organizations_count === 1
-                                            ? 'org'
-                                            : 'orgs'}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    renderDetailRow={(row, detail): ReactNode => {
+                        const d = detail as
+                            | { email_verified_at?: string | null; updated_at?: string | null; organizations_count?: number }
+                            | undefined;
+                        return (
+                            <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-3">
+                                {d?.email_verified_at != null && (
+                                    <div className="space-y-0.5">
+                                        <p className="text-xs font-medium text-muted-foreground">
+                                            Email verified
+                                        </p>
+                                        <p>
+                                            {new Date(
+                                                String(d.email_verified_at),
+                                            ).toLocaleString()}
+                                        </p>
+                                    </div>
+                                )}
+                                {d?.updated_at != null && (
+                                    <div className="space-y-0.5">
+                                        <p className="text-xs font-medium text-muted-foreground">
+                                            Last updated
+                                        </p>
+                                        <p>
+                                            {new Date(
+                                                String(d.updated_at),
+                                            ).toLocaleString()}
+                                        </p>
+                                    </div>
+                                )}
+                                {d?.organizations_count != null && (
+                                    <div className="space-y-0.5">
+                                        <p className="text-xs font-medium text-muted-foreground">
+                                            Organizations
+                                        </p>
+                                        <p>
+                                            {d.organizations_count}{' '}
+                                            {d.organizations_count === 1
+                                                ? 'org'
+                                                : 'orgs'}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    }}
                     onInlineEdit={() => {
                         router.reload({ only: ['tableData'] });
                     }}

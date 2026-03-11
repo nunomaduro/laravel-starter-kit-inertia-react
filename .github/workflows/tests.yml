@@ -66,6 +66,10 @@ jobs:
       - name: Build Assets
         run: bun run build
 
+      - name: Application health check
+        run: php artisan app:health --json
+        continue-on-error: false
+
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(bun pm ls 2>/dev/null | grep playwright | head -1 | sed 's/.*@//')" >> $GITHUB_OUTPUT

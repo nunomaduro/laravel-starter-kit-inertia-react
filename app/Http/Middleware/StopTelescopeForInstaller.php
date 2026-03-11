@@ -18,6 +18,10 @@ final class StopTelescopeForInstaller
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->is('install') || $request->is('install/*')) {
+            // Disable Telescope entirely — stopRecording() prevents new entries but
+            // Telescope still tries to flush queued entries in storeEntriesBeforeTermination(),
+            // which throws a PDO exception when telescope_entries table doesn't exist yet.
+            config(['telescope.enabled' => false]);
             Telescope::stopRecording();
             // Use cookie session so CSRF and step state persist without DB
             config(['session.driver' => 'cookie']);

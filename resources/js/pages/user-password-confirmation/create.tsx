@@ -1,7 +1,6 @@
-import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { store } from '@/routes/password/confirm';
 import { Form, Head } from '@inertiajs/react';
@@ -18,8 +17,11 @@ export default function Create() {
             <Form {...store.form()} resetOnSuccess={['password']}>
                 {({ processing, errors }) => (
                     <div className="space-y-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
+                        <FormField
+                            label="Password"
+                            htmlFor="password"
+                            error={errors.password}
+                        >
                             <Input
                                 id="password"
                                 type="password"
@@ -28,9 +30,7 @@ export default function Create() {
                                 autoComplete="current-password"
                                 autoFocus
                             />
-
-                            <InputError message={errors.password} />
-                        </div>
+                        </FormField>
 
                         <div className="flex items-center">
                             <Button

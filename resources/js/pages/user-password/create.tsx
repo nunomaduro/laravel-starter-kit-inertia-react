@@ -2,10 +2,9 @@ import UserPasswordController from '@/actions/App/Http/Controllers/UserPasswordC
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 
-import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 
 interface ResetPasswordProps {
@@ -28,54 +27,52 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
             >
                 {({ processing, errors }) => (
                     <div className="grid gap-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
+                        <FormField
+                            label="Email"
+                            htmlFor="email"
+                            error={errors.email}
+                        >
                             <Input
                                 id="email"
                                 type="email"
                                 name="email"
                                 autoComplete="email"
                                 value={email}
-                                className="mt-1 block w-full"
+                                className="block w-full"
                                 readOnly
                             />
-                            <InputError
-                                message={errors.email}
-                                className="mt-2"
-                            />
-                        </div>
+                        </FormField>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
+                        <FormField
+                            label="Password"
+                            htmlFor="password"
+                            error={errors.password}
+                        >
                             <Input
                                 id="password"
                                 type="password"
                                 name="password"
                                 autoComplete="new-password"
-                                className="mt-1 block w-full"
+                                className="block w-full"
                                 autoFocus
                                 placeholder="Password"
                             />
-                            <InputError message={errors.password} />
-                        </div>
+                        </FormField>
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="password_confirmation">
-                                Confirm password
-                            </Label>
+                        <FormField
+                            label="Confirm password"
+                            htmlFor="password_confirmation"
+                            error={errors.password_confirmation}
+                        >
                             <Input
                                 id="password_confirmation"
                                 type="password"
                                 name="password_confirmation"
                                 autoComplete="new-password"
-                                className="mt-1 block w-full"
+                                className="block w-full"
                                 placeholder="Confirm password"
                             />
-                            <InputError
-                                message={errors.password_confirmation}
-                                className="mt-2"
-                            />
-                        </div>
+                        </FormField>
 
                         <Button
                             type="submit"

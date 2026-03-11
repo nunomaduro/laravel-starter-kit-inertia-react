@@ -12,6 +12,7 @@ import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -155,49 +156,39 @@ export default function Edit({ status }: { status?: string }) {
                                     />
                                 </div>
 
-                                <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
-
+                                <FormField
+                                    label="Name"
+                                    htmlFor="name"
+                                    error={errors.name}
+                                >
                                     <Input
                                         id="name"
-                                        className="mt-1 block w-full"
+                                        className="block w-full"
                                         defaultValue={auth.user.name}
                                         name="name"
                                         required
                                         autoComplete="name"
                                         placeholder="Full name"
                                     />
+                                </FormField>
 
-                                    <InputError
-                                        className="mt-2"
-                                        message={errors.name}
-                                    />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
-
+                                <FormField
+                                    label="Email address"
+                                    htmlFor="email"
+                                    description="We'll send a verification link if you change this."
+                                    error={errors.email}
+                                >
                                     <Input
                                         id="email"
                                         type="email"
-                                        className="mt-1 block w-full"
+                                        className="block w-full"
                                         defaultValue={auth.user.email}
                                         name="email"
                                         required
                                         autoComplete="username"
                                         placeholder="Email address"
                                     />
-
-                                    <p className="text-xs text-muted-foreground">
-                                        We'll send a verification link if you
-                                        change this.
-                                    </p>
-
-                                    <InputError
-                                        className="mt-2"
-                                        message={errors.email}
-                                    />
-                                </div>
+                                </FormField>
 
                                 {auth.user.email_verified_at === null && (
                                     <div>

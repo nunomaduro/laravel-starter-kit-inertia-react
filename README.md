@@ -43,7 +43,7 @@ This isn't just another Laravel boilerplate—it's a statement that PHP applicat
 
 ## Getting Started
 
-> **Requires [PHP 8.4+](https://php.net/releases/), [Bun](https://bun.sh) and a code coverage driver like [xdebug](https://xdebug.org/docs/install)**.
+> **Requires [PHP 8.5+](https://php.net/releases/), [Bun](https://bun.sh) and a code coverage driver like [xdebug](https://xdebug.org/docs/install)**.
 
 Create your type-safe Laravel application using [Composer](https://getcomposer.org):
 
@@ -76,13 +76,13 @@ bunx playwright install
 
 ### Verify Installation
 
-Run the test suite to ensure everything is configured correctly:
+Run a quick sanity check (health + tests):
 
 ```bash
-composer test
+php artisan app:health && composer test
 ```
 
-You should see all tests passing. For the full suite (coverage, type coverage, lint, static analysis), run `composer test:full`.
+You should see health checks and all tests passing. For the full suite (coverage, type coverage, lint, static analysis), run `composer test:full`.
 
 ## Available Tooling
 
@@ -216,6 +216,13 @@ composer docs:generate
 - **Template-based**: Consistent documentation structure using templates in `docs/.templates/`
 
 The system will automatically prompt you (or AI agents) to document new features when they're created. Documentation is **mandatory** - commits and CI builds will fail if documentation is missing.
+
+## Troubleshooting
+
+- **`composer test:types` fails** — Fix reported PHPStan or TypeScript errors. Run `bun run test:types` for frontend only; ensure Wayfinder has generated routes (`bun run build` or `composer dev`).
+- **Vite manifest missing** — Run `bun run build` or start the dev server with `bun run dev` / `composer dev`.
+- **Pre-commit fails (docs)** — Run `php artisan docs:sync` and, if needed, `php artisan docs:sync --generate`. See [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Contributing** — Setup, commands, and pre-commit hook: see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

@@ -10,6 +10,10 @@ This documentation is for developers working on or extending this application.
 - [Frontend](./frontend/README.md) - Frontend components and patterns
 - [Deployment](./deployment.md) - Environment, assets, caching, and hardening
 
+## Verify your setup
+
+From the project root: `php artisan app:health && composer test` (health check + fast test suite). See [CONTRIBUTING.md](../../CONTRIBUTING.md) in the repo root for full setup and commands.
+
 ## Quick Links
 
 - [Actions Documentation](./backend/actions/README.md) - All Action classes

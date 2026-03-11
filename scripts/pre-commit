@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Pre-commit hook: Pint (PHP style), model/seeder and docs checks.
+# Pre-commit hook: Rector, Pint (PHP style), model/seeder, docs, and TypeScript checks.
 # Install: cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 #
 
@@ -72,5 +72,13 @@ if [ "$DOCS_EXIT" -ne 0 ]; then
     exit 1
 fi
 echo "✅ Docs OK"
+
+# 5. TypeScript
+echo "🔷 Checking TypeScript..."
+if ! bun run test:types 2>/dev/null; then
+    echo "❌ TypeScript check failed. Run: bun run test:types"
+    exit 1
+fi
+echo "✅ TypeScript OK"
 
 exit 0

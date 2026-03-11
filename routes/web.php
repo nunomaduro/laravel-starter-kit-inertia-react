@@ -82,6 +82,7 @@ Route::middleware(EnsureNotInstalled::class)->group(function (): void {
     Route::get('install', [InstallController::class, 'show'])->name('install');
     Route::post('install', [InstallController::class, 'store'])->name('install.store');
     Route::post('install/express', [InstallController::class, 'express'])->name('install.express');
+    Route::get('install/express/status', [InstallController::class, 'expressStatus'])->name('install.express.status');
     Route::post('install/test-connection', [InstallController::class, 'testConnection'])->name('install.test-connection');
 });
 
