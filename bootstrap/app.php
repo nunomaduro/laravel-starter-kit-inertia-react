@@ -43,6 +43,9 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         then: function (): void {
             require base_path('routes/ai.php');
+            if (app()->environment(['local', 'testing'])) {
+                require base_path('routes/install.php');
+            }
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {

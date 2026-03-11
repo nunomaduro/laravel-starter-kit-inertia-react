@@ -319,14 +319,17 @@ final class InstallController extends Controller
         if ($key === '' || ! str_starts_with($key, 'install_migrate_') || ! str_ends_with($key, '.json')) {
             return response()->json(['error' => 'Invalid key.'], 400);
         }
+
         $progressFile = storage_path('app/'.$key);
         if (! file_exists($progressFile)) {
             return response()->json(['message' => 'Pending…', 'done' => false]);
         }
+
         $data = json_decode((string) file_get_contents($progressFile), true);
         if (! is_array($data)) {
             return response()->json(['message' => 'Running…', 'done' => false]);
         }
+
         $done = $data['done'] ?? false;
         if ($done) {
             @unlink($progressFile);
@@ -797,6 +800,7 @@ final class InstallController extends Controller
         if ($error !== null) {
             $data['error'] = $error;
         }
+
         file_put_contents($progressFile, json_encode($data), LOCK_EX);
     }
 
@@ -824,8 +828,8 @@ final class InstallController extends Controller
 
             session(['install_migrate_done' => true]);
             $this->writeMigrateProgress($progressFile, 'Done.', true);
-        } catch (Throwable $e) {
-            $this->writeMigrateProgress($progressFile, $e->getMessage(), true, $e->getMessage());
+        } catch (Throwable $throwable) {
+            $this->writeMigrateProgress($progressFile, $throwable->getMessage(), true, $throwable->getMessage());
         }
     }
 

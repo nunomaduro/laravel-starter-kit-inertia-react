@@ -16,9 +16,6 @@ use Illuminate\Database\Seeder;
  */
 final class AnnouncementSeeder extends Seeder
 {
-    /** @var list<string> */
-    private array $dependencies = ['UsersSeeder'];
-
     public function run(): void
     {
         $admin = User::query()->whereHas('roles', fn ($q) => $q->where('name', 'super-admin'))->first();
@@ -28,7 +25,7 @@ final class AnnouncementSeeder extends Seeder
         $announcements = [
             [
                 'title' => 'Welcome to the platform',
-                'body' => 'We\'ve launched new help articles and a contact form. Check out **Settings** for feature flags and preferences.',
+                'body' => "We've launched new help articles and a contact form. Check out **Settings** for feature flags and preferences.",
                 'level' => AnnouncementLevel::Info,
                 'scope' => AnnouncementScope::Global,
                 'organization_id' => null,

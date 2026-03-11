@@ -28,7 +28,6 @@ use App\Http\Controllers\EnterpriseInquiryController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\HelpCenter\HelpCenterController;
 use App\Http\Controllers\HelpCenter\RateHelpArticleController;
-use App\Http\Controllers\InstallController;
 use App\Http\Controllers\Internal\CaddyAskController;
 use App\Http\Controllers\InvitationAcceptController;
 use App\Http\Controllers\Notifications\ClearAllNotificationsController;
@@ -69,7 +68,6 @@ use App\Http\Controllers\UserPreferencesController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UsersTableController;
 use App\Http\Controllers\UserTwoFactorAuthenticationController;
-use App\Http\Middleware\EnsureNotInstalled;
 use App\Http\Middleware\InternalRequestMiddleware;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\RedirectResponse;
@@ -79,20 +77,6 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Spatie\Honeypot\ProtectAgainstSpam;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
-// Web installer — only when APP_ENV is local/testing; rate-limited
-Route::middleware(['install.env', 'throttle:install'])->group(function (): void {
-    Route::get('install/complete', [InstallController::class, 'complete'])->name('install.complete');
-    Route::middleware(EnsureNotInstalled::class)->group(function (): void {
-        Route::get('install', [InstallController::class, 'show'])->name('install');
-        Route::post('install', [InstallController::class, 'store'])->name('install.store');
-        Route::post('install/express', [InstallController::class, 'express'])->name('install.express');
-        Route::get('install/express/status', [InstallController::class, 'expressStatus'])->name('install.express.status');
-        Route::post('install/test-connection', [InstallController::class, 'testConnection'])->name('install.test-connection');
-        Route::post('install/migrate/run', [InstallController::class, 'migrateRun'])->name('install.migrate.run');
-        Route::get('install/migrate/status', [InstallController::class, 'migrateStatus'])->name('install.migrate.status');
-    });
-});
 
 if (app()->environment(['local', 'staging'])) {
     Route::get('dev/components', ComponentShowcaseController::class)

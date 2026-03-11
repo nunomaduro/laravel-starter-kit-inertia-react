@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
- * Redirects to /admin when setup is already complete, preventing re-installation
+ * Redirects to home when setup is already complete, preventing re-installation
  * through the web installer.
  */
 final class EnsureNotInstalled
@@ -22,7 +22,7 @@ final class EnsureNotInstalled
             $wizard = resolve(SetupWizardSettings::class);
 
             if ($wizard->setup_completed) {
-                return redirect('/admin');
+                return to_route('home');
             }
         } catch (Throwable) {
             // Settings table not yet available — allow access to installer
