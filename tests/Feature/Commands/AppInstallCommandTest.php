@@ -51,7 +51,7 @@ afterEach(function (): void {
     ]);
 
     // Force Scout to re-resolve its engine so Typesense config doesn't persist.
-    app(Laravel\Scout\EngineManager::class)->forgetEngines();
+    resolve(Laravel\Scout\EngineManager::class)->forgetEngines();
 });
 
 // ─── Core installer behaviour ─────────────────────────────────────────────────

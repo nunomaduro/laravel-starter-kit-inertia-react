@@ -16,9 +16,7 @@ final class EnsureInstallEnvironment
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! app()->environment(['local', 'testing'])) {
-            abort(404);
-        }
+        abort_unless(app()->environment(['local', 'testing']), 404);
 
         return $next($request);
     }

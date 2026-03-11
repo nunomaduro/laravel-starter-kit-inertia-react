@@ -76,6 +76,10 @@ Organization-scoped permissions (`org.*`) are defined in `database/seeders/data/
 - **User methods** (via `HasOrganizationPermissions`): `canInOrganization()`, `canInCurrentOrganization()`, `canAnyInOrganization()`, `canAllInOrganization()`, `isOrganizationOwner()`, `isOrganizationAdmin()`, `hasOrganizationRole()`, `roleNamesInOrganization()`.
 - **Blade directives**: `@canOrg`, `@cannotOrg`, `@canAnyOrg`, `@canAllOrg`, `@isOrgOwner`, `@isOrgAdmin`, `@isOrgMember`, `@isOrgRole`.
 
+## Resource-level ownership (Governor)
+
+For “can act on *this* resource” (e.g. only the org owner can transfer/delete the org; only the announcement creator or super-admin can edit an org announcement), the app uses **Governor** (genealabs/laravel-governor) alongside Spatie. Spatie stays the source of truth for roles and permissions; Governor is used for ownership and optional scopes (view/update/delete “own” only). See [Governor](governor.md) for setup, Governable trait, `governor_owned_by`, and how to integrate with policies.
+
 ## Artisan commands
 
 | Command | Description |

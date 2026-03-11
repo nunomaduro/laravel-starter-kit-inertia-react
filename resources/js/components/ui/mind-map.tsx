@@ -21,7 +21,7 @@ interface MindMapProps {
 
 function MindMap({ data, onNodeClick, onAddChild, className }: MindMapProps) {
   const [expandedIds, setExpandedIds] = React.useState<Set<string>>(
-    new Set([data.id])
+    () => new Set([data.id])
   )
 
   const toggleExpand = (id: string) => {

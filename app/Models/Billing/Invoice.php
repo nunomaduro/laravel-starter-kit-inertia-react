@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models\Billing;
 
 use App\Models\Concerns\BelongsToOrganization;
+use Deligoez\LaravelModelHashId\Traits\HasHashId;
+use Deligoez\LaravelModelHashId\Traits\HasHashIdRouting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -27,11 +29,22 @@ use Override;
  * @property array|null $billing_address
  * @property int|null $payment_gateway_id
  * @property string|null $gateway_invoice_id
+ * @property-read string $hashId
  */
 final class Invoice extends Model
 {
     use BelongsToOrganization;
+    use HasHashId;
+    use HasHashIdRouting;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+
+    /**
+     * @var list<string>
+     */
+    #[Override]
+    protected $appends = [
+        'hash_id',
+    ];
 
     #[Override]
     protected $fillable = [

@@ -89,24 +89,24 @@ final class AppHealthCommand extends Command
         // ── Table output ──────────────────────────────────────────────────────
         note('Results');
 
-        $rows = array_map(fn ($r) => [
+        $rows = array_map(fn (array $r): array => [
             $this->statusIcon($r['status']).' '.$r['check'],
             $r['detail'],
         ], $this->results);
 
         table(['Check', 'Detail'], $rows);
 
-        $passed = count(array_filter($this->results, fn ($r) => $r['status'] === 'ok'));
-        $warned = count(array_filter($this->results, fn ($r) => $r['status'] === 'warn'));
-        $failed = count(array_filter($this->results, fn ($r) => $r['status'] === 'fail'));
+        $passed = count(array_filter($this->results, fn (array $r): bool => $r['status'] === 'ok'));
+        $warned = count(array_filter($this->results, fn (array $r): bool => $r['status'] === 'warn'));
+        $failed = count(array_filter($this->results, fn (array $r): bool => $r['status'] === 'fail'));
         $total = count($this->results);
 
         if ($this->hasFailed) {
-            error("  {$failed} check(s) failed, {$warned} warning(s), {$passed}/{$total} passed");
+            error(sprintf('  %d check(s) failed, %d warning(s), %d/%d passed', $failed, $warned, $passed, $total));
         } elseif ($this->hasWarned) {
-            warning("  {$warned} warning(s), {$passed}/{$total} checks passed");
+            warning(sprintf('  %d warning(s), %d/%d checks passed', $warned, $passed, $total));
         } else {
-            outro("  All {$total} checks passed ✓");
+            outro(sprintf('  All %d checks passed ✓', $total));
         }
 
         $failOnWarn = (bool) $this->option('fail-on-warn');
@@ -120,15 +120,9 @@ final class AppHealthCommand extends Command
     {
         $version = PHP_VERSION;
 
-        if (PHP_VERSION_ID < 80200) {
-            $this->reportFail('PHP version', "PHP 8.2+ required, found {$version}");
-
-            return;
-        }
-
         $missing = array_filter(
             ['pdo', 'mbstring', 'openssl', 'tokenizer', 'xml', 'ctype', 'json', 'fileinfo'],
-            fn ($ext) => ! extension_loaded($ext)
+            fn (string $ext): bool => ! extension_loaded($ext)
         );
 
         if ($missing !== []) {
@@ -137,7 +131,7 @@ final class AppHealthCommand extends Command
             return;
         }
 
-        $this->reportOk('PHP', "PHP {$version} — all required extensions loaded");
+        $this->reportOk('PHP', sprintf('PHP %s — all required extensions loaded', $version));
     }
 
     private function checkEnvironment(): void
@@ -157,7 +151,7 @@ final class AppHealthCommand extends Command
             return;
         }
 
-        $this->reportOk('Environment', "env={$env}, debug=".($debug ? 'true' : 'false'));
+        $this->reportOk('Environment', sprintf('env=%s, debug=', $env).($debug ? 'true' : 'false'));
     }
 
     private function checkDatabase(): void
@@ -166,9 +160,9 @@ final class AppHealthCommand extends Command
             DB::connection()->getPdo();
             $driver = DB::connection()->getDriverName();
             $db = DB::connection()->getDatabaseName();
-            $this->reportOk('Database', "{$driver} — {$db}");
-        } catch (Throwable $e) {
-            $this->reportFail('Database', $e->getMessage());
+            $this->reportOk('Database', sprintf('%s — %s', $driver, $db));
+        } catch (Throwable $throwable) {
+            $this->reportFail('Database', $throwable->getMessage());
         }
     }
 
@@ -180,12 +174,12 @@ final class AppHealthCommand extends Command
             $pendingCount = mb_substr_count($rawOutput, 'Pending');
 
             if ($pendingCount > 0) {
-                $this->reportWarn('Migrations', "{$pendingCount} pending migration(s) — run: php artisan migrate");
+                $this->reportWarn('Migrations', $pendingCount.' pending migration(s) — run: php artisan migrate');
             } else {
                 $this->reportOk('Migrations', 'All migrations have been run');
             }
-        } catch (Throwable $e) {
-            $this->reportFail('Migrations', 'Could not check: '.$e->getMessage());
+        } catch (Throwable $throwable) {
+            $this->reportFail('Migrations', 'Could not check: '.$throwable->getMessage());
         }
     }
 
@@ -203,9 +197,9 @@ final class AppHealthCommand extends Command
 
             $siteName = $app->site_name ?? '(not set)';
             $url = $app->url ?? '(not set)';
-            $this->reportOk('Setup', "Complete — {$siteName} at {$url}");
-        } catch (Throwable $e) {
-            $this->reportFail('Setup', 'Settings unavailable: '.$e->getMessage());
+            $this->reportOk('Setup', sprintf('Complete — %s at %s', $siteName, $url));
+        } catch (Throwable $throwable) {
+            $this->reportFail('Setup', 'Settings unavailable: '.$throwable->getMessage());
         }
     }
 
@@ -250,19 +244,19 @@ final class AppHealthCommand extends Command
             Cache::forget($key);
 
             if ($val === 'ok') {
-                $this->reportOk('Cache', "Driver: {$driver}");
+                $this->reportOk('Cache', 'Driver: '.$driver);
             } else {
-                $this->reportFail('Cache', "Read/write failed with driver: {$driver}");
+                $this->reportFail('Cache', 'Read/write failed with driver: '.$driver);
             }
-        } catch (Throwable $e) {
-            $this->reportFail('Cache', "Driver: {$driver} — {$e->getMessage()}");
+        } catch (Throwable $throwable) {
+            $this->reportFail('Cache', sprintf('Driver: %s — %s', $driver, $throwable->getMessage()));
         }
     }
 
     private function checkSession(): void
     {
         $driver = (string) config('session.driver', 'unknown');
-        $this->reportOk('Session', "Driver: {$driver}");
+        $this->reportOk('Session', 'Driver: '.$driver);
     }
 
     private function checkQueue(): void
@@ -277,9 +271,9 @@ final class AppHealthCommand extends Command
 
         try {
             Queue::size();
-            $this->reportOk('Queue', "Connection: {$connection}");
+            $this->reportOk('Queue', 'Connection: '.$connection);
         } catch (Throwable) {
-            $this->reportOk('Queue', "Connection: {$connection}");
+            $this->reportOk('Queue', 'Connection: '.$connection);
         }
     }
 
@@ -297,14 +291,14 @@ final class AppHealthCommand extends Command
             }
 
             if (empty($from)) {
-                $this->reportWarn('Mail', "Mailer: {$mailer} — from address not configured");
+                $this->reportWarn('Mail', sprintf('Mailer: %s — from address not configured', $mailer));
 
                 return;
             }
 
-            $this->reportOk('Mail', "Mailer: {$mailer}, from: {$from}");
-        } catch (Throwable $e) {
-            $this->reportFail('Mail', 'Settings unavailable: '.$e->getMessage());
+            $this->reportOk('Mail', sprintf('Mailer: %s, from: %s', $mailer, $from));
+        } catch (Throwable $throwable) {
+            $this->reportFail('Mail', 'Settings unavailable: '.$throwable->getMessage());
         }
     }
 
@@ -326,12 +320,12 @@ final class AppHealthCommand extends Command
                     return;
                 }
 
-                $this->reportOk('Search', "Typesense at {$host}");
+                $this->reportOk('Search', 'Typesense at '.$host);
             } else {
-                $this->reportOk('Search', "Driver: {$driver}");
+                $this->reportOk('Search', 'Driver: '.$driver);
             }
-        } catch (Throwable $e) {
-            $this->reportWarn('Search', 'Could not check: '.$e->getMessage());
+        } catch (Throwable $throwable) {
+            $this->reportWarn('Search', 'Could not check: '.$throwable->getMessage());
         }
     }
 
@@ -355,15 +349,15 @@ final class AppHealthCommand extends Command
             };
 
             if (! $hasKey) {
-                $this->reportWarn('AI (Prism)', "Provider: {$provider} — API key not configured");
+                $this->reportWarn('AI (Prism)', sprintf('Provider: %s — API key not configured', $provider));
 
                 return;
             }
 
             $model = $prism->default_model ?? 'default';
-            $this->reportOk('AI (Prism)', "Provider: {$provider}, model: {$model}");
-        } catch (Throwable $e) {
-            $this->reportWarn('AI (Prism)', 'Settings unavailable: '.$e->getMessage());
+            $this->reportOk('AI (Prism)', sprintf('Provider: %s, model: %s', $provider, $model));
+        } catch (Throwable $throwable) {
+            $this->reportWarn('AI (Prism)', 'Settings unavailable: '.$throwable->getMessage());
         }
     }
 
@@ -373,7 +367,7 @@ final class AppHealthCommand extends Command
             return;
         }
 
-        if (! class_exists('Laravel\\Horizon\\Horizon')) {
+        if (! class_exists(\Laravel\Horizon\Horizon::class)) {
             $this->reportWarn('Horizon', 'Queue uses Redis but Laravel Horizon is not installed');
 
             return;
@@ -384,7 +378,7 @@ final class AppHealthCommand extends Command
 
     private function checkReverb(): void
     {
-        if (! class_exists('Laravel\\Reverb\\ReverbServiceProvider')) {
+        if (! class_exists(\Laravel\Reverb\ReverbServiceProvider::class)) {
             return;
         }
 
@@ -396,7 +390,7 @@ final class AppHealthCommand extends Command
             return;
         }
 
-        $this->reportOk('Reverb', "App ID: {$appId}");
+        $this->reportOk('Reverb', 'App ID: '.$appId);
     }
 
     private function checkScheduler(): void
@@ -406,7 +400,7 @@ final class AppHealthCommand extends Command
         if ($lastRun === null) {
             $this->reportWarn('Scheduler', 'No recent heartbeat — ensure cron is set: * * * * * php artisan schedule:run');
         } else {
-            $this->reportOk('Scheduler', "Last run: {$lastRun}");
+            $this->reportOk('Scheduler', 'Last run: '.$lastRun);
         }
     }
 
@@ -425,9 +419,9 @@ final class AppHealthCommand extends Command
                 return;
             }
 
-            $this->reportOk('2FA Policy', "Enforcement: {$enforcement}");
-        } catch (Throwable $e) {
-            $this->reportWarn('2FA Policy', 'Could not check: '.$e->getMessage());
+            $this->reportOk('2FA Policy', 'Enforcement: '.$enforcement);
+        } catch (Throwable $throwable) {
+            $this->reportWarn('2FA Policy', 'Could not check: '.$throwable->getMessage());
         }
     }
 
@@ -451,14 +445,14 @@ final class AppHealthCommand extends Command
             $descLen = mb_strlen($seo->meta_description);
 
             if ($descLen > 160) {
-                $this->reportWarn('SEO', "Meta description is {$descLen} chars (recommended: ≤ 160).");
+                $this->reportWarn('SEO', sprintf('Meta description is %d chars (recommended: ≤ 160).', $descLen));
 
                 return;
             }
 
-            $this->reportOk('SEO', "Meta title and description configured ({$descLen} chars).");
-        } catch (Throwable $e) {
-            $this->reportWarn('SEO', 'Could not check: '.$e->getMessage());
+            $this->reportOk('SEO', sprintf('Meta title and description configured (%d chars).', $descLen));
+        } catch (Throwable $throwable) {
+            $this->reportWarn('SEO', 'Could not check: '.$throwable->getMessage());
         }
     }
 
@@ -477,9 +471,9 @@ final class AppHealthCommand extends Command
                 return;
             }
 
-            $this->reportOk('Logging', "Channel: {$channel}, level: {$logging->log_level}");
-        } catch (Throwable $e) {
-            $this->reportWarn('Logging', 'Could not check: '.$e->getMessage());
+            $this->reportOk('Logging', sprintf('Channel: %s, level: %s', $channel, $logging->log_level));
+        } catch (Throwable $throwable) {
+            $this->reportWarn('Logging', 'Could not check: '.$throwable->getMessage());
         }
     }
 

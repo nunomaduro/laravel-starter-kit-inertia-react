@@ -51,14 +51,14 @@ function VideoPlayer({
   const [isMuted, setIsMuted] = React.useState(muted)
   const [speedIndex, setSpeedIndex] = React.useState(2)
   const [showControls, setShowControls] = React.useState(true)
-  const hideTimer = React.useRef<ReturnType<typeof setTimeout>>(null)
+  const hideTimerRef = React.useRef<ReturnType<typeof setTimeout>>(null)
 
   const effectiveAutoPlay = autoPlay && !reducedMotion
 
   const resetHideTimer = () => {
     setShowControls(true)
-    if (hideTimer.current) clearTimeout(hideTimer.current)
-    hideTimer.current = setTimeout(() => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
+    hideTimerRef.current = setTimeout(() => {
       if (isPlaying) setShowControls(false)
     }, 2500)
   }

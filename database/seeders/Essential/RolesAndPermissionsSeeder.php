@@ -26,6 +26,7 @@ final class RolesAndPermissionsSeeder extends Seeder
             'create users',
             'edit users',
             'delete users',
+            'announcements.manage_global',
         ];
 
         foreach ($corePermissions as $name) {
@@ -33,7 +34,7 @@ final class RolesAndPermissionsSeeder extends Seeder
         }
 
         $superAdmin = Role::query()->firstOrCreate(['name' => 'super-admin', 'guard_name' => self::GUARD]);
-        $superAdmin->givePermissionTo('bypass-permissions');
+        $superAdmin->givePermissionTo(['bypass-permissions', 'announcements.manage_global']);
 
         $admin = Role::query()->firstOrCreate(['name' => 'admin', 'guard_name' => self::GUARD]);
         $userRole = Role::query()->firstOrCreate(['name' => 'user', 'guard_name' => self::GUARD]);

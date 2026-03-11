@@ -26,6 +26,7 @@ import { useEffect, useState } from 'react';
 
 export interface UsersTableRow {
     id: number;
+    hash_id: string;
     name: string;
     email: string;
     avatar: string | null;
@@ -75,13 +76,13 @@ export default function UsersTablePage({
     const rowActions: DataTableAction<UsersTableRow>[] = [
         {
             label: 'View',
-            onClick: (row) => router.visit(`/users/${row.id}`),
+            onClick: (row) => router.visit(`/users/${row.hash_id}`),
         },
         {
             label: 'Duplicate',
             onClick: (row) => {
                 router.post(
-                    `/users/${row.id}/duplicate`,
+                    `/users/${row.hash_id}/duplicate`,
                     {},
                     { preserveScroll: true, only: ['tableData', 'flash'] },
                 );
@@ -191,7 +192,7 @@ export default function UsersTablePage({
                     searchableColumns={searchableColumns}
                     debounceMs={300}
                     partialReloadKey="tableData"
-                    rowLink={(row) => `/users/${row.id}`}
+                    rowLink={(row) => `/users/${row.hash_id}`}
                     emptyState={
                         <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
                             <div className="rounded-full bg-muted p-4">
@@ -210,7 +211,11 @@ export default function UsersTablePage({
                     headerActions={headerActions}
                     renderDetailRow={(row, detail): ReactNode => {
                         const d = detail as
-                            | { email_verified_at?: string | null; updated_at?: string | null; organizations_count?: number }
+                            | {
+                                  email_verified_at?: string | null;
+                                  updated_at?: string | null;
+                                  organizations_count?: number;
+                              }
                             | undefined;
                         return (
                             <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-3">

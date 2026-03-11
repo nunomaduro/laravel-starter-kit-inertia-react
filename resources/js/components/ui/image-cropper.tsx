@@ -32,8 +32,8 @@ function ImageCropper({
   const [zoom, setZoom] = React.useState(1)
   const [rotation, setRotation] = React.useState(0)
   const [offset, setOffset] = React.useState({ x: 0, y: 0 })
-  const isDragging = React.useRef(false)
-  const lastPos = React.useRef({ x: 0, y: 0 })
+  const isDraggingRef = React.useRef(false)
+  const lastPosRef = React.useRef({ x: 0, y: 0 })
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const imgRef = React.useRef<HTMLImageElement | null>(null)
 
@@ -70,20 +70,20 @@ function ImageCropper({
   }, [drawCanvas])
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    isDragging.current = true
-    lastPos.current = { x: e.clientX, y: e.clientY }
+    isDraggingRef.current = true
+    lastPosRef.current = { x: e.clientX, y: e.clientY }
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDragging.current) return
-    const dx = e.clientX - lastPos.current.x
-    const dy = e.clientY - lastPos.current.y
-    lastPos.current = { x: e.clientX, y: e.clientY }
+    if (!isDraggingRef.current) return
+    const dx = e.clientX - lastPosRef.current.x
+    const dy = e.clientY - lastPosRef.current.y
+    lastPosRef.current = { x: e.clientX, y: e.clientY }
     setOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }))
   }
 
   const handleMouseUp = () => {
-    isDragging.current = false
+    isDraggingRef.current = false
   }
 
   const handleCrop = () => {

@@ -38,7 +38,11 @@ function formatDate(dateStr: string): string {
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
 
-    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
 }
 
 function getNotificationTitle(notification: Notification): string {
@@ -142,16 +146,20 @@ export default function NotificationsIndex() {
                                     />
 
                                     <div className="min-w-0 flex-1">
-                                        <p className="text-sm font-medium leading-snug">
+                                        <p className="text-sm leading-snug font-medium">
                                             {getNotificationTitle(notification)}
                                         </p>
                                         {getNotificationBody(notification) && (
                                             <p className="mt-0.5 text-sm text-muted-foreground">
-                                                {getNotificationBody(notification)}
+                                                {getNotificationBody(
+                                                    notification,
+                                                )}
                                             </p>
                                         )}
                                         <p className="mt-1 text-xs text-muted-foreground">
-                                            {formatDate(notification.created_at)}
+                                            {formatDate(
+                                                notification.created_at,
+                                            )}
                                         </p>
                                     </div>
 

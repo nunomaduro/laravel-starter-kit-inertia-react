@@ -61,10 +61,31 @@ it('resolves preset to tenancy and demo when preset is internal', function (): v
     $request = Request::create('/install/express', 'POST', ['preset' => 'internal']);
     $controller = new InstallController;
     $method = new ReflectionMethod(InstallController::class, 'resolveExpressOptions');
-    $method->setAccessible(true);
+
     $options = $method->invoke($controller, $request);
 
     expect($options)->toHaveKeys(['tenancy', 'demo'])
         ->and($options['tenancy'])->toBe('single')
         ->and($options['demo'])->toBe('none');
+});
+
+it('resolves express options including optional site_name and AI provider', function (): void {
+    $request = Request::create('/install/express', 'POST', [
+        'tenancy' => 'multi',
+        'demo' => 'none',
+        'site_name' => 'Acme',
+        'ai_provider' => 'openrouter',
+        'ai_api_key' => 'sk-test-key',
+        'ai_model' => 'openai/gpt-4o',
+    ]);
+    $controller = new InstallController;
+    $method = new ReflectionMethod(InstallController::class, 'resolveExpressOptions');
+
+    $options = $method->invoke($controller, $request);
+
+    expect($options)->toHaveKeys(['tenancy', 'demo', 'site_name', 'ai_provider', 'ai_api_key', 'ai_model'])
+        ->and($options['site_name'])->toBe('Acme')
+        ->and($options['ai_provider'])->toBe('openrouter')
+        ->and($options['ai_api_key'])->toBe('sk-test-key')
+        ->and($options['ai_model'])->toBe('openai/gpt-4o');
 });

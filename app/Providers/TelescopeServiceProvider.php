@@ -27,19 +27,37 @@ final class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
         Telescope::filter(function (IncomingEntry $entry) use ($isLocal): bool {
             // Skip recording for installer so Telescope never touches DB before app is installed
             if ($entry->type === EntryType::REQUEST && isset($entry->content['uri'])) {
-                $path = parse_url($entry->content['uri'], PHP_URL_PATH);
+                $path = parse_url((string) $entry->content['uri'], PHP_URL_PATH);
                 if ($path !== null && str_starts_with((string) $path, '/install')) {
                     return false;
                 }
             }
 
-            return $isLocal
-                || $entry->isReportableException()
-                || $entry->isFailedRequest()
-                || $entry->isFailedJob()
-                || $entry->isScheduledTask()
-                || $entry->isSlowQuery()
-                || $entry->hasMonitoredTag();
+            if ($isLocal) {
+                return true;
+            }
+
+            if ($entry->isReportableException()) {
+                return true;
+            }
+
+            if ($entry->isFailedRequest()) {
+                return true;
+            }
+
+            if ($entry->isFailedJob()) {
+                return true;
+            }
+
+            if ($entry->isScheduledTask()) {
+                return true;
+            }
+
+            if ($entry->isSlowQuery()) {
+                return true;
+            }
+
+            return $entry->hasMonitoredTag();
         });
 
         Telescope::tag(function (IncomingEntry $entry): array {

@@ -71,7 +71,7 @@ final class EnforceTwoFactor
                 ], 403);
             }
 
-            return redirect()->route('two-factor.show')
+            return to_route('two-factor.show')
                 ->with('two_factor_enforcement', true);
         }
 
@@ -80,13 +80,7 @@ final class EnforceTwoFactor
 
     private function routeIsExempt(Request $request): bool
     {
-        foreach (self::EXEMPT_ROUTES as $routeName) {
-            if ($request->routeIs($routeName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(self::EXEMPT_ROUTES, fn ($routeName) => $request->routeIs($routeName));
     }
 
     private function userHasTwoFactorEnabled(object $user): bool

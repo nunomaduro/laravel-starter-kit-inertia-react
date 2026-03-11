@@ -97,13 +97,16 @@ export function EntityHighlight({
     return (
         <span className={cn('text-sm leading-relaxed', className)}>
             {segments.map((seg, i) => {
+                const segKey = `${i}-${seg.text.slice(0, 50)}${seg.entity?.type ?? ''}`;
                 if (!seg.entity) {
-                    return <React.Fragment key={i}>{seg.text}</React.Fragment>;
+                    return (
+                        <React.Fragment key={segKey}>{seg.text}</React.Fragment>
+                    );
                 }
 
                 const chip = (
                     <span
-                        key={i}
+                        key={segKey}
                         className={cn(
                             'inline-block cursor-default rounded px-1 py-0.5 text-xs font-medium',
                             getEntityStyle(seg.entity.type),
@@ -115,7 +118,7 @@ export function EntityHighlight({
 
                 if (seg.entity.description ?? seg.entity.type) {
                     return (
-                        <Tooltip key={i}>
+                        <Tooltip key={segKey}>
                             <TooltipTrigger asChild>{chip}</TooltipTrigger>
                             <TooltipContent side="top" className="text-xs">
                                 <p className="font-semibold capitalize">

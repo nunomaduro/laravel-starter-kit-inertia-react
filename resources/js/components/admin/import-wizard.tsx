@@ -438,7 +438,7 @@ function ImportWizard({
                                     );
                                     return (
                                         <TableRow
-                                            key={rowIndex}
+                                            key={row.map(String).join('\t')}
                                             className={cn(
                                                 hasError && 'bg-destructive/5',
                                             )}
@@ -548,9 +548,9 @@ function ImportWizard({
                                             Error Details
                                         </p>
                                         {importResult.errorDetails.map(
-                                            (err, i) => (
+                                            (err) => (
                                                 <div
-                                                    key={i}
+                                                    key={err}
                                                     className="flex items-start gap-1.5 text-xs text-muted-foreground"
                                                 >
                                                     <XCircleIcon className="mt-0.5 size-3 shrink-0 text-destructive" />

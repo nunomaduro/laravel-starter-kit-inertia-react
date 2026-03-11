@@ -74,68 +74,68 @@ final class InstallController extends Controller
         'users' => [
             'label' => 'Users',
             'description' => 'Sample user accounts (admin, demo users)',
-            'seeders' => ['Database\\Seeders\\Development\\UsersSeeder'],
+            'seeders' => [\Database\Seeders\Development\UsersSeeder::class],
         ],
         'organizations' => [
             'label' => 'Organizations',
             'description' => 'Sample organizations, domains, and invitations',
             'seeders' => [
-                'Database\\Seeders\\Development\\OrganizationSeeder',
-                'Database\\Seeders\\Development\\OrganizationDomainSeeder',
-                'Database\\Seeders\\Development\\OrganizationInvitationSeeder',
+                \Database\Seeders\Development\OrganizationSeeder::class,
+                \Database\Seeders\Development\OrganizationDomainSeeder::class,
+                \Database\Seeders\Development\OrganizationInvitationSeeder::class,
             ],
         ],
         'billing' => [
             'label' => 'Billing & Subscriptions',
             'description' => 'Plans, gateways, subscriptions, credits, invoices',
             'seeders' => [
-                'Database\\Seeders\\Development\\PlanSeeder',
-                'Database\\Seeders\\Development\\PaymentGatewaySeeder',
-                'Database\\Seeders\\Development\\GatewayProductSeeder',
-                'Database\\Seeders\\Development\\BillingSeeder',
-                'Database\\Seeders\\Development\\SubscriptionSeeder',
-                'Database\\Seeders\\Development\\CreditPackSeeder',
-                'Database\\Seeders\\Development\\CreditSeeder',
-                'Database\\Seeders\\Development\\InvoiceSeeder',
-                'Database\\Seeders\\Development\\BillingMetricSeeder',
-                'Database\\Seeders\\Development\\FailedPaymentAttemptSeeder',
-                'Database\\Seeders\\Development\\RefundRequestSeeder',
+                \Database\Seeders\Development\PlanSeeder::class,
+                \Database\Seeders\Development\PaymentGatewaySeeder::class,
+                \Database\Seeders\Development\GatewayProductSeeder::class,
+                \Database\Seeders\Development\BillingSeeder::class,
+                \Database\Seeders\Development\SubscriptionSeeder::class,
+                \Database\Seeders\Development\CreditPackSeeder::class,
+                \Database\Seeders\Development\CreditSeeder::class,
+                \Database\Seeders\Development\InvoiceSeeder::class,
+                \Database\Seeders\Development\BillingMetricSeeder::class,
+                \Database\Seeders\Development\FailedPaymentAttemptSeeder::class,
+                \Database\Seeders\Development\RefundRequestSeeder::class,
             ],
         ],
         'content' => [
             'label' => 'Content',
             'description' => 'Blog posts, pages, help articles, changelog, categories',
             'seeders' => [
-                'Database\\Seeders\\Development\\CategorySeeder',
-                'Database\\Seeders\\Development\\PostSeeder',
-                'Database\\Seeders\\Development\\PageSeeder',
-                'Database\\Seeders\\Development\\PageRevisionSeeder',
-                'Database\\Seeders\\Development\\HelpArticleSeeder',
-                'Database\\Seeders\\Development\\ChangelogEntrySeeder',
+                \Database\Seeders\Development\CategorySeeder::class,
+                \Database\Seeders\Development\PostSeeder::class,
+                \Database\Seeders\Development\PageSeeder::class,
+                \Database\Seeders\Development\PageRevisionSeeder::class,
+                \Database\Seeders\Development\HelpArticleSeeder::class,
+                \Database\Seeders\Development\ChangelogEntrySeeder::class,
             ],
         ],
         'marketing' => [
             'label' => 'Marketing & CRM',
             'description' => 'Affiliates, contact forms, enterprise inquiries, vouchers',
             'seeders' => [
-                'Database\\Seeders\\Development\\AffiliateSeeder',
-                'Database\\Seeders\\Development\\AffiliateCommissionSeeder',
-                'Database\\Seeders\\Development\\AffiliatePayoutSeeder',
-                'Database\\Seeders\\Development\\ContactSubmissionSeeder',
-                'Database\\Seeders\\Development\\EnterpriseInquirySeeder',
-                'Database\\Seeders\\Development\\VoucherScopeSeeder',
+                \Database\Seeders\Development\AffiliateSeeder::class,
+                \Database\Seeders\Development\AffiliateCommissionSeeder::class,
+                \Database\Seeders\Development\AffiliatePayoutSeeder::class,
+                \Database\Seeders\Development\ContactSubmissionSeeder::class,
+                \Database\Seeders\Development\EnterpriseInquirySeeder::class,
+                \Database\Seeders\Development\VoucherScopeSeeder::class,
             ],
         ],
         'developer' => [
             'label' => 'Developer Samples',
             'description' => 'Visibility demos, model flags, shareables, webhooks, embeddings',
             'seeders' => [
-                'Database\\Seeders\\Development\\ModelFlagSeeder',
-                'Database\\Seeders\\Development\\VisibilityDemoSeeder',
-                'Database\\Seeders\\Development\\ShareableSeeder',
-                'Database\\Seeders\\Development\\CategorizableSeeder',
-                'Database\\Seeders\\Development\\WebhookLogSeeder',
-                'Database\\Seeders\\Development\\EmbeddingDemoSeeder',
+                \Database\Seeders\Development\ModelFlagSeeder::class,
+                \Database\Seeders\Development\VisibilityDemoSeeder::class,
+                \Database\Seeders\Development\ShareableSeeder::class,
+                \Database\Seeders\Development\CategorizableSeeder::class,
+                \Database\Seeders\Development\WebhookLogSeeder::class,
+                \Database\Seeders\Development\EmbeddingDemoSeeder::class,
             ],
         ],
     ];
@@ -158,7 +158,7 @@ final class InstallController extends Controller
                 array_pop($done);
                 session(['install_optional_done' => array_values($done)]);
 
-                return redirect()->route('install');
+                return to_route('install');
             }
         }
 
@@ -199,8 +199,12 @@ final class InstallController extends Controller
             'tenancy' => ['nullable', 'string', 'in:single,multi'],
             'demo' => ['nullable', 'string', 'in:none,minimal,full'],
             'single_org_name' => ['nullable', 'string', 'max:255'],
+            'site_name' => ['nullable', 'string', 'max:255'],
             'locale' => ['nullable', 'string', 'max:20'],
             'fallback_locale' => ['nullable', 'string', 'max:20'],
+            'ai_provider' => ['nullable', 'string', 'in:openrouter,openai,anthropic,groq,gemini,xai,deepseek,mistral,ollama'],
+            'ai_api_key' => ['nullable', 'string', 'max:1024'],
+            'ai_model' => ['nullable', 'string', 'max:255'],
         ], [
             'preset.in' => 'The preset must be one of: saas, internal, ai_first.',
             'tenancy.in' => 'The tenancy must be single or multi.',
@@ -297,18 +301,22 @@ final class InstallController extends Controller
         if (! is_string($token) || $token === '') {
             return redirect()->to('/admin');
         }
+
         try {
             $payload = Crypt::decrypt($token);
         } catch (Throwable) {
             return redirect()->to('/admin');
         }
+
         if (! is_array($payload) || empty($payload['user_id']) || empty($payload['expires']) || (int) $payload['expires'] < time()) {
             return redirect()->to('/admin');
         }
+
         $user = User::query()->find((int) $payload['user_id']);
         if (! $user) {
             return redirect()->to('/admin');
         }
+
         auth()->login($user, true);
 
         return redirect()->to('/admin');
@@ -325,7 +333,11 @@ final class InstallController extends Controller
             'infrastructure' => $this->handleOptional('infrastructure', fn () => $this->saveInfrastructure($request)),
             'mail' => $this->handleOptional('mail', fn () => $this->saveMail($request)),
             'search' => $this->handleOptional('search', fn () => $this->saveSearch($request)),
-            'ai' => $this->handleOptional('ai', fn () => $this->saveAi($request)),
+            'ai' => $this->handleOptional('ai', function () use ($request): void {
+                if ($request->filled('provider') && $request->input('provider') !== '') {
+                    $this->saveAi($request);
+                }
+            }),
             'social' => $this->handleOptional('social', fn () => $this->saveSocial($request)),
             'storage' => $this->handleOptional('storage', fn () => $this->saveStorage($request)),
             'broadcasting' => $this->handleOptional('broadcasting', fn () => $this->saveBroadcasting($request)),
@@ -334,7 +346,7 @@ final class InstallController extends Controller
             'billing' => $this->handleOptional('billing', fn () => $this->saveBilling($request)),
             'features' => $this->handleOptional('features', fn () => $this->saveFeatures($request)),
             'demo' => $this->handleDemo($request),
-            default => redirect()->route('install'),
+            default => to_route('install'),
         };
     }
 
@@ -344,7 +356,7 @@ final class InstallController extends Controller
      */
     public function testConnection(Request $request): JsonResponse
     {
-        $request->validate(['step' => 'required|in:database,infrastructure,mail,search']);
+        $request->validate(['step' => ['required', 'in:database,infrastructure,mail,search']]);
 
         $step = $request->input('step');
 
@@ -357,8 +369,8 @@ final class InstallController extends Controller
             };
 
             return response()->json(['ok' => true]);
-        } catch (Throwable $e) {
-            return response()->json(['ok' => false, 'message' => $e->getMessage()], 422);
+        } catch (Throwable $throwable) {
+            return response()->json(['ok' => false, 'message' => $throwable->getMessage()], 422);
         }
     }
 
@@ -366,9 +378,9 @@ final class InstallController extends Controller
 
     /**
      * Resolve express install options from request. Accepts tenancy, demo, single_org_name,
-     * and optional preset (saas, internal, ai_first) which supplies defaults when tenancy/demo omitted.
+     * optional preset (saas, internal, ai_first), and optional AI provider/key/model.
      *
-     * @return array{tenancy: string, demo: string, single_org_name?: string}
+     * @return array{tenancy: string, demo: string, single_org_name?: string, site_name?: string, ai_provider?: string, ai_api_key?: string, ai_model?: string, locale?: string, fallback_locale?: string}
      */
     private function resolveExpressOptions(Request $request): array
     {
@@ -381,6 +393,7 @@ final class InstallController extends Controller
             if (! in_array($tenancy, ['single', 'multi'], true)) {
                 $tenancy = $preset === 'internal' ? 'single' : 'multi';
             }
+
             if (! in_array($demo, ['none', 'minimal', 'full'], true)) {
                 $demo = $preset === 'ai_first' ? 'minimal' : 'none';
             }
@@ -393,20 +406,41 @@ final class InstallController extends Controller
         if ($tenancy === 'single' && is_string($singleOrgName) && Str::length(mb_trim($singleOrgName)) > 0) {
             $options['single_org_name'] = mb_trim($singleOrgName);
         }
+
+        $siteName = $request->input('site_name');
+        if (is_string($siteName) && Str::length(mb_trim($siteName)) > 0) {
+            $options['site_name'] = mb_trim($siteName);
+        }
+
         $locale = $request->input('locale');
         if (is_string($locale) && Str::length(mb_trim($locale)) > 0) {
             $options['locale'] = mb_trim($locale);
         }
+
         $fallbackLocale = $request->input('fallback_locale');
         if (is_string($fallbackLocale) && Str::length(mb_trim($fallbackLocale)) > 0) {
             $options['fallback_locale'] = mb_trim($fallbackLocale);
+        }
+
+        $aiProvider = $request->input('ai_provider');
+        if (is_string($aiProvider) && $aiProvider !== '') {
+            $options['ai_provider'] = $aiProvider;
+            $apiKey = $request->input('ai_api_key');
+            if (is_string($apiKey) && $apiKey !== '') {
+                $options['ai_api_key'] = $apiKey;
+            }
+
+            $model = $request->input('ai_model');
+            if (is_string($model) && Str::length(mb_trim($model)) > 0) {
+                $options['ai_model'] = mb_trim($model);
+            }
         }
 
         return $options;
     }
 
     /**
-     * @param  array{tenancy?: string, demo?: string, single_org_name?: string, locale?: string, fallback_locale?: string}  $options
+     * @param  array{tenancy?: string, demo?: string, single_org_name?: string, site_name?: string, locale?: string, fallback_locale?: string, ai_provider?: string, ai_api_key?: string, ai_model?: string}  $options
      */
     private function runExpressInstallSteps(string $progressFile, string $appUrl, array $options = []): void
     {
@@ -416,16 +450,25 @@ final class InstallController extends Controller
             $this->writeProgress($progressFile, 'migrate', 'done');
 
             $this->writeProgress($progressFile, 'roles', 'running');
-            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\RolesAndPermissionsSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\RolesAndPermissionsSeeder::class, '--force' => true]);
             $this->writeProgress($progressFile, 'roles', 'done');
 
             $this->writeProgress($progressFile, 'gamification', 'running');
-            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\GamificationSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\GamificationSeeder::class, '--force' => true]);
             $this->writeProgress($progressFile, 'gamification', 'done');
 
             $this->writeProgress($progressFile, 'mail_tpl', 'running');
-            Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\MailTemplatesSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\MailTemplatesSeeder::class, '--force' => true]);
             $this->writeProgress($progressFile, 'mail_tpl', 'done');
+
+            $this->writeProgress($progressFile, 'governor', 'running');
+            try {
+                Artisan::call('db:seed', ['--class' => \GeneaLabs\LaravelGovernor\Database\Seeders\LaravelGovernorDatabaseSeeder::class, '--force' => true]);
+            } catch (Throwable) {
+                // Non-fatal — Governor may not be used
+            }
+
+            $this->writeProgress($progressFile, 'governor', 'done');
 
             $this->writeProgress($progressFile, 'admin', 'running');
             // Use raw DB insert to bypass ALL model events/observers (Scout, userstamps, etc.)
@@ -447,25 +490,30 @@ final class InstallController extends Controller
                 // The column is NOT NULL, and OrganizationTeamResolver returns 0 when no tenant is set.
                 DB::table('model_has_roles')->insertOrIgnore([
                     'role_id' => $superAdminRole->id,
-                    'model_type' => 'App\\Models\\User',
+                    'model_type' => User::class,
                     'model_id' => $userId,
                     'organization_id' => 0,
                 ]);
             }
+
             $this->writeProgress($progressFile, 'admin', 'done');
 
             $this->writeProgress($progressFile, 'settings', 'running');
 
             $app = resolve(AppSettings::class);
-            $app->site_name = 'My App';
+            $app->site_name = Str::length((string) ($options['site_name'] ?? '')) > 0
+                ? (string) $options['site_name']
+                : 'My App';
             $app->url = $appUrl;
             $app->timezone = 'UTC';
             if (isset($options['locale']) && $options['locale'] !== '') {
                 $app->locale = $options['locale'];
             }
+
             if (isset($options['fallback_locale']) && $options['fallback_locale'] !== '') {
                 $app->fallback_locale = $options['fallback_locale'];
             }
+
             $app->save();
 
             $this->ensureMailSettingsExist();
@@ -475,11 +523,11 @@ final class InstallController extends Controller
             $mail->mailer = 'smtp';
             $mail->smtp_host = '127.0.0.1';
             $mail->smtp_port = 2525;
-            $mail->smtp_username = 'My App';
+            $mail->smtp_username = $app->site_name;
             $mail->smtp_password = null;
             $mail->smtp_encryption = null;
             $mail->from_address = 'hello@example.com';
-            $mail->from_name = 'My App';
+            $mail->from_name = $app->site_name;
             $mail->save();
 
             $wizard = resolve(SetupWizardSettings::class);
@@ -495,7 +543,31 @@ final class InstallController extends Controller
                     ? (string) $options['single_org_name']
                     : 'My Organization';
             }
+
             $tenancy->save();
+
+            $provider = $options['ai_provider'] ?? null;
+            if (is_string($provider) && $provider !== '') {
+                $prism = resolve(PrismSettings::class);
+                $prism->default_provider = $provider;
+                $prism->default_model = (string) ($options['ai_model'] ?? '');
+                $apiKey = $options['ai_api_key'] ?? null;
+                if (is_string($apiKey) && $apiKey !== '' && $provider !== 'ollama') {
+                    match ($provider) {
+                        'openrouter' => $prism->openrouter_api_key = $apiKey,
+                        'openai' => $prism->openai_api_key = $apiKey,
+                        'anthropic' => $prism->anthropic_api_key = $apiKey,
+                        'groq' => $prism->groq_api_key = $apiKey,
+                        'gemini' => $prism->gemini_api_key = $apiKey,
+                        'xai' => $prism->xai_api_key = $apiKey,
+                        'deepseek' => $prism->deepseek_api_key = $apiKey,
+                        'mistral' => $prism->mistral_api_key = $apiKey,
+                        default => null,
+                    };
+                }
+
+                $prism->save();
+            }
 
             $demo = $options['demo'] ?? 'none';
             if ($demo !== 'none') {
@@ -506,6 +578,7 @@ final class InstallController extends Controller
                     if ($module === null) {
                         continue;
                     }
+
                     foreach ($module['seeders'] as $seederClass) {
                         try {
                             Artisan::call('db:seed', ['--class' => $seederClass, '--force' => true]);
@@ -514,6 +587,7 @@ final class InstallController extends Controller
                         }
                     }
                 }
+
                 $this->writeProgress($progressFile, 'demo', 'done');
             }
 
@@ -535,10 +609,10 @@ final class InstallController extends Controller
                 'redirect' => $redirectUrl,
             ]);
 
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             $this->writeProgressFile($progressFile, [
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $throwable->getMessage(),
                 'steps' => $this->readProgressFile($progressFile)['steps'] ?? [],
             ]);
         }
@@ -602,11 +676,11 @@ final class InstallController extends Controller
             config(['database.default' => 'sqlite']);
         } else {
             $validated = Validator::make($request->all(), [
-                'db_host' => 'required|string',
-                'db_port' => 'required|numeric',
-                'db_database' => 'required|string',
-                'db_username' => 'required|string',
-                'db_password' => 'nullable|string',
+                'db_host' => ['required', 'string'],
+                'db_port' => ['required', 'numeric'],
+                'db_database' => ['required', 'string'],
+                'db_username' => ['required', 'string'],
+                'db_password' => ['nullable', 'string'],
             ])->validate();
 
             $env = $this->setEnvVar($env, 'DB_CONNECTION', $driver);
@@ -619,33 +693,38 @@ final class InstallController extends Controller
 
             config([
                 'database.default' => $driver,
-                "database.connections.{$driver}.host" => $validated['db_host'],
-                "database.connections.{$driver}.port" => $validated['db_port'],
-                "database.connections.{$driver}.database" => $validated['db_database'],
-                "database.connections.{$driver}.username" => $validated['db_username'],
-                "database.connections.{$driver}.password" => $validated['db_password'] ?? '',
+                sprintf('database.connections.%s.host', $driver) => $validated['db_host'],
+                sprintf('database.connections.%s.port', $driver) => $validated['db_port'],
+                sprintf('database.connections.%s.database', $driver) => $validated['db_database'],
+                sprintf('database.connections.%s.username', $driver) => $validated['db_username'],
+                sprintf('database.connections.%s.password', $driver) => $validated['db_password'] ?? '',
             ]);
 
             DB::purge();
         }
 
         if (! $this->isDatabaseReachable()) {
-            return redirect()->route('install')
+            return to_route('install')
                 ->withErrors(['db' => 'Could not connect. Please check your credentials.'])
                 ->withInput();
         }
 
-        return redirect()->route('install');
+        return to_route('install');
     }
 
     private function handleMigrate(): RedirectResponse
     {
         Artisan::call('migrate', ['--force' => true]);
-        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\RolesAndPermissionsSeeder', '--force' => true]);
-        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\GamificationSeeder', '--force' => true]);
-        Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\MailTemplatesSeeder', '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\RolesAndPermissionsSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\GamificationSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\MailTemplatesSeeder::class, '--force' => true]);
+        try {
+            Artisan::call('db:seed', ['--class' => \GeneaLabs\LaravelGovernor\Database\Seeders\LaravelGovernorDatabaseSeeder::class, '--force' => true]);
+        } catch (Throwable) {
+            // Non-fatal
+        }
 
-        return redirect()->route('install');
+        return to_route('install');
     }
 
     private function handleAdmin(Request $request): RedirectResponse
@@ -669,18 +748,18 @@ final class InstallController extends Controller
 
         $user->syncRoles(['super-admin']);
 
-        return redirect()->route('install');
+        return to_route('install');
     }
 
     private function handleApp(Request $request): RedirectResponse
     {
         $validated = Validator::make($request->all(), [
-            'site_name' => 'required|string|max:255',
-            'url' => 'required|url',
-            'timezone' => 'nullable|string|timezone',
-            'locale' => 'nullable|string|max:12',
-            'fallback_locale' => 'nullable|string|max:12',
-            'preset' => 'nullable|string|in:none,saas,internal,ai_first',
+            'site_name' => ['required', 'string', 'max:255'],
+            'url' => ['required', 'url'],
+            'timezone' => ['nullable', 'string', 'timezone'],
+            'locale' => ['nullable', 'string', 'max:12'],
+            'fallback_locale' => ['nullable', 'string', 'max:12'],
+            'preset' => ['nullable', 'string', 'in:none,saas,internal,ai_first'],
         ])->validate();
 
         if (! empty($validated['preset'])) {
@@ -699,7 +778,7 @@ final class InstallController extends Controller
         $mail->from_name = $validated['site_name'];
         $mail->save();
 
-        return redirect()->route('install');
+        return to_route('install');
     }
 
     private function handleDemo(Request $request): RedirectResponse
@@ -754,7 +833,7 @@ final class InstallController extends Controller
         $done[] = $step;
         session(['install_optional_done' => array_unique($done)]);
 
-        return redirect()->route('install');
+        return to_route('install');
     }
 
     // ─── Optional step save closures ─────────────────────────────────────────
@@ -774,6 +853,7 @@ final class InstallController extends Controller
         } else {
             $tenancy->allow_user_org_creation = $request->boolean('allow_user_org_creation', true);
         }
+
         $tenancy->auto_create_personal_org = $request->boolean('auto_create_personal_org_for_admins', true);
         $tenancy->auto_create_personal_org_for_admins = $request->boolean('auto_create_personal_org_for_admins', true);
         $tenancy->auto_create_personal_org_for_members = $request->boolean('auto_create_personal_org_for_members', false);
@@ -1033,7 +1113,7 @@ final class InstallController extends Controller
         $keys = array_keys(config('feature-flags.inertia_features', []));
         $list = [];
         foreach ($keys as $key) {
-            $list[] = ['key' => $key, 'label' => $labels[$key] ?? str_replace('_', ' ', ucfirst($key))];
+            $list[] = ['key' => $key, 'label' => $labels[$key] ?? str_replace('_', ' ', ucfirst((string) $key))];
         }
 
         return $list;
@@ -1085,9 +1165,11 @@ final class InstallController extends Controller
             if (! is_string($path) || $path === '') {
                 $path = database_path('database.sqlite');
             }
+
             if (! str_contains($path, DIRECTORY_SEPARATOR)) {
                 $path = database_path($path);
             }
+
             config(['database.default' => 'sqlite', 'database.connections.sqlite.database' => $path]);
             DB::purge('sqlite');
             DB::connection()->getPdo();
@@ -1096,20 +1178,20 @@ final class InstallController extends Controller
         }
 
         $validated = Validator::make($request->all(), [
-            'db_host' => 'required|string',
-            'db_port' => 'required|numeric',
-            'db_database' => 'required|string',
-            'db_username' => 'required|string',
-            'db_password' => 'nullable|string',
+            'db_host' => ['required', 'string'],
+            'db_port' => ['required', 'numeric'],
+            'db_database' => ['required', 'string'],
+            'db_username' => ['required', 'string'],
+            'db_password' => ['nullable', 'string'],
         ])->validate();
 
         config([
             'database.default' => $driver,
-            "database.connections.{$driver}.host" => $validated['db_host'],
-            "database.connections.{$driver}.port" => $validated['db_port'],
-            "database.connections.{$driver}.database" => $validated['db_database'],
-            "database.connections.{$driver}.username" => $validated['db_username'],
-            "database.connections.{$driver}.password" => $validated['db_password'] ?? '',
+            sprintf('database.connections.%s.host', $driver) => $validated['db_host'],
+            sprintf('database.connections.%s.port', $driver) => $validated['db_port'],
+            sprintf('database.connections.%s.database', $driver) => $validated['db_database'],
+            sprintf('database.connections.%s.username', $driver) => $validated['db_username'],
+            sprintf('database.connections.%s.password', $driver) => $validated['db_password'] ?? '',
         ]);
         DB::purge($driver);
         DB::connection()->getPdo();
@@ -1131,7 +1213,7 @@ final class InstallController extends Controller
                 'port' => $port,
                 'password' => $password !== '' && $password !== null ? $password : null,
                 'database' => 0,
-            ], fn ($v) => $v !== null),
+            ], fn ($v): bool => $v !== null),
         ]);
         Redis::purge('default');
         Redis::connection()->ping();
@@ -1147,9 +1229,8 @@ final class InstallController extends Controller
         $port = (int) $request->input('smtp_port', 2525);
 
         $socket = @fsockopen($host, $port, $errno, $errstr, 5);
-        if ($socket === false) {
-            throw new RuntimeException("Could not reach SMTP server {$host}:{$port} — {$errstr} (errno {$errno})");
-        }
+        throw_if($socket === false, RuntimeException::class, sprintf('Could not reach SMTP server %s:%d — %s (errno %d)', $host, $port, $errstr, $errno));
+
         fclose($socket);
     }
 
@@ -1164,17 +1245,15 @@ final class InstallController extends Controller
         $protocol = $request->input('typesense_protocol', 'http');
         $apiKey = $request->input('typesense_api_key', '');
 
-        if ($apiKey === '') {
-            throw new RuntimeException('Typesense API key is required.');
-        }
+        throw_if($apiKey === '', RuntimeException::class, 'Typesense API key is required.');
 
-        $url = "{$protocol}://{$host}:{$port}/health";
+        $url = sprintf('%s://%s:%d/health', $protocol, $host, $port);
         $response = Http::withHeaders(['X-TYPESENSE-API-KEY' => $apiKey])
             ->timeout(5)
             ->get($url);
 
         if (! $response->successful()) {
-            throw new RuntimeException("Typesense returned HTTP {$response->status()}.");
+            throw new RuntimeException(sprintf('Typesense returned HTTP %d.', $response->status()));
         }
     }
 
@@ -1205,13 +1284,13 @@ final class InstallController extends Controller
     private function setEnvVar(string $env, string $key, string $value): string
     {
         $escaped = preg_match('/\s/', $value) ? '"'.$value.'"' : $value;
-        $line = "{$key}={$escaped}";
+        $line = sprintf('%s=%s', $key, $escaped);
 
-        if (preg_match("/^{$key}=.*/m", $env)) {
-            return (string) preg_replace("/^{$key}=.*/m", $line, $env);
+        if (preg_match(sprintf('/^%s=.*/m', $key), $env)) {
+            return (string) preg_replace(sprintf('/^%s=.*/m', $key), $line, $env);
         }
 
-        return mb_rtrim($env)."\n{$line}\n";
+        return mb_rtrim($env).(PHP_EOL.$line.PHP_EOL);
     }
 
     private function removeEnvVar(string $env, string $key): string

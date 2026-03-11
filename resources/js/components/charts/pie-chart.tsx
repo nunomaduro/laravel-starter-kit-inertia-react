@@ -80,7 +80,7 @@ export function PieChart({
                     >
                         {data.map((entry, index) => (
                             <Cell
-                                key={`cell-${index}`}
+                                key={entry.name ?? String(entry.value)}
                                 fill={
                                     entry.color ??
                                     CHART_COLORS[index % CHART_COLORS.length]

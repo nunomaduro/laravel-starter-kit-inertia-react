@@ -12,6 +12,7 @@ Backend components, services, and patterns for developers.
 - [Billing & Multi-Tenancy](./billing-and-tenancy.md) - Seat-based billing, domain/subdomain tenant resolution, ScopesToCurrentTenant
 - [Single-Tenant Mode](./single-tenant-mode.md) - Switch to internal (non-SaaS) mode with `MULTI_ORGANIZATION_ENABLED=false`
 - [Lemon Squeezy](./lemon-squeezy.md) - One-time products payment gateway (credits checkout)
+- [Referrals & Vouchers](./referrals-and-vouchers.md) - Referral codes (jijunair/laravel-referral), discount vouchers (beyondcode/laravel-vouchers), Affiliates and VoucherResource
 - [Horizon](./horizon.md) - Queue monitoring and Redis workers (dashboard at `/horizon`)
 - [Durable Workflow & Waterline](./durable-workflow.md) - Long-running workflows; Waterline dashboard at `/waterline`
 - [Telescope](./telescope.md) - Debug/monitoring dashboard (requests, queries, jobs, mail); local-only; `/telescope`
@@ -39,7 +40,12 @@ Backend components, services, and patterns for developers.
 - [Scout + Typesense](./scout-typesense.md) - Full-text search with Laravel Scout and Typesense (Herd)
 - [Scramble OpenAPI Docs](./scramble.md) - OpenAPI/Swagger docs at `/docs/api`
 - [MCP Server](./mcp.md) - Model Context Protocol server and tools (users_index, users_show); auth via Sanctum
+- [Announcements](./announcements.md) - Site-wide announcements (global/org), permissions, Filament, banner
+- [Cronless Schedule](./cronless-schedule.md) - Run scheduler without cron (e.g. PaaS); `schedule:run-cronless`
 - [Database Mail](./database-mail.md) - Email templates in DB linked to events (martinpetricko/laravel-database-mail); TriggersDatabaseMail, config/database-mail.php
+- [Governor](./governor.md) - Resource-level ownership (genealabs/laravel-governor); Governable, governor_owned_by; relation to Spatie
+- [Laravel Mails](./laravel-mails.md) - Mail tracking (backstage/laravel-mails); log sent mail, delivery/bounce webhooks
+- [Model HashId](./model-hashid.md) - HashIds in URLs for User and Invoice (deligoez/laravel-model-hashid); route binding, links
 - [Pan (product analytics)](./pan.md) - Privacy-focused product analytics (impressions, hovers, clicks) via `data-pan`; `php artisan pan`
 - [SEO & Monitoring](./seo-and-monitoring.md) - Sitemap, robots.txt, legal pages, Sentry, GA4, Slack notifications
 - [Settings](./settings.md) - Database-backed settings (app/auth/SEO), Filament Settings pages
@@ -54,6 +60,7 @@ Backend components, services, and patterns for developers.
 - [Billing & Multi-Tenancy](./billing-and-tenancy.md) - Seat billing, domain tenant resolution, Filament tenant scoping
 - [Single-Tenant Mode](./single-tenant-mode.md) - Internal app mode; hides org UI
 - [Lemon Squeezy](./lemon-squeezy.md) - One-time products (credits) via Lemon Squeezy
+- [Referrals & Vouchers](./referrals-and-vouchers.md) - Referral codes and discount vouchers; Affiliates and VoucherResource
 - [Horizon](./horizon.md) - Queue dashboard and Redis workers; `/horizon` (admin only)
 - [Durable Workflow & Waterline](./durable-workflow.md) - Workflows and Waterline UI; `/waterline` (admin only)
 - [Telescope](./telescope.md) - Debug dashboard; `/telescope` (local; admin panel access)

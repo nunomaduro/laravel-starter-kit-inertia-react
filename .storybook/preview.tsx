@@ -41,7 +41,8 @@ const mockPage = {
 const inertiaModule = require('@inertiajs/react');
 
 if (!inertiaModule.__storybookMocked) {
-    // usePage – return a stable mock page object
+    // usePage – return a stable mock page object (mock; name must match Inertia API)
+     
     inertiaModule.usePage = () => mockPage;
 
     // router – stub all common methods
@@ -57,7 +58,8 @@ if (!inertiaModule.__storybookMocked) {
         off: () => {},
     };
 
-    // useForm – return a minimal form helper
+    // useForm – return a minimal form helper (mock; name must match Inertia API)
+     
     inertiaModule.useForm = (initialData?: Record<string, unknown>) => ({
         data: initialData ?? {},
         setData: () => {},

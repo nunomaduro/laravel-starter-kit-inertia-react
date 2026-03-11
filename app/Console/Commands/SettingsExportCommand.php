@@ -57,7 +57,7 @@ final class SettingsExportCommand extends Command
             'exported_at' => now()->toIso8601String(),
             'count' => count($rows),
             'note' => 'Encrypted values require the same APP_KEY on the destination server.',
-            'settings' => array_map(fn (object $row) => [
+            'settings' => array_map(fn (object $row): array => [
                 'group' => $row->group,
                 'name' => $row->name,
                 'payload' => $row->payload,
@@ -71,10 +71,10 @@ final class SettingsExportCommand extends Command
         $output = $this->option('output');
 
         if ($output) {
-            intro("  Exporting {$data['count']} settings…");
+            intro(sprintf('  Exporting %d settings…', $data['count']));
             file_put_contents($output, $json);
-            info("  Written to: {$output}");
-            outro("  Export complete — {$data['count']} settings exported.");
+            info('  Written to: '.$output);
+            outro(sprintf('  Export complete — %d settings exported.', $data['count']));
         } else {
             $this->line($json);
         }

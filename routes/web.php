@@ -255,7 +255,8 @@ Route::middleware(['auth', 'feature:onboarding'])->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::personalDataExports('personal-data-exports');
+    Route::get('personal-data-exports/{zipFilename}', [Spatie\PersonalDataExport\Http\Controllers\PersonalDataExportController::class, 'export'])
+        ->name('personal-data-exports');
 
     Route::delete('user', [UserController::class, 'destroy'])->name('user.destroy');
 

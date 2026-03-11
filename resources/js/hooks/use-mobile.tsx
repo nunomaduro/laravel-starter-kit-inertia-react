@@ -15,7 +15,7 @@ export function useIsMobile() {
         };
 
         mql.addEventListener('change', onChange);
-        // eslint-disable-next-line @eslint-react/hooks-extra/no-direct-set-state-in-use-effect -- initial sync and listener for matchMedia
+
         setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
 
         return () => mql.removeEventListener('change', onChange);

@@ -59,7 +59,7 @@ final class SettingsListCommand extends Command
 
         if ($rows->isEmpty()) {
             $this->warn($groupFilter
-                ? "No settings found for group \"{$groupFilter}\"."
+                ? sprintf('No settings found for group "%s".', $groupFilter)
                 : 'No settings found. Run php artisan app:install first.'
             );
 
@@ -86,30 +86,24 @@ final class SettingsListCommand extends Command
         }
 
         foreach ($grouped as $group => $settings) {
-            $this->components->twoColumnDetail("<fg=blue;options=bold>{$group}</>", '<fg=gray>'.count($settings).' settings</>');
+            $this->components->twoColumnDetail(sprintf('<fg=blue;options=bold>%s</>', $group), '<fg=gray>'.count($settings).' settings</>');
 
             foreach ($settings as [$name, $display, $locked]) {
-                $label = "  <fg=gray>{$name}</>";
-                $this->components->twoColumnDetail($label, $display.($locked ? "  {$locked}" : ''));
+                $label = sprintf('  <fg=gray>%s</>', $name);
+                $this->components->twoColumnDetail($label, $display.($locked ? '  '.$locked : ''));
             }
 
             $this->newLine();
         }
 
         $total = $rows->count();
-        $this->line("<fg=gray>  Total: {$total} settings".($groupFilter ? " in group \"{$groupFilter}\"" : '').'</>');
+        $this->line(sprintf('<fg=gray>  Total: %d settings', $total).($groupFilter ? sprintf(' in group "%s"', $groupFilter) : '').'</>');
 
         return self::SUCCESS;
     }
 
     private function isEncryptedKey(string $name): bool
     {
-        foreach (self::ENCRYPTED_KEYS as $key) {
-            if (str_contains($name, $key)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(self::ENCRYPTED_KEYS, fn ($key): bool => str_contains($name, (string) $key));
     }
 }

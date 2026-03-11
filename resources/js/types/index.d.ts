@@ -134,6 +134,13 @@ export interface SharedData {
     };
     /** Whether the setup wizard has been completed (super-admin flow). */
     setup_complete: boolean;
+    /** Active site-wide and org announcements (authenticated users only). */
+    announcements?: Array<{
+        id: number;
+        title: string;
+        body: string;
+        level: string;
+    }>;
     [key: string]: unknown;
 }
 

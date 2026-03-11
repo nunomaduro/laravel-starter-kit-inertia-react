@@ -76,3 +76,7 @@ All transactional emails are sent via Database Mail. Events and templates:
 - **NewTermsVersionPublished** — new terms require acceptance; recipient `user`.
 
 Templates are seeded in **`Database\Seeders\Essential\MailTemplatesSeeder`** (runs whenever the Essential seeders run: `php artisan db:seed` or deployment that includes seeding). **For emails to be sent, this seeder must have run at least once** so that active `MailTemplate` rows exist for each event. Super-admins can view and edit templates in **Filament → Settings → Email templates** (`/admin/mail-templates`) and from the **Dashboard** quick action "Email templates".
+
+## Mail tracking
+
+Sent mail (including mail sent via Database Mail) is logged and can receive delivery/bounce events using [backstage/laravel-mails](https://github.com/backstagephp/laravel-mails). See [Laravel Mails](laravel-mails.md) for configuration, webhooks, and optional Filament UI.

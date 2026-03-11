@@ -41,7 +41,7 @@ function FormWizard({
 }: FormWizardProps) {
     const [currentIndex, setCurrentIndex] = React.useState(0);
     const [completedSteps, setCompletedSteps] = React.useState<Set<number>>(
-        new Set(),
+        () => new Set(),
     );
     const [isValidating, setIsValidating] = React.useState(false);
 

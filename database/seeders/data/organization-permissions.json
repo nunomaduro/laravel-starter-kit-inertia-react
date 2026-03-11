@@ -27,6 +27,11 @@
       "permissions": [
         {"name": "org.pages.manage", "roles": ["owner", "admin"], "org_grantable": true}
       ]
+    },
+    "org_announcements": {
+      "permissions": [
+        {"name": "announcements.manage", "roles": ["owner", "admin"], "org_grantable": true}
+      ]
     }
   },
   "role_templates": [

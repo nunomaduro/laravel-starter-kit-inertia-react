@@ -13,6 +13,7 @@ import {
     Bot,
     Building2,
     ClipboardList,
+    CloudCog,
     Coins,
     CreditCard,
     Download,
@@ -22,14 +23,18 @@ import {
     Layout,
     Lock,
     Mail,
+    Megaphone,
     MessageCircle,
     Palette,
+    Rocket,
     Search,
+    Share2,
     Shield,
     Sparkles,
     Table,
     ToggleLeft,
     UserCog,
+    UserPlus,
     Users,
     Workflow,
     type LucideIcon,
@@ -69,7 +74,7 @@ const featureGroups: FeatureGroup[] = [
                 icon: Shield,
                 title: 'Roles & Permissions',
                 description:
-                    'Granular RBAC per organization with Spatie Permissions. Custom org roles, permission universe, and role-level invite guards.',
+                    'Granular RBAC per organization with Spatie Permissions and Governor for entity-level ownership. Custom org roles and invite guards.',
                 dataPan: 'welcome-feature-rbac',
             },
             {
@@ -78,6 +83,13 @@ const featureGroups: FeatureGroup[] = [
                 description:
                     'Every settings change, role grant, and feature toggle is recorded. Org admins see their own log; system admins see all.',
                 dataPan: 'welcome-feature-audit-log',
+            },
+            {
+                icon: UserPlus,
+                title: 'User Impersonation',
+                description:
+                    'Super-admins can log in as any user for support. Start and stop are logged; super-admins cannot be impersonated.',
+                dataPan: 'welcome-feature-impersonation',
             },
         ],
     },
@@ -111,6 +123,13 @@ const featureGroups: FeatureGroup[] = [
                 description:
                     'Org admins create custom roles from safe-to-delegate permissions. Role templates ship out of the box.',
                 dataPan: 'welcome-feature-custom-roles',
+            },
+            {
+                icon: Share2,
+                title: 'Visibility & Sharing',
+                description:
+                    'Global, org-scoped, or shared content with copy-on-write. Share items with view/edit access and optional expiry.',
+                dataPan: 'welcome-feature-visibility-sharing',
             },
         ],
     },
@@ -173,8 +192,15 @@ const featureGroups: FeatureGroup[] = [
                 icon: Mail,
                 title: 'Database Email Templates',
                 description:
-                    'Email templates stored in the database and sent on events. Manage templates in Filament without code deploys.',
+                    'Email templates stored in the database and sent on events. Optional mail tracking (Laravel Mails). Manage in Filament.',
                 dataPan: 'welcome-feature-email-templates',
+            },
+            {
+                icon: Megaphone,
+                title: 'Announcements',
+                description:
+                    'In-app announcement banners with audience targeting. Create and schedule in Filament; dismissible by users.',
+                dataPan: 'welcome-feature-announcements',
             },
         ],
     },
@@ -260,6 +286,20 @@ const featureGroups: FeatureGroup[] = [
                 description:
                     'GDPR-ready personal data export. Users request a ZIP of their data; delivered asynchronously via queued job.',
                 dataPan: 'welcome-feature-data-export',
+            },
+            {
+                icon: CloudCog,
+                title: 'Backups',
+                description:
+                    'Spatie Laravel Backup with disk, DB, and optional notifications. Manage and monitor from Filament.',
+                dataPan: 'welcome-feature-backups',
+            },
+            {
+                icon: Rocket,
+                title: 'Web Installer',
+                description:
+                    'Step-by-step and express install with presets, AI keys, tenancy, and demo data. No CLI required to go live.',
+                dataPan: 'welcome-feature-installer',
             },
         ],
     },
@@ -391,6 +431,8 @@ export default function Welcome() {
                         <span>Tailwind CSS v4</span>
                         <span className="text-border">·</span>
                         <span>Filament v5</span>
+                        <span className="text-border">·</span>
+                        <span>Wayfinder</span>
                         <span className="text-border">·</span>
                         <span>TypeScript</span>
                     </p>

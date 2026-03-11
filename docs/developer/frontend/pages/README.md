@@ -19,7 +19,7 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 
 | Page | Route | Documented |
 |------|-------|------------|
-| [appearance/update](./appearance-update.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
+| [appearance/update](./appearance-update.md) | mails.webhook, filament.exports.download | ✅ |
 | [dashboard](./dashboard.md) | dashboard | ✅ |
 | [session/create](./session-create.md) | login, login.store | ✅ |
 | [user-email-reset-notification/create](./user-email-reset-notification-create.md) | password.request, password.email | ✅ |
@@ -31,17 +31,17 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [user-two-factor-authentication-challenge/show](./user-two-factor-authentication-challenge-show.md) | N/A | ✅ |
 | [user-two-factor-authentication/show](./user-two-factor-authentication-show.md) | two-factor.show | ✅ |
 | [user/create](./user-create.md) | user.destroy, register | ✅ |
-| [welcome](./welcome.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
+| [welcome](./welcome.md) | mails.webhook, filament.exports.download | ✅ |
 | [contact/create](./contact-create.md) | contact.create, contact.store | ✅ |
 | [blog/index](./blog-index.md) | blog.index, blog.show | ✅ |
 | [blog/show](./blog-show.md) | blog.index, blog.show | ✅ |
 | [changelog/index](./changelog-index.md) | changelog.index | ✅ |
 | [help/index](./help-index.md) | help.index, help.show | ✅ |
 | [help/show](./help-show.md) | help.index, help.show | ✅ |
-| [settings/personal-data-export](./settings-personal-data-export.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
+| [settings/personal-data-export](./settings-personal-data-export.md) | mails.webhook, filament.exports.download | ✅ |
 | [onboarding/show](./onboarding-show.md) | onboarding, onboarding.store | ✅ |
-| [legal/privacy](./legal-privacy.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
-| [legal/terms](./legal-terms.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
+| [legal/privacy](./legal-privacy.md) | mails.webhook, filament.exports.download | ✅ |
+| [legal/terms](./legal-terms.md) | mails.webhook, filament.exports.download | ✅ |
 | [settings/achievements](docs/developer/frontend/pages/settings/achievements.md) | achievements.show | ✅ |
 | [invitations/accept](./invitations/accept.md) | invitations.show, invitations.accept | ✅ |
 | [organizations/create](./organizations/create.md) | organizations.index, organizations.create | ✅ |
@@ -54,7 +54,7 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [pricing](./pricing.md) | pricing | ✅ |
 | [terms/accept](./terms-accept.md) | terms.accept, terms.accept.store | ✅ |
 | [enterprise-inquiries/create](./enterprise-inquiries-create.md) | enterprise-inquiries.create, enterprise-inquiries.store | ✅ |
-| [chat/index](./chat/index.md) | filament.exports.download, filament.imports.failed-rows.download | ✅ |
+| [chat/index](./chat/index.md) | mails.webhook, filament.exports.download | ✅ |
 | [user-table](./user-table.md) | N/A | ✅ |
 | [users/table](./users/table.md) | users.table, users.bulk-soft-delete | ✅ |
 | [users/show](./users/show.md) | users.table, users.bulk-soft-delete | ✅ |

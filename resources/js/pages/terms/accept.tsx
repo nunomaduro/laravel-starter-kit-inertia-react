@@ -109,7 +109,6 @@ export default function TermsAccept({
                                         )}
                                         <div
                                             className="prose prose-sm dark:prose-invert mt-2 max-h-48 overflow-y-auto [&_a]:text-primary"
-                                            // eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- server-rendered terms version body
                                             dangerouslySetInnerHTML={{
                                                 __html: version.body_html,
                                             }}

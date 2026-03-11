@@ -83,8 +83,6 @@ final class AppInstallCommand extends Command
 
     private const string PHASE_DEMO = 'demo';
 
-    private const string PHASE_FINALIZE = 'finalize';
-
     private const string PROGRESS_FILE = '.install-progress.json';
 
     // ─── Module definitions ───────────────────────────────────────────────────
@@ -94,68 +92,68 @@ final class AppInstallCommand extends Command
         'users' => [
             'label' => 'Users',
             'description' => 'Sample user accounts (admin, demo, regular users)',
-            'seeders' => ['Database\\Seeders\\Development\\UsersSeeder'],
+            'seeders' => [\Database\Seeders\Development\UsersSeeder::class],
         ],
         'organizations' => [
             'label' => 'Organizations',
             'description' => 'Sample organizations, domains, and invitations',
             'seeders' => [
-                'Database\\Seeders\\Development\\OrganizationSeeder',
-                'Database\\Seeders\\Development\\OrganizationDomainSeeder',
-                'Database\\Seeders\\Development\\OrganizationInvitationSeeder',
+                \Database\Seeders\Development\OrganizationSeeder::class,
+                \Database\Seeders\Development\OrganizationDomainSeeder::class,
+                \Database\Seeders\Development\OrganizationInvitationSeeder::class,
             ],
         ],
         'billing' => [
             'label' => 'Billing & Subscriptions',
             'description' => 'Plans, gateways, subscriptions, credits, invoices, refunds',
             'seeders' => [
-                'Database\\Seeders\\Development\\PlanSeeder',
-                'Database\\Seeders\\Development\\PaymentGatewaySeeder',
-                'Database\\Seeders\\Development\\GatewayProductSeeder',
-                'Database\\Seeders\\Development\\BillingSeeder',
-                'Database\\Seeders\\Development\\SubscriptionSeeder',
-                'Database\\Seeders\\Development\\CreditPackSeeder',
-                'Database\\Seeders\\Development\\CreditSeeder',
-                'Database\\Seeders\\Development\\InvoiceSeeder',
-                'Database\\Seeders\\Development\\BillingMetricSeeder',
-                'Database\\Seeders\\Development\\FailedPaymentAttemptSeeder',
-                'Database\\Seeders\\Development\\RefundRequestSeeder',
+                \Database\Seeders\Development\PlanSeeder::class,
+                \Database\Seeders\Development\PaymentGatewaySeeder::class,
+                \Database\Seeders\Development\GatewayProductSeeder::class,
+                \Database\Seeders\Development\BillingSeeder::class,
+                \Database\Seeders\Development\SubscriptionSeeder::class,
+                \Database\Seeders\Development\CreditPackSeeder::class,
+                \Database\Seeders\Development\CreditSeeder::class,
+                \Database\Seeders\Development\InvoiceSeeder::class,
+                \Database\Seeders\Development\BillingMetricSeeder::class,
+                \Database\Seeders\Development\FailedPaymentAttemptSeeder::class,
+                \Database\Seeders\Development\RefundRequestSeeder::class,
             ],
         ],
         'content' => [
             'label' => 'Content',
             'description' => 'Blog posts, pages, help articles, changelog entries, categories',
             'seeders' => [
-                'Database\\Seeders\\Development\\CategorySeeder',
-                'Database\\Seeders\\Development\\PostSeeder',
-                'Database\\Seeders\\Development\\PageSeeder',
-                'Database\\Seeders\\Development\\PageRevisionSeeder',
-                'Database\\Seeders\\Development\\HelpArticleSeeder',
-                'Database\\Seeders\\Development\\ChangelogEntrySeeder',
+                \Database\Seeders\Development\CategorySeeder::class,
+                \Database\Seeders\Development\PostSeeder::class,
+                \Database\Seeders\Development\PageSeeder::class,
+                \Database\Seeders\Development\PageRevisionSeeder::class,
+                \Database\Seeders\Development\HelpArticleSeeder::class,
+                \Database\Seeders\Development\ChangelogEntrySeeder::class,
             ],
         ],
         'marketing' => [
             'label' => 'Marketing & CRM',
             'description' => 'Affiliates, contact submissions, enterprise inquiries, vouchers',
             'seeders' => [
-                'Database\\Seeders\\Development\\AffiliateSeeder',
-                'Database\\Seeders\\Development\\AffiliateCommissionSeeder',
-                'Database\\Seeders\\Development\\AffiliatePayoutSeeder',
-                'Database\\Seeders\\Development\\ContactSubmissionSeeder',
-                'Database\\Seeders\\Development\\EnterpriseInquirySeeder',
-                'Database\\Seeders\\Development\\VoucherScopeSeeder',
+                \Database\Seeders\Development\AffiliateSeeder::class,
+                \Database\Seeders\Development\AffiliateCommissionSeeder::class,
+                \Database\Seeders\Development\AffiliatePayoutSeeder::class,
+                \Database\Seeders\Development\ContactSubmissionSeeder::class,
+                \Database\Seeders\Development\EnterpriseInquirySeeder::class,
+                \Database\Seeders\Development\VoucherScopeSeeder::class,
             ],
         ],
         'developer' => [
             'label' => 'Developer Samples',
             'description' => 'Model flags, visibility demos, shareables, webhooks, embeddings',
             'seeders' => [
-                'Database\\Seeders\\Development\\ModelFlagSeeder',
-                'Database\\Seeders\\Development\\VisibilityDemoSeeder',
-                'Database\\Seeders\\Development\\ShareableSeeder',
-                'Database\\Seeders\\Development\\CategorizableSeeder',
-                'Database\\Seeders\\Development\\WebhookLogSeeder',
-                'Database\\Seeders\\Development\\EmbeddingDemoSeeder',
+                \Database\Seeders\Development\ModelFlagSeeder::class,
+                \Database\Seeders\Development\VisibilityDemoSeeder::class,
+                \Database\Seeders\Development\ShareableSeeder::class,
+                \Database\Seeders\Development\CategorizableSeeder::class,
+                \Database\Seeders\Development\WebhookLogSeeder::class,
+                \Database\Seeders\Development\EmbeddingDemoSeeder::class,
             ],
         ],
     ];
@@ -296,16 +294,26 @@ final class AppInstallCommand extends Command
         // ════════════════════════════════════════════════════════
         if (! $this->runPhase(self::PHASE_SEEDERS, 'Essential Seeders', $resume)) {
             spin(
-                fn () => Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\RolesAndPermissionsSeeder', '--force' => true]),
+                fn () => Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\RolesAndPermissionsSeeder::class, '--force' => true]),
                 'Seeding roles and permissions…'
             );
             spin(
-                fn () => Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\GamificationSeeder', '--force' => true]),
+                fn () => Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\GamificationSeeder::class, '--force' => true]),
                 'Seeding gamification levels and achievements…'
             );
             spin(
-                fn () => Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\Essential\\MailTemplatesSeeder', '--force' => true]),
+                fn () => Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\MailTemplatesSeeder::class, '--force' => true]),
                 'Seeding mail templates…'
+            );
+            spin(
+                function (): void {
+                    try {
+                        Artisan::call('db:seed', ['--class' => \GeneaLabs\LaravelGovernor\Database\Seeders\LaravelGovernorDatabaseSeeder::class, '--force' => true]);
+                    } catch (Throwable) {
+                        // Non-fatal — Governor may not be used
+                    }
+                },
+                'Seeding Governor (entities, roles)…'
             );
             info('  Essential data seeded');
             $this->completePhase(self::PHASE_SEEDERS);
@@ -338,7 +346,7 @@ final class AppInstallCommand extends Command
                 ? 'UTC'
                 : search(
                     label: '  Timezone',
-                    options: fn (string $q) => $this->searchTimezones($q),
+                    options: fn (string $q): array => $this->searchTimezones($q),
                     placeholder: 'UTC',
                     scroll: 10,
                 );
@@ -384,7 +392,7 @@ final class AppInstallCommand extends Command
                 }
 
                 $tenancy->save();
-                info("  Mode configured — {$mode}");
+                info('  Mode configured — '.$mode);
             }
 
             $this->completePhase(self::PHASE_TENANCY);
@@ -554,12 +562,12 @@ final class AppInstallCommand extends Command
         $searchConfigured = isset($this->progress[self::PHASE_SEARCH]) && ($scout->driver ?? 'collection') !== 'collection';
 
         $configuredSummary = implode("\n", array_filter([
-            "    ✔  App name    : {$appSettings->site_name}",
-            "    ✔  URL         : {$url}",
-            "    ✔  Mail        : {$mail->mailer} ({$mail->from_address})",
-            $aiConfigured ? "    ✔  AI provider : {$prism->default_provider}" : null,
-            $searchConfigured ? "    ✔  Search      : {$scout->driver}" : null,
-            $storageConfigured ? "    ✔  Storage     : {$fs->default_disk}" : null,
+            '    ✔  App name    : '.$appSettings->site_name,
+            '    ✔  URL         : '.$url,
+            sprintf('    ✔  Mail        : %s (%s)', $mail->mailer, $mail->from_address),
+            $aiConfigured ? '    ✔  AI provider : '.$prism->default_provider : null,
+            $searchConfigured ? '    ✔  Search      : '.$scout->driver : null,
+            $storageConfigured ? '    ✔  Storage     : '.$fs->default_disk : null,
             $broadcastConfigured ? '    ✔  Broadcasting: reverb' : null,
         ]));
 
@@ -570,8 +578,8 @@ final class AppInstallCommand extends Command
             '',
             '  ── Next steps ──',
             '',
-            "    Open app    : {$url}",
-            "    Admin panel : {$adminUrl}",
+            '    Open app    : '.$url,
+            '    Admin panel : '.$adminUrl,
             '',
             '    Frontend    : bun run dev  (or: bun run build for production)',
             '    Queue       : php artisan horizon  (or: php artisan queue:work)',
@@ -633,7 +641,7 @@ final class AppInstallCommand extends Command
 
         if ($done && $resume) {
             $suffix = $optional ? ' (optional — skipped)' : ' (already done)';
-            note("{$label}{$suffix}");
+            note($label.$suffix);
             info('  Skipping — completed in previous run');
 
             return true; // caller should skip this phase
@@ -667,15 +675,9 @@ final class AppInstallCommand extends Command
             info('  APP_KEY generated');
         }
 
-        if (PHP_VERSION_ID < 80200) {
-            error('  PHP 8.2+ is required. Current: '.PHP_VERSION);
-
-            return false;
-        }
-
         $missing = array_filter(
             ['pdo', 'mbstring', 'openssl', 'tokenizer', 'xml', 'ctype', 'json'],
-            fn ($ext) => ! extension_loaded($ext)
+            fn (string $ext): bool => ! extension_loaded($ext)
         );
 
         if ($missing !== []) {
@@ -686,7 +688,7 @@ final class AppInstallCommand extends Command
 
         foreach ([storage_path(), base_path('bootstrap/cache')] as $path) {
             if (! is_writable($path)) {
-                error("  Not writable: {$path}");
+                error('  Not writable: '.$path);
 
                 return false;
             }
@@ -771,11 +773,11 @@ final class AppInstallCommand extends Command
 
             config([
                 'database.default' => $driver,
-                "database.connections.{$driver}.host" => $host,
-                "database.connections.{$driver}.port" => $port,
-                "database.connections.{$driver}.database" => $database,
-                "database.connections.{$driver}.username" => $username,
-                "database.connections.{$driver}.password" => $pass,
+                sprintf('database.connections.%s.host', $driver) => $host,
+                sprintf('database.connections.%s.port', $driver) => $port,
+                sprintf('database.connections.%s.database', $driver) => $database,
+                sprintf('database.connections.%s.username', $driver) => $username,
+                sprintf('database.connections.%s.password', $driver) => $pass,
             ]);
         }
 
@@ -814,7 +816,7 @@ final class AppInstallCommand extends Command
                 '  Email address',
                 default: 'admin@example.com',
                 required: true,
-                validate: fn ($v) => Validator::make(['email' => $v], ['email' => 'email'])->fails()
+                validate: fn ($v): ?string => Validator::make(['email' => $v], ['email' => ['email']])->fails()
                     ? 'Please enter a valid email address.'
                     : null,
             );
@@ -824,7 +826,7 @@ final class AppInstallCommand extends Command
             : password(
                 '  Password',
                 required: true,
-                validate: fn ($v) => mb_strlen($v) < 8 ? 'Password must be at least 8 characters.' : null,
+                validate: fn ($v): ?string => mb_strlen((string) $v) < 8 ? 'Password must be at least 8 characters.' : null,
             );
 
         $user = User::query()->create([
@@ -836,7 +838,7 @@ final class AppInstallCommand extends Command
 
         $user->syncRoles(['super-admin']);
 
-        info("  Admin created: {$email}");
+        info('  Admin created: '.$email);
 
         return true;
     }
@@ -1015,7 +1017,7 @@ final class AppInstallCommand extends Command
             $this->verifyTypesense($host, (int) $port, $apiKey);
         }
 
-        info("  Search configured — driver: {$driver}");
+        info('  Search configured — driver: '.$driver);
     }
 
     // ─── AI ───────────────────────────────────────────────────────────────────
@@ -1046,7 +1048,7 @@ final class AppInstallCommand extends Command
         if ($provider !== 'ollama') {
             $key = $nonInteractive
                 ? (string) ($this->option('ai-api-key') ?? '')
-                : password("  API key for {$provider}", required: true);
+                : password('  API key for '.$provider, required: true);
 
             if ($key !== '') {
                 match ($provider) {
@@ -1073,7 +1075,7 @@ final class AppInstallCommand extends Command
             $this->verifyAiProvider($provider, $key);
         }
 
-        info("  AI configured — default: {$provider}");
+        info('  AI configured — default: '.$provider);
     }
 
     // ─── Social Auth ──────────────────────────────────────────────────────────
@@ -1138,7 +1140,7 @@ final class AppInstallCommand extends Command
             $this->verifyS3($fs);
         }
 
-        info("  Storage configured — disk: {$driver}");
+        info('  Storage configured — disk: '.$driver);
     }
 
     // ─── Broadcasting ─────────────────────────────────────────────────────────
@@ -1205,8 +1207,8 @@ final class AppInstallCommand extends Command
         try {
             Redis::connection()->ping();
             info('  ✔ Redis connection verified');
-        } catch (Throwable $e) {
-            warning('  ✗ Could not connect to Redis: '.$e->getMessage());
+        } catch (Throwable $throwable) {
+            warning('  ✗ Could not connect to Redis: '.$throwable->getMessage());
             warning('  Settings were saved — fix the connection and run php artisan redis:ping to verify.');
         }
     }
@@ -1222,13 +1224,13 @@ final class AppInstallCommand extends Command
 
             if ($socket !== false) {
                 fclose($socket);
-                info("  ✔ SMTP connection verified ({$host}:{$port})");
+                info(sprintf('  ✔ SMTP connection verified (%s:%d)', $host, $port));
             } else {
-                warning("  ✗ Could not reach SMTP server {$host}:{$port} — {$errstr} (errno {$errno})");
+                warning(sprintf('  ✗ Could not reach SMTP server %s:%d — %s (errno %d)', $host, $port, $errstr, $errno));
                 warning('  Settings were saved — check your SMTP credentials and firewall rules.');
             }
-        } catch (Throwable $e) {
-            warning('  ✗ SMTP check failed: '.$e->getMessage());
+        } catch (Throwable $throwable) {
+            warning('  ✗ SMTP check failed: '.$throwable->getMessage());
         }
     }
 
@@ -1242,15 +1244,15 @@ final class AppInstallCommand extends Command
             $scheme = $port === 443 ? 'https' : 'http';
             $response = Http::withHeaders(['X-TYPESENSE-API-KEY' => $apiKey])
                 ->timeout(5)
-                ->get("{$scheme}://{$host}:{$port}/health");
+                ->get(sprintf('%s://%s:%d/health', $scheme, $host, $port));
 
             if ($response->successful()) {
-                info("  ✔ Typesense connection verified ({$host}:{$port})");
+                info(sprintf('  ✔ Typesense connection verified (%s:%d)', $host, $port));
             } else {
-                warning("  ✗ Typesense returned HTTP {$response->status()} — credentials saved, but check the server.");
+                warning(sprintf('  ✗ Typesense returned HTTP %d — credentials saved, but check the server.', $response->status()));
             }
-        } catch (Throwable $e) {
-            warning('  ✗ Could not reach Typesense: '.$e->getMessage());
+        } catch (Throwable $throwable) {
+            warning('  ✗ Could not reach Typesense: '.$throwable->getMessage());
             warning('  Settings were saved — ensure Typesense is running and accessible.');
         }
     }
@@ -1272,16 +1274,16 @@ final class AppInstallCommand extends Command
             ]);
 
             Storage::disk('s3')->files('', false);
-            info("  ✔ S3 connection verified (bucket: {$fs->s3_bucket})");
-        } catch (Throwable $e) {
-            $msg = $e->getMessage();
+            info(sprintf('  ✔ S3 connection verified (bucket: %s)', $fs->s3_bucket));
+        } catch (Throwable $throwable) {
+            $msg = $throwable->getMessage();
 
             // Trim noisy SDK traces to keep the output readable.
             if (mb_strlen($msg) > 120) {
                 $msg = mb_substr($msg, 0, 120).'…';
             }
 
-            warning("  ✗ Could not connect to S3: {$msg}");
+            warning('  ✗ Could not connect to S3: '.$msg);
             warning('  Credentials were saved — check your key, secret, region, and bucket name.');
         }
     }
@@ -1296,7 +1298,7 @@ final class AppInstallCommand extends Command
         $endpoints = [
             'openai' => ['url' => 'https://api.openai.com/v1/models', 'header' => 'Authorization'],
             'anthropic' => ['url' => 'https://api.anthropic.com/v1/models', 'header' => 'x-api-key'],
-            'gemini' => ['url' => "https://generativelanguage.googleapis.com/v1beta/models?key={$apiKey}", 'header' => ''],
+            'gemini' => ['url' => 'https://generativelanguage.googleapis.com/v1beta/models?key='.$apiKey, 'header' => ''],
             'groq' => ['url' => 'https://api.groq.com/openai/v1/models', 'header' => 'Authorization'],
             'xai' => ['url' => 'https://api.x.ai/v1/models', 'header' => 'Authorization'],
             'deepseek' => ['url' => 'https://api.deepseek.com/models', 'header' => 'Authorization'],
@@ -1322,14 +1324,14 @@ final class AppInstallCommand extends Command
             $response = $request->get($config['url']);
 
             if ($response->status() === 401 || $response->status() === 403) {
-                warning("  ✗ {$provider} rejected the API key (HTTP {$response->status()}) — credentials saved, but the key may be invalid.");
+                warning(sprintf('  ✗ %s rejected the API key (HTTP %s) — credentials saved, but the key may be invalid.', $provider, $response->status()));
             } elseif ($response->successful() || $response->status() === 200) {
-                info("  ✔ {$provider} API key verified");
+                info(sprintf('  ✔ %s API key verified', $provider));
             } else {
-                warning("  ✗ {$provider} returned HTTP {$response->status()} — credentials saved.");
+                warning(sprintf('  ✗ %s returned HTTP %s — credentials saved.', $provider, $response->status()));
             }
-        } catch (Throwable $e) {
-            warning("  ✗ Could not reach {$provider}: ".$e->getMessage());
+        } catch (Throwable $throwable) {
+            warning(sprintf('  ✗ Could not reach %s: ', $provider).$throwable->getMessage());
             warning('  Credentials were saved — check your internet connection or API key.');
         }
     }
@@ -1354,7 +1356,7 @@ final class AppInstallCommand extends Command
             $modulesCsv = (string) ($this->option('modules') ?? '');
 
             if ($modulesCsv !== '') {
-                $keys = array_filter(array_map('trim', explode(',', $modulesCsv)));
+                $keys = array_filter(array_map(trim(...), explode(',', $modulesCsv)));
                 $this->runModules($keys);
             }
 
@@ -1368,7 +1370,7 @@ final class AppInstallCommand extends Command
         $choices = [];
 
         foreach (self::MODULES as $key => $module) {
-            $choices[$key] = "{$module['label']}  — {$module['description']}";
+            $choices[$key] = sprintf('%s  — %s', $module['label'], $module['description']);
         }
 
         $selected = multiselect(
@@ -1396,7 +1398,7 @@ final class AppInstallCommand extends Command
             $module = self::MODULES[$key] ?? null;
 
             if ($module === null) {
-                warning("  Unknown module: {$key} — skipping");
+                warning(sprintf('  Unknown module: %s — skipping', $key));
 
                 continue;
             }
@@ -1409,9 +1411,9 @@ final class AppInstallCommand extends Command
                         // Individual seeder failures are non-fatal
                     }
                 }
-            }, "Installing {$module['label']}…");
+            }, sprintf('Installing %s…', $module['label']));
 
-            info("  {$module['label']} installed");
+            info(sprintf('  %s installed', $module['label']));
         }
     }
 
@@ -1435,7 +1437,7 @@ final class AppInstallCommand extends Command
             return array_combine($popular, $popular);
         }
 
-        $matches = array_filter($all, fn ($tz) => mb_stripos($tz, $query) !== false);
+        $matches = array_filter($all, fn (string $tz): bool => mb_stripos($tz, $query) !== false);
         $matches = array_slice($matches, 0, 20);
 
         return array_combine($matches, $matches);
@@ -1446,13 +1448,13 @@ final class AppInstallCommand extends Command
     private function setEnvVar(string $env, string $key, string $value): string
     {
         $escaped = preg_match('/\s/', $value) ? '"'.$value.'"' : $value;
-        $line = "{$key}={$escaped}";
+        $line = sprintf('%s=%s', $key, $escaped);
 
-        if (preg_match("/^{$key}=.*/m", $env)) {
-            return (string) preg_replace("/^{$key}=.*/m", $line, $env);
+        if (preg_match(sprintf('/^%s=.*/m', $key), $env)) {
+            return (string) preg_replace(sprintf('/^%s=.*/m', $key), $line, $env);
         }
 
-        return mb_rtrim($env)."\n{$line}\n";
+        return mb_rtrim($env).(PHP_EOL.$line.PHP_EOL);
     }
 
     private function removeEnvVar(string $env, string $key): string

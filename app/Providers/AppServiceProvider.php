@@ -183,7 +183,7 @@ final class AppServiceProvider extends ServiceProvider
                 }
 
                 if ($auth->password_require_symbols) {
-                    $rule = $rule->symbols();
+                    return $rule->symbols();
                 }
 
                 return $rule;
@@ -196,6 +196,7 @@ final class AppServiceProvider extends ServiceProvider
     private function configurePan(): void
     {
         PanConfiguration::allowedAnalytics([
+            'announcements-banner',
             'settings-nav-profile',
             'settings-nav-password',
             'settings-nav-two-factor',
@@ -250,6 +251,11 @@ final class AppServiceProvider extends ServiceProvider
             'welcome-feature-domains',
             'welcome-feature-social-login',
             'welcome-feature-notifications',
+            'welcome-feature-announcements',
+            'welcome-feature-impersonation',
+            'welcome-feature-visibility-sharing',
+            'welcome-feature-backups',
+            'welcome-feature-installer',
             'nav-dashboard',
             'nav-organizations',
             'nav-billing',

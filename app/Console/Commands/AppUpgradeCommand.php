@@ -46,12 +46,10 @@ final class AppUpgradeCommand extends Command
 
         $this->checkInstalled();
 
-        if (! $this->option('force')) {
-            if (! confirm('  Run upgrade? This will run pending migrations and rebuild caches.', default: true)) {
-                outro('  Upgrade cancelled.');
+        if (! $this->option('force') && ! confirm('  Run upgrade? This will run pending migrations and rebuild caches.', default: true)) {
+            outro('  Upgrade cancelled.');
 
-                return self::SUCCESS;
-            }
+            return self::SUCCESS;
         }
 
         // ── 1. Migrations ──────────────────────────────────────────────────────
@@ -108,9 +106,10 @@ final class AppUpgradeCommand extends Command
     private function runEssentialSeeders(): void
     {
         $seeders = [
-            'Database\\Seeders\\Essential\\RolesAndPermissionsSeeder' => 'Seeding roles and permissions…',
-            'Database\\Seeders\\Essential\\GamificationSeeder' => 'Seeding gamification data…',
-            'Database\\Seeders\\Essential\\MailTemplatesSeeder' => 'Seeding mail templates…',
+            \Database\Seeders\Essential\RolesAndPermissionsSeeder::class => 'Seeding roles and permissions…',
+            \Database\Seeders\Essential\GamificationSeeder::class => 'Seeding gamification data…',
+            \Database\Seeders\Essential\MailTemplatesSeeder::class => 'Seeding mail templates…',
+            \GeneaLabs\LaravelGovernor\Database\Seeders\LaravelGovernorDatabaseSeeder::class => 'Seeding Governor (entities, roles)…',
         ];
 
         foreach ($seeders as $class => $label) {
@@ -118,8 +117,8 @@ final class AppUpgradeCommand extends Command
                 function () use ($class): void {
                     try {
                         Artisan::call('db:seed', ['--class' => $class, '--force' => true]);
-                    } catch (Throwable $e) {
-                        // Non-fatal — seeder may not exist in all environments
+                    } catch (Throwable) {
+                        // Non-fatal — seeder may not exist or may fail in some environments
                     }
                 },
                 $label

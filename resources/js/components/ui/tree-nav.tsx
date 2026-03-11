@@ -43,7 +43,9 @@ function TreeNav({
   ...props
 }: TreeNavProps) {
   const [selected, setSelected] = React.useState<string | null>(selectedProp ?? null)
-  const [expanded, setExpanded] = React.useState<Set<string>>(new Set(defaultExpanded))
+  const [expanded, setExpanded] = React.useState<Set<string>>(
+    () => new Set(defaultExpanded)
+  )
 
   const handleSelect = React.useCallback(
     (id: string, href?: string) => {

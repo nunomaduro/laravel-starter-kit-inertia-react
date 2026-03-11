@@ -13,7 +13,7 @@ it('may verify email', function (): void {
     $verificationUrl = URL::temporarySignedRoute(
         'verification.verify',
         now()->addMinutes(60),
-        ['id' => $user->getKey(), 'hash' => sha1($user->email)]
+        ['id' => $user->getKey(), 'hash' => sha1((string) $user->email)]
     );
 
     $response = $this->actingAs($user)
@@ -33,7 +33,7 @@ it('redirects to dashboard if already verified', function (): void {
     $verificationUrl = URL::temporarySignedRoute(
         'verification.verify',
         now()->addMinutes(60),
-        ['id' => $user->getKey(), 'hash' => sha1($user->email)]
+        ['id' => $user->getKey(), 'hash' => sha1((string) $user->email)]
     );
 
     $response = $this->actingAs($user)
@@ -50,7 +50,7 @@ it('requires valid signature', function (): void {
 
     $invalidUrl = route('verification.verify', [
         'id' => $user->getKey(),
-        'hash' => sha1($user->email),
+        'hash' => sha1((string) $user->email),
     ]);
 
     $response = $this->actingAs($user)

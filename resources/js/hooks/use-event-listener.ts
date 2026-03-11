@@ -20,8 +20,8 @@ export function useEventListener<K extends string>(
     handler: (event: Event) => void,
     element?: Target,
 ): void {
-    const savedHandler = useRef(handler);
-    savedHandler.current = handler;
+    const savedHandlerRef = useRef(handler);
+    savedHandlerRef.current = handler;
 
     useEffect(() => {
         const target: EventTarget | null = element
@@ -34,7 +34,7 @@ export function useEventListener<K extends string>(
             return;
         }
 
-        const listener = (event: Event) => savedHandler.current(event);
+        const listener = (event: Event) => savedHandlerRef.current(event);
         target.addEventListener(eventName, listener);
 
         return () => target.removeEventListener(eventName, listener);

@@ -2,7 +2,16 @@
 
 This document lists all available routes in the application.
 
-**Last Updated**: 2026-03-08
+**Last Updated**: 2026-03-11
+
+## Route parameters (HashId)
+
+The following route parameters use **HashIds** instead of numeric IDs (see [Model HashId](backend/model-hashid.md)):
+
+- **`users/{user}`** — use the user’s hashid (e.g. `user_kqYZeLgo`) in the URL.
+- **`billing/invoices/{invoice}`** — use the invoice’s hashid in the URL.
+
+API routes under `api/v1/users/{user}` also resolve `{user}` by hashid. Use the `hash_id` (or `hashId`) value from responses when building these URLs on the client.
 
 ## API versioning
 

@@ -226,6 +226,61 @@
                         <option value="full">Full (all modules)</option>
                     </select>
                 </div>
+                <div class="field" style="margin-bottom:0">
+                    <label style="font-size:0.75rem;color:#737373">Site name (optional)</label>
+                    <input type="text" id="express-site-name" placeholder="My App">
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label style="font-size:0.75rem;color:#737373">Locale (optional)</label>
+                    <select id="express-locale">
+                        <option value="">Default (en)</option>
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="pt">Portuguese</option>
+                        <option value="it">Italian</option>
+                        <option value="nl">Dutch</option>
+                        <option value="ja">Japanese</option>
+                        <option value="ko">Korean</option>
+                        <option value="zh">Chinese</option>
+                        <option value="ar">Arabic</option>
+                    </select>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label style="font-size:0.75rem;color:#737373">Fallback locale (optional)</label>
+                    <select id="express-fallback-locale">
+                        <option value="">Default (en)</option>
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="pt">Portuguese</option>
+                    </select>
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label style="font-size:0.75rem;color:#737373">AI provider (optional)</label>
+                    <select id="express-ai-provider">
+                        <option value="">None — configure later</option>
+                        <option value="openrouter">OpenRouter</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="anthropic">Anthropic</option>
+                        <option value="groq">Groq</option>
+                        <option value="gemini">Gemini</option>
+                        <option value="xai">xAI</option>
+                        <option value="deepseek">DeepSeek</option>
+                        <option value="mistral">Mistral</option>
+                        <option value="ollama">Ollama (local)</option>
+                    </select>
+                </div>
+                <div class="field" style="margin-bottom:0;display:none" id="express-ai-key-wrap">
+                    <label style="font-size:0.75rem;color:#737373">API key</label>
+                    <input type="password" id="express-ai-api-key" placeholder="sk-…" autocomplete="off">
+                </div>
+                <div class="field" style="margin-bottom:0;display:none" id="express-ai-model-wrap">
+                    <label style="font-size:0.75rem;color:#737373">Default model (optional)</label>
+                    <input type="text" id="express-ai-model" placeholder="e.g. openai/gpt-4o">
+                </div>
                 <button type="button" class="btn btn-secondary" onclick="startExpressWithOptions()">Express with options →</button>
             </div>
         </div>
@@ -243,6 +298,13 @@
                 var wrap = document.getElementById('express-single-org-wrap');
                 wrap.style.display = document.getElementById('express-tenancy').value === 'single' ? 'block' : 'none';
             }
+            function toggleExpressAiFields() {
+                var provider = document.getElementById('express-ai-provider').value;
+                var needsKey = provider && provider !== 'ollama';
+                document.getElementById('express-ai-key-wrap').style.display = needsKey ? 'block' : 'none';
+                document.getElementById('express-ai-model-wrap').style.display = provider ? 'block' : 'none';
+            }
+            document.getElementById('express-ai-provider').addEventListener('change', toggleExpressAiFields);
             function startExpressWithOptions() {
                 var opts = {
                     tenancy: document.getElementById('express-tenancy').value,
@@ -253,6 +315,22 @@
                 if (opts.tenancy === 'single') {
                     var nameEl = document.getElementById('express-single-org-name');
                     if (nameEl && nameEl.value.trim()) opts.single_org_name = nameEl.value.trim();
+                }
+                var siteNameEl = document.getElementById('express-site-name');
+                if (siteNameEl && siteNameEl.value.trim()) opts.site_name = siteNameEl.value.trim();
+                var localeEl = document.getElementById('express-locale');
+                if (localeEl && localeEl.value) opts.locale = localeEl.value;
+                var fallbackEl = document.getElementById('express-fallback-locale');
+                if (fallbackEl && fallbackEl.value) opts.fallback_locale = fallbackEl.value;
+                var aiProvider = document.getElementById('express-ai-provider').value;
+                if (aiProvider) {
+                    opts.ai_provider = aiProvider;
+                    if (aiProvider !== 'ollama') {
+                        var keyEl = document.getElementById('express-ai-api-key');
+                        if (keyEl && keyEl.value.trim()) opts.ai_api_key = keyEl.value.trim();
+                    }
+                    var modelEl = document.getElementById('express-ai-model');
+                    if (modelEl && modelEl.value.trim()) opts.ai_model = modelEl.value.trim();
                 }
                 startExpressInstall(opts);
             }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7231c01f20fed8ffc9ea113e59982ab",
+    "content-hash": "400f391981720f7b56de1d0a4583013f",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -521,6 +521,85 @@
                 "source": "https://github.com/aws/aws-sdk-php/tree/3.372.3"
             },
             "time": "2026-03-10T18:07:21+00:00"
+        },
+        {
+            "name": "backstage/laravel-mails",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/backstagephp/laravel-mails.git",
+                "reference": "b590728f2295be781ea19abd0275783d1598ca5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/backstagephp/laravel-mails/zipball/b590728f2295be781ea19abd0275783d1598ca5c",
+                "reference": "b590728f2295be781ea19abd0275783d1598ca5c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^10.0 || ^11.0 || ^12.0",
+                "laravel/helpers": "^1.7.0",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel-notification-channels/discord": "^1.6",
+                "laravel-notification-channels/telegram": "^4.0 || ^5.0 || ^6.0",
+                "laravel/pint": "^1.17.0",
+                "laravel/slack-notification-channel": "^2.5 || ^3.3.2",
+                "nunomaduro/collision": "^7.5.0|^8.4",
+                "orchestra/testbench": "^8.5.0|^9.4.0",
+                "pestphp/pest": "^3.0",
+                "pestphp/pest-plugin-laravel": "^3.0",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan-deprecation-rules": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Backstage\\Mails\\MailsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Backstage\\Mails\\": "src",
+                    "Backstage\\Mails\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mark van Eijk",
+                    "email": "mark@vormkracht10.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel Mails can collect everything you might want to track about the mails that has been sent by your Laravel app.",
+            "homepage": "https://github.com/backstagephp/laravel-mails",
+            "keywords": [
+                "backstagephp",
+                "laravel",
+                "laravel-mails"
+            ],
+            "support": {
+                "issues": "https://github.com/backstagephp/laravel-mails/issues",
+                "source": "https://github.com/backstagephp/laravel-mails/tree/v2.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/vormkracht10",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-07-22T08:08:52+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -1358,6 +1437,82 @@
             "time": "2025-01-03T16:18:33+00:00"
         },
         {
+            "name": "clue/stdio-react",
+            "version": "v2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/reactphp-stdio.git",
+                "reference": "dfa6c378aabdff718202d4e2453f752c38ea3399"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/reactphp-stdio/zipball/dfa6c378aabdff718202d4e2453f752c38ea3399",
+                "reference": "dfa6c378aabdff718202d4e2453f752c38ea3399",
+                "shasum": ""
+            },
+            "require": {
+                "clue/term-react": "^1.0 || ^0.1.1",
+                "clue/utf8-react": "^1.0 || ^0.1",
+                "php": ">=5.3",
+                "react/event-loop": "^1.2",
+                "react/stream": "^1.2"
+            },
+            "require-dev": {
+                "clue/arguments": "^2.0",
+                "clue/commander": "^1.2",
+                "phpunit/phpunit": "^9.3 || ^5.7 || ^4.8.35"
+            },
+            "suggest": {
+                "ext-mbstring": "Using ext-mbstring should provide slightly better performance for handling I/O"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clue\\React\\Stdio\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering"
+                }
+            ],
+            "description": "Async, event-driven console input & output (STDIN, STDOUT) for truly interactive CLI applications, built on top of ReactPHP",
+            "homepage": "https://github.com/clue/reactphp-stdio",
+            "keywords": [
+                "async",
+                "autocomplete",
+                "autocompletion",
+                "cli",
+                "history",
+                "interactive",
+                "reactphp",
+                "readline",
+                "stdin",
+                "stdio",
+                "stdout"
+            ],
+            "support": {
+                "issues": "https://github.com/clue/reactphp-stdio/issues",
+                "source": "https://github.com/clue/reactphp-stdio/tree/v2.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://clue.engineering/support",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/clue",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-03-18T15:09:30+00:00"
+        },
+        {
             "name": "clue/stream-filter",
             "version": "v1.7.0",
             "source": {
@@ -1422,6 +1577,142 @@
                 }
             ],
             "time": "2023-12-20T15:40:13+00:00"
+        },
+        {
+            "name": "clue/term-react",
+            "version": "v1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/reactphp-term.git",
+                "reference": "00f297dc597eaee2ebf98af8f27cca5d21d60fa3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/reactphp-term/zipball/00f297dc597eaee2ebf98af8f27cca5d21d60fa3",
+                "reference": "00f297dc597eaee2ebf98af8f27cca5d21d60fa3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "react/stream": "^1.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6 || ^5.7 || ^4.8.36",
+                "react/event-loop": "^1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clue\\React\\Term\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering"
+                }
+            ],
+            "description": "Streaming terminal emulator, built on top of ReactPHP.",
+            "homepage": "https://github.com/clue/reactphp-term",
+            "keywords": [
+                "C0",
+                "CSI",
+                "ansi",
+                "apc",
+                "ascii",
+                "c1",
+                "control codes",
+                "dps",
+                "osc",
+                "pm",
+                "reactphp",
+                "streaming",
+                "terminal",
+                "vt100",
+                "xterm"
+            ],
+            "support": {
+                "issues": "https://github.com/clue/reactphp-term/issues",
+                "source": "https://github.com/clue/reactphp-term/tree/v1.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://clue.engineering/support",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/clue",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-01-30T10:22:09+00:00"
+        },
+        {
+            "name": "clue/utf8-react",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/reactphp-utf8.git",
+                "reference": "d5cd04d39cb5457aa5df830b7c4b301d2694217e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/reactphp-utf8/zipball/d5cd04d39cb5457aa5df830b7c4b301d2694217e",
+                "reference": "d5cd04d39cb5457aa5df830b7c4b301d2694217e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "react/stream": "^1.0 || ^0.7 || ^0.6 || ^0.5 || ^0.4 || ^0.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6 || ^5.7 || ^4.8.36",
+                "react/stream": "^1.0 || ^0.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clue\\React\\Utf8\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering"
+                }
+            ],
+            "description": "Streaming UTF-8 parser, built on top of ReactPHP.",
+            "homepage": "https://github.com/clue/reactphp-utf8",
+            "keywords": [
+                "reactphp",
+                "streaming",
+                "unicode",
+                "utf-8",
+                "utf8"
+            ],
+            "support": {
+                "issues": "https://github.com/clue/reactphp-utf8/issues",
+                "source": "https://github.com/clue/reactphp-utf8/tree/v1.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://clue.engineering/support",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/clue",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-12-06T14:52:17+00:00"
         },
         {
             "name": "composer/pcre",
@@ -1813,6 +2104,78 @@
                 }
             ],
             "time": "2026-02-15T13:14:31+00:00"
+        },
+        {
+            "name": "deligoez/laravel-model-hashid",
+            "version": "v4.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/deligoez/laravel-model-hashid.git",
+                "reference": "37d1c5c34f6ba6e837a83108ab40121c066d315b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/deligoez/laravel-model-hashid/zipball/37d1c5c34f6ba6e837a83108ab40121c066d315b",
+                "reference": "37d1c5c34f6ba6e837a83108ab40121c066d315b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "hashids/hashids": "^4.1|^5.0",
+                "illuminate/contracts": "^11.0|^12.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "driftingly/rector-laravel": "^2.1",
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^9.0|^10.0",
+                "pestphp/pest": "^4.0",
+                "pestphp/pest-plugin-arch": "^4.0",
+                "pestphp/pest-plugin-laravel": "^4.0",
+                "pestphp/pest-plugin-type-coverage": "^4.0",
+                "phpstan/extension-installer": "^1.2",
+                "rector/rector": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Deligoez\\LaravelModelHashId\\LaravelModelHashIdServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Deligoez\\LaravelModelHashId\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yunus Emre Deligöz",
+                    "email": "ye@deligoz.me",
+                    "homepage": "https://www.deligoz.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Generate, Save, and Route Stripe/Youtube-like Hash IDs for Laravel Eloquent Models",
+            "homepage": "https://github.com/deligoez/laravel-model-hashid",
+            "keywords": [
+                "deligoez",
+                "hashids",
+                "laravel",
+                "laravel-model-hashid",
+                "laravel-package"
+            ],
+            "support": {
+                "issues": "https://github.com/deligoez/laravel-model-hashid/issues",
+                "source": "https://github.com/deligoez/laravel-model-hashid"
+            },
+            "time": "2026-03-04T09:58:27+00:00"
         },
         {
             "name": "devrabiul/laravel-geo-genius",
@@ -3440,6 +3803,77 @@
             "time": "2025-12-03T09:33:47+00:00"
         },
         {
+            "name": "genealabs/laravel-governor",
+            "version": "0.22.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mikebronner/laravel-governor.git",
+                "reference": "437754f3993301018ddf1014f72d6dc353aa09e2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mikebronner/laravel-governor/zipball/437754f3993301018ddf1014f72d6dc353aa09e2",
+                "reference": "437754f3993301018ddf1014f72d6dc353aa09e2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "php": "^8.2",
+                "ramsey/uuid": "^4.0"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^3.0|^4.0",
+                "fakerphp/faker": "^1.23",
+                "orchestra/testbench": "^9.0|^10.0|^11.0",
+                "phpunit/phpunit": "^10.0|^11.0|^12.0",
+                "symfony/thanks": "^1.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "GeneaLabs\\LaravelGovernor\\Providers\\Auth",
+                        "GeneaLabs\\LaravelGovernor\\Providers\\Nova",
+                        "GeneaLabs\\LaravelGovernor\\Providers\\Route",
+                        "GeneaLabs\\LaravelGovernor\\Providers\\Service"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GeneaLabs\\LaravelGovernor\\": "src/",
+                    "GeneaLabs\\LaravelGovernor\\Database\\Seeders\\": "database/seeders/",
+                    "GeneaLabs\\LaravelGovernor\\Database\\Factories\\": "database/factories/"
+                },
+                "classmap": [
+                    "database/migrations"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "GeneaLabs, LLC",
+                    "email": "hello@genealabs.com"
+                }
+            ],
+            "description": "Managing policy and control in Laravel.",
+            "support": {
+                "issues": "https://github.com/mikebronner/laravel-governor/issues",
+                "source": "https://github.com/mikebronner/laravel-governor/tree/0.22.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mikebronner",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-01T18:37:49+00:00"
+        },
+        {
             "name": "google/analytics-data",
             "version": "v0.22.3",
             "source": {
@@ -4319,6 +4753,75 @@
             "time": "2025-08-22T14:27:06+00:00"
         },
         {
+            "name": "hashids/hashids",
+            "version": "5.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vinkla/hashids.git",
+                "reference": "197171016b77ddf14e259e186559152eb3f8cf33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vinkla/hashids/zipball/197171016b77ddf14e259e186559152eb3f8cf33",
+                "reference": "197171016b77ddf14e259e186559152eb3f8cf33",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.0"
+            },
+            "suggest": {
+                "ext-bcmath": "Required to use BC Math arbitrary precision mathematics (*).",
+                "ext-gmp": "Required to use GNU multiple precision mathematics (*)."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hashids\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Akimov",
+                    "email": "ivan@barreleye.com"
+                },
+                {
+                    "name": "Vincent Klaiber",
+                    "email": "hello@doubledip.se"
+                }
+            ],
+            "description": "Generate short, unique, non-sequential ids (like YouTube and Bitly) from numbers",
+            "homepage": "https://hashids.org/php",
+            "keywords": [
+                "bitly",
+                "decode",
+                "encode",
+                "hash",
+                "hashid",
+                "hashids",
+                "ids",
+                "obfuscate",
+                "youtube"
+            ],
+            "support": {
+                "issues": "https://github.com/vinkla/hashids/issues",
+                "source": "https://github.com/vinkla/hashids/tree/5.0.2"
+            },
+            "time": "2023-02-23T15:00:54+00:00"
+        },
+        {
             "name": "inertiajs/inertia-laravel",
             "version": "v2.0.21",
             "source": {
@@ -5103,6 +5606,63 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2026-03-10T20:25:56+00:00"
+        },
+        {
+            "name": "laravel/helpers",
+            "version": "v1.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/helpers.git",
+                "reference": "98499eea4c1cca76fb0fb37ed365a468773daf0a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/helpers/zipball/98499eea4c1cca76fb0fb37ed365a468773daf0a",
+                "reference": "98499eea4c1cca76fb0fb37ed365a468773daf0a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "php": "^7.2.0|^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^7.0|^8.0|^9.0|^10.0|^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Dries Vints",
+                    "email": "dries@laravel.com"
+                }
+            ],
+            "description": "Provides backwards compatibility for helpers in the latest Laravel release.",
+            "keywords": [
+                "helpers",
+                "laravel"
+            ],
+            "support": {
+                "source": "https://github.com/laravel/helpers/tree/v1.8.2"
+            },
+            "time": "2025-11-25T14:46:28+00:00"
         },
         {
             "name": "laravel/horizon",
@@ -8622,80 +9182,6 @@
                 }
             ],
             "time": "2024-09-09T07:06:30+00:00"
-        },
-        {
-            "name": "omaralalwi/laravel-taxify",
-            "version": "2.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/omaralalwi/laravel-taxify.git",
-                "reference": "8e50cc14ac1975304844f2eb31a262b2093ab6b7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/omaralalwi/laravel-taxify/zipball/8e50cc14ac1975304844f2eb31a262b2093ab6b7",
-                "reference": "8e50cc14ac1975304844f2eb31a262b2093ab6b7",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.0|^8.1|^8.2|^8.3"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^8.21.1",
-                "phpunit/phpunit": "^9.3.3|^10.5"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Omaralalwi\\LaravelTaxify\\LaravelTaxifyServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/helpers.php"
-                ],
-                "psr-4": {
-                    "Omaralalwi\\LaravelTaxify\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "omar alalwi",
-                    "email": "omaralwi2010@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Laravel Taxify provides a set of helper functions and classes to simplify tax (VAT) calculations within Laravel applications. that allow developers to easily integrate tax calculation functionalities into their projects. it's offers a straightforward and efficient solution Designed to streamline the process of handling taxes.",
-            "homepage": "https://github.com/omaralalwi/laravel-taxify",
-            "keywords": [
-                "Laravel-VAT-helper",
-                "Tax-package",
-                "VAT-calculation",
-                "VAT-helper",
-                "VAT-package",
-                "laravel-Tax-package",
-                "laravel-facade",
-                "laravel-helper",
-                "laravel-helpers",
-                "laravel-library",
-                "laravel-taxify",
-                "laravel-vat",
-                "omaralalwi",
-                "php-Tax-package",
-                "tax-calculation",
-                "tax-helper"
-            ],
-            "support": {
-                "issues": "https://github.com/omaralalwi/laravel-taxify/issues",
-                "source": "https://github.com/omaralalwi/laravel-taxify/tree/v2.0.4"
-            },
-            "time": "2025-07-12T22:09:46+00:00"
         },
         {
             "name": "openspout/openspout",
@@ -13327,6 +13813,77 @@
                 }
             ],
             "time": "2026-02-21T15:58:52+00:00"
+        },
+        {
+            "name": "spatie/laravel-cronless-schedule",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-cronless-schedule.git",
+                "reference": "1a61e3f724af5a7dc75fe9da867b045ff9145f71"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-cronless-schedule/zipball/1a61e3f724af5a7dc75fe9da867b045ff9145f71",
+                "reference": "1a61e3f724af5a7dc75fe9da867b045ff9145f71",
+                "shasum": ""
+            },
+            "require": {
+                "clue/stdio-react": "^2.3",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": "^7.4|^8.0",
+                "react/event-loop": "^1.1.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "pestphp/pest": "^1.22|^2.34|^3.7|^4.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\CronlessSchedule\\CronlessScheduleServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\CronlessSchedule\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Run the Laravel scheduler without relying on cron",
+            "homepage": "https://github.com/spatie/laravel-cronless-schedule",
+            "keywords": [
+                "laravel-cronless-schedule",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-cronless-schedule/issues",
+                "source": "https://github.com/spatie/laravel-cronless-schedule/tree/1.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-02-23T21:49:52+00:00"
         },
         {
             "name": "spatie/laravel-csp",

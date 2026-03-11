@@ -57,7 +57,6 @@ export default function BlogShow({ post }: Props) {
                     </p>
                     <div
                         className="prose prose-neutral dark:prose-invert max-w-none"
-                        // eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- server-rendered post content
                         dangerouslySetInnerHTML={{
                             __html: post.content,
                         }}

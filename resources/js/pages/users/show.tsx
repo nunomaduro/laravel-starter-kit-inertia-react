@@ -4,7 +4,15 @@ import { Separator } from '@/components/ui/separator';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Building2, CheckCircle2, Clock, Mail, ShieldCheck, User } from 'lucide-react';
+import {
+    ArrowLeft,
+    Building2,
+    CheckCircle2,
+    Clock,
+    Mail,
+    ShieldCheck,
+    User,
+} from 'lucide-react';
 
 interface Organization {
     id: number;
@@ -13,6 +21,7 @@ interface Organization {
 
 interface UserShape {
     id: number;
+    hash_id: string;
     name: string;
     email: string;
     avatar: string | null;
@@ -38,10 +47,13 @@ const STATUS_BADGE: Record<string, { label: string; color: BadgeColor }> = {
 export default function UserShowPage({ user }: Props) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Users', href: '/users' },
-        { title: user.name, href: `/users/${user.id}` },
+        { title: user.name, href: `/users/${user.hash_id}` },
     ];
 
-    const status = STATUS_BADGE[user.status] ?? { label: user.status, color: 'warning' as const };
+    const status = STATUS_BADGE[user.status] ?? {
+        label: user.status,
+        color: 'warning' as const,
+    };
     const initials = user.name
         .split(' ')
         .map((n) => n[0])
@@ -77,9 +89,13 @@ export default function UserShowPage({ user }: Props) {
                                 <h1 className="text-xl font-semibold tracking-tight">
                                     {user.name}
                                 </h1>
-                                <Badge variant="filled" color={status.color}>{status.label}</Badge>
+                                <Badge variant="filled" color={status.color}>
+                                    {status.label}
+                                </Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground">#{user.id}</p>
+                            <p className="text-sm text-muted-foreground">
+                                #{user.id}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -109,9 +125,15 @@ export default function UserShowPage({ user }: Props) {
                             Email verified
                         </dt>
                         <dd className="text-sm">
-                            {user.email_verified_at
-                                ? new Date(user.email_verified_at).toLocaleString()
-                                : <span className="text-muted-foreground">Not verified</span>}
+                            {user.email_verified_at ? (
+                                new Date(
+                                    user.email_verified_at,
+                                ).toLocaleString()
+                            ) : (
+                                <span className="text-muted-foreground">
+                                    Not verified
+                                </span>
+                            )}
                         </dd>
                     </dl>
 
@@ -122,9 +144,13 @@ export default function UserShowPage({ user }: Props) {
                         </dt>
                         <dd className="text-sm">
                             {user.onboarding_completed ? (
-                                <span className="text-emerald-600 dark:text-emerald-400">Completed</span>
+                                <span className="text-emerald-600 dark:text-emerald-400">
+                                    Completed
+                                </span>
                             ) : (
-                                <span className="text-amber-600 dark:text-amber-400">Incomplete</span>
+                                <span className="text-amber-600 dark:text-amber-400">
+                                    Incomplete
+                                </span>
                             )}
                         </dd>
                     </dl>
@@ -136,11 +162,14 @@ export default function UserShowPage({ user }: Props) {
                         </dt>
                         <dd className="text-sm">
                             {user.created_at
-                                ? new Date(user.created_at).toLocaleDateString(undefined, {
-                                      year: 'numeric',
-                                      month: 'long',
-                                      day: 'numeric',
-                                  })
+                                ? new Date(user.created_at).toLocaleDateString(
+                                      undefined,
+                                      {
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                      },
+                                  )
                                 : '—'}
                         </dd>
                     </dl>

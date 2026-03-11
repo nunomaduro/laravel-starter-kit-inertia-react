@@ -46,7 +46,7 @@ function RightSidebar({
 }: RightSidebarProps) {
     const [collapsedSections, setCollapsedSections] = React.useState<
         Set<string>
-    >(new Set());
+    >(() => new Set());
 
     const toggleSection = (id: string) => {
         setCollapsedSections((prev) => {

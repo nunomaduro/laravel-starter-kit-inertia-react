@@ -1,3 +1,4 @@
+import { AnnouncementsBanner } from '@/components/announcements-banner';
 import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
@@ -18,10 +19,12 @@ export default function AppSidebarLayout({
         return (
             <div className="flex min-h-screen items-center justify-center bg-background">
                 <div className="max-w-md space-y-3 p-8 text-center">
-                    <h1 className="text-2xl font-semibold">Setup in Progress</h1>
+                    <h1 className="text-2xl font-semibold">
+                        Setup in Progress
+                    </h1>
                     <p className="text-muted-foreground">
-                        This application is being configured by an administrator.
-                        Please check back shortly.
+                        This application is being configured by an
+                        administrator. Please check back shortly.
                     </p>
                 </div>
             </div>
@@ -35,6 +38,7 @@ export default function AppSidebarLayout({
             <AppSidebar />
             <AppContent variant="sidebar" className="overflow-x-hidden">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
+                <AnnouncementsBanner />
                 {children}
             </AppContent>
         </AppShell>

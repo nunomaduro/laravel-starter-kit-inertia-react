@@ -57,6 +57,11 @@
             "nullable": true,
             "default": null
         },
+        "current_team_id": {
+            "type": "integer",
+            "nullable": true,
+            "default": null
+        },
         "onboarding_completed": {
             "type": "boolean",
             "nullable": true,

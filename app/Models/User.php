@@ -13,6 +13,8 @@ use App\Traits\Billing\HasAffiliate;
 use BeyondCode\Vouchers\Traits\CanRedeemVouchers;
 use Carbon\CarbonInterface;
 use DateTimeInterface;
+use Deligoez\LaravelModelHashId\Traits\HasHashId;
+use Deligoez\LaravelModelHashId\Traits\HasHashIdRouting;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -62,6 +64,7 @@ use Spatie\Tags\HasTags;
  * @property-read CarbonInterface $created_at
  * @property-read CarbonInterface $updated_at
  * @property-read CarbonInterface|null $deleted_at
+ * @property-read string $hashId
  */
 final class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasMedia, MustVerifyEmail
 {
@@ -72,6 +75,8 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     use HasAffiliate;
     use HasApiTokens;
     use HasFactory;
+    use HasHashId;
+    use HasHashIdRouting;
     use HasOrganizationPermissions;
     use HasRoles;
     use HasTags;
@@ -90,6 +95,7 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     protected $appends = [
         'avatar',
         'avatar_profile',
+        'hash_id',
     ];
 
     /**

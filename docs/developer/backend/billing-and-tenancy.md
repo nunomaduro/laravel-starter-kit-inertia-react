@@ -39,6 +39,11 @@ When multi-tenancy is enabled, org admins and super-admins with access to multip
 
 `ScopesToCurrentTenant` trait ensures Filament resource queries filter by `organization_id` when `tenant_id()` is set. Super-admins bypass scoping. Used by `OrganizationInvitationResource`.
 
+## Country restrictions (geo)
+
+- **Package**: [devrabiul/laravel-geo-genius](https://github.com/devrabiul/laravel-geo-genius) — geolocation for visitors.
+- **Usage**: `EnsureCountryAllowed` middleware uses `laravelGeoGenius()->geo()->locateVisitor()` to enforce billing country restrictions before checkout when configured. Attach the middleware to billing/checkout routes as needed.
+
 ## Policies
 
 - **CreditPolicy**, **RefundRequestPolicy**: Org-scoped access; users can only view/create for organizations they belong to.

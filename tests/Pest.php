@@ -24,6 +24,15 @@ pest()->extend(TestCase::class)
 
         $this->freezeTime();
         $this->withoutVite();
+
+        // Ensure Spatie Permission uses teams and a default team id so role assignment includes organization_id in pivot
+        $registrar = resolve(Spatie\Permission\PermissionRegistrar::class);
+        if (! $registrar->teams) {
+            $registrar->teams = true;
+            $registrar->teamsKey = config('permission.column_names.team_foreign_key', 'organization_id');
+        }
+
+        setPermissionsTeamId(0);
     })
     ->in('Feature', 'Unit');
 

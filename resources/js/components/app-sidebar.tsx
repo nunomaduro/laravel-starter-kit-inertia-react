@@ -216,8 +216,7 @@ export function AppSidebar() {
     const adminPanelHref = isSuperAdmin ? '/system' : '/admin';
     const adminPanelLabel = isSuperAdmin ? 'System Panel' : 'Admin Panel';
     const canSeeAdminPanel =
-        isSuperAdmin ||
-        permissions.includes('access admin panel');
+        isSuperAdmin || permissions.includes('access admin panel');
 
     return (
         <Sidebar collapsible="icon" variant="inset">

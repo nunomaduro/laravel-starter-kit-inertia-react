@@ -200,7 +200,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                 variant="ghost"
                                 asChild
                                 data-pan="settings-nav-admin-panel"
-                                className="mt-2 shrink-0 justify-start gap-2 border-t pt-2 text-muted-foreground lg:w-full lg:mt-2 lg:pt-2"
+                                className="mt-2 shrink-0 justify-start gap-2 border-t pt-2 text-muted-foreground lg:mt-2 lg:w-full lg:pt-2"
                             >
                                 <a href={adminPanelHref}>
                                     <ShieldCheck className="size-4 shrink-0" />

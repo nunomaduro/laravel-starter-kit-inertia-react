@@ -130,12 +130,12 @@ final class ManageInfrastructure extends SettingsPage
     private function setEnvVar(string $env, string $key, string $value): string
     {
         $escaped = preg_match('/\s/', $value) ? '"'.$value.'"' : $value;
-        $line = "{$key}={$escaped}";
+        $line = sprintf('%s=%s', $key, $escaped);
 
-        if (preg_match("/^{$key}=.*/m", $env)) {
-            return (string) preg_replace("/^{$key}=.*/m", $line, $env);
+        if (preg_match(sprintf('/^%s=.*/m', $key), $env)) {
+            return (string) preg_replace(sprintf('/^%s=.*/m', $key), $line, $env);
         }
 
-        return mb_rtrim($env)."\n{$line}\n";
+        return mb_rtrim($env).(PHP_EOL.$line.PHP_EOL);
     }
 }

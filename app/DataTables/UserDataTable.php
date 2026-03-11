@@ -50,6 +50,7 @@ final class UserDataTable extends AbstractDataTable
 
     public function __construct(
         public int $id,
+        public string $hash_id,
         public string $name,
         public string $email,
         public ?string $avatar,
@@ -71,6 +72,7 @@ final class UserDataTable extends AbstractDataTable
 
         return new self(
             id: $model->id,
+            hash_id: $model->hashId,
             name: $model->name,
             email: $model->email,
             avatar: $model->avatar,
@@ -97,6 +99,11 @@ final class UserDataTable extends AbstractDataTable
                 ->number()
                 ->sortable()
                 ->prefix('#')
+                ->group('Identity')
+                ->build(),
+            ColumnBuilder::make('hash_id', 'Hash ID')
+                ->text()
+                ->visible(false)
                 ->group('Identity')
                 ->build(),
             ColumnBuilder::make('name', 'Name')
@@ -304,6 +311,7 @@ final class UserDataTable extends AbstractDataTable
         return [
             '_index' => null,
             'id' => $n.' user'.($n !== 1 ? 's' : '').' on this page',
+            'hash_id' => null,
             'name' => null,
             'email' => null,
             'status' => null,
@@ -413,6 +421,7 @@ final class UserDataTable extends AbstractDataTable
         return [
             'user' => [
                 'id' => $user->id,
+                'hash_id' => $user->hashId,
                 'name' => $user->name,
                 'email' => $user->email,
                 'avatar' => $user->avatar,

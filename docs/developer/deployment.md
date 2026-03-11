@@ -160,6 +160,16 @@ For scheduled tasks (e.g. `personal-data-export:clean`), add to the server cront
 
 If you use Horizon with Redis, the scheduler is still run by this cron entry; Horizon does not replace it for application scheduled tasks.
 
+### Running the scheduler without cron
+
+On PaaS or environments where cron is not available (e.g. Heroku, Render), use [spatie/laravel-cronless-schedule](https://github.com/spatie/laravel-cronless-schedule). Run a long-lived process:
+
+```bash
+php artisan schedule:run-cronless
+```
+
+This runs the same scheduler every minute without cron. See [Cronless schedule](backend/cronless-schedule.md) for options and deployment notes.
+
 ## Webhook security
 
 Stripe (`POST /webhooks/stripe`), Paddle (`POST /webhooks/paddle`), and Lemon Squeezy (`POST /lemon-squeezy/webhook`) endpoints are excluded from CSRF. Each verifies the request signature (Stripe-Signature, Paddle-Signature, or Lemon Squeezy HMAC) before processing. Do not disable signature verification; keep webhook secrets in config and never expose them to the client.

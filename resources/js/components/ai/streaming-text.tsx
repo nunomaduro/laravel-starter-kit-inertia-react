@@ -43,6 +43,7 @@ export function StreamingText({
             prevTextRef.current = text;
         } else {
             // Text was replaced entirely — restart
+
             setDisplayed('');
             indexRef.current = 0;
             prevTextRef.current = text;
@@ -51,6 +52,7 @@ export function StreamingText({
         const tick = () => {
             if (indexRef.current >= text.length) return;
             indexRef.current++;
+
             setDisplayed(text.slice(0, indexRef.current));
         };
 

@@ -45,18 +45,18 @@ export default function SettingsGeneral() {
         null,
     );
     const [checking, setChecking] = useState(false);
-    const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const checkAvailability = useCallback(
         (slug: string) => {
-            if (debounceTimer.current) {
-                clearTimeout(debounceTimer.current);
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
             }
             if (!slug || slug === organization?.slug) {
                 setAvailability(null);
                 return;
             }
-            debounceTimer.current = setTimeout(async () => {
+            debounceTimerRef.current = setTimeout(async () => {
                 setChecking(true);
                 try {
                     const res = await fetch(

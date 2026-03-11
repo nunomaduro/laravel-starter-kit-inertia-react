@@ -14,7 +14,7 @@ Web-based application installer — mirrors every phase of `php artisan app:inst
 |--------|------|-------|---------|
 | `show` | GET | `/install` | Renders the current installer step |
 | `store` | POST | `/install` | Processes a submitted installer step |
-| `express` | POST | `/install/express` | Express install: SQLite + defaults, optional body (tenancy, demo, single_org_name, preset, locale, fallback_locale) |
+| `express` | POST | `/install/express` | Express install: SQLite + defaults, optional body (tenancy, demo, single_org_name, site_name, preset, locale, fallback_locale, ai_provider, ai_api_key, ai_model) |
 | `expressStatus` | GET | `/install/express/status` | Poll progress of express install (query `key` = progress filename); deletes file when status is `done` or `error` |
 | `testConnection` | POST | `/install/test-connection` | Test DB/mail/search connection for a given step |
 | `complete` | GET | `/install/complete` | One-time auto-login after express install (query `token` = encrypted payload); redirects to `/admin` |
@@ -23,7 +23,7 @@ Web-based application installer — mirrors every phase of `php artisan app:inst
 
 - `install`: `GET /install` — displays the step resolved by `resolveStep()`
 - `install.store`: `POST /install` — dispatches to the appropriate step handler
-- `install.express`: `POST /install/express` — runs express install; optional JSON body: `tenancy`, `demo`, `single_org_name`, `preset`
+- `install.express`: `POST /install/express` — runs express install; optional JSON body: `tenancy`, `demo`, `single_org_name`, `site_name`, `preset`, `locale`, `fallback_locale`, `ai_provider`, `ai_api_key`, `ai_model`
 - `install.express.status`: `GET /install/express/status?key=...` — returns progress JSON
 - `install.test-connection`: `POST /install/test-connection` — connection test for current step
 - `install.complete`: `GET /install/complete?token=...` — one-time auto-login after express install; redirects to `/admin`
@@ -38,7 +38,7 @@ On the **App** step, an optional **Install preset** can be selected: None, SaaS,
 - **Billing**: Internal → info hint to consider skipping billing.
 - **Feature flags**: Internal → Registration, API access, and contact form unchecked by default.
 
-Express install accepts a `preset` body param; when `tenancy`/`demo` are omitted, preset maps to: `internal` → single-tenant, no demo; `saas` → multi-tenant, no demo; `ai_first` → multi-tenant, minimal demo.
+Express install accepts a `preset` body param; when `tenancy`/`demo` are omitted, preset maps to: `internal` → single-tenant, no demo; `saas` → multi-tenant, no demo; `ai_first` → multi-tenant, minimal demo. Optional `site_name` sets AppSettings and mail from name; optional `ai_provider` (openrouter, openai, anthropic, groq, gemini, xai, deepseek, mistral, ollama) plus `ai_api_key` and `ai_model` persist to PrismSettings.
 
 ## Steps
 
@@ -47,7 +47,7 @@ Express install accepts a `preset` body param; when `tenancy`/`demo` are omitted
 | Step | What it does |
 |------|--------------|
 | `database` | Configures `DB_CONNECTION` in `.env`; verifies connectivity |
-| `migrate` | Runs `php artisan migrate --force` and `db:seed` (essential data) |
+| `migrate` | Runs `php artisan migrate --force` and essential seeders: RolesAndPermissions, Gamification, MailTemplates, Governor (non-fatal) |
 | `admin` | Creates the super-admin user |
 | `app` | Saves `AppSettings` (site name, URL, timezone, locale) |
 

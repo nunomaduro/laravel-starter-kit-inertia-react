@@ -518,7 +518,7 @@ function MarkerPopup({
 }: MarkerPopupProps) {
   const { marker, map } = useMarkerContext();
   const container = useMemo(() => document.createElement("div"), []);
-  const prevPopupOptions = useRef(popupOptions);
+  const prevPopupOptionsRef = useRef(popupOptions);
 
   const popup = useMemo(() => {
     const popupInstance = new MapLibreGL.Popup({
@@ -544,7 +544,7 @@ function MarkerPopup({
   }, [map]);
 
   if (popup.isOpen()) {
-    const prev = prevPopupOptions.current;
+    const prev = prevPopupOptionsRef.current;
 
     if (prev.offset !== popupOptions.offset) {
       popup.setOffset(popupOptions.offset ?? 16);
@@ -553,7 +553,7 @@ function MarkerPopup({
       popup.setMaxWidth(popupOptions.maxWidth ?? "none");
     }
 
-    prevPopupOptions.current = popupOptions;
+    prevPopupOptionsRef.current = popupOptions;
   }
 
   const handleClose = () => popup.remove();
@@ -596,7 +596,7 @@ function MarkerTooltip({
 }: MarkerTooltipProps) {
   const { marker, map } = useMarkerContext();
   const container = useMemo(() => document.createElement("div"), []);
-  const prevTooltipOptions = useRef(popupOptions);
+  const prevTooltipOptionsRef = useRef(popupOptions);
 
   const tooltip = useMemo(() => {
     const tooltipInstance = new MapLibreGL.Popup({
@@ -630,7 +630,7 @@ function MarkerTooltip({
   }, [map]);
 
   if (tooltip.isOpen()) {
-    const prev = prevTooltipOptions.current;
+    const prev = prevTooltipOptionsRef.current;
 
     if (prev.offset !== popupOptions.offset) {
       tooltip.setOffset(popupOptions.offset ?? 16);
@@ -639,7 +639,7 @@ function MarkerTooltip({
       tooltip.setMaxWidth(popupOptions.maxWidth ?? "none");
     }
 
-    prevTooltipOptions.current = popupOptions;
+    prevTooltipOptionsRef.current = popupOptions;
   }
 
   return createPortal(

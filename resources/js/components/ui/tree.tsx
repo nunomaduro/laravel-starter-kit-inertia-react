@@ -31,7 +31,7 @@ function Tree({
   defaultExpanded = [],
 }: TreeProps) {
   const [internalExpanded, setInternalExpanded] = React.useState<Set<string | number>>(
-    new Set(defaultExpanded)
+    () => new Set(defaultExpanded)
   )
 
   const isExpanded = (id: string | number) =>

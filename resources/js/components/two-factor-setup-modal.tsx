@@ -74,7 +74,6 @@ function TwoFactorSetupStep({
                             <div className="z-10 flex h-full w-full items-center justify-center p-5">
                                 {qrCodeSvg ? (
                                     <div
-                                        // eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml -- trusted SVG from server for 2FA setup
                                         dangerouslySetInnerHTML={{
                                             __html: qrCodeSvg,
                                         }}
@@ -280,7 +279,6 @@ export default function TwoFactorSetupModal({
     }, []);
 
     const resetModalState = useCallback(() => {
-        // eslint-disable-next-line @eslint-react/hooks-extra/no-direct-set-state-in-use-effect -- intentional reset when modal closes
         setShowVerificationStep(false);
         if (twoFactorEnabled) {
             clearSetupData();

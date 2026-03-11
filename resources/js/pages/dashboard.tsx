@@ -244,7 +244,9 @@ function SuperAdminDashboard({
 
     return (
         <>
-            <div className={`grid gap-4 sm:grid-cols-2 ${showContact ? 'lg:grid-cols-3' : 'lg:grid-cols-2'}`}>
+            <div
+                className={`grid gap-4 sm:grid-cols-2 ${showContact ? 'lg:grid-cols-3' : 'lg:grid-cols-2'}`}
+            >
                 <StatCard
                     label="Total users"
                     value={usersCount}

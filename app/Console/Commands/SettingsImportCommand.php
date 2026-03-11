@@ -47,7 +47,7 @@ final class SettingsImportCommand extends Command
         $file = (string) $this->argument('file');
 
         if (! file_exists($file)) {
-            error("  File not found: {$file}");
+            error('  File not found: '.$file);
 
             return self::FAILURE;
         }
@@ -67,7 +67,7 @@ final class SettingsImportCommand extends Command
         $groups = (array) $this->option('group');
 
         if ($groups !== []) {
-            $settings = array_filter($settings, fn (array $s) => in_array($s['group'], $groups));
+            $settings = array_filter($settings, fn (array $s): bool => in_array($s['group'], $groups));
             $settings = array_values($settings);
         }
 
@@ -76,17 +76,15 @@ final class SettingsImportCommand extends Command
         $exportedAt = $decoded['exported_at'] ?? 'unknown';
 
         intro($isDryRun ? '  Settings Import (dry run)  ' : '  Settings Import  ');
-        $this->line("  Source   : {$file}");
-        $this->line("  Exported : {$exportedAt}");
+        $this->line('  Source   : '.$file);
+        $this->line('  Exported : '.$exportedAt);
         $this->line('  Records  : '.count($settings));
         $this->newLine();
 
-        if (! $isDryRun && ! $this->option('force')) {
-            if (! confirm('  Import '.count($settings).' settings? Existing values will be '.($noOverwrite ? 'preserved.' : 'overwritten.'), default: true)) {
-                outro('  Import cancelled.');
+        if (! $isDryRun && ! $this->option('force') && ! confirm('  Import '.count($settings).' settings? Existing values will be '.($noOverwrite ? 'preserved.' : 'overwritten.'), default: true)) {
+            outro('  Import cancelled.');
 
-                return self::SUCCESS;
-            }
+            return self::SUCCESS;
         }
 
         $imported = 0;
@@ -116,7 +114,7 @@ final class SettingsImportCommand extends Command
 
                     $imported++;
                 } catch (Throwable $e) {
-                    warning("  Failed: {$row['group']}.{$row['name']} — {$e->getMessage()}");
+                    warning(sprintf('  Failed: %s.%s — %s', $row['group'], $row['name'], $e->getMessage()));
                     $failed++;
                 }
             }
@@ -131,17 +129,17 @@ final class SettingsImportCommand extends Command
         $this->newLine();
 
         if ($isDryRun) {
-            info("  Dry run — would import: {$imported}, skip: {$skipped}, fail: {$failed}");
+            info(sprintf('  Dry run — would import: %d, skip: %d, fail: %d', $imported, $skipped, $failed));
             info('  Run without --dry-run to apply.');
         } else {
-            info("  Imported: {$imported}");
+            info('  Imported: '.$imported);
 
             if ($skipped > 0) {
-                info("  Skipped (already exist): {$skipped}");
+                info('  Skipped (already exist): '.$skipped);
             }
 
             if ($failed > 0) {
-                warning("  Failed: {$failed}");
+                warning('  Failed: '.$failed);
             }
 
             outro('  Import complete. Run php artisan config:clear to apply changes.');

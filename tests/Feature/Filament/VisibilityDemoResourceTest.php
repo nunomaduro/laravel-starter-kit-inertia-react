@@ -26,7 +26,6 @@ it('allows super-admin to open visibility demos create page', function (): void 
 });
 
 it('creates visibility demo as global when share_to_all_orgs is true', function (): void {
-    /** @var TestCase $this */
     $record = VisibilityDemo::query()->create([
         'title' => 'Global demo item',
         'visibility' => VisibilityEnum::Organization,

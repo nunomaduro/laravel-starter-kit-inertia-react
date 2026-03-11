@@ -27,7 +27,7 @@ function TreeView({
   className,
 }: TreeViewProps) {
   const [expanded, setExpanded] = React.useState<Set<string>>(
-    new Set(defaultExpanded)
+    () => new Set(defaultExpanded)
   )
 
   const toggleExpand = React.useCallback((id: string) => {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\Announcement;
 use App\Models\Organization;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
@@ -95,6 +96,7 @@ final class HandleInertiaRequests extends Middleware
             'notifications' => [
                 'unread_count' => $user?->unreadNotifications()->count() ?? 0,
             ],
+            'announcements' => $this->resolveAnnouncements($user),
         ];
     }
 
@@ -231,6 +233,41 @@ final class HandleInertiaRequests extends Middleware
      *
      * @return array{logoUrl: string|null, themePreset: string|null, themeRadius: string|null, themeFont: string|null, allowUserCustomization: bool}
      */
+    /**
+     * Active announcements for the current user: global + current org, within start/end and active.
+     *
+     * @return array<int, array{id: int, title: string, body: string, level: string}>
+     */
+    private function resolveAnnouncements($user): array
+    {
+        if ($user === null) {
+            return [];
+        }
+
+        $tenantId = TenantContext::id();
+
+        $query = Announcement::query()
+            ->active()
+            ->where(function ($q) use ($tenantId): void {
+                $q->whereNull('organization_id');
+                if ($tenantId !== null) {
+                    $q->orWhere('organization_id', $tenantId);
+                }
+            })
+            ->orderByRaw('CASE WHEN organization_id IS NULL THEN 0 ELSE 1 END')
+            ->orderBy('created_at', 'desc');
+
+        return $query->get(['id', 'title', 'body', 'level'])
+            ->map(fn (Announcement $a): array => [
+                'id' => $a->id,
+                'title' => $a->title,
+                'body' => $a->body,
+                'level' => $a->level->value,
+            ])
+            ->values()
+            ->all();
+    }
+
     private function resolveBranding(): array
     {
         $organization = TenantContext::get();
