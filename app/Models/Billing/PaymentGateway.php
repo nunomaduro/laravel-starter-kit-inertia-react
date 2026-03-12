@@ -28,6 +28,11 @@ final class PaymentGateway extends Model implements Sortable
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use SortableTrait;
 
+    /** @var array<string, mixed> */
+    public array $sortable = [
+        'order_column_name' => 'sort_order',
+    ];
+
     #[Override]
     protected $fillable = [
         'name',

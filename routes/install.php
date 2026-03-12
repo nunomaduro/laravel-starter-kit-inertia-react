@@ -19,6 +19,7 @@ Route::middleware(['web', 'install.env', 'throttle:install'])->group(function ()
         Route::post('install/express', [InstallController::class, 'express'])->name('install.express');
         Route::get('install/express/status', [InstallController::class, 'expressStatus'])->name('install.express.status');
         Route::post('install/test-connection', [InstallController::class, 'testConnection'])->name('install.test-connection');
+        Route::match(['GET', 'POST'], 'install/ai-models', [InstallController::class, 'aiModels'])->name('install.ai-models');
         Route::post('install/migrate/run', [InstallController::class, 'migrateRun'])->name('install.migrate.run');
         Route::get('install/migrate/status', [InstallController::class, 'migrateStatus'])->name('install.migrate.status');
     });

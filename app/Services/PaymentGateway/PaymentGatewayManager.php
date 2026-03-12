@@ -18,6 +18,7 @@ final class PaymentGatewayManager
      * @var array<string, class-string<PaymentGatewayInterface>>
      */
     private array $gateways = [
+        'none' => ManualGateway::class,
         'stripe' => StripeGateway::class,
         'paddle' => PaddleGateway::class,
         'lemon_squeezy' => LemonSqueezyGateway::class,
@@ -27,6 +28,9 @@ final class PaymentGatewayManager
     public function driver(?string $type = null): PaymentGatewayInterface
     {
         $type ??= config('billing.default_gateway', 'stripe');
+        if ($type === 'none' || $type === '') {
+            $type = 'manual';
+        }
 
         $model = $this->getDefaultGatewayModel();
         if ($model && $model->type->value === $type) {

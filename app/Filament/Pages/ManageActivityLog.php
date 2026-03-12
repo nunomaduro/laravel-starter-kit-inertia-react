@@ -17,7 +17,7 @@ use UnitEnum;
 final class ManageActivityLog extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Features & Access';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · Features';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;

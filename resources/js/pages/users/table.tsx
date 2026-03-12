@@ -45,16 +45,18 @@ interface DataTableAiProps {
 
 interface Props {
     tableData?: DataTableResponse<UsersTableRow>;
-    searchableColumns: string[];
+    searchableColumns?: string[];
     dataTableAi?: DataTableAiProps;
+    batchEditAllowedColumns?: string[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Users', href: '/users' }];
 
 export default function UsersTablePage({
     tableData,
-    searchableColumns = [],
+    searchableColumns: _searchableColumns = [],
     dataTableAi,
+    batchEditAllowedColumns: _batchEditAllowedColumns = [],
 }: Props) {
     const [shortcutsOpen, setShortcutsOpen] = useState(false);
     const [messageDialog, setMessageDialog] = useState<{
@@ -192,15 +194,59 @@ export default function UsersTablePage({
                     <p className="text-muted-foreground">
                         {tableData.meta.total} results
                     </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                        Quick views = &quot;All&quot; dropdown. Columns = Colonnes. Export = Exporter.
+                        {!dataTableAi?.aiBaseUrl && !dataTableAi?.thesysEnabled && (
+                            <> To enable AI and Thesys Visualize: set <code className="rounded bg-muted px-1 py-0.5 text-[11px]">THESYS_API_KEY</code> and an AI provider in .env or Filament → Settings · Integrations → AI.</>
+                        )}
+                    </p>
                 </div>
+                {tableData.analytics && tableData.analytics.length > 0 && (
+                    <div className="grid grid-cols-2 gap-3 py-2 md:grid-cols-4">
+                        {tableData.analytics.map((card) => (
+                            <div
+                                key={card.label}
+                                className="rounded-lg border bg-card p-3 text-card-foreground shadow-sm"
+                            >
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs font-medium text-muted-foreground">
+                                        {card.label}
+                                    </span>
+                                    {card.icon && (
+                                        <span className="text-sm">
+                                            {card.icon}
+                                        </span>
+                                    )}
+                                </div>
+                                <p className="mt-1 text-2xl font-semibold tabular-nums">
+                                    {typeof card.value === 'number' &&
+                                    card.format === 'number'
+                                        ? card.value.toLocaleString()
+                                        : card.value}
+                                </p>
+                                {card.description && (
+                                    <p className="text-xs text-muted-foreground">
+                                        {card.description}
+                                    </p>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
                 <DataTable<UsersTableRow>
                     tableData={tableData}
                     tableName="users"
-                    searchableColumns={searchableColumns}
                     debounceMs={300}
                     partialReloadKey="tableData"
                     aiBaseUrl={dataTableAi?.aiBaseUrl ?? undefined}
                     aiThesys={dataTableAi?.thesysEnabled ?? false}
+                    groupByOptions={['status', 'onboarding_completed']}
+                    kanbanColumnId="status"
+                    cardTitleColumn="name"
+                    cardSubtitleColumn="email"
+                    onKanbanMove={async (rowId, _fromLane, toLane) => {
+                        await router.patch(`/users/${rowId}`, { status: toLane });
+                    }}
                     rowLink={(row) => `/users/${row.hash_id}`}
                     emptyState={
                         <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
@@ -218,14 +264,12 @@ export default function UsersTablePage({
                     actions={rowActions}
                     bulkActions={bulkActions}
                     headerActions={headerActions}
-                    renderDetailRow={(row, detail): ReactNode => {
-                        const d = detail as
-                            | {
-                                  email_verified_at?: string | null;
-                                  updated_at?: string | null;
-                                  organizations_count?: number;
-                              }
-                            | undefined;
+                    renderDetailRow={(row): ReactNode => {
+                        const d = (row as UsersTableRow & {
+                            email_verified_at?: string | null;
+                            updated_at?: string | null;
+                            organizations_count?: number;
+                        });
                         return (
                             <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-3">
                                 {d?.email_verified_at != null && (
@@ -271,31 +315,106 @@ export default function UsersTablePage({
                     onInlineEdit={() => {
                         router.reload({ only: ['tableData'] });
                     }}
+                    onBatchEdit={async (rows, columnId, value) => {
+                        await router.patch('/users/batch-update', {
+                            ids: rows.map((r) => r.id),
+                            column: columnId,
+                            value:
+                                typeof value === 'boolean'
+                                    ? value
+                                    : String(value),
+                        });
+                    }}
                     options={{
-                        stickyHeader: true,
-                        globalSearch: true,
-                        columnVisibility: true,
-                        columnOrdering: true,
-                        columnResizing: true,
-                        columnPinning: true,
                         quickViews: true,
                         customQuickViews: true,
                         exports: true,
                         filters: true,
-                        density: 'comfortable',
-                        copyCell: true,
-                        emptyStateIllustration: true,
-                        rowGrouping: true,
-                        contextMenu: true,
-                        batchEdit: true,
-                        printable: true,
-                        undoRedo: true,
-                        persistSelection: true,
+                        columnVisibility: true,
+                        columnOrdering: true,
+                        columnResizing: true,
+                        stickyHeader: true,
+                        globalSearch: true,
+                        loading: true,
                         keyboardNavigation: true,
+                        printable: true,
+                        density: true,
+                        copyCell: true,
+                        contextMenu: true,
+                        rowGrouping: true,
+                        rowReorder: true,
+                        batchEdit: true,
                         searchHighlight: true,
+                        undoRedo: true,
+                        columnPinning: true,
+                        persistSelection: true,
                         shortcutsOverlay: true,
+                        exportProgress: true,
+                        emptyStateIllustration: true,
+                        cellFlashing: true,
+                        statusBar: true,
+                        clipboardPaste: true,
+                        dragToFill: true,
+                        headerFilters: true,
+                        infiniteScroll: false,
+                        columnAutoSize: true,
+                        columnVirtualization: true,
+                        cellRangeSelection: true,
+                        autoSizer: true,
+                        cellMeasurer: true,
+                        scrollAwareRendering: true,
+                        windowScroller: true,
+                        directionalOverscan: true,
+                        layoutSwitcher: true,
+                        columnStatistics: true,
+                        conditionalFormatting: true,
+                        facetedFilters: true,
+                        presence: false,
+                        spreadsheetMode: true,
+                        kanbanView: true,
+                        masterDetail: false,
+                        integratedCharts: true,
+                        findReplace: true,
+                        virtualScrolling: true,
                     }}
+                    mobileBreakpoint={768}
                     slots={{
+                        ...(tableData.analytics && tableData.analytics.length > 0
+                            ? {
+                                  beforeTable: (
+                                      <div className="grid grid-cols-2 gap-3 py-2 md:grid-cols-4">
+                                          {tableData.analytics.map((card) => (
+                                              <div
+                                                  key={card.label}
+                                                  className="rounded-lg border bg-card p-3 text-card-foreground shadow-sm"
+                                              >
+                                                  <div className="flex items-center justify-between gap-2">
+                                                      <span className="text-xs font-medium text-muted-foreground">
+                                                          {card.label}
+                                                      </span>
+                                                      {card.icon && (
+                                                          <span className="text-sm">
+                                                              {card.icon}
+                                                          </span>
+                                                      )}
+                                                  </div>
+                                                  <p className="mt-1 text-2xl font-semibold tabular-nums">
+                                                      {typeof card.value === 'number' &&
+                                                      card.format === 'number'
+                                                          ? card.value.toLocaleString()
+                                                          : card.value}
+                                                  </p>
+                                                  {card.description && (
+                                                      <p className="text-xs text-muted-foreground">
+                                                          {card.description}
+                                                      </p>
+                                                  )}
+                                              </div>
+                                          ))}
+                                      </div>
+                                  ),
+                              }
+                            : {}),
                         toolbar: (
                             <div className="flex justify-end px-2">
                                 <Dialog
@@ -337,13 +456,11 @@ export default function UsersTablePage({
                                 </Dialog>
                             </div>
                         ),
-                        beforeTable: undefined,
                     }}
-                    mobileBreakpoint={768}
                     translations={{
                         noData: 'No users',
                         search: 'Search users',
-                        clearFilters: 'Clear all filters',
+                        clearAllFilters: 'Clear all filters',
                         density: 'Row density',
                         selectAllMatching: (count) =>
                             `Select all ${count} users`,

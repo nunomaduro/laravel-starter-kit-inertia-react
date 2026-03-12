@@ -33,7 +33,7 @@ final class ManageOrganizationOverrides extends Page implements HasTable
     public ?int $selectedOrganizationId = null;
 
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'System';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;

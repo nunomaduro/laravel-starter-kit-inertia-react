@@ -40,7 +40,7 @@ final class SetupWizard extends Page implements HasForms
     public ?array $data = [];
 
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Platform';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRocketLaunch;

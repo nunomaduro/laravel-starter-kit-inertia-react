@@ -4,18 +4,37 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
+use App\Models\Organization;
+use App\Models\Page;
+use App\Services\TenantContext;
 use Illuminate\Database\Seeder;
 
-/**
- * Page seeder.
- *
- * Pages are typically created and edited via the app (Filament / page builder).
- * This seeder exists to satisfy the model-audit / pre-commit check.
- */
 final class PageSeeder extends Seeder
 {
+    /** @var list<string> */
+    private array $dependencies = ['UsersSeeder'];
+
     public function run(): void
     {
-        // No-op: pages are created at runtime via the page builder.
+        $organizations = Organization::query()->limit(5)->get();
+
+        if ($organizations->isEmpty()) {
+            return;
+        }
+
+        $total = fake()->numberBetween(5, 10);
+        $perOrg = (int) ceil($total / $organizations->count());
+
+        foreach ($organizations as $org) {
+            TenantContext::set($org);
+
+            for ($i = 0; $i < $perOrg; $i++) {
+                Page::factory()
+                    ->when(fake()->boolean(40), fn ($f) => $f->published())
+                    ->create(['organization_id' => $org->id]);
+            }
+
+            TenantContext::forget();
+        }
     }
 }

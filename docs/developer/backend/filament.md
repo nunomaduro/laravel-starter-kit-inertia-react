@@ -17,7 +17,7 @@ Resources and pages use `canAccess()` with `filament()->getCurrentPanel()?->getI
 
 ## Dev credentials
 
-For local development, use seeded user **admin@example.com** / **password** (role `super-admin`). Log in at `/admin` (or `/system` for the System panel).
+For local development, use seeded user **superadmin@example.com** / **password** (role `super-admin`). Log in at `/admin` (or `/system` for the System panel).
 
 ## Creating resources
 

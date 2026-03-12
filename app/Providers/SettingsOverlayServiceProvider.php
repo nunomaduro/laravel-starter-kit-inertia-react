@@ -226,6 +226,8 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
                 'chat_model' => 'ai.providers.openrouter.models.text.default',
                 'cohere_api_key' => 'ai.providers.cohere.key',
                 'jina_api_key' => 'ai.providers.jina.key',
+                'thesys_api_key' => 'services.thesys.api_key',
+                'thesys_model' => 'services.thesys.model',
             ],
             'orgOverridable' => true,
         ],
@@ -427,12 +429,29 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
                 $settings = resolve($settingsClass);
 
                 foreach ($config['map'] as $property => $configKey) {
-                    config()->set($configKey, $settings->{$property});
+                    $value = $settings->{$property};
+                    // API keys: only overlay when DB has a value, so .env remains the fallback
+                    if (
+                        (str_ends_with($configKey, 'api_key') || str_ends_with($configKey, '.key'))
+                        && ($value === null || $value === '')
+                    ) {
+                        continue;
+                    }
+                    config()->set($configKey, $value);
                 }
             } catch (Throwable) {
                 // Settings table may not exist yet (fresh install, migrations pending).
                 // Skip this group silently — config defaults from env remain in effect.
                 continue;
+            }
+        }
+
+        // Avoid instantiating Reverb with null credentials (e.g. package:discover, composer install)
+        if (config('broadcasting.default') === 'reverb') {
+            $key = config('broadcasting.connections.reverb.key');
+            $appId = config('broadcasting.connections.reverb.app_id');
+            if ($key === null || $key === '' || $appId === null || $appId === '') {
+                config()->set('broadcasting.default', 'log');
             }
         }
 
@@ -442,12 +461,16 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
         config()->set('services.google.redirect', $appUrl.'/auth/google/callback');
         config()->set('services.github.redirect', $appUrl.'/auth/github/callback');
 
-        // Cross-map PrismSettings API keys to Laravel AI SDK config
+        // Cross-map PrismSettings API keys to Laravel AI SDK config (only when DB has a value)
         try {
             $prism = resolve(PrismSettings::class);
 
             foreach (self::AI_KEY_CROSS_MAP as $property => $configKey) {
-                config()->set($configKey, $prism->{$property});
+                $value = $prism->{$property};
+                if ($value === null || $value === '') {
+                    continue;
+                }
+                config()->set($configKey, $value);
             }
         } catch (Throwable) {
             // PrismSettings not available yet — skip silently.

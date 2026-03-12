@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Organization branding settings: logo upload, theme preset (default/vega/nova), radius, font, and whether users can override appearance. Requires `org.settings.manage`.
+Organization branding settings: logo upload (default + optional **dark-mode logo** for light-on-dark UIs), theme preset (default/vega/nova), radius, font, and whether users can override appearance. Requires `org.settings.manage`.
 
 ## Location
 
@@ -19,13 +19,13 @@ Organization branding settings: logo upload, theme preset (default/vega/nova), r
 
 | Prop     | Type   | Description                                                                 |
 |----------|--------|-----------------------------------------------------------------------------|
-| branding | object | Current: `logoUrl`, `themePreset`, `themeRadius`, `themeFont`, `allowUserCustomization` |
+| branding | object | Current: `logoUrl`, `logoUrlDark` (optional, used in `dark:` contexts), `themePreset`, `themeRadius`, `themeFont`, `allowUserCustomization` |
 | ...      |        | Flash and any form defaults from BrandingController                        |
 
 ## User Flow
 
 1. User with org.settings.manage opens Settings → Branding.
-2. Can upload/remove logo; set theme preset, radius, font; toggle allow user customization.
+2. Can upload default logo and optional dark-mode logo (`logo_path_dark` in org branding); set theme preset, radius, font; toggle allow user customization.
 3. Saves; HandleInertiaRequests shares updated `branding` (lazy) so AppLogo and theme props reflect changes.
 
 ## Related Components

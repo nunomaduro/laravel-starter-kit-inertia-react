@@ -51,6 +51,14 @@ Seeders for local development and testing (fake users, dummy content, test scena
 
 **UsersSeeder** loads fixed users from `database/seeders/data/users.json`, then creates shared organizations (Acme, Beta Co) and attaches users for multi-org and role scenarios. All fixed users use password **`password`**. See [Testing credentials (Development)](#testing-credentials-development) below.
 
+### Seeding and PostgreSQL / Spatie roles
+
+- **`tenancy.seed_in_progress`**: While `DatabaseSeeder` runs, this config is set to `true` so `CreatePersonalOrganizationOnUserCreated` can skip creating personal orgs during bulk user creation (avoids Spatie `assignRole` during seed).
+- **Scout during seed**: In local/testing with Development seeders, `DatabaseSeeder` sets `scout.driver` to `collection` so seeding does not require Typesense.
+- **Feature flags on local**: After a successful development seed with **zero errors** in the **`local`** environment, `DatabaseSeeder` purges Pennant storage, clears `feature_segments`, and calls `Feature::activateForEveryone(..., true)` for every feature class in `config/feature-flags.php` so **all modules are on** without opening Filament → Manage Features.
+- **Role assignment without `assignRole`**: Org and global roles are attached via `model_has_roles` inserts with explicit **`role_id`** (`App\Support\AssignRoleViaDb`) to avoid PostgreSQL errors when team-scoped attach mis-binds role names into bigint columns. Used by `UsersSeeder`, `CreateUser`, `TransferOrganizationOwnershipAction`, `OrganizationMemberController` (member role updates via `syncOrg`), `AppInstallCommand`, and org creation actions. See [AssignRoleViaDb](assign-role-via-db.md).
+- **Records created**: `SeedingMetrics::recordCreated()` is invoked once per successful seeder run so the summary line is non-zero; per-model counts can be added in individual seeders if needed.
+
 ### Production
 Seeders for production-specific data (demo accounts, showcase data).
 
@@ -255,7 +263,7 @@ After `php artisan migrate:fresh --seed` in **local** or **testing**, the follow
 
 | Email | Global role | Organizations | Use case |
 |-------|-------------|----------------|----------|
-| **admin@example.com** | super-admin | None | System panel (`/admin/system`), setup wizard, impersonation, view-all orgs |
+| **superadmin@example.com** | super-admin | None | System panel (`/admin/system`), setup wizard, impersonation, view-all orgs |
 | **test@example.com** | user | 1 (personal, owner) | Regular app user; dashboard, tenant routes |
 | **admin-app@example.com** | admin | 1 (personal, owner) | Filament app panel (`/admin`) only; not system panel |
 | **owner@example.com** | user | 3 (personal + Acme + Beta Co, owner) | Owns shared orgs used for multi-org scenarios |

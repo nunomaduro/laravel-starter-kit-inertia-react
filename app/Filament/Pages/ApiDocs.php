@@ -18,7 +18,7 @@ use UnitEnum;
 final class ApiDocs extends Page
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'System';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCodeBracketSquare;

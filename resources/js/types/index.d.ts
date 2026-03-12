@@ -111,6 +111,7 @@ export interface ThemeProps {
 
 export interface BrandingProps {
     logoUrl?: string | null;
+    logoUrlDark?: string | null;
     themePreset?: string | null;
     themeRadius?: string | null;
     themeFont?: string | null;

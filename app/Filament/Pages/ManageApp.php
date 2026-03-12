@@ -21,7 +21,7 @@ use UnitEnum;
 final class ManageApp extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Platform';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;

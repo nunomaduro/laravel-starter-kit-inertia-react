@@ -14,12 +14,15 @@ final class ChangelogEntrySeeder extends Seeder
 {
     use LoadsJsonData;
 
+    private const int MIN_ENTRIES = 3;
+
     public function run(): void
     {
         try {
             $data = $this->loadJson('changelog-entries.json');
         } catch (RuntimeException) {
             $this->command?->warn('Changelog entries JSON file not found');
+            $this->ensureMinimumEntries();
 
             return;
         }
@@ -41,6 +44,17 @@ final class ChangelogEntrySeeder extends Seeder
             ]);
         }
 
+        $this->ensureMinimumEntries();
         $this->command?->info('Changelog entries seeded.');
+    }
+
+    private function ensureMinimumEntries(): void
+    {
+        $current = ChangelogEntry::query()->count();
+        if ($current >= self::MIN_ENTRIES) {
+            return;
+        }
+
+        ChangelogEntry::factory()->count(self::MIN_ENTRIES - $current)->create();
     }
 }

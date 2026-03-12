@@ -6,11 +6,14 @@ use App\Models\User;
 use App\Testing\SeedHelper;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 pest()->extend(TestCase::class)
@@ -25,13 +28,8 @@ pest()->extend(TestCase::class)
         $this->freezeTime();
         $this->withoutVite();
 
-        // Ensure Spatie Permission uses teams and a default team id so role assignment includes organization_id in pivot
-        $registrar = resolve(Spatie\Permission\PermissionRegistrar::class);
-        if (! $registrar->teams) {
-            $registrar->teams = true;
-            $registrar->teamsKey = config('permission.column_names.team_foreign_key', 'organization_id');
-        }
-
+        // Ensure Spatie Permission uses teams so assignRole attaches organization_id (NOT NULL on pivot)
+        ensurePermissionTeamsForTests();
         setPermissionsTeamId(0);
     })
     ->in('Feature', 'Unit');
@@ -88,21 +86,67 @@ function seedScenario(string $scenarioName): array
 }
 
 /**
+ * Force PermissionRegistrar into teams mode so assignRole/syncRoles attach organization_id (required by migrations).
+ */
+function ensurePermissionTeamsForTests(): void
+{
+    $registrar = resolve(PermissionRegistrar::class);
+    $registrar->teams = true;
+    $registrar->teamsKey = config('permission.column_names.team_foreign_key', 'organization_id');
+}
+
+/**
  * Seed roles/permissions, create an admin or super-admin user, and act as that user.
  * Use in Filament feature tests when you need an authenticated panel user.
  */
 function actsAsFilamentAdmin(TestCase $test, string $role = 'admin'): User
 {
+    ensurePermissionTeamsForTests();
+    setPermissionsTeamId(0);
+
     $test->seed(RolesAndPermissionsSeeder::class);
-    $user = User::factory()->withoutTwoFactor()->create([
+    // Avoid UserCreated → CreatePersonalOrganization (assignRole pivot without organization_id in sqlite)
+    $user = User::withoutEvents(static fn (): User => User::factory()->withoutTwoFactor()->create([
         'email' => $role.'@filament-test.example',
         'password' => Hash::make('password'),
-    ]);
-    $user->assignRole($role);
+    ]));
+    // assignRole() pivot attach can omit organization_id; insert pivot row explicitly (global team id 0)
+    $roleModel = Role::findByName($role, 'web');
+    if ($roleModel !== null) {
+        DB::table(config('permission.table_names.model_has_roles'))->insertOrIgnore([
+            'role_id' => $roleModel->id,
+            'model_id' => $user->id,
+            'model_type' => User::class,
+            'organization_id' => 0,
+        ]);
+    }
+    $user->unsetRelation('roles');
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
     $test->actingAs($user);
 
     return $user;
+}
+
+/**
+ * Attach a global (team id 0) role without using assignRole() — avoids sqlite pivot missing organization_id.
+ * Call after seed(RolesAndPermissionsSeeder) and creating the user with User::withoutEvents.
+ */
+function assignRoleForTestUser(User $user, string $role = 'super-admin'): void
+{
+    ensurePermissionTeamsForTests();
+    setPermissionsTeamId(0);
+    $roleModel = Role::findByName($role, 'web');
+    if ($roleModel !== null) {
+        DB::table(config('permission.table_names.model_has_roles'))->insertOrIgnore([
+            'role_id' => $roleModel->id,
+            'model_id' => $user->id,
+            'model_type' => User::class,
+            'organization_id' => 0,
+        ]);
+    }
+    $user->unsetRelation('roles');
+    resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 }
 
 function something(): void

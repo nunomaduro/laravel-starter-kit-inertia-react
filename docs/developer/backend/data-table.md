@@ -5,11 +5,10 @@ Server-side DataTables for **Laravel + Inertia.js + React** are provided by **ma
 ## Installation (already done)
 
 - **Composer**: `machour/laravel-data-table` is required as `dev-main` from the VCS repository (see `composer.json`).
-- **React/shadcn**: Install the DataTable UI components into the project:
-  ```bash
-  npx shadcn@latest add ./vendor/machour/laravel-data-table/react/public/r/data-table.json
-  ```
-  This copies the DataTable React components and installs shadcn/ TanStack Table dependencies.
+- **React/shadcn**: This repo **already includes** the DataTable React components under `resources/js/components/data-table/` and `resources/js/components/filters/`, including `data-table-column.tsx`, `i18n.ts`, and the full `types.ts`. A **fresh clone** works after `composer setup` (or `composer install`, `bun install`, `bun run build`) — no extra steps.
+- **After updating the package**: If you run `composer update machour/laravel-data-table` and want to refresh the app's DataTable React layer, run `bash scripts/sync-data-table-from-vendor.sh`.
+- **Reinstalling from the block** (optional): Run `npx shadcn@latest add ./vendor/machour/laravel-data-table/react/public/r/data-table.json --overwrite --yes`, then `scripts/sync-data-table-from-vendor.sh` again.
+- **Package fork maintainers:** To make a single `shadcn add` sufficient, add to the block’s `files` in `react/registry.json`: `src/data-table/data-table-column.tsx`, `src/data-table/i18n.ts`, and ensure `src/data-table/types.ts` is the full version; then rebuild `react/public/r/data-table.json`.
 - **Optional**: `maatwebsite/excel` for XLSX/CSV export; register export route and use `HasExport` trait on the DataTable class. See [laravel-excel.md](./laravel-excel.md).
 
 ## Where things live
@@ -124,7 +123,7 @@ The Users table is used to demonstrate the full set of features so the app can s
 DataTable AI (NLQ, insights, suggest, column summary, enrich) and the **Thesys C1 Visualize** tab are **opt-in**:
 
 - **AI panel**: Shown only when an AI backend is available (Laravel AI SDK or Prism) and configured (provider + API key or Ollama). The controller passes `dataTableAi.aiBaseUrl` only in that case; the frontend does not render the AI panel when `aiBaseUrl` is missing.
-- **Thesys Visualize tab**: Shown only when the app-level Thesys API key is set (`THESYS_API_KEY` in `.env`). The controller sets `dataTableAi.thesysEnabled` from `config('services.thesys.api_key')`; the frontend passes `aiThesys={true}` only when enabled. The same key is used for any other Thesys C1 features in the app.
+- **Thesys Visualize tab**: Shown when the app-level Thesys API key is set — via `.env` (`THESYS_API_KEY`) or **Filament → Settings · Integrations → AI** (`AiSettings.thesys_api_key`), which overlays `config('services.thesys.api_key')` at boot. The controller sets `dataTableAi.thesysEnabled` from `config('services.thesys.api_key')`; the frontend passes `aiThesys={true}` only when enabled. The same key is used for any other Thesys C1 features in the app.
 - **Installer**: The web installer (AI step) and CLI `app:install` (AI phase) offer an **optional, skippable** field for the Thesys C1 API key. If omitted, Thesys features are disabled; you can add `THESYS_API_KEY` to `.env` later. Express install accepts optional `thesys_api_key` in the request.
 
 If no AI provider/key is set, AI features are disabled; if the Thesys key is not set, the Visualize tab is hidden. No runtime errors when keys are absent.

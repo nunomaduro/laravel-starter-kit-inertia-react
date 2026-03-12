@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastGenerated": "2026-03-11",
+    "lastGenerated": "2026-03-12",
     "actions": {
         "CreateUser": {
             "documented": true,
@@ -108,6 +108,7 @@
                     "api.v1.users.destroy",
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show",
                     "user.destroy",
@@ -123,7 +124,8 @@
                 "usedBy": [
                     "UserPasswordController",
                     "UserPreferencesController",
-                    "UserProfileController"
+                    "UserProfileController",
+                    "UsersTableController"
                 ],
                 "usesModels": [
                     "User"
@@ -136,6 +138,11 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
+                    "users.table",
+                    "users.bulk-soft-delete",
+                    "users.batch-update",
+                    "users.duplicate",
+                    "users.show",
                     "user.preferences.update",
                     "user-profile.edit",
                     "user-profile.update",
@@ -434,6 +441,7 @@
                 "relatedRoutes": [
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show"
                 ]
@@ -452,6 +460,7 @@
                 "relatedRoutes": [
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show"
                 ]
@@ -545,6 +554,25 @@
                 "relatedRoutes": [
                     "auth.social.redirect",
                     "auth.social.callback"
+                ]
+            }
+        },
+        "BatchUpdateUsersAction": {
+            "documented": false,
+            "path": null,
+            "relationships": {
+                "usedBy": [
+                    "UsersTableController"
+                ],
+                "usesModels": [
+                    "User"
+                ],
+                "relatedRoutes": [
+                    "users.table",
+                    "users.bulk-soft-delete",
+                    "users.batch-update",
+                    "users.duplicate",
+                    "users.show"
                 ]
             }
         }
@@ -1015,15 +1043,18 @@
             "path": "./UsersTableController.md",
             "relationships": {
                 "usesActions": [
+                    "BatchUpdateUsersAction",
                     "BulkSoftDeleteUsers",
                     "DuplicateUser"
                 ],
                 "usesFormRequests": [
+                    "BatchUpdateUsersRequest",
                     "BulkSoftDeleteUsersRequest"
                 ],
                 "relatedRoutes": [
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show"
                 ],
@@ -1222,6 +1253,7 @@
                     "install.express",
                     "install.express.status",
                     "install.test-connection",
+                    "install.ai-models",
                     "install.migrate.run",
                     "install.migrate.status"
                 ],
@@ -1535,6 +1567,7 @@
                     "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
@@ -1631,6 +1664,7 @@
                     "install.express",
                     "install.express.status",
                     "install.test-connection",
+                    "install.ai-models",
                     "install.migrate.run",
                     "install.migrate.status",
                     "genealabs.laravel-governor.api.user-can.show",
@@ -2124,6 +2158,7 @@
                     "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
@@ -2220,6 +2255,7 @@
                     "install.express",
                     "install.express.status",
                     "install.test-connection",
+                    "install.ai-models",
                     "install.migrate.run",
                     "install.migrate.status",
                     "genealabs.laravel-governor.api.user-can.show",
@@ -2638,6 +2674,7 @@
                     "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
@@ -2734,6 +2771,7 @@
                     "install.express",
                     "install.express.status",
                     "install.test-connection",
+                    "install.ai-models",
                     "install.migrate.run",
                     "install.migrate.status",
                     "genealabs.laravel-governor.api.user-can.show",
@@ -3093,6 +3131,7 @@
                     "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
@@ -3189,6 +3228,7 @@
                     "install.express",
                     "install.express.status",
                     "install.test-connection",
+                    "install.ai-models",
                     "install.migrate.run",
                     "install.migrate.status",
                     "genealabs.laravel-governor.api.user-can.show",
@@ -3534,6 +3574,7 @@
                     "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
@@ -3630,6 +3671,7 @@
                     "install.express",
                     "install.express.status",
                     "install.test-connection",
+                    "install.ai-models",
                     "install.migrate.run",
                     "install.migrate.status",
                     "genealabs.laravel-governor.api.user-can.show",
@@ -4148,6 +4190,7 @@
                     "posts.table",
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show",
                     "organizations.switch",
@@ -4244,6 +4287,7 @@
                     "install.express",
                     "install.express.status",
                     "install.test-connection",
+                    "install.ai-models",
                     "install.migrate.run",
                     "install.migrate.status",
                     "genealabs.laravel-governor.api.user-can.show",
@@ -4374,6 +4418,7 @@
                 "relatedRoutes": [
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show"
                 ]
@@ -4390,6 +4435,7 @@
                 "relatedRoutes": [
                     "users.table",
                     "users.bulk-soft-delete",
+                    "users.batch-update",
                     "users.duplicate",
                     "users.show"
                 ]

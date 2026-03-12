@@ -13,12 +13,15 @@ final class HelpArticleSeeder extends Seeder
 {
     use LoadsJsonData;
 
+    private const int MIN_ARTICLES = 3;
+
     public function run(): void
     {
         try {
             $data = $this->loadJson('help-articles.json');
         } catch (RuntimeException) {
             $this->command?->warn('Help articles JSON file not found');
+            $this->ensureMinimumArticles();
 
             return;
         }
@@ -42,6 +45,17 @@ final class HelpArticleSeeder extends Seeder
             ]);
         }
 
+        $this->ensureMinimumArticles();
         $this->command?->info('Help articles seeded.');
+    }
+
+    private function ensureMinimumArticles(): void
+    {
+        $current = HelpArticle::query()->count();
+        if ($current >= self::MIN_ARTICLES) {
+            return;
+        }
+
+        HelpArticle::factory()->count(self::MIN_ARTICLES - $current)->create();
     }
 }

@@ -142,6 +142,9 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     const adminPanelLabel = isSuperAdmin ? 'System Panel' : 'Admin Panel';
 
     const visibleNavItems = useMemo(() => {
+        if (isSuperAdmin) {
+            return sidebarNavItems;
+        }
         const f = features ?? {};
         return sidebarNavItems.filter((item) => {
             if (item.requiresOrgAdmin && !isOrgAdmin) {
@@ -154,7 +157,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
             // Fail closed: only show when feature is explicitly active
             return value === true;
         });
-    }, [features, isOrgAdmin]);
+    }, [features, isOrgAdmin, isSuperAdmin]);
 
     return (
         <div className="px-4 py-6">

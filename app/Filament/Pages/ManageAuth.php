@@ -19,7 +19,7 @@ use UnitEnum;
 final class ManageAuth extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Platform';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldCheck;

@@ -103,6 +103,16 @@ it('allows super-admin to access ManageApp page when setup is complete', functio
     $response->assertOk();
 });
 
+it('allows super-admin to access ManageTheme page when setup is complete', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get(route('filament.system.pages.manage-theme'));
+
+    $response->assertOk();
+});
+
 it('denies non-super-admin access to system panel', function (): void {
     /** @var TestCase $test */
     $test = $this;

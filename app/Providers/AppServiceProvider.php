@@ -67,7 +67,11 @@ final class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Alias for machour/laravel-data-table: package may resolve ColumnBuilder to root namespace.
-        if (class_exists(\Machour\DataTable\Columns\ColumnBuilder::class)) {
+        // Guard: only alias if the short name is not already defined (avoids redeclare in paratest/workers).
+        if (
+            class_exists(\Machour\DataTable\Columns\ColumnBuilder::class)
+            && ! class_exists(\Machour\DataTable\ColumnBuilder::class, false)
+        ) {
             class_alias(\Machour\DataTable\Columns\ColumnBuilder::class, \Machour\DataTable\ColumnBuilder::class);
         }
 

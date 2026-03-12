@@ -9,18 +9,26 @@ use App\Providers\SettingsOverlayServiceProvider;
 use App\Settings\AiSettings;
 use App\Settings\AppSettings;
 use App\Settings\AuthSettings;
+use App\Settings\BackupSettings;
 use App\Settings\BillingSettings;
 use App\Settings\BroadcastingSettings;
 use App\Settings\FeatureFlagSettings;
 use App\Settings\FilesystemSettings;
 use App\Settings\InfrastructureSettings;
+use App\Settings\IntegrationsSettings;
+use App\Settings\LemonSqueezySettings;
 use App\Settings\MailSettings;
+use App\Settings\MemorySettings;
 use App\Settings\MonitoringSettings;
+use App\Settings\PaddleSettings;
 use App\Settings\PrismSettings;
 use App\Settings\ScoutSettings;
 use App\Settings\SeoSettings;
 use App\Settings\SetupWizardSettings;
+use App\Settings\StripeSettings;
 use App\Settings\TenancySettings;
+use App\Settings\ThemeSettings;
+use App\Support\AssignRoleViaDb;
 use DateTimeZone;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -84,6 +92,14 @@ final class AppInstallCommand extends Command
     private const string PHASE_MONITORING = 'monitoring';
 
     private const string PHASE_BILLING = 'billing';
+
+    private const string PHASE_INTEGRATIONS = 'integrations';
+
+    private const string PHASE_THEME = 'theme';
+
+    private const string PHASE_MEMORY = 'memory';
+
+    private const string PHASE_BACKUP = 'backup';
 
     private const string PHASE_FEATURES = 'features';
 
@@ -210,10 +226,16 @@ final class AppInstallCommand extends Command
                             {--trial-days= : Default trial days for subscriptions}
                             {--demo : Install all demo modules}
                             {--no-demo : Skip demo data entirely}
-                            {--modules= : Comma-separated module keys (users,organizations,billing,content,marketing,developer)}';
+                            {--modules= : Comma-separated module keys (users,organizations,billing,content,marketing,developer)}
+                            {--cohere-api-key= : Cohere API key (reranking)}
+                            {--jina-api-key= : Jina API key (reranking alternative)}
+                            {--thesys-api-key= : Thesys C1 API key}
+                            {--scout-prefix= : Scout index prefix}
+                            {--scout-queue : Queue Scout indexing}
+                            {--scout-identify : Identify models when indexing}';
 
     #[Override]
-    protected $description = 'Full application installer — database, admin user, app settings, mail, AI, and more';
+    protected $description = 'Full application installer — database, admin, app, tenancy, infra, mail, search, AI, social, storage, broadcasting, SEO, monitoring, billing, integrations, theme, memory, backup, features, demo';
 
     /** @var array<string, bool> */
     private array $progress = [];
@@ -549,7 +571,51 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // Phase 18 — Feature flags (optional, mirrors web installer)
+        // Integrations — Slack, Postmark, Resend (optional, mirrors web)
+        // ════════════════════════════════════════════════════════
+        if (! $this->runPhase(self::PHASE_INTEGRATIONS, 'Integrations', $resume, optional: true)) {
+            if (! $nonInteractive && confirm('  Configure integrations (Slack, Postmark, Resend)?', default: false)) {
+                $this->configureIntegrations($nonInteractive);
+            }
+
+            $this->completePhase(self::PHASE_INTEGRATIONS);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // Theme — appearance defaults (optional, mirrors web)
+        // ════════════════════════════════════════════════════════
+        if (! $this->runPhase(self::PHASE_THEME, 'Theme', $resume, optional: true)) {
+            if (! $nonInteractive && confirm('  Configure theme & appearance defaults?', default: false)) {
+                $this->configureTheme($nonInteractive);
+            }
+
+            $this->completePhase(self::PHASE_THEME);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // AI Memory — recall limits (optional, mirrors web)
+        // ════════════════════════════════════════════════════════
+        if (! $this->runPhase(self::PHASE_MEMORY, 'AI Memory', $resume, optional: true)) {
+            if (! $nonInteractive && confirm('  Configure AI memory / vector recall settings?', default: false)) {
+                $this->configureMemory($nonInteractive);
+            }
+
+            $this->completePhase(self::PHASE_MEMORY);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // Backups — retention (optional, mirrors web)
+        // ════════════════════════════════════════════════════════
+        if (! $this->runPhase(self::PHASE_BACKUP, 'Backups', $resume, optional: true)) {
+            if (! $nonInteractive && confirm('  Configure backup retention?', default: false)) {
+                $this->configureBackup($nonInteractive);
+            }
+
+            $this->completePhase(self::PHASE_BACKUP);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // Feature flags (optional, mirrors web installer)
         // ════════════════════════════════════════════════════════
         if (! $this->runPhase(self::PHASE_FEATURES, 'Feature Flags', $resume, optional: true)) {
             if (! $nonInteractive && confirm('  Configure which features to enable globally?', default: false)) {
@@ -846,10 +912,10 @@ final class AppInstallCommand extends Command
             : text('  Full name', default: 'Admin', required: true);
 
         $email = $nonInteractive
-            ? (string) ($this->option('admin-email') ?: 'admin@example.com')
+            ? (string) ($this->option('admin-email') ?: 'superadmin@example.com')
             : text(
                 '  Email address',
-                default: 'admin@example.com',
+                default: 'superadmin@example.com',
                 required: true,
                 validate: fn ($v): ?string => Validator::make(['email' => $v], ['email' => ['email']])->fails()
                     ? 'Please enter a valid email address.'
@@ -871,7 +937,7 @@ final class AppInstallCommand extends Command
             'email_verified_at' => now(),
         ]);
 
-        $user->syncRoles(['super-admin']);
+        AssignRoleViaDb::assignGlobal($user, ['super-admin']);
 
         info('  Admin created: '.$email);
 
@@ -1026,7 +1092,6 @@ final class AppInstallCommand extends Command
 
         $scout = resolve(ScoutSettings::class);
         $scout->driver = $driver;
-        $scout->save();
 
         if ($driver === 'typesense') {
             $apiKey = $nonInteractive
@@ -1041,6 +1106,13 @@ final class AppInstallCommand extends Command
                 ? (string) ($this->option('typesense-port') ?: '8108')
                 : text('  Typesense port', default: '8108');
 
+            $protocol = $nonInteractive ? 'http' : select('  Typesense protocol', ['http' => 'http', 'https' => 'https'], default: 'http');
+
+            $scout->typesense_api_key = $apiKey;
+            $scout->typesense_host = $host;
+            $scout->typesense_port = (int) $port;
+            $scout->typesense_protocol = $protocol;
+
             $envPath = base_path('.env');
             $env = file_exists($envPath) ? (string) file_get_contents($envPath) : '';
             $env = $this->setEnvVar($env, 'TYPESENSE_API_KEY', $apiKey);
@@ -1048,9 +1120,34 @@ final class AppInstallCommand extends Command
             $env = $this->setEnvVar($env, 'TYPESENSE_PORT', $port);
             file_put_contents($envPath, $env);
 
-            info('  Typesense credentials written to .env');
+            info('  Typesense credentials written to .env and Scout settings');
             $this->verifyTypesense($host, (int) $port, $apiKey);
         }
+
+        // Scout prefix / queue / identify (mirrors web installer saveSearch)
+        if ($nonInteractive) {
+            if ($this->option('scout-prefix') !== null && (string) $this->option('scout-prefix') !== '') {
+                $scout->prefix = (string) $this->option('scout-prefix');
+            }
+            if ($this->option('scout-queue')) {
+                $scout->queue = true;
+            }
+            if ($this->option('scout-identify')) {
+                $scout->identify = true;
+            }
+        } else {
+            if (confirm('  Set Scout index prefix?', default: false)) {
+                $scout->prefix = (string) (text('  Index prefix', default: '') ?? '');
+            }
+            if (confirm('  Queue Scout indexing?', default: false)) {
+                $scout->queue = true;
+            }
+            if (confirm('  Identify models when indexing?', default: false)) {
+                $scout->identify = true;
+            }
+        }
+
+        $scout->save();
 
         info('  Search configured — driver: '.$driver);
     }
@@ -1112,14 +1209,71 @@ final class AppInstallCommand extends Command
 
         info('  AI configured — default: '.$provider);
 
-        if (! $nonInteractive && confirm('  Add Thesys C1 API key (optional; DataTable Visualize and other Thesys features)?', default: false)) {
+        $envPath = base_path('.env');
+
+        $thesysOpt = (string) ($this->option('thesys-api-key') ?? '');
+        if ($thesysOpt !== '') {
+            $ai = resolve(AiSettings::class);
+            $ai->thesys_api_key = $thesysOpt;
+            $ai->save();
+            $env = file_exists($envPath) ? (string) file_get_contents($envPath) : '';
+            $env = $this->setEnvVar($env, 'THESYS_API_KEY', $thesysOpt);
+            file_put_contents($envPath, $env);
+            info('  THESYS_API_KEY written to .env and AiSettings');
+        } elseif (! $nonInteractive && confirm('  Add Thesys C1 API key (optional)?', default: false)) {
             $thesysKey = password('  Thesys API key');
             if ($thesysKey !== '') {
-                $envPath = base_path('.env');
+                $ai = resolve(AiSettings::class);
+                $ai->thesys_api_key = $thesysKey;
+                $ai->save();
                 $env = file_exists($envPath) ? (string) file_get_contents($envPath) : '';
                 $env = $this->setEnvVar($env, 'THESYS_API_KEY', $thesysKey);
                 file_put_contents($envPath, $env);
-                info('  THESYS_API_KEY written to .env');
+                info('  THESYS_API_KEY written to .env and AiSettings');
+            }
+        }
+
+        $cohereOpt = (string) ($this->option('cohere-api-key') ?? '');
+        if ($cohereOpt !== '') {
+            $ai = resolve(AiSettings::class);
+            $ai->cohere_api_key = $cohereOpt;
+            $ai->save();
+            $env = file_exists($envPath) ? (string) file_get_contents($envPath) : '';
+            $env = $this->setEnvVar($env, 'COHERE_API_KEY', $cohereOpt);
+            file_put_contents($envPath, $env);
+            info('  Cohere API key saved (reranking)');
+        } elseif (! $nonInteractive && confirm('  Add Cohere API key for reranking (optional)?', default: false)) {
+            $k = password('  Cohere API key');
+            if ($k !== '') {
+                $ai = resolve(AiSettings::class);
+                $ai->cohere_api_key = $k;
+                $ai->save();
+                $env = file_exists($envPath) ? (string) file_get_contents($envPath) : '';
+                $env = $this->setEnvVar($env, 'COHERE_API_KEY', $k);
+                file_put_contents($envPath, $env);
+                info('  Cohere API key saved');
+            }
+        }
+
+        $jinaOpt = (string) ($this->option('jina-api-key') ?? '');
+        if ($jinaOpt !== '') {
+            $ai = resolve(AiSettings::class);
+            $ai->jina_api_key = $jinaOpt;
+            $ai->save();
+            $env = file_exists($envPath) ? (string) file_get_contents($envPath) : '';
+            $env = $this->setEnvVar($env, 'JINA_API_KEY', $jinaOpt);
+            file_put_contents($envPath, $env);
+            info('  Jina API key saved (reranking alternative)');
+        } elseif (! $nonInteractive && confirm('  Add Jina API key for reranking (optional)?', default: false)) {
+            $k = password('  Jina API key');
+            if ($k !== '') {
+                $ai = resolve(AiSettings::class);
+                $ai->jina_api_key = $k;
+                $ai->save();
+                $env = file_exists($envPath) ? (string) file_get_contents($envPath) : '';
+                $env = $this->setEnvVar($env, 'JINA_API_KEY', $k);
+                file_put_contents($envPath, $env);
+                info('  Jina API key saved');
             }
         }
     }
@@ -1251,12 +1405,22 @@ final class AppInstallCommand extends Command
             : select(
                 '  Default gateway',
                 [
+                    'none' => 'None (free app)',
                     'stripe' => 'Stripe',
                     'paddle' => 'Paddle',
                     'lemon_squeezy' => 'Lemon Squeezy',
                 ],
                 default: 'stripe',
             );
+
+        if ($gateway === 'none') {
+            $billing = resolve(BillingSettings::class);
+            $billing->default_gateway = 'none';
+            $billing->save();
+            info('  Billing set to none — no payment gateway.');
+
+            return;
+        }
 
         $currency = $nonInteractive
             ? (string) ($this->option('currency') ?: 'usd')
@@ -1272,7 +1436,96 @@ final class AppInstallCommand extends Command
         $billing->trial_days = $trialDays;
         $billing->save();
 
-        info('  Billing defaults saved — configure keys later in Settings → Billing.');
+        if (! $nonInteractive && confirm('  Enter payment gateway API keys now (optional)?', default: false)) {
+            if ($gateway === 'stripe') {
+                $stripe = resolve(StripeSettings::class);
+                $stripe->key = text('  Stripe publishable key (pk_...)') ?: null;
+                $stripe->secret = password('  Stripe secret key (sk_...)') ?: null;
+                $stripe->webhook_secret = password('  Stripe webhook secret (whsec_...)') ?: null;
+                $stripe->save();
+                info('  Stripe keys saved');
+            }
+            if ($gateway === 'paddle') {
+                $paddle = resolve(PaddleSettings::class);
+                $paddle->vendor_id = text('  Paddle vendor ID') ?: null;
+                $paddle->vendor_auth_code = password('  Paddle vendor auth code') ?: null;
+                $paddle->public_key = text('  Paddle public key') ?: null;
+                $paddle->webhook_secret = password('  Paddle webhook secret') ?: null;
+                $paddle->sandbox = confirm('  Use Paddle sandbox?', default: true);
+                $paddle->save();
+                info('  Paddle keys saved');
+            }
+            if ($gateway === 'lemon_squeezy') {
+                $lemon = resolve(LemonSqueezySettings::class);
+                $lemon->api_key = password('  Lemon Squeezy API key') ?: null;
+                $lemon->signing_secret = password('  Lemon Squeezy signing secret') ?: null;
+                $lemon->store = text('  Store ID') ?: null;
+                $lemon->save();
+                info('  Lemon Squeezy keys saved');
+            }
+        } else {
+            info('  Billing defaults saved — configure keys later in Settings → Billing.');
+        }
+    }
+
+    private function configureIntegrations(bool $nonInteractive = false): void
+    {
+        $integrations = resolve(IntegrationsSettings::class);
+        if (! $nonInteractive) {
+            $integrations->slack_webhook_url = text('  Slack webhook URL (optional)') ?: null;
+            $integrations->slack_bot_token = password('  Slack bot token (optional)') ?: null;
+            $integrations->slack_channel = text('  Slack channel (optional)') ?: null;
+            $integrations->postmark_token = password('  Postmark token (optional)') ?: null;
+            $integrations->resend_key = password('  Resend API key (optional)') ?: null;
+        }
+        $integrations->save();
+        info('  Integrations saved');
+    }
+
+    private function configureTheme(bool $nonInteractive = false): void
+    {
+        $theme = resolve(ThemeSettings::class);
+        if (! $nonInteractive) {
+            $theme->preset = select('  Theme preset', ['default' => 'Default', 'saas' => 'SaaS', 'minimal' => 'Minimal'], default: 'default');
+            $theme->default_appearance = select('  Default appearance', ['system' => 'System', 'light' => 'Light', 'dark' => 'Dark'], default: 'system');
+            $theme->font = select(
+                '  Font',
+                [
+                    'instrument-sans' => 'Instrument Sans',
+                    'inter' => 'Inter',
+                    'geist' => 'Geist',
+                    'poppins' => 'Poppins',
+                    'outfit' => 'Outfit',
+                    'plus-jakarta-sans' => 'Plus Jakarta Sans',
+                ],
+                default: 'instrument-sans',
+            );
+        }
+        $theme->save();
+        info('  Theme settings saved');
+    }
+
+    private function configureMemory(bool $nonInteractive = false): void
+    {
+        $memory = resolve(MemorySettings::class);
+        if (! $nonInteractive) {
+            $memory->dimensions = (int) text('  Embedding dimensions', default: '1536');
+            $memory->similarity_threshold = (float) text('  Similarity threshold (0–1)', default: '0.5');
+            $memory->recall_limit = (int) text('  Recall limit', default: '10');
+        }
+        $memory->save();
+        info('  AI memory settings saved');
+    }
+
+    private function configureBackup(bool $nonInteractive = false): void
+    {
+        $backup = resolve(BackupSettings::class);
+        if (! $nonInteractive) {
+            $backup->keep_daily_backups_for_days = (int) text('  Keep daily backups for (days)', default: '16');
+            $backup->delete_oldest_when_size_mb = (int) text('  Delete oldest when over (MB)', default: '5000');
+        }
+        $backup->save();
+        info('  Backup retention saved');
     }
 
     // ─── Feature flags (mirrors web installer saveFeatures) ─────────────────────

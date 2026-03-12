@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Machour\DataTable\AbstractDataTable;
 use Machour\DataTable\Columns\ColumnBuilder;
@@ -148,6 +149,7 @@ final class UserDataTable extends AbstractDataTable
                 ->build(),
             ColumnBuilder::make('organizations_count', 'Orgs')
                 ->number()
+                ->summary('sum')
                 ->group('Status')
                 ->build(),
             ColumnBuilder::make('first_organization_name', 'Primary org')
@@ -171,10 +173,70 @@ final class UserDataTable extends AbstractDataTable
         ];
     }
 
-    /** No separate summary row; footer shows page count and created-at range. */
+    /**
+     * Full-dataset summary for showcase (total count, sum of orgs).
+     *
+     * @return array<string, mixed>
+     */
     public static function tableSummary(QueryBuilder $query): array
     {
-        return [];
+        $builder = $query->getEloquentBuilder();
+
+        $userIds = (clone $builder)->select('id')->pluck('id');
+
+        $organizationsSum = $userIds->isEmpty()
+            ? 0
+            : (int) DB::table('organization_user')->whereIn('user_id', $userIds)->count();
+
+        return [
+            'id' => $builder->count(),
+            'organizations_count' => $organizationsSum,
+        ];
+    }
+
+    /**
+     * KPI cards above the table (showcase).
+     *
+     * @return array<int, array{label: string, value: int|float|string, format?: string, change?: float|null, icon?: string|null, description?: string|null}>
+     */
+    public static function tableAnalytics(): array
+    {
+        $base = self::tableBaseQuery();
+        $total = $base->count();
+        $active = (clone $base)->whereNotNull('users.email_verified_at')->count();
+        $pending = (clone $base)->whereNull('users.email_verified_at')->count();
+        $onboarded = (clone $base)->where('users.onboarding_completed', true)->count();
+
+        return [
+            [
+                'label' => 'Total users',
+                'value' => $total,
+                'format' => 'number',
+                'icon' => '👥',
+                'description' => 'All visible users',
+            ],
+            [
+                'label' => 'Active',
+                'value' => $active,
+                'format' => 'number',
+                'change' => $total > 0 ? round(($active / $total) * 100 - 50, 1) : null,
+                'icon' => '✓',
+                'description' => 'Email verified',
+            ],
+            [
+                'label' => 'Pending',
+                'value' => $pending,
+                'format' => 'number',
+                'icon' => '○',
+                'description' => 'Not yet verified',
+            ],
+            [
+                'label' => 'Onboarding done',
+                'value' => $onboarded,
+                'format' => 'number',
+                'description' => 'Completed onboarding',
+            ],
+        ];
     }
 
     /**
@@ -397,6 +459,7 @@ final class UserDataTable extends AbstractDataTable
         $make = function () use ($request, $opts): array {
             $data = self::makeTable($request)->toArray();
             $data['config'] = array_merge($data['config'] ?? [], $opts);
+            $data['analytics'] = self::tableAnalytics();
 
             return $data;
         };
@@ -483,10 +546,24 @@ final class UserDataTable extends AbstractDataTable
         return 'onboarding_completed';
     }
 
-    /** Authorize table actions. Full usage example. */
+    /** Authorize table actions (including AI). Showcase: allow any authenticated user. */
     public static function tableAuthorize(string $action, Request $request): bool
     {
-        return $request->user() !== null;
+        $user = $request->user();
+        if ($user === null) {
+            return false;
+        }
+        if (str_starts_with($action, 'ai_')) {
+            return true;
+        }
+
+        return true;
+    }
+
+    /** Domain context for AI (NLQ, insights, suggestions). Showcase. */
+    public static function tableAiSystemContext(): string
+    {
+        return 'This table lists users. Columns: id, name, email, status (active/pending/deleted), onboarding_completed (boolean), organizations_count, first_organization_name, created_at, updated_at. Status "active" means email verified; "pending" means not verified; "deleted" means soft-deleted.';
     }
 
     /** Persist filters/sort to localStorage. Full usage example. */

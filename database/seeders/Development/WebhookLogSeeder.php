@@ -4,18 +4,26 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
+use App\Models\Billing\WebhookLog;
+use App\Models\Organization;
 use Illuminate\Database\Seeder;
 
-/**
- * WebhookLog seeder.
- *
- * Webhook logs are created when processing incoming webhooks.
- * This seeder exists to satisfy the model-audit / pre-commit check.
- */
 final class WebhookLogSeeder extends Seeder
 {
+    /** @var list<string> */
+    private array $dependencies = ['UsersSeeder'];
+
     public function run(): void
     {
-        // No-op: webhook logs are created at runtime.
+        $organizations = Organization::query()->limit(5)->get();
+        $count = fake()->numberBetween(8, 12);
+
+        for ($i = 0; $i < $count; $i++) {
+            WebhookLog::factory()->create([
+                'organization_id' => $organizations->isNotEmpty() && fake()->boolean(75)
+                    ? $organizations->random()->id
+                    : null,
+            ]);
+        }
     }
 }

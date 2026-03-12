@@ -17,7 +17,7 @@ use UnitEnum;
 final class ManageMedia extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'System';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;

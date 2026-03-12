@@ -57,42 +57,42 @@ return [
     'providers' => [
         'anthropic' => [
             'driver' => 'anthropic',
-            'key' => null,
+            'key' => env('ANTHROPIC_API_KEY'),
         ],
 
         'cohere' => [
             'driver' => 'cohere',
-            'key' => null,
+            'key' => env('COHERE_API_KEY'),
         ],
 
         'eleven' => [
             'driver' => 'eleven',
-            'key' => null,
+            'key' => env('ELEVENLABS_API_KEY'),
         ],
 
         'gemini' => [
             'driver' => 'gemini',
-            'key' => null,
+            'key' => env('GEMINI_API_KEY'),
         ],
 
         'groq' => [
             'driver' => 'groq',
-            'key' => null,
+            'key' => env('GROQ_API_KEY'),
         ],
 
         'jina' => [
             'driver' => 'jina',
-            'key' => null,
+            'key' => env('JINA_API_KEY'),
         ],
 
         'openai' => [
             'driver' => 'openai',
-            'key' => null,
+            'key' => env('OPENAI_API_KEY'),
         ],
 
         'openrouter' => [
             'driver' => 'openrouter',
-            'key' => null,
+            'key' => env('OPENROUTER_API_KEY'),
             'models' => [
                 'text' => [
                     'default' => 'anthropic/claude-sonnet-4.5',
@@ -102,7 +102,7 @@ return [
 
         'xai' => [
             'driver' => 'xai',
-            'key' => null,
+            'key' => env('XAI_API_KEY'),
         ],
     ],
 

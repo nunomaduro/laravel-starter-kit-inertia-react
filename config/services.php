@@ -81,6 +81,7 @@ return [
     |
     */
     'thesys' => [
+        // DB-backed via AiSettings overlay when set; env used until first save.
         'api_key' => env('THESYS_API_KEY'),
         'model' => env('THESYS_MODEL', 'c1-nightly'),
     ],

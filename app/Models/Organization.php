@@ -215,7 +215,26 @@ final class Organization extends Model
         $previousTeamId = getPermissionsTeamId();
         setPermissionsTeamId($this->id);
         try {
-            $user->assignRole($role);
+            $teamKey = config('permission.column_names.team_foreign_key');
+            $guard = 'web';
+            $roleModel = Role::query()
+                ->where('name', $role)
+                ->where('guard_name', $guard)
+                ->where($teamKey, $this->id)
+                ->first();
+            if ($roleModel instanceof Role) {
+                // Insert by role id so model_has_roles always receives bigint (Spatie attach can mis-bind on PostgreSQL).
+                $tableNames = config('permission.table_names');
+                $pivotRole = config('permission.column_names.role_pivot_key') ?? 'role_id';
+                $modelMorphKey = config('permission.column_names.model_morph_key') ?? 'model_id';
+                DB::table($tableNames['model_has_roles'])->insertOrIgnore([
+                    $pivotRole => $roleModel->getKey(),
+                    'model_type' => User::class,
+                    $modelMorphKey => $user->getKey(),
+                    $teamKey => $this->id,
+                ]);
+                $user->unsetRelation('roles');
+            }
         } finally {
             setPermissionsTeamId($previousTeamId);
             if ($previousContext instanceof self) {

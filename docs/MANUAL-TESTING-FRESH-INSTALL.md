@@ -108,7 +108,7 @@ If you want to test the TUI instead of (or after) the web installer, reset again
    - Or run non-interactive:  
      ```bash
    php artisan app:install --non-interactive \
-     --admin-email=admin@example.com \
+     --admin-email=superadmin@example.com \
      --admin-password=secret \
      --admin-name="Admin" \
      --site-name="My App" \

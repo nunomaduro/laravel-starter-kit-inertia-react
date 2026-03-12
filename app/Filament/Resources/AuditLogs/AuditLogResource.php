@@ -21,7 +21,7 @@ final class AuditLogResource extends Resource
     protected static ?string $model = AuditLog::class;
 
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Platform';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
     #[Override]
     protected static ?int $navigationSort = 40;

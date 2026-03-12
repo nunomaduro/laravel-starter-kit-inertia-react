@@ -23,6 +23,7 @@ import { type BreadcrumbItem, type SharedData } from '@/types';
 
 interface BrandingProps {
     logoUrl: string | null;
+    logoUrlDark: string | null;
     themePreset: string | null;
     themeRadius: string | null;
     themeFont: string | null;
@@ -49,6 +50,7 @@ export default function Branding({
     const { props } = usePage<SharedData>();
     const { data, setData, put, processing, errors } = useForm({
         logo: null as File | null,
+        logo_dark: null as File | null,
         theme_preset: branding.themePreset ?? '',
         theme_radius: branding.themeRadius ?? '',
         theme_font: branding.themeFont ?? '',
@@ -107,6 +109,39 @@ export default function Branding({
                                 current.
                             </p>
                             <InputError message={errors.logo} />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="logo_dark">
+                                Logo (dark mode)
+                            </Label>
+                            <p className="text-xs text-muted-foreground">
+                                Optional. Shown when the app is in dark mode — use a light/white mark
+                                if your default logo is for light backgrounds.
+                            </p>
+                            {branding.logoUrlDark && (
+                                <div className="mb-2 flex items-center gap-4 rounded-md bg-zinc-900 p-3">
+                                    <img
+                                        src={branding.logoUrlDark}
+                                        alt="Current dark-mode logo"
+                                        className="h-16 w-auto object-contain"
+                                    />
+                                </div>
+                            )}
+                            <input
+                                id="logo_dark"
+                                name="logo_dark"
+                                type="file"
+                                accept="image/*"
+                                className="block w-full max-w-xs text-sm text-muted-foreground file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90"
+                                onChange={(e) =>
+                                    setData(
+                                        'logo_dark',
+                                        e.target.files?.[0] ?? null,
+                                    )
+                                }
+                            />
+                            <InputError message={errors.logo_dark} />
                         </div>
 
                         <div className="space-y-2">

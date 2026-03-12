@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\BatchUpdateUsersAction;
 use App\Actions\BulkSoftDeleteUsers;
 use App\Actions\DuplicateUser;
 use App\DataTables\UserDataTable;
+use App\Http\Requests\BatchUpdateUsersRequest;
 use App\Http\Requests\BulkSoftDeleteUsersRequest;
 use App\Models\User;
 use App\Services\TenantContext;
@@ -23,6 +25,7 @@ final class UsersTableController extends Controller
 
         $props = UserDataTable::inertiaProps($request);
         $props['dataTableAi'] = $this->dataTableAiProps();
+        $props['batchEditAllowedColumns'] = BatchUpdateUsersAction::ALLOWED_COLUMNS;
 
         return Inertia::render('users/table', $props);
     }
@@ -32,6 +35,17 @@ final class UsersTableController extends Controller
         $count = $action->handle(array_map(intval(...), $request->validated('ids')), $request->user());
 
         return back()->with('flash', ['type' => 'success', 'message' => $count.' user(s) soft-deleted.']);
+    }
+
+    public function batchUpdate(BatchUpdateUsersRequest $request, BatchUpdateUsersAction $action): RedirectResponse
+    {
+        $count = $action->handle(
+            array_map(intval(...), $request->validated('ids')),
+            $request->validated('column'),
+            $request->validated('value'),
+        );
+
+        return back()->with('flash', ['type' => 'success', 'message' => $count.' user(s) updated.']);
     }
 
     public function duplicate(User $user, DuplicateUser $action, Request $request): RedirectResponse

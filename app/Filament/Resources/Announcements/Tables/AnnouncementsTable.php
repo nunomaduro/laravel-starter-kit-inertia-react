@@ -18,7 +18,8 @@ final class AnnouncementsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('position', 'asc')
+            ->reorderable('position')
             ->columns([
                 TextColumn::make('title')
                     ->searchable()

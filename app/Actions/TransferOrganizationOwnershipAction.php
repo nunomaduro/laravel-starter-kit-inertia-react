@@ -6,10 +6,8 @@ namespace App\Actions;
 
 use App\Models\Organization;
 use App\Models\User;
+use App\Support\AssignRoleViaDb;
 use Illuminate\Support\Facades\DB;
-
-use function getPermissionsTeamId;
-use function setPermissionsTeamId;
 
 final readonly class TransferOrganizationOwnershipAction
 {
@@ -24,14 +22,7 @@ final readonly class TransferOrganizationOwnershipAction
 
         DB::transaction(function () use ($organization, $newOwner): void {
             $organization->update(['owner_id' => $newOwner->id]);
-
-            $previousTeamId = getPermissionsTeamId();
-            setPermissionsTeamId($organization->id);
-            try {
-                $newOwner->assignRole('admin');
-            } finally {
-                setPermissionsTeamId($previousTeamId);
-            }
+            AssignRoleViaDb::assignOrg($newOwner, $organization->id, 'admin');
         });
     }
 }

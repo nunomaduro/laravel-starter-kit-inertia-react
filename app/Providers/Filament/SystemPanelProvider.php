@@ -55,14 +55,14 @@ final class SystemPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
             ->databaseNotifications()
             ->navigationGroups([
-                NavigationGroup::make('Platform'),
+                NavigationGroup::make('Settings · App'),
                 NavigationGroup::make('Organizations'),
                 NavigationGroup::make('Billing'),
-                NavigationGroup::make('Integrations')
+                NavigationGroup::make('Settings · Integrations')
                     ->collapsed(),
-                NavigationGroup::make('System')
+                NavigationGroup::make('Settings · System')
                     ->collapsed(),
-                NavigationGroup::make('Features & Access')
+                NavigationGroup::make('Settings · Features')
                     ->collapsed(),
                 NavigationGroup::make('Content & Legal')
                     ->collapsed(),
@@ -73,7 +73,7 @@ final class SystemPanelProvider extends PanelProvider
                 ActivityLogPlugin::make()
                     ->label('Log')
                     ->pluralLabel('Logs')
-                    ->navigationGroup('System')
+                    ->navigationGroup('Settings · System')
                     ->navigationSort(110),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

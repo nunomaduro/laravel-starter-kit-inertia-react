@@ -271,6 +271,7 @@ function useThemeCustomizer(isOpen: boolean) {
     });
 
     const [logoUrl, setLogoUrl] = useState<string | null>(() => props.branding?.logoUrl ?? null);
+    const [logoUrlDark] = useState<string | null>(() => props.branding?.logoUrlDark ?? null);
     const [analyzing, setAnalyzing] = useState(false);
 
     const stateRef = useRef(state);
@@ -502,6 +503,7 @@ function useThemeCustomizer(isOpen: boolean) {
         importError,
         lockedKeys,
         logoUrl,
+        logoUrlDark,
         analyzing,
         setImportText,
         update,
@@ -521,7 +523,15 @@ function useThemeCustomizer(isOpen: boolean) {
 
 // ─── Mini Live Preview ─────────────────────────────────────────────────────────
 
-function MiniPreview({ state, logoUrl }: { state: ThemeState; logoUrl?: string | null }) {
+function MiniPreview({
+    state,
+    logoUrl,
+    logoUrlDark,
+}: {
+    state: ThemeState;
+    logoUrl?: string | null;
+    logoUrlDark?: string | null;
+}) {
     return (
         <div className="mb-3 rounded-lg border border-border bg-muted/20 p-2.5" style={{ fontFamily: FONT_FAMILIES[state.font] }}>
             <div
@@ -535,8 +545,13 @@ function MiniPreview({ state, logoUrl }: { state: ThemeState; logoUrl?: string |
             >
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Live Preview</p>
                 {logoUrl && (
-                    <div className="mb-2 flex h-6 items-center">
+                    <div className="mb-1 flex h-6 items-center rounded bg-background px-1">
                         <img src={logoUrl} alt="" className="max-h-full max-w-[60px] object-contain opacity-80" />
+                    </div>
+                )}
+                {logoUrlDark && (
+                    <div className="mb-2 flex h-6 items-center rounded bg-zinc-900 px-1">
+                        <img src={logoUrlDark} alt="" className="max-h-full max-w-[60px] object-contain opacity-90" />
                     </div>
                 )}
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -563,16 +578,23 @@ function MiniPreview({ state, logoUrl }: { state: ThemeState; logoUrl?: string |
 
 function LogoSection({
     logoUrl,
+    logoUrlDark,
     analyzing,
     onUpload,
 }: {
     logoUrl: string | null;
+    logoUrlDark?: string | null;
     analyzing: boolean;
     onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
     return (
         <div className="mb-3 rounded-lg border border-border bg-muted/20 p-2.5">
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Logo & Auto-Theme</p>
+            {logoUrlDark && (
+                <p className="mb-2 text-[10px] text-muted-foreground">
+                    Dark-mode logo is set — upload here updates the default logo; change dark logo in Settings → Branding.
+                </p>
+            )}
             {logoUrl && (
                 <div className="mb-2 flex h-10 items-center">
                     <img src={logoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
@@ -699,6 +721,7 @@ interface BodyProps {
     /** Keys locked by the system admin (cannot be changed by orgs). */
     systemLockedKeys: Set<LockableKey>;
     logoUrl: string | null;
+    logoUrlDark: string | null;
     analyzing: boolean;
     setImportText: (v: string) => void;
     update: <K extends keyof ThemeState>(key: K, value: ThemeState[K]) => void;
@@ -726,6 +749,7 @@ function ThemeCustomizerBody({
     lockedKeys,
     systemLockedKeys,
     logoUrl,
+    logoUrlDark,
     analyzing,
     setImportText,
     update,
@@ -751,10 +775,17 @@ function ThemeCustomizerBody({
     return (
         <div className="flex flex-col gap-0">
             {/* Logo & Auto-Theme */}
-            {canManageBranding && <LogoSection logoUrl={logoUrl} analyzing={analyzing} onUpload={handleLogoUpload} />}
+            {canManageBranding && (
+                <LogoSection
+                    logoUrl={logoUrl}
+                    logoUrlDark={logoUrlDark}
+                    analyzing={analyzing}
+                    onUpload={handleLogoUpload}
+                />
+            )}
 
             {/* Live Preview */}
-            <MiniPreview state={state} logoUrl={logoUrl} />
+            <MiniPreview state={state} logoUrl={logoUrl} logoUrlDark={logoUrlDark} />
 
             {/* Toolbar */}
             <div className="mb-3 flex items-center gap-1.5">

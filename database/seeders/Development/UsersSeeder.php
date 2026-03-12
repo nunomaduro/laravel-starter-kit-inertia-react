@@ -6,6 +6,7 @@ namespace Database\Seeders\Development;
 
 use App\Models\Organization;
 use App\Models\User;
+use App\Support\AssignRoleViaDb;
 use Database\Seeders\Concerns\LoadsJsonData;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -21,13 +22,32 @@ final class UsersSeeder extends Seeder
 
     public function run(): void
     {
-        $this->seedFromJson();
-        $this->seedOrganizationScenarios();
-        $this->seedFromFactory();
+        // Standalone `db:seed --class=UsersSeeder` must also suppress UserCreated-driven attach
+        // that can mis-bind role name into role_id on PostgreSQL.
+        $wasSeedInProgress = config('tenancy.seed_in_progress', false);
+        config(['tenancy.seed_in_progress' => true]);
+        try {
+            // Avoid listener-driven personal org creation + assignRole until JSON users exist;
+            // re-enabled after JSON seed so seedOrganizationScenarios/addMember run with correct context.
+            $this->seedFromJson();
+            $this->seedOrganizationScenarios();
+            $this->seedFromFactory();
+            $this->ensureSuperAdminHasGlobalRole();
+        } finally {
+            config(['tenancy.seed_in_progress' => $wasSeedInProgress]);
+        }
     }
 
     private function seedFromJson(): void
     {
+        $autoCreate = config('tenancy.auto_create_personal_organization');
+        $autoCreateAdmins = config('tenancy.auto_create_personal_organization_for_admins');
+        $autoCreateMembers = config('tenancy.auto_create_personal_organization_for_members');
+        config([
+            'tenancy.auto_create_personal_organization' => false,
+            'tenancy.auto_create_personal_organization_for_admins' => false,
+            'tenancy.auto_create_personal_organization_for_members' => false,
+        ]);
         try {
             $data = $this->loadJson('users.json');
 
@@ -64,6 +84,16 @@ final class UsersSeeder extends Seeder
                     $willBeSuperAdmin = ($role === 'super-admin') || in_array('super-admin', $roles, true);
                     if ($willBeSuperAdmin) {
                         config(['tenancy.auto_create_personal_organization' => false]);
+                        // Avoid a second super-admin when installer already created one (e.g. different email).
+                        if (User::query()->whereHas('roles', fn ($q) => $q->where('name', 'super-admin'))->exists()) {
+                            $existing = User::query()->where('email', $userData['email'])->first();
+                            if ($existing === null) {
+                                config(['tenancy.auto_create_personal_organization' => true]);
+
+                                continue;
+                            }
+                            // Same email: update existing (e.g. superadmin@example.com from prior run).
+                        }
                     }
 
                     if ($skipPersonalOrg) {
@@ -80,12 +110,12 @@ final class UsersSeeder extends Seeder
                     }
 
                     if ($role !== null) {
-                        $user->syncRoles([$role]);
+                        AssignRoleViaDb::assignGlobal($user, [$role]);
                     } elseif ($roles !== []) {
-                        $user->syncRoles($roles);
+                        AssignRoleViaDb::assignGlobal($user, $roles);
                     }
 
-                    if ($user->hasRole('super-admin')) {
+                    if ($role === 'super-admin' || in_array('super-admin', $roles, true)) {
                         $user->update(['onboarding_completed' => true]);
                     }
 
@@ -98,11 +128,17 @@ final class UsersSeeder extends Seeder
                         $factory = $factory->{$factoryState}();
                     }
 
-                    $factory->create($userData);
+                    User::withoutEvents(static fn () => $factory->create($userData));
                 }
             }
         } catch (RuntimeException) {
             // JSON file doesn't exist or is invalid - skip silently
+        } finally {
+            config([
+                'tenancy.auto_create_personal_organization' => $autoCreate,
+                'tenancy.auto_create_personal_organization_for_admins' => $autoCreateAdmins,
+                'tenancy.auto_create_personal_organization_for_members' => $autoCreateMembers,
+            ]);
         }
     }
 
@@ -160,26 +196,132 @@ final class UsersSeeder extends Seeder
 
     private function seedFromFactory(): void
     {
+        $autoCreate = config('tenancy.auto_create_personal_organization');
+        $autoCreateAdmins = config('tenancy.auto_create_personal_organization_for_admins');
+        $autoCreateMembers = config('tenancy.auto_create_personal_organization_for_members');
+        config([
+            'tenancy.auto_create_personal_organization' => false,
+            'tenancy.auto_create_personal_organization_for_admins' => false,
+            'tenancy.auto_create_personal_organization_for_members' => false,
+        ]);
+
         $defaultRole = config('permission.default_role', 'user');
 
-        $adminUsers = User::factory()
-            ->admin()
-            ->count(2)
-            ->create(['onboarding_completed' => true]);
-
+        // Factory create fires UserObserver → UserCreated; withoutEvents avoids Spatie attach
+        // that can insert role name into role_id when team pivot is missing (PostgreSQL).
+        // Create 100+ users total (with 9 from JSON => 95+ here) for demo DataTable testing.
+        $adminUsers = User::withoutEvents(function () {
+            return User::factory()
+                ->admin()
+                ->count(3)
+                ->create(['onboarding_completed' => true]);
+        });
         foreach ($adminUsers as $user) {
-            $user->syncRoles(['admin', $defaultRole]);
+            AssignRoleViaDb::assignGlobal($user, ['admin', $defaultRole]);
         }
 
-        User::factory()
-            ->count(5)
-            ->create()
-            ->each(fn (User $user): User => $user->assignRole($defaultRole));
+        $regular = User::withoutEvents(function () {
+            return User::factory()
+                ->count(70)
+                ->sequence(fn (): array => [
+                    'created_at' => now()->subDays(fake()->numberBetween(1, 365)),
+                    'updated_at' => now()->subDays(fake()->numberBetween(0, 60)),
+                ])
+                ->create(['onboarding_completed' => true]);
+        });
+        foreach ($regular as $user) {
+            AssignRoleViaDb::assignGlobal($user, [$defaultRole]);
+        }
 
-        User::factory()
-            ->unverified()
-            ->count(2)
-            ->create()
-            ->each(fn (User $user): User => $user->assignRole($defaultRole));
+        $needsOnboarding = User::withoutEvents(function () {
+            return User::factory()
+                ->needsOnboarding()
+                ->count(8)
+                ->create();
+        });
+        foreach ($needsOnboarding as $user) {
+            AssignRoleViaDb::assignGlobal($user, [$defaultRole]);
+        }
+
+        $unverified = User::withoutEvents(function () {
+            return User::factory()
+                ->unverified()
+                ->count(14)
+                ->create(['onboarding_completed' => fake()->boolean(70)]);
+        });
+        foreach ($unverified as $user) {
+            AssignRoleViaDb::assignGlobal($user, [$defaultRole]);
+        }
+
+        $toSoftDelete = User::withoutEvents(function () {
+            return User::factory()
+                ->count(5)
+                ->sequence(fn (): array => [
+                    'created_at' => now()->subDays(fake()->numberBetween(30, 200)),
+                    'updated_at' => now()->subDays(fake()->numberBetween(1, 30)),
+                ])
+                ->create(['onboarding_completed' => true]);
+        });
+        foreach ($toSoftDelete as $user) {
+            AssignRoleViaDb::assignGlobal($user, [$defaultRole]);
+            $user->delete();
+        }
+
+        $this->attachFactoryUsersToOrganizations();
+
+        config([
+            'tenancy.auto_create_personal_organization' => $autoCreate,
+            'tenancy.auto_create_personal_organization_for_admins' => $autoCreateAdmins,
+            'tenancy.auto_create_personal_organization_for_members' => $autoCreateMembers,
+        ]);
+    }
+
+    /**
+     * Attach a subset of factory-created users to Acme/Beta so organizations_count varies in the DataTable.
+     */
+    private function attachFactoryUsersToOrganizations(): void
+    {
+        $acme = Organization::query()->where('name', 'Acme')->first();
+        $betaCo = Organization::query()->where('name', 'Beta Co')->first();
+        if ($acme === null || $betaCo === null) {
+            return;
+        }
+
+        $candidates = User::query()
+            ->whereDoesntHave('organizations')
+            ->whereNull('deleted_at')
+            ->whereNotIn('email', [
+                'superadmin@example.com',
+                'owner@example.com',
+                'admin@example.com',
+                'member@example.com',
+                'multi@example.com',
+                'mixed@example.com',
+            ])
+            ->limit(50)
+            ->get();
+
+        foreach ($candidates->take(35) as $user) {
+            if (! $user->organizations()->where('organizations.id', $acme->id)->exists()) {
+                $acme->addMember($user, 'member');
+            }
+        }
+
+        foreach ($candidates->slice(10, 20) as $user) {
+            if (! $user->organizations()->where('organizations.id', $betaCo->id)->exists()) {
+                $betaCo->addMember($user, 'member');
+            }
+        }
+    }
+
+    /**
+     * Ensure the demo super-admin user has the global super-admin role (for login and /users access).
+     */
+    private function ensureSuperAdminHasGlobalRole(): void
+    {
+        $user = User::query()->where('email', 'superadmin@example.com')->first();
+        if ($user !== null) {
+            AssignRoleViaDb::assignGlobal($user, ['super-admin']);
+        }
     }
 }

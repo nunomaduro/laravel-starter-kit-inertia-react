@@ -52,6 +52,22 @@ final class BrandingController extends Controller
 
         $data = $request->validated();
 
+        if ($request->hasFile('logo_dark')) {
+            $oldRow = DB::table('organization_settings')
+                ->where('organization_id', $organization->id)
+                ->where('group', 'branding')
+                ->where('name', 'logo_path_dark')
+                ->first();
+            if ($oldRow) {
+                $oldPath = json_decode((string) $oldRow->payload, true, 512, JSON_THROW_ON_ERROR);
+                if (is_string($oldPath) && Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+            $path = $request->file('logo_dark')->store('branding/logos', 'public');
+            $this->organizationSettings->setOverride($organization, 'branding', 'logo_path_dark', $path);
+        }
+
         if ($request->hasFile('logo')) {
             $oldRow = DB::table('organization_settings')
                 ->where('organization_id', $organization->id)

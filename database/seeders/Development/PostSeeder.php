@@ -14,12 +14,15 @@ final class PostSeeder extends Seeder
 {
     use LoadsJsonData;
 
+    private const int MIN_POSTS = 5;
+
     public function run(): void
     {
         try {
             $data = $this->loadJson('posts.json');
         } catch (RuntimeException) {
             $this->command?->warn('Blog posts JSON file not found');
+            $this->ensureMinimumPosts();
 
             return;
         }
@@ -54,6 +57,22 @@ final class PostSeeder extends Seeder
             ]);
         }
 
+        $this->ensureMinimumPosts();
         $this->command?->info('Blog posts seeded.');
+    }
+
+    private function ensureMinimumPosts(): void
+    {
+        $current = Post::query()->count();
+        if ($current >= self::MIN_POSTS) {
+            return;
+        }
+
+        $author = User::query()->first();
+        if ($author === null) {
+            return;
+        }
+
+        Post::factory()->count(self::MIN_POSTS - $current)->create(['author_id' => $author->id]);
     }
 }

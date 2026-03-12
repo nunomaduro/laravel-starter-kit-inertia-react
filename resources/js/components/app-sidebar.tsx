@@ -180,6 +180,10 @@ function canShowNavItem(
     if (item.superAdminOnly && !isSuperAdmin) {
         return false;
     }
+    // Super-admin sees every nav entry regardless of feature flags, tenancy, or permissions
+    if (isSuperAdmin) {
+        return true;
+    }
     if (item.tenancyRequired && !tenancyEnabled) {
         return false;
     }

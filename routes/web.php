@@ -164,6 +164,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('posts', [PostsTableController::class, 'index'])->name('posts.table');
     Route::get('users', [UsersTableController::class, 'index'])->name('users.table');
     Route::post('users/bulk-soft-delete', [UsersTableController::class, 'bulkSoftDelete'])->name('users.bulk-soft-delete');
+    Route::patch('users/batch-update', [UsersTableController::class, 'batchUpdate'])->name('users.batch-update');
     Route::post('users/{user}/duplicate', [UsersTableController::class, 'duplicate'])->name('users.duplicate');
     Route::get('users/{user}', [UsersTableController::class, 'show'])->name('users.show');
 

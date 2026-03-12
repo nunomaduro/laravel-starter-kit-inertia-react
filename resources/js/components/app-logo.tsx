@@ -5,12 +5,26 @@ import AppLogoIcon from './app-logo-icon';
 export default function AppLogo() {
     const { name, branding } = usePage<SharedData>().props;
     const logoUrl = branding?.logoUrl ?? null;
+    const logoUrlDark = branding?.logoUrlDark ?? null;
     const siteName = name ?? 'Laravel Starter Kit';
 
     return (
         <>
             <div className="flex aspect-square size-8 shrink-0 items-center justify-center overflow-hidden rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                {logoUrl ? (
+                {logoUrlDark && logoUrl ? (
+                    <>
+                        <img
+                            src={logoUrl}
+                            alt={siteName}
+                            className="size-full object-contain dark:hidden"
+                        />
+                        <img
+                            src={logoUrlDark}
+                            alt={siteName}
+                            className="hidden size-full object-contain dark:block"
+                        />
+                    </>
+                ) : logoUrl ? (
                     <img
                         src={logoUrl}
                         alt={siteName}

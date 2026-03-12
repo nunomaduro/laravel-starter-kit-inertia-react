@@ -18,7 +18,7 @@ use UnitEnum;
 final class ManageMail extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;

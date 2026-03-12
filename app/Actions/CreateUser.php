@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Enums\ActivityType;
 use App\Models\User;
+use App\Support\AssignRoleViaDb;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ final readonly class CreateUser
 
         $defaultRole = config('permission.default_role');
         if (is_string($defaultRole) && $defaultRole !== '' && Role::query()->where('name', $defaultRole)->exists()) {
-            $user->assignRole($defaultRole);
+            AssignRoleViaDb::assignGlobal($user, [$defaultRole]);
             $logger = activity()->performedOn($user)->withProperties(['attributes' => [$defaultRole]]);
             $causer = Auth::user();
             if ($causer instanceof Model) {

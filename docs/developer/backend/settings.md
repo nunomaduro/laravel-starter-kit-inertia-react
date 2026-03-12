@@ -231,9 +231,9 @@ EnsureSetupComplete middleware (Filament auth middleware)
     ├── Only intercepts authenticated super-admin users
     ├── Checks SetupWizardSettings::setup_completed
     ├── Excludes the App settings page + logout routes
-    └── Redirects to /admin/manage-app if not complete
+    └── Redirects to setup wizard if not complete
 
-ManageApp (Settings > Platform > App)
+ManageApp (Settings · App)
     └── On first save when setup not complete: sets setup_completed=true, applies overlay
 ```
 

@@ -18,12 +18,20 @@ final class CategorySeeder extends Seeder
             return;
         }
 
-        $default = Category::create(['name' => 'Default', 'type' => 'default']);
-        Category::create(['name' => 'Development', 'type' => 'default']);
-        Category::create(['name' => 'Support', 'type' => 'default']);
-        Category::create(['name' => 'Product updates', 'type' => 'default']);
-        Category::create(['name' => 'Announcements', 'type' => 'default']);
-        $sub = new Category(['name' => 'Subcategory', 'type' => 'default']);
-        $default->appendNode($sub);
+        Category::create(['name' => 'Default', 'slug' => 'default', 'type' => 'default']);
+        Category::create(['name' => 'Development', 'slug' => 'development', 'type' => 'default']);
+        Category::create(['name' => 'Support', 'slug' => 'support', 'type' => 'default']);
+        Category::create(['name' => 'Product updates', 'slug' => 'product-updates', 'type' => 'default']);
+        Category::create(['name' => 'Announcements', 'slug' => 'announcements', 'type' => 'default']);
+
+        $defaultRoot = Category::query()->where('slug', 'default')->first();
+        if ($defaultRoot instanceof Category) {
+            $child = new Category([
+                'name' => 'General',
+                'slug' => 'general',
+                'type' => 'default',
+            ]);
+            $child->appendToNode($defaultRoot)->save();
+        }
     }
 }

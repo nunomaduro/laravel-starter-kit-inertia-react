@@ -16,7 +16,7 @@ use UnitEnum;
 final class ManageFeatureFlags extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Features & Access';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · Features';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFlag;

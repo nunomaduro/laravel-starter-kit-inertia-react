@@ -6,19 +6,27 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Providers\SettingsOverlayServiceProvider;
+use App\Settings\AiSettings;
 use App\Settings\AppSettings;
 use App\Settings\AuthSettings;
+use App\Settings\BackupSettings;
 use App\Settings\BillingSettings;
 use App\Settings\BroadcastingSettings;
 use App\Settings\FeatureFlagSettings;
 use App\Settings\FilesystemSettings;
+use App\Settings\IntegrationsSettings;
+use App\Settings\LemonSqueezySettings;
 use App\Settings\MailSettings;
+use App\Settings\MemorySettings;
 use App\Settings\MonitoringSettings;
+use App\Settings\PaddleSettings;
 use App\Settings\PrismSettings;
 use App\Settings\ScoutSettings;
 use App\Settings\SeoSettings;
 use App\Settings\SetupWizardSettings;
+use App\Settings\StripeSettings;
 use App\Settings\TenancySettings;
+use App\Settings\ThemeSettings;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,13 +44,13 @@ use RuntimeException;
 use Throwable;
 
 /**
- * Web installer — mirrors every phase of `php artisan app:install`.
+ * Web installer — mirrors every phase of `php artisan app:install` (same step order and settings).
  *
- * Step order (17 total):
+ * Step order (required + optional + demo):
  *   database → migrate → admin → app
  *   → tenancy → infrastructure → mail → search → ai
  *   → social → storage → broadcasting → seo → monitoring
- *   → billing → features → demo
+ *   → billing → integrations → theme → memory → backup → features → demo
  *
  * The first 4 steps are required. Steps 5–16 are optional (each has a Skip button).
  * Completed optional steps are tracked in the session under `install_optional_done`.
@@ -63,6 +71,10 @@ final class InstallController extends Controller
         'seo',
         'monitoring',
         'billing',
+        'integrations',
+        'theme',
+        'memory',
+        'backup',
         'features',
     ];
 
@@ -145,7 +157,8 @@ final class InstallController extends Controller
     private const array STEP_ORDER = [
         'database', 'migrate', 'admin', 'app',
         'tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social',
-        'storage', 'broadcasting', 'seo', 'monitoring', 'billing', 'features', 'demo',
+        'storage', 'broadcasting', 'seo', 'monitoring', 'billing',
+        'integrations', 'theme', 'memory', 'backup', 'features', 'demo',
     ];
 
     public function show(): View|RedirectResponse
@@ -396,17 +409,17 @@ final class InstallController extends Controller
             'infrastructure' => $this->handleOptional('infrastructure', fn () => $this->saveInfrastructure($request)),
             'mail' => $this->handleOptional('mail', fn () => $this->saveMail($request)),
             'search' => $this->handleOptional('search', fn () => $this->saveSearch($request)),
-            'ai' => $this->handleOptional('ai', function () use ($request): void {
-                if ($request->filled('provider') && $request->input('provider') !== '') {
-                    $this->saveAi($request);
-                }
-            }),
+            'ai' => $this->handleOptional('ai', fn () => $this->saveAi($request)),
             'social' => $this->handleOptional('social', fn () => $this->saveSocial($request)),
             'storage' => $this->handleOptional('storage', fn () => $this->saveStorage($request)),
             'broadcasting' => $this->handleOptional('broadcasting', fn () => $this->saveBroadcasting($request)),
             'seo' => $this->handleOptional('seo', fn () => $this->saveSeo($request)),
             'monitoring' => $this->handleOptional('monitoring', fn () => $this->saveMonitoring($request)),
             'billing' => $this->handleOptional('billing', fn () => $this->saveBilling($request)),
+            'integrations' => $this->handleOptional('integrations', fn () => $this->saveIntegrations($request)),
+            'theme' => $this->handleOptional('theme', fn () => $this->saveTheme($request)),
+            'memory' => $this->handleOptional('memory', fn () => $this->saveMemory($request)),
+            'backup' => $this->handleOptional('backup', fn () => $this->saveBackup($request)),
             'features' => $this->handleOptional('features', fn () => $this->saveFeatures($request)),
             'demo' => $this->handleDemo($request),
             default => to_route('install'),
@@ -414,12 +427,12 @@ final class InstallController extends Controller
     }
 
     /**
-     * Test a connection for the given installer step (database, infrastructure, mail, search).
+     * Test a connection for the given installer step (database, infrastructure, mail, search, ai).
      * Expects step + form fields in the request. Returns JSON { "ok": true } or { "ok": false, "message": "..." }.
      */
     public function testConnection(Request $request): JsonResponse
     {
-        $request->validate(['step' => ['required', 'in:database,infrastructure,mail,search']]);
+        $request->validate(['step' => ['required', 'in:database,infrastructure,mail,search,ai,broadcasting']]);
 
         $step = $request->input('step');
 
@@ -429,11 +442,91 @@ final class InstallController extends Controller
                 'infrastructure' => $this->testInfrastructureConnection($request),
                 'mail' => $this->testMailConnection($request),
                 'search' => $this->testSearchConnection($request),
+                'ai' => $this->testAiConnection($request),
+                'broadcasting' => $this->testBroadcastingConnection($request),
             };
 
             return response()->json(['ok' => true]);
         } catch (Throwable $throwable) {
             return response()->json(['ok' => false, 'message' => $throwable->getMessage()], 422);
+        }
+    }
+
+    /**
+     * Return list of AI models for the installer default-model combobox.
+     * GET: returns static curated list. POST with provider + api_key: for OpenRouter, can return live list from API.
+     */
+    public function aiModels(Request $request): JsonResponse
+    {
+        $models = config('install-ai-models', []);
+
+        if ($request->isMethod('POST')) {
+            $provider = $request->input('provider');
+            $apiKey = $request->filled('api_key') ? (string) $request->input('api_key') : null;
+            if ($provider === 'openrouter' && $apiKey !== null && $apiKey !== '') {
+                $live = $this->fetchOpenRouterModels($apiKey);
+                if ($live !== null && $live !== []) {
+                    $models = $live;
+                }
+            }
+        }
+
+        return response()->json(['models' => $models]);
+    }
+
+    /**
+     * Fetch models from OpenRouter API. Returns null on failure.
+     *
+     * @return array<int, array{id: string, name: string, pricing: string, free: bool}>|null
+     */
+    private function fetchOpenRouterModels(string $apiKey): ?array
+    {
+        try {
+            $response = Http::withToken($apiKey)
+                ->timeout(15)
+                ->get('https://openrouter.ai/api/v1/models');
+
+            if (! $response->successful()) {
+                return null;
+            }
+
+            $data = $response->json('data');
+            if (! is_array($data)) {
+                return null;
+            }
+
+            $out = [];
+            $seen = [];
+            foreach ($data as $m) {
+                $id = $m['id'] ?? null;
+                if (! is_string($id) || $id === '' || isset($seen[$id])) {
+                    continue;
+                }
+                $seen[$id] = true;
+                $pricing = $m['pricing'] ?? [];
+                $promptPerToken = (float) ($pricing['prompt'] ?? 1);
+                $completionPerToken = (float) ($pricing['completion'] ?? 1);
+                $free = $promptPerToken === 0.0 && $completionPerToken === 0.0;
+                $pricingStr = $free ? 'Free' : sprintf('$%.2f/1M in, $%.2f/1M out', $promptPerToken * 1_000_000, $completionPerToken * 1_000_000);
+                $out[] = [
+                    'id' => $id,
+                    'name' => $m['name'] ?? $id,
+                    'pricing' => $pricingStr,
+                    'free' => $free,
+                ];
+            }
+
+            usort($out, static function (array $a, array $b): int {
+                if ($a['free'] !== $b['free']) {
+                    return $a['free'] ? -1 : 1;
+                }
+
+                return strcasecmp($a['name'], $b['name']);
+            });
+
+            return array_values($out);
+        } catch (Throwable) {
+            return null;
         }
     }
 
@@ -543,8 +636,8 @@ final class InstallController extends Controller
             // which may hang in the terminating callback due to missing auth/tenant context.
             $now = now()->toDateTimeString();
             $userId = DB::table('users')->insertGetId([
-                'name' => 'Admin',
-                'email' => 'admin@example.com',
+                'name' => 'Super Admin',
+                'email' => 'superadmin@example.com',
                 'password' => Hash::make('password'),
                 'email_verified_at' => $now,
                 'created_at' => $now,
@@ -1001,6 +1094,20 @@ final class InstallController extends Controller
         $tenancy->auto_create_personal_org = $request->boolean('auto_create_personal_org_for_admins', true);
         $tenancy->auto_create_personal_org_for_admins = $request->boolean('auto_create_personal_org_for_admins', true);
         $tenancy->auto_create_personal_org_for_members = $request->boolean('auto_create_personal_org_for_members', false);
+
+        if ($enabled) {
+            $tenancy->domain = $request->filled('domain') ? (string) $request->input('domain') : null;
+            $tenancy->subdomain_resolution = $request->boolean('subdomain_resolution', true);
+            $tenancy->term = (string) $request->input('term', 'Organization');
+            $tenancy->term_plural = (string) $request->input('term_plural', 'Organizations');
+            $tenancy->invitation_expires_in_days = (int) $request->input('invitation_expires_in_days', 7);
+            $tenancy->invitation_allow_registration = $request->boolean('invitation_allow_registration', true);
+            $tenancy->sharing_restrict_to_connected = $request->boolean('sharing_restrict_to_connected', false);
+            $tenancy->sharing_edit_ownership = (string) $request->input('sharing_edit_ownership', 'original_owner');
+            $tenancy->super_admin_can_view_all = $request->boolean('super_admin_can_view_all', true);
+            $tenancy->super_admin_default_share_new_to_all_orgs = $request->boolean('super_admin_default_share_new_to_all_orgs', true);
+        }
+
         $tenancy->save();
     }
 
@@ -1141,38 +1248,66 @@ final class InstallController extends Controller
             $scout->typesense_protocol = (string) $request->input('typesense_protocol', 'http');
         }
 
+        $scout->prefix = (string) $request->input('prefix', '');
+        $scout->queue = $request->boolean('queue', false);
+        $scout->identify = $request->boolean('identify', false);
+
         $scout->save();
     }
 
     private function saveAi(Request $request): void
     {
-        $provider = (string) $request->input('provider', 'openrouter');
+        $provider = (string) $request->input('provider', '');
         $apiKey = $request->filled('api_key') ? (string) $request->input('api_key') : null;
 
         $prism = resolve(PrismSettings::class);
-        $prism->default_provider = $provider;
-        $prism->default_model = (string) $request->input('model', '');
-
-        if ($apiKey !== null) {
-            match ($provider) {
-                'openai' => $prism->openai_api_key = $apiKey,
-                'anthropic' => $prism->anthropic_api_key = $apiKey,
-                'groq' => $prism->groq_api_key = $apiKey,
-                'xai' => $prism->xai_api_key = $apiKey,
-                'gemini' => $prism->gemini_api_key = $apiKey,
-                'deepseek' => $prism->deepseek_api_key = $apiKey,
-                'mistral' => $prism->mistral_api_key = $apiKey,
-                'openrouter' => $prism->openrouter_api_key = $apiKey,
-                default => null,
-            };
+        if ($provider !== '') {
+            $prism->default_provider = $provider;
+            $prism->default_model = (string) $request->input('model', '');
+            if ($apiKey !== null) {
+                match ($provider) {
+                    'openai' => $prism->openai_api_key = $apiKey,
+                    'anthropic' => $prism->anthropic_api_key = $apiKey,
+                    'groq' => $prism->groq_api_key = $apiKey,
+                    'xai' => $prism->xai_api_key = $apiKey,
+                    'gemini' => $prism->gemini_api_key = $apiKey,
+                    'deepseek' => $prism->deepseek_api_key = $apiKey,
+                    'mistral' => $prism->mistral_api_key = $apiKey,
+                    'openrouter' => $prism->openrouter_api_key = $apiKey,
+                    default => null,
+                };
+            }
+            $prism->save();
         }
 
-        $prism->save();
-
-        if ($request->filled('thesys_api_key')) {
+        $ai = resolve(AiSettings::class);
+        if ($request->filled('cohere_api_key')) {
+            $cohereKey = (string) $request->input('cohere_api_key');
+            $ai->cohere_api_key = $cohereKey;
+            $ai->save();
             $envPath = base_path('.env');
             $env = is_file($envPath) ? (string) file_get_contents($envPath) : '';
-            $env = $this->setEnvVar($env, 'THESYS_API_KEY', (string) $request->input('thesys_api_key'));
+            $env = $this->setEnvVar($env, 'COHERE_API_KEY', $cohereKey);
+            file_put_contents($envPath, $env);
+        }
+
+        if ($request->filled('jina_api_key')) {
+            $jinaKey = (string) $request->input('jina_api_key');
+            $ai->jina_api_key = $jinaKey;
+            $ai->save();
+            $envPath = base_path('.env');
+            $env = is_file($envPath) ? (string) file_get_contents($envPath) : '';
+            $env = $this->setEnvVar($env, 'JINA_API_KEY', $jinaKey);
+            file_put_contents($envPath, $env);
+        }
+
+        if ($request->filled('thesys_api_key')) {
+            $thesysKey = (string) $request->input('thesys_api_key');
+            $ai->thesys_api_key = $thesysKey;
+            $ai->save();
+            $envPath = base_path('.env');
+            $env = is_file($envPath) ? (string) file_get_contents($envPath) : '';
+            $env = $this->setEnvVar($env, 'THESYS_API_KEY', $thesysKey);
             file_put_contents($envPath, $env);
         }
     }
@@ -1246,9 +1381,145 @@ final class InstallController extends Controller
     {
         $billing = resolve(BillingSettings::class);
         $billing->default_gateway = (string) $request->input('default_gateway', 'stripe');
+        if ($billing->default_gateway === '') {
+            $billing->default_gateway = 'none';
+        }
         $billing->currency = (string) $request->input('currency', 'usd');
         $billing->trial_days = (int) $request->input('trial_days', 14);
+        $billing->enable_seat_based_billing = $request->boolean('enable_seat_based_billing', false);
+        $billing->allow_multiple_subscriptions = $request->boolean('allow_multiple_subscriptions', false);
+        $billing->credit_expiration_days = (int) $request->input('credit_expiration_days', 365);
+
+        $dunningRaw = $request->input('dunning_intervals', '');
+        if (is_string($dunningRaw) && mb_trim($dunningRaw) !== '') {
+            $parts = array_map('intval', preg_split('/[\s,]+/', mb_trim($dunningRaw)) ?: []);
+            $parts = array_values(array_filter($parts));
+            if ($parts !== []) {
+                $billing->dunning_intervals = $parts;
+            }
+        }
+
+        $billing->geo_restriction_enabled = $request->boolean('geo_restriction_enabled', false);
+        if ($billing->geo_restriction_enabled && $request->filled('geo_blocked_countries')) {
+            $billing->geo_blocked_countries = array_values(array_filter(preg_split('/[\s,]+/', (string) $request->input('geo_blocked_countries')) ?: []));
+        }
+        if ($billing->geo_restriction_enabled && $request->filled('geo_allowed_countries')) {
+            $billing->geo_allowed_countries = array_values(array_filter(preg_split('/[\s,]+/', (string) $request->input('geo_allowed_countries')) ?: []));
+        }
+
         $billing->save();
+
+        if ($request->filled('stripe_key')) {
+            $stripe = resolve(StripeSettings::class);
+            $stripe->key = (string) $request->input('stripe_key');
+            if ($request->filled('stripe_secret')) {
+                $stripe->secret = (string) $request->input('stripe_secret');
+            }
+            if ($request->filled('stripe_webhook_secret')) {
+                $stripe->webhook_secret = (string) $request->input('stripe_webhook_secret');
+            }
+            $stripe->save();
+        }
+
+        if ($request->filled('paddle_vendor_id')) {
+            $paddle = resolve(PaddleSettings::class);
+            $paddle->vendor_id = (string) $request->input('paddle_vendor_id');
+            if ($request->filled('paddle_vendor_auth_code')) {
+                $paddle->vendor_auth_code = (string) $request->input('paddle_vendor_auth_code');
+            }
+            if ($request->filled('paddle_public_key')) {
+                $paddle->public_key = (string) $request->input('paddle_public_key');
+            }
+            if ($request->filled('paddle_webhook_secret')) {
+                $paddle->webhook_secret = (string) $request->input('paddle_webhook_secret');
+            }
+            $paddle->sandbox = $request->boolean('paddle_sandbox', true);
+            $paddle->save();
+        }
+
+        if ($request->filled('lemon_squeezy_api_key')) {
+            $lemon = resolve(LemonSqueezySettings::class);
+            $lemon->api_key = (string) $request->input('lemon_squeezy_api_key');
+            if ($request->filled('lemon_squeezy_signing_secret')) {
+                $lemon->signing_secret = (string) $request->input('lemon_squeezy_signing_secret');
+            }
+            if ($request->filled('lemon_squeezy_store')) {
+                $lemon->store = (string) $request->input('lemon_squeezy_store');
+            }
+            $lemon->path = (string) $request->input('lemon_squeezy_path', 'lemon-squeezy');
+            $lemon->currency_locale = (string) $request->input('lemon_squeezy_currency_locale', 'en');
+            if ($request->filled('lemon_squeezy_generic_variant_id')) {
+                $lemon->generic_variant_id = (string) $request->input('lemon_squeezy_generic_variant_id');
+            }
+            $lemon->save();
+        }
+    }
+
+    private function saveIntegrations(Request $request): void
+    {
+        $integrations = resolve(IntegrationsSettings::class);
+        if ($request->filled('slack_webhook_url')) {
+            $integrations->slack_webhook_url = (string) $request->input('slack_webhook_url');
+        }
+        if ($request->filled('slack_bot_token')) {
+            $integrations->slack_bot_token = (string) $request->input('slack_bot_token');
+        }
+        if ($request->filled('slack_channel')) {
+            $integrations->slack_channel = (string) $request->input('slack_channel');
+        }
+        if ($request->filled('postmark_token')) {
+            $integrations->postmark_token = (string) $request->input('postmark_token');
+        }
+        if ($request->filled('resend_key')) {
+            $integrations->resend_key = (string) $request->input('resend_key');
+        }
+        $integrations->save();
+    }
+
+    private function saveTheme(Request $request): void
+    {
+        $theme = resolve(ThemeSettings::class);
+        $theme->preset = (string) $request->input('preset', 'default');
+        $theme->base_color = (string) $request->input('base_color', 'neutral');
+        $theme->radius = (string) $request->input('radius', 'default');
+        $theme->font = (string) $request->input('font', 'instrument-sans');
+        $theme->default_appearance = (string) $request->input('default_appearance', 'system');
+        $theme->dark_color_scheme = (string) $request->input('dark_color_scheme', '');
+        $theme->primary_color = (string) $request->input('primary_color', '');
+        $theme->light_color_scheme = (string) $request->input('light_color_scheme', '');
+        $theme->card_skin = (string) $request->input('card_skin', 'shadow');
+        $theme->border_radius = (string) $request->input('border_radius', 'default');
+        $theme->sidebar_layout = (string) $request->input('sidebar_layout', 'main');
+        $theme->menu_color = (string) $request->input('menu_color', 'default');
+        $theme->menu_accent = (string) $request->input('menu_accent', 'subtle');
+        $theme->allow_user_theme_customization = $request->boolean('allow_user_theme_customization', true);
+        $theme->allow_user_logo_upload = $request->boolean('allow_user_logo_upload', false);
+        $theme->save();
+    }
+
+    private function saveMemory(Request $request): void
+    {
+        $memory = resolve(MemorySettings::class);
+        $memory->dimensions = (int) $request->input('dimensions', 1536);
+        $memory->similarity_threshold = (float) $request->input('similarity_threshold', 0.5);
+        $memory->recall_limit = (int) $request->input('recall_limit', 10);
+        $memory->middleware_recall_limit = (int) $request->input('middleware_recall_limit', 5);
+        $memory->recall_oversample_factor = (int) $request->input('recall_oversample_factor', 2);
+        $memory->table = (string) $request->input('table', 'memories');
+        $memory->save();
+    }
+
+    private function saveBackup(Request $request): void
+    {
+        $backup = resolve(BackupSettings::class);
+        $backup->name = (string) $request->input('name', 'laravel-backup');
+        $backup->keep_all_backups_for_days = (int) $request->input('keep_all_backups_for_days', 7);
+        $backup->keep_daily_backups_for_days = (int) $request->input('keep_daily_backups_for_days', 16);
+        $backup->keep_weekly_backups_for_weeks = (int) $request->input('keep_weekly_backups_for_weeks', 8);
+        $backup->keep_monthly_backups_for_months = (int) $request->input('keep_monthly_backups_for_months', 4);
+        $backup->keep_yearly_backups_for_years = (int) $request->input('keep_yearly_backups_for_years', 2);
+        $backup->delete_oldest_when_size_mb = (int) $request->input('delete_oldest_when_size_mb', 5000);
+        $backup->save();
     }
 
     private function saveFeatures(Request $request): void
@@ -1435,6 +1706,97 @@ final class InstallController extends Controller
 
         if (! $response->successful()) {
             throw new RuntimeException(sprintf('Typesense returned HTTP %d.', $response->status()));
+        }
+    }
+
+    private function testBroadcastingConnection(Request $request): void
+    {
+        $host = (string) $request->input('reverb_host', 'reverb.herd.test');
+        $port = (int) $request->input('reverb_port', 443);
+        $scheme = (string) $request->input('reverb_scheme', 'https');
+
+        $url = sprintf('%s://%s:%d/up', $scheme, $host, $port);
+        $client = Http::timeout(5);
+        if ($scheme === 'https' && (str_ends_with($host, '.test') || str_ends_with($host, '.local') || $host === 'localhost')) {
+            $client = $client->withOptions(['verify' => false]);
+        }
+        $response = $client->get($url);
+
+        if ($response->successful()) {
+            return;
+        }
+
+        if ($host === 'reverb.herd.test') {
+            $dashboardClient = Http::timeout(5)->withOptions(['verify' => false]);
+            $dashboardResponse = $dashboardClient->get('http://reverb-dashboard.herd.test/');
+            if ($dashboardResponse->successful()) {
+                return;
+            }
+        }
+
+        throw new RuntimeException(sprintf('Reverb returned HTTP %d at %s. Is Reverb running? Dashboard: http://reverb-dashboard.herd.test/', $response->status(), $host));
+    }
+
+    private function testAiConnection(Request $request): void
+    {
+        $aiTest = $request->input('ai_test', 'provider');
+
+        if ($aiTest === 'thesys') {
+            $apiKey = $request->filled('thesys_api_key') ? (string) $request->input('thesys_api_key') : '';
+            throw_if($apiKey === '', RuntimeException::class, 'Thesys API key is required to test.');
+
+            return;
+        }
+
+        if ($aiTest === 'cohere') {
+            $apiKey = $request->filled('cohere_api_key') ? (string) $request->input('cohere_api_key') : '';
+            throw_if($apiKey === '', RuntimeException::class, 'Cohere API key is required to test.');
+
+            $response = Http::withToken($apiKey)
+                ->timeout(10)
+                ->post('https://api.cohere.com/v1/check-api-key');
+
+            if (! $response->successful()) {
+                $status = $response->status();
+                $body = $response->json();
+                $message = $body['message'] ?? $response->body();
+                throw new RuntimeException(sprintf('Cohere API returned HTTP %d. %s', $status, is_string($message) ? $message : ''));
+            }
+
+            return;
+        }
+
+        $provider = (string) $request->input('provider', '');
+        $apiKey = $request->filled('api_key') ? (string) $request->input('api_key') : '';
+
+        if ($provider === '' || $provider === 'ollama') {
+            if ($provider === 'ollama') {
+                $response = Http::timeout(3)->get('http://localhost:11434/api/tags');
+                if (! $response->successful()) {
+                    throw new RuntimeException('Cannot reach Ollama at localhost:11434. Is Ollama running?');
+                }
+            }
+
+            return;
+        }
+
+        throw_if($apiKey === '', RuntimeException::class, 'API key is required to test this provider.');
+
+        $response = match ($provider) {
+            'openrouter' => Http::withToken($apiKey)->timeout(10)->get('https://openrouter.ai/api/v1/auth/key'),
+            'openai' => Http::withToken($apiKey)->timeout(10)->get('https://api.openai.com/v1/models'),
+            'groq' => Http::withToken($apiKey)->timeout(10)->get('https://api.groq.com/openai/v1/models'),
+            'anthropic', 'gemini', 'xai', 'deepseek', 'mistral' => throw new RuntimeException(
+                'Key validation is not available for this provider. Save and continue to use it.'
+            ),
+            default => throw new RuntimeException('Unknown provider.'),
+        };
+
+        if (! $response->successful()) {
+            $status = $response->status();
+            $body = $response->json();
+            $message = $body['error']['message'] ?? $body['message'] ?? $response->body();
+            throw new RuntimeException(sprintf('API returned HTTP %d. %s', $status, is_string($message) ? $message : ''));
         }
     }
 

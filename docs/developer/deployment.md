@@ -120,7 +120,7 @@ When the app is not yet installed (no completed setup wizard), the **web install
 
 **Availability:** Install routes (including express) are only available when **`APP_ENV`** is **`local`** or **`testing`**; in production or staging they return 404. They are rate-limited (10 requests per minute per IP). Progress files are deleted when status is read as `done` or `error`. Express returns 409 if already installed; invalid body returns 422.
 
-**Express install** (POST `/install/express`) skips the wizard: it configures SQLite and `.env`, then runs migrations, essential seeders, creates a default admin (`admin@example.com` / `password`), and saves app/mail/setup settings in the background. The response is JSON `{ "progressFile": "install_progress_<uuid>.json" }`; poll **GET `/install/express/status?key=<progressFile>`** until `status` is `done` or `error`, then redirect to `redirect` (e.g. `/admin`).
+**Express install** (POST `/install/express`) skips the wizard: it configures SQLite and `.env`, then runs migrations, essential seeders, creates a default super-admin (`superadmin@example.com` / `password`), and saves app/mail/setup settings in the background. The response is JSON `{ "progressFile": "install_progress_<uuid>.json" }`; poll **GET `/install/express/status?key=<progressFile>`** until `status` is `done` or `error`, then redirect to `redirect` (e.g. `/admin`).
 
 Express accepts an optional JSON body to customize run:
 

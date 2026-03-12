@@ -33,13 +33,13 @@
         .logo-icon svg { width: 18px; height: 18px; }
         .logo-name { font-size: 1rem; font-weight: 600; color: #fff; }
 
-        /* ── Progress bar (17 steps — use bar instead of dots) ── */
+        /* ── Progress bar (installer steps — use bar instead of dots) ── */
         .progress-wrap { margin-bottom: 1.75rem; }
         .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
         .progress-step-name { font-size: 0.75rem; font-weight: 600; color: #a3a3a3; text-transform: uppercase; letter-spacing: 0.06em; }
-        .progress-count { font-size: 0.75rem; color: #525252; }
+        .progress-count { font-size: 0.75rem; color: #737373; }
         .progress-bar-track { height: 3px; background: #2a2a2a; border-radius: 99px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: #fff; border-radius: 99px; transition: width 0.3s ease; }
+        .progress-bar-fill { height: 100%; background: #fff; border-radius: 99px; transition: width 0.2s ease; }
 
         /* ── Typography ─────────────────────────────────── */
         h1 { font-size: 1.25rem; font-weight: 600; color: #fff; margin-bottom: 0.375rem; }
@@ -58,16 +58,20 @@
             font-size: 0.875rem;
             color: #e5e5e5;
             outline: none;
-            transition: border-color 0.15s;
+            transition: border-color 0.2s, box-shadow 0.2s;
             font-family: inherit;
         }
-        .field input:focus, .field select:focus, .field textarea:focus { border-color: #525252; }
+        .field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible {
+            border-color: #737373;
+            box-shadow: 0 0 0 2px #0f0f0f, 0 0 0 4px #525252;
+        }
         .field select { cursor: pointer; }
         .hint { font-size: 0.75rem; color: #525252; margin-top: 0.3rem; }
 
         /* ── Radio / toggle groups ─────────────────────── */
         .radio-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
-        .radio-option { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border: 1px solid #2a2a2a; border-radius: 8px; cursor: pointer; transition: border-color 0.15s; }
+        .radio-option { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border: 1px solid #2a2a2a; border-radius: 8px; cursor: pointer; transition: border-color 0.2s; }
+        .radio-option:focus-within { border-color: #737373; box-shadow: 0 0 0 2px #0f0f0f, 0 0 0 4px #525252; outline: none; }
         .radio-option:has(input:checked) { border-color: #525252; }
         .radio-option input { margin-top: 0.2rem; flex-shrink: 0; }
         .radio-label { font-size: 0.875rem; font-weight: 500; color: #e5e5e5; }
@@ -79,37 +83,42 @@
         .toggle-label { font-size: 0.875rem; color: #e5e5e5; }
         .toggle-desc { font-size: 0.75rem; color: #525252; margin-top: 0.125rem; }
         .toggle-wrap { position: relative; }
-        .toggle-wrap input[type=checkbox] { appearance: none; width: 36px; height: 20px; background: #2a2a2a; border-radius: 99px; cursor: pointer; transition: background 0.2s; }
+        .toggle-wrap input[type=checkbox] { appearance: none; width: 36px; height: 20px; min-height: 20px; background: #2a2a2a; border-radius: 99px; cursor: pointer; transition: background 0.2s; }
         .toggle-wrap input[type=checkbox]:checked { background: #fff; }
+        .toggle-wrap input[type=checkbox]:focus-visible { outline: none; box-shadow: 0 0 0 2px #0f0f0f, 0 0 0 4px #525252; }
         .toggle-wrap input[type=checkbox]::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; background: #737373; border-radius: 50%; transition: left 0.2s, background 0.2s; }
         .toggle-wrap input[type=checkbox]:checked::after { left: 19px; background: #0f0f0f; }
 
         /* ── Extra fields ───────────────────────────────── */
         .extra-fields { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #2a2a2a; }
 
-        /* ── Two-column ─────────────────────────────────── */
+        /* ── Two-column (stack on narrow) ────────────────── */
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        @@media (max-width: 480px) { .two-col { grid-template-columns: 1fr; } }
 
         /* ── Section divider ─────────────────────────────── */
         .section-label { font-size: 0.6875rem; font-weight: 600; color: #525252; text-transform: uppercase; letter-spacing: 0.08em; margin: 1.25rem 0 0.75rem; border-bottom: 1px solid #2a2a2a; padding-bottom: 0.375rem; }
 
-        /* ── Buttons ────────────────────────────────────── */
-        .btn { width: 100%; padding: 0.6875rem 1rem; border-radius: 8px; border: none; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: opacity 0.15s; margin-top: 1.25rem; }
+        /* ── Buttons (min 44px touch target, focus ring) ──── */
+        .btn { width: 100%; min-height: 44px; padding: 0.6875rem 1rem; border-radius: 8px; border: none; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: opacity 0.2s; margin-top: 1.25rem; }
         .btn:hover { opacity: 0.88; }
+        .btn:focus-visible { outline: none; box-shadow: 0 0 0 2px #0f0f0f, 0 0 0 4px #525252; }
         .btn-primary { background: #fff; color: #0f0f0f; }
-        .btn-express { background: transparent; border: 1px solid #525252; color: #a3a3a3; margin-top: 0; display: flex; flex-direction: column; gap: 0.25rem; align-items: center; padding: 0.875rem 1rem; height: auto; }
+        .btn-express { background: transparent; border: 1px solid #525252; color: #a3a3a3; margin-top: 0; display: flex; flex-direction: column; gap: 0.25rem; align-items: center; padding: 0.875rem 1rem; min-height: 44px; justify-content: center; }
         .btn-express .btn-express-title { font-size: 0.875rem; font-weight: 500; }
         .btn-express .btn-express-desc { font-size: 0.75rem; color: #525252; font-weight: 400; }
         .btn-secondary { background: transparent; border: 1px solid #525252; color: #a3a3a3; margin-top: 0.5rem; }
         .btn-skip { background: transparent; border: 1px solid #2a2a2a; color: #525252; }
         .btn-link { background: none; border: none; padding: 0; font-size: 0.8125rem; color: #737373; cursor: pointer; }
         .btn-link:hover { color: #a3a3a3; }
+        .btn-link:focus-visible { outline: none; border-radius: 4px; box-shadow: 0 0 0 2px #525252; }
         .back-row { margin-bottom: 1rem; }
-        .back-link { display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; color: #737373; text-decoration: none; cursor: pointer; background: none; border: none; padding: 0; font-family: inherit; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.375rem; min-height: 44px; padding: 0.25rem 0; font-size: 0.8125rem; color: #737373; text-decoration: none; cursor: pointer; background: none; border: none; font-family: inherit; }
         .back-link:hover { color: #a3a3a3; }
+        .back-link:focus-visible { outline: none; border-radius: 6px; box-shadow: 0 0 0 2px #525252; }
 
         /* ── Alerts ─────────────────────────────────────── */
-        .alert { background: #1c0a0a; border: 1px solid #7f1d1d; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8125rem; color: #fca5a5; margin-bottom: 1.25rem; }
+        .alert { background: #1c0a0a; border: 1px solid #7f1d1d; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8125rem; color: #fca5a5; margin-bottom: 1.25rem; line-height: 1.5; }
         .info-box { background: #0a0f1c; border: 1px solid #1e3a5f; border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8125rem; color: #93c5fd; margin-bottom: 1rem; line-height: 1.6; }
         .test-result { border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.8125rem; margin-top: 0.75rem; display: none; }
         .test-result.visible { display: block; }
@@ -122,9 +131,23 @@
         .module-option { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border: 1px solid #2a2a2a; border-radius: 8px; cursor: pointer; }
         .module-option:has(input:checked) { border-color: #525252; }
         .module-option input { margin-top: 0.2rem; flex-shrink: 0; }
+        .module-option { cursor: pointer; }
+        .module-option:focus-within { box-shadow: 0 0 0 2px #0f0f0f, 0 0 0 4px #525252; outline: none; border-radius: 8px; }
         .module-label { font-size: 0.875rem; font-weight: 500; color: #e5e5e5; }
         .module-desc { font-size: 0.75rem; color: #737373; margin-top: 0.125rem; }
         .module-badge { font-size: 0.6875rem; background: #1f2937; color: #93c5fd; border-radius: 4px; padding: 1px 6px; margin-left: 0.375rem; }
+
+        /* ── AI model combobox ───────────────────────────── */
+        .ai-model-combobox { position: relative; }
+        .ai-model-combobox .ai-model-list { position: absolute; left: 0; right: 0; top: 100%; margin-top: 2px; max-height: 280px; overflow-y: auto; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; z-index: 50; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+        .ai-model-combobox .ai-model-list.visible { display: block; }
+        .ai-model-combobox .ai-model-option { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.8125rem; color: #e5e5e5; cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: inherit; }
+        .ai-model-combobox .ai-model-option:hover { background: #262626; }
+        .ai-model-combobox .ai-model-option[aria-selected="true"] { background: #262626; }
+        .ai-model-combobox .ai-model-option .ai-model-name { flex: 1; min-width: 0; }
+        .ai-model-combobox .ai-model-option .ai-model-pricing { flex-shrink: 0; font-size: 0.75rem; color: #737373; }
+        .ai-model-combobox .ai-model-option .ai-model-free { font-size: 0.6875rem; font-weight: 600; color: #22c55e; text-transform: uppercase; }
+        .ai-model-combobox .ai-model-list-loading { padding: 0.75rem 1rem; font-size: 0.8125rem; color: #737373; }
     </style>
 </head>
 <body>
@@ -143,32 +166,34 @@
 
     {{-- Progress bar --}}
     @php
-        $allSteps = ['database', 'migrate', 'admin', 'app', 'tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'billing', 'features', 'demo'];
+        $allSteps = ['database', 'migrate', 'admin', 'app', 'tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'billing', 'integrations', 'theme', 'memory', 'backup', 'features', 'demo'];
         $stepLabels = [
             'database' => 'Database', 'migrate' => 'Tables', 'admin' => 'Admin', 'app' => 'App',
             'tenancy' => 'Tenancy', 'infrastructure' => 'Infrastructure', 'mail' => 'Mail',
             'search' => 'Search', 'ai' => 'AI', 'social' => 'Social Auth',
             'storage' => 'Storage', 'broadcasting' => 'Broadcasting', 'seo' => 'SEO',
-            'monitoring' => 'Monitoring', 'billing' => 'Billing', 'features' => 'Feature flags', 'demo' => 'Demo Data',
+            'monitoring' => 'Monitoring', 'billing' => 'Billing', 'integrations' => 'Integrations',
+            'theme' => 'Theme', 'memory' => 'AI Memory', 'backup' => 'Backups',
+            'features' => 'Feature flags', 'demo' => 'Demo Data',
         ];
         $currentIdx = array_search($step, $allSteps);
         $total = count($allSteps);
         $pct = round(($currentIdx / ($total - 1)) * 100);
     @endphp
 
-    <div class="progress-wrap">
+    <div class="progress-wrap" role="region" aria-label="Setup progress">
         <div class="progress-header">
             <span class="progress-step-name">{{ $stepLabels[$step] ?? $step }}</span>
-            <span class="progress-count">{{ $currentIdx + 1 }} / {{ $total }}</span>
+            <span class="progress-count" aria-hidden="true">{{ $currentIdx + 1 }} / {{ $total }}</span>
         </div>
-        <div class="progress-bar-track">
+        <div class="progress-bar-track" role="progressbar" aria-valuenow="{{ $pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="Step {{ $currentIdx + 1 }} of {{ $total }}">
             <div class="progress-bar-fill" style="width: {{ $pct }}%"></div>
         </div>
     </div>
 
     {{-- Errors --}}
     @if ($errors->any())
-        <div class="alert">
+        <div class="alert" role="alert">
             @foreach ($errors->all() as $err){{ $err }}<br>@endforeach
         </div>
     @endif
@@ -176,10 +201,10 @@
     @if ($currentIdx > 0)
         <div class="back-row">
             @php
-                $optionalAndDemo = ['tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'billing', 'features', 'demo'];
+                $optionalAndDemo = ['tenancy', 'infrastructure', 'mail', 'search', 'ai', 'social', 'storage', 'broadcasting', 'seo', 'monitoring', 'billing', 'integrations', 'theme', 'memory', 'backup', 'features', 'demo'];
                 $backUrl = in_array($step, $optionalAndDemo) ? route('install', ['back' => 1]) : route('install', ['step' => $allSteps[$currentIdx - 1]]);
             @endphp
-            <a href="{{ $backUrl }}" class="back-link">← Back</a>
+            <a href="{{ $backUrl }}" class="back-link" aria-label="Go back to previous step">← Back</a>
         </div>
     @endif
 
@@ -193,13 +218,14 @@
 
         <button type="button" class="btn btn-express" id="express-btn" onclick="startExpressInstall({})">
             <span class="btn-express-title">Quick install — SQLite + defaults, no demo data →</span>
-            <span class="btn-express-desc">Uses SQLite, creates admin (admin@example.com / password), app name "My App", skips optional steps. Change password after first login.</span>
+            <span class="btn-express-desc">Uses SQLite, creates admin (superadmin@example.com / password), app name "My App", skips optional steps. Change password after first login.</span>
         </button>
         <div class="field" style="margin-top:1rem">
-            <label>Quick install with custom settings</label>
+            <span class="section-label" style="margin-top:0;border:0;padding:0">Quick install with custom settings</span>
+            <p class="hint" style="margin-bottom:0.75rem">Completes setup and skips the remaining steps.</p>
             <div class="two-col" style="align-items:end;gap:0.75rem;flex-wrap:wrap">
                 <div class="field" style="margin-bottom:0">
-                    <label style="font-size:0.75rem;color:#737373">Preset</label>
+                    <label for="express-preset" style="font-size:0.75rem;color:#737373">Preset</label>
                     <select id="express-preset" onchange="expressPresetChange()">
                         <option value="">None — set below</option>
                         <option value="saas">SaaS</option>
@@ -208,18 +234,18 @@
                     </select>
                 </div>
                 <div class="field" style="margin-bottom:0">
-                    <label style="font-size:0.75rem;color:#737373">Tenancy</label>
+                    <label for="express-tenancy" style="font-size:0.75rem;color:#737373">Tenancy</label>
                     <select id="express-tenancy" onchange="toggleExpressSingleOrg()">
                         <option value="multi">Multi-organization</option>
                         <option value="single">Single-organization</option>
                     </select>
                 </div>
                 <div class="field" style="margin-bottom:0;display:none" id="express-single-org-wrap">
-                    <label style="font-size:0.75rem;color:#737373">Organization name</label>
+                    <label for="express-single-org-name" style="font-size:0.75rem;color:#737373">Organization name</label>
                     <input type="text" id="express-single-org-name" placeholder="My Organization">
                 </div>
                 <div class="field" style="margin-bottom:0">
-                    <label style="font-size:0.75rem;color:#737373">Demo data</label>
+                    <label for="express-demo" style="font-size:0.75rem;color:#737373">Demo data</label>
                     <select id="express-demo">
                         <option value="none">None</option>
                         <option value="minimal">Minimal (users, orgs, content)</option>
@@ -227,11 +253,11 @@
                     </select>
                 </div>
                 <div class="field" style="margin-bottom:0">
-                    <label style="font-size:0.75rem;color:#737373">Site name (optional)</label>
+                    <label for="express-site-name" style="font-size:0.75rem;color:#737373">Site name (optional)</label>
                     <input type="text" id="express-site-name" placeholder="My App">
                 </div>
                 <div class="field" style="margin-bottom:0">
-                    <label style="font-size:0.75rem;color:#737373">Locale (optional)</label>
+                    <label for="express-locale" style="font-size:0.75rem;color:#737373">Locale (optional)</label>
                     <select id="express-locale">
                         <option value="">Default (en)</option>
                         <option value="en">English</option>
@@ -248,7 +274,7 @@
                     </select>
                 </div>
                 <div class="field" style="margin-bottom:0">
-                    <label style="font-size:0.75rem;color:#737373">Fallback locale (optional)</label>
+                    <label for="express-fallback-locale" style="font-size:0.75rem;color:#737373">Fallback locale (optional)</label>
                     <select id="express-fallback-locale">
                         <option value="">Default (en)</option>
                         <option value="en">English</option>
@@ -421,7 +447,7 @@
                                 .then(function(s) {
                                     box.textContent = s.message || 'Running…';
                                     if (s.error) { box.textContent = 'Error: ' + s.error; btn.disabled = false; return; }
-                                    if (s.done) { box.textContent = 'Done. Redirecting…'; window.location.href = '{{ route('install') }}'; return; }
+                                    if (s.done) { box.textContent = 'Done. Redirecting…'; window.location.href = "{{ route('install') }}"; return; }
                                     setTimeout(poll, 400);
                                 })
                                 .catch(function() { box.textContent = 'Could not check status.'; setTimeout(poll, 1000); });
@@ -444,7 +470,7 @@
             @csrf
             <input type="hidden" name="step" value="admin">
             <div class="field"><label>Full name</label><input type="text" name="name" value="{{ old('name', 'Admin') }}" required autofocus></div>
-            <div class="field"><label>Email address</label><input type="email" name="email" value="{{ old('email', 'admin@example.com') }}" required></div>
+            <div class="field"><label>Email address</label><input type="email" name="email" value="{{ old('email', 'superadmin@example.com') }}" required></div>
             <div class="two-col">
                 <div class="field"><label>Password</label><input type="password" name="password" required><p class="hint">Min 8 characters</p></div>
                 <div class="field"><label>Confirm password</label><input type="password" name="password_confirmation" required></div>
@@ -561,6 +587,42 @@
                 <div class="toggle-row" style="padding-top:0.625rem">
                     <div><div class="toggle-label">Auto-create personal workspace (for org members)</div><div class="radio-desc">Users who join only as members (e.g. via invite) get a personal org.</div></div>
                     <div class="toggle-wrap"><input type="checkbox" name="auto_create_personal_org_for_members" value="1"></div>
+                </div>
+                <div class="section-label">Advanced tenancy</div>
+                <div class="field"><label>Primary domain <span style="color:#525252">(optional)</span></label><input type="text" name="domain" value="{{ old('domain') }}" placeholder="app.example.com"><p class="hint">Used for subdomain resolution; leave empty if not using custom domains yet.</p></div>
+                <div class="toggle-row">
+                    <div><div class="toggle-label">Subdomain resolution</div><div class="radio-desc">Resolve tenant from subdomain (e.g. acme.app.com).</div></div>
+                    <div class="toggle-wrap"><input type="checkbox" name="subdomain_resolution" value="1" checked></div>
+                </div>
+                <div class="two-col">
+                    <div class="field"><label>Singular term</label><input type="text" name="term" value="{{ old('term', 'Organization') }}"></div>
+                    <div class="field"><label>Plural term</label><input type="text" name="term_plural" value="{{ old('term_plural', 'Organizations') }}"></div>
+                </div>
+                <div class="two-col">
+                    <div class="field"><label>Invitation expires (days)</label><input type="number" name="invitation_expires_in_days" value="{{ old('invitation_expires_in_days', 7) }}" min="1" max="90"></div>
+                    <div class="toggle-row" style="border:none;padding-top:0">
+                        <div><div class="toggle-label">Allow registration via invite</div></div>
+                        <div class="toggle-wrap"><input type="checkbox" name="invitation_allow_registration" value="1" checked></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Sharing: edit ownership</label>
+                    <select name="sharing_edit_ownership">
+                        <option value="original_owner" @selected(old('sharing_edit_ownership', 'original_owner') === 'original_owner')>Original owner</option>
+                        <option value="current_owner" @selected(old('sharing_edit_ownership') === 'current_owner')>Current owner</option>
+                    </select>
+                </div>
+                <div class="toggle-row">
+                    <div><div class="toggle-label">Restrict sharing to connected users only</div></div>
+                    <div class="toggle-wrap"><input type="checkbox" name="sharing_restrict_to_connected" value="1"></div>
+                </div>
+                <div class="toggle-row">
+                    <div><div class="toggle-label">Super-admin can view all orgs</div></div>
+                    <div class="toggle-wrap"><input type="checkbox" name="super_admin_can_view_all" value="1" checked></div>
+                </div>
+                <div class="toggle-row">
+                    <div><div class="toggle-label">Default new content shared to all orgs (super-admin)</div></div>
+                    <div class="toggle-wrap"><input type="checkbox" name="super_admin_default_share_new_to_all_orgs" value="1" checked></div>
                 </div>
             </div>
             <div id="tenancy-single-options" style="display:none">
@@ -745,6 +807,16 @@
                 <button type="button" class="btn btn-secondary" data-test-connection data-step="search" data-form-id="search-form" data-result-id="test-result-search">Test connection</button>
                 <div id="test-result-search" class="test-result" role="status" aria-live="polite"></div>
             </div>
+            <div class="section-label">Scout options</div>
+            <div class="field"><label>Index prefix</label><input type="text" name="prefix" value="{{ old('prefix') }}" placeholder="Leave empty for default"></div>
+            <div class="toggle-row" style="border:none">
+                <div><div class="toggle-label">Queue indexing</div><div class="radio-desc">Index changes in the queue (recommended for production).</div></div>
+                <div class="toggle-wrap"><input type="checkbox" name="queue" value="1"></div>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label">Identify models when indexing</div><div class="radio-desc">Include model class in indexed records.</div></div>
+                <div class="toggle-wrap"><input type="checkbox" name="identify" value="1"></div>
+            </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
         <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">
@@ -787,12 +859,43 @@
             </div>
             <div id="ai-key-field">
                 <div class="field"><label>API key</label><input type="password" name="api_key" placeholder="sk-..."><p class="hint">Leave blank for Ollama.</p></div>
-                <div class="field"><label>Default model <span style="color:#525252">(optional)</span></label><input type="text" name="model" value="{{ old('model', '') }}" placeholder="e.g. gpt-4o, claude-3-5-sonnet, deepseek/deepseek-r1-0528:free"></div>
+                <div class="field">
+                    <label for="ai-model-input">Default model <span style="color:#525252">(optional)</span></label>
+                    <div class="ai-model-combobox" id="ai-model-combobox">
+                        <input type="text" id="ai-model-input" name="model" value="{{ old('model', '') }}" placeholder="Type to search or select a model" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="ai-model-listbox" aria-autocomplete="list" aria-label="Default model">
+                        <div class="ai-model-list" id="ai-model-listbox" role="listbox" aria-label="Model options" style="display:none;"></div>
+                    </div>
+                    <p class="hint">Select from the list (free and paid) or enter a model ID. With OpenRouter + API key, <button type="button" class="btn-link" id="ai-model-load-live" style="padding:0;vertical-align:baseline;">load full list</button>.</p>
+                </div>
+            </div>
+            <div class="field">
+                <label>Cohere API key <span style="color:#525252">(optional, for reranking)</span></label>
+                <input type="password" name="cohere_api_key" value="{{ old('cohere_api_key') }}" placeholder="Used for Laravel AI SDK reranking">
+                <p class="hint">Get a key at <a href="https://dashboard.cohere.com/api-keys" target="_blank" rel="noopener">dashboard.cohere.com</a>. Stored in Settings → AI and in .env as <code>COHERE_API_KEY</code>.</p>
+            </div>
+            <div class="field">
+                <label>Jina API key <span style="color:#525252">(optional, reranking alternative)</span></label>
+                <input type="password" name="jina_api_key" value="{{ old('jina_api_key') }}" placeholder="Alternative to Cohere for reranking">
+                <p class="hint">Stored encrypted in Settings → AI; <code>JINA_API_KEY</code> written to .env when set.</p>
             </div>
             <div class="field">
                 <label>Thesys C1 API key <span style="color:#525252">(optional)</span></label>
                 <input type="password" name="thesys_api_key" value="{{ old('thesys_api_key') }}" placeholder="Used for DataTable Visualize and other Thesys features">
                 <p class="hint">Get a key at <a href="https://www.thesys.dev" target="_blank" rel="noopener">thesys.dev</a>. Skip to disable; add later in .env as <code>THESYS_API_KEY</code>.</p>
+            </div>
+            <div class="field" style="margin-top:1rem; display:flex; flex-wrap:wrap; gap:0.75rem; align-items:flex-start;">
+                <div>
+                    <button type="button" class="btn btn-secondary" data-test-connection data-step="ai" data-form-id="ai-form" data-result-id="test-result-ai" data-ai-test="provider">Test provider API key</button>
+                    <div id="test-result-ai" class="test-result" role="status" aria-live="polite"></div>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-test-connection data-step="ai" data-form-id="ai-form" data-result-id="test-result-cohere" data-ai-test="cohere">Test Cohere key</button>
+                    <div id="test-result-cohere" class="test-result" role="status" aria-live="polite"></div>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-test-connection data-step="ai" data-form-id="ai-form" data-result-id="test-result-thesys" data-ai-test="thesys">Test Thesys key</button>
+                    <div id="test-result-thesys" class="test-result" role="status" aria-live="polite"></div>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
@@ -806,6 +909,143 @@
             function toggleAi(v) {
                 document.getElementById('ai-key-field').style.display = (v === '' || v === 'ollama') ? 'none' : 'block';
             }
+
+            (function() {
+                var modelsUrl = '{{ route("install.ai-models") }}';
+                var token = document.querySelector('#ai-form input[name="_token"]');
+                var input = document.getElementById('ai-model-input');
+                var listbox = document.getElementById('ai-model-listbox');
+                var loadLiveBtn = document.getElementById('ai-model-load-live');
+                var allModels = [];
+                var filteredModels = [];
+                var selectedIndex = -1;
+                var loaded = false;
+
+                function renderList(models) {
+                    filteredModels = models;
+                    selectedIndex = -1;
+                    listbox.innerHTML = '';
+                    if (models.length === 0) {
+                        listbox.classList.add('visible');
+                        listbox.style.display = 'block';
+                        listbox.innerHTML = '<div class="ai-model-list-loading">No models match.</div>';
+                        return;
+                    }
+                    models.forEach(function(m, i) {
+                        var opt = document.createElement('button');
+                        opt.type = 'button';
+                        opt.className = 'ai-model-option';
+                        opt.role = 'option';
+                        opt.setAttribute('aria-selected', 'false');
+                        opt.setAttribute('data-id', m.id);
+                        opt.setAttribute('data-index', String(i));
+                        var nameSpan = document.createElement('span');
+                        nameSpan.className = 'ai-model-name';
+                        nameSpan.textContent = m.name;
+                        opt.appendChild(nameSpan);
+                        var priceSpan = document.createElement('span');
+                        priceSpan.className = m.free ? 'ai-model-free' : 'ai-model-pricing';
+                        priceSpan.textContent = m.free ? 'Free' : m.pricing;
+                        opt.appendChild(priceSpan);
+                        opt.addEventListener('click', function() { selectModel(m.id); });
+                        listbox.appendChild(opt);
+                    });
+                    listbox.classList.add('visible');
+                    listbox.style.display = 'block';
+                    input.setAttribute('aria-expanded', 'true');
+                }
+
+                function filterModels(q) {
+                    q = (q || '').toLowerCase().trim();
+                    if (q === '') return allModels;
+                    return allModels.filter(function(m) {
+                        return m.id.toLowerCase().indexOf(q) >= 0 || (m.name && m.name.toLowerCase().indexOf(q) >= 0);
+                    });
+                }
+
+                function selectModel(id) {
+                    input.value = id;
+                    closeList();
+                }
+
+                function closeList() {
+                    listbox.classList.remove('visible');
+                    listbox.style.display = 'none';
+                    listbox.innerHTML = '';
+                    input.setAttribute('aria-expanded', 'false');
+                    selectedIndex = -1;
+                }
+
+                function fetchModels(usePost) {
+                    if (usePost && token) {
+                        var fd = new FormData(document.getElementById('ai-form'));
+                        fd.set('_token', token.value);
+                        return fetch(modelsUrl, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } });
+                    }
+                    return fetch(modelsUrl, { headers: { 'Accept': 'application/json' } });
+                }
+
+                function loadModels(usePost) {
+                    if (listbox.innerHTML === '' && !loaded) listbox.innerHTML = '<div class="ai-model-list-loading">Loading models…</div>';
+                    listbox.classList.add('visible');
+                    listbox.style.display = 'block';
+                    fetchModels(usePost)
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            loaded = true;
+                            allModels = data.models || [];
+                            renderList(filterModels(input.value));
+                        })
+                        .catch(function() {
+                            listbox.innerHTML = '<div class="ai-model-list-loading">Could not load models.</div>';
+                        });
+                }
+
+                input.addEventListener('focus', function() {
+                    if (!loaded) loadModels(false);
+                    else renderList(filterModels(input.value));
+                });
+                input.addEventListener('input', function() {
+                    if (loaded) renderList(filterModels(input.value));
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (listbox.style.display !== 'block') return;
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        selectedIndex = Math.min(selectedIndex + 1, filteredModels.length - 1);
+                        updateHighlight();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        selectedIndex = Math.max(selectedIndex - 1, -1);
+                        updateHighlight();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (selectedIndex >= 0 && filteredModels[selectedIndex]) selectModel(filteredModels[selectedIndex].id);
+                        else if (filteredModels.length === 1) selectModel(filteredModels[0].id);
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        closeList();
+                    }
+                });
+
+                function updateHighlight() {
+                    var opts = listbox.querySelectorAll('.ai-model-option');
+                    opts.forEach(function(o, i) {
+                        o.setAttribute('aria-selected', i === selectedIndex ? 'true' : 'false');
+                    });
+                    if (selectedIndex >= 0 && opts[selectedIndex]) opts[selectedIndex].scrollIntoView({ block: 'nearest' });
+                }
+
+                document.addEventListener('click', function(e) {
+                    var cb = document.getElementById('ai-model-combobox');
+                    if (cb && !cb.contains(e.target)) closeList();
+                });
+
+                if (loadLiveBtn) loadLiveBtn.addEventListener('click', function() {
+                    loaded = false;
+                    loadModels(true);
+                });
+            })();
         </script>
 
     {{-- ══════════════════════════════════════════════════ --}}
@@ -890,26 +1130,30 @@
 
         <h1>Broadcasting <span class="badge-opt">optional</span></h1>
         <p class="subtitle">Real-time WebSockets via Laravel Reverb. Needed for live notifications, chat, and collaborative features.</p>
-        <form method="POST" action="{{ route('install.store') }}">
+        <form method="POST" action="{{ route('install.store') }}" id="broadcasting-form">
             @csrf
             <input type="hidden" name="step" value="broadcasting">
-            <div class="info-box">Generate credentials: <code style="background:#0f0f0f;border-radius:4px;padding:1px 6px;font-size:0.8em">php artisan reverb:install</code>, then paste them here.</div>
+            <div class="info-box">Pre-filled with <strong>Laravel Herd</strong> Reverb defaults. <a href="http://reverb-dashboard.herd.test/" target="_blank" rel="noopener" style="color:#93c5fd;">Dashboard → reverb-dashboard.herd.test</a>. Or run <code style="background:#0f0f0f;border-radius:4px;padding:1px 6px;font-size:0.8em">php artisan reverb:install</code> and paste your own credentials.</div>
             <div class="two-col">
-                <div class="field"><label>App ID</label><input type="text" name="reverb_app_id" value="{{ old('reverb_app_id') }}"></div>
-                <div class="field"><label>App Key</label><input type="text" name="reverb_app_key" value="{{ old('reverb_app_key') }}"></div>
+                <div class="field"><label>App ID</label><input type="text" name="reverb_app_id" value="{{ old('reverb_app_id', '1001') }}"></div>
+                <div class="field"><label>App Key</label><input type="text" name="reverb_app_key" value="{{ old('reverb_app_key', 'laravel-herd') }}"></div>
             </div>
-            <div class="field"><label>App Secret</label><input type="password" name="reverb_app_secret"></div>
+            <div class="field"><label>App Secret</label><input type="password" name="reverb_app_secret" placeholder="Herd default: secret" value="{{ old('reverb_app_secret') }}"></div>
             <div class="two-col">
-                <div class="field"><label>Host</label><input type="text" name="reverb_host" value="{{ old('reverb_host', 'localhost') }}"></div>
-                <div class="field"><label>Port</label><input type="number" name="reverb_port" value="{{ old('reverb_port', '8080') }}"></div>
+                <div class="field"><label>Host</label><input type="text" name="reverb_host" value="{{ old('reverb_host', 'reverb.herd.test') }}"></div>
+                <div class="field"><label>Port</label><input type="number" name="reverb_port" value="{{ old('reverb_port', '443') }}"></div>
             </div>
-            @php $reverbScheme = old('reverb_scheme', 'http'); @endphp
+            @php $reverbScheme = old('reverb_scheme', 'https'); @endphp
             <div class="field">
                 <label>Scheme</label>
                 <select name="reverb_scheme">
                     <option value="http" @selected($reverbScheme === 'http')>http (local)</option>
-                    <option value="https" @selected($reverbScheme === 'https')>https (production)</option>
+                    <option value="https" @selected($reverbScheme === 'https')>https (Herd / production)</option>
                 </select>
+            </div>
+            <div class="field" style="margin-top:1rem">
+                <button type="button" class="btn btn-secondary" data-test-connection data-step="broadcasting" data-form-id="broadcasting-form" data-result-id="test-result-broadcasting">Test broadcasting</button>
+                <div id="test-result-broadcasting" class="test-result" role="status" aria-live="polite"></div>
             </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
@@ -977,20 +1221,20 @@
         </form>
 
     {{-- ══════════════════════════════════════════════════ --}}
-    {{-- Step 15: Billing --}}
+    {{-- Step: Billing --}}
     {{-- ══════════════════════════════════════════════════ --}}
     @elseif ($step === 'billing')
 
         <h1>Billing <span class="badge-opt">optional</span></h1>
-        <p class="subtitle">Default payment gateway and trial. Configure keys later in Settings → Billing / Stripe / Paddle / Lemon Squeezy.</p>
+        <p class="subtitle">Gateway, currency, trials, and API credentials. Same as Settings → Billing / Stripe / Paddle / Lemon Squeezy.</p>
         @php
             $preset = session('install_preset', 'none');
-            $gateway = old('default_gateway', 'stripe');
+            $gateway = old('default_gateway', $preset === 'internal' ? 'none' : 'stripe');
             $currency = old('currency', 'usd');
             $trialDays = old('trial_days', 14);
         @endphp
         @if ($preset === 'internal')
-            <div class="info-box">Internal tool preset: consider skipping billing (no payment gateway needed).</div>
+            <div class="info-box">Internal tool preset: consider skipping billing or choose None (no payment gateway).</div>
         @endif
         <form method="POST" action="{{ route('install.store') }}">
             @csrf
@@ -998,6 +1242,7 @@
             <div class="field">
                 <label>Default gateway</label>
                 <select name="default_gateway">
+                    <option value="none" @selected($gateway === 'none')>None (free app)</option>
                     <option value="stripe" @selected($gateway === 'stripe')>Stripe</option>
                     <option value="paddle" @selected($gateway === 'paddle')>Paddle</option>
                     <option value="lemon_squeezy" @selected($gateway === 'lemon_squeezy')>Lemon Squeezy</option>
@@ -1017,6 +1262,54 @@
                     <input type="number" name="trial_days" value="{{ $trialDays }}" min="0" max="365">
                 </div>
             </div>
+            <div class="two-col">
+                <div class="field">
+                    <label>Credit expiration (days)</label>
+                    <input type="number" name="credit_expiration_days" value="{{ old('credit_expiration_days', 365) }}" min="0">
+                </div>
+                <div class="field">
+                    <label>Dunning intervals (comma-separated days)</label>
+                    <input type="text" name="dunning_intervals" value="{{ old('dunning_intervals', '3, 7, 14') }}" placeholder="3, 7, 14">
+                </div>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label">Seat-based billing</div></div>
+                <div class="toggle-wrap"><input type="checkbox" name="enable_seat_based_billing" value="1"></div>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label">Allow multiple subscriptions per org</div></div>
+                <div class="toggle-wrap"><input type="checkbox" name="allow_multiple_subscriptions" value="1"></div>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label">Geo restriction</div></div>
+                <div class="toggle-wrap"><input type="checkbox" name="geo_restriction_enabled" value="1"></div>
+            </div>
+            <div class="field"><label>Blocked country codes (comma, ISO)</label><input type="text" name="geo_blocked_countries" value="{{ old('geo_blocked_countries') }}" placeholder="RU, BY"></div>
+            <div class="field"><label>Allowed country codes (comma; if set, only these)</label><input type="text" name="geo_allowed_countries" value="{{ old('geo_allowed_countries') }}" placeholder="US, CA, GB"></div>
+            <div class="section-label">Stripe</div>
+            <div class="field"><label>Publishable key</label><input type="password" name="stripe_key" placeholder="pk_..."></div>
+            <div class="field"><label>Secret key</label><input type="password" name="stripe_secret" placeholder="sk_..."></div>
+            <div class="field"><label>Webhook signing secret</label><input type="password" name="stripe_webhook_secret" placeholder="whsec_..."></div>
+            <div class="section-label">Paddle</div>
+            <div class="field"><label>Vendor ID</label><input type="text" name="paddle_vendor_id"></div>
+            <div class="field"><label>Vendor auth code</label><input type="password" name="paddle_vendor_auth_code"></div>
+            <div class="field"><label>Public key</label><input type="text" name="paddle_public_key"></div>
+            <div class="field"><label>Webhook secret</label><input type="password" name="paddle_webhook_secret"></div>
+            <div class="toggle-row">
+                <div><div class="toggle-label">Paddle sandbox</div></div>
+                <div class="toggle-wrap"><input type="checkbox" name="paddle_sandbox" value="1" checked></div>
+            </div>
+            <div class="section-label">Lemon Squeezy</div>
+            <div class="field"><label>API key</label><input type="password" name="lemon_squeezy_api_key"></div>
+            <div class="field"><label>Signing secret</label><input type="password" name="lemon_squeezy_signing_secret"></div>
+            <div class="two-col">
+                <div class="field"><label>Store ID</label><input type="text" name="lemon_squeezy_store"></div>
+                <div class="field"><label>Path</label><input type="text" name="lemon_squeezy_path" value="{{ old('lemon_squeezy_path', 'lemon-squeezy') }}"></div>
+            </div>
+            <div class="two-col">
+                <div class="field"><label>Currency locale</label><input type="text" name="lemon_squeezy_currency_locale" value="{{ old('lemon_squeezy_currency_locale', 'en') }}"></div>
+                <div class="field"><label>Generic variant ID</label><input type="text" name="lemon_squeezy_generic_variant_id" placeholder="Optional"></div>
+            </div>
             <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
         </form>
         <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">
@@ -1027,7 +1320,202 @@
         </form>
 
     {{-- ══════════════════════════════════════════════════ --}}
-    {{-- Step 16: Feature flags (super-admin) --}}
+    {{-- Integrations (Slack, Postmark, Resend) --}}
+    {{-- ══════════════════════════════════════════════════ --}}
+    @elseif ($step === 'integrations')
+
+        <h1>Integrations <span class="badge-opt">optional</span></h1>
+        <p class="subtitle">Slack notifications and transactional mail providers. Same as Settings → Integrations.</p>
+        <form method="POST" action="{{ route('install.store') }}">
+            @csrf
+            <input type="hidden" name="step" value="integrations">
+            <div class="section-label">Slack</div>
+            <div class="field"><label>Webhook URL</label><input type="password" name="slack_webhook_url" placeholder="https://hooks.slack.com/..."></div>
+            <div class="field"><label>Bot token</label><input type="password" name="slack_bot_token"></div>
+            <div class="field"><label>Channel</label><input type="text" name="slack_channel" placeholder="#alerts"></div>
+            <div class="section-label">Postmark &amp; Resend</div>
+            <div class="field"><label>Postmark token</label><input type="password" name="postmark_token"></div>
+            <div class="field"><label>Resend API key</label><input type="password" name="resend_key"></div>
+            <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
+        </form>
+        <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">
+            @csrf
+            <input type="hidden" name="step" value="integrations">
+            <input type="hidden" name="skip" value="1">
+            <button type="submit" class="btn btn-skip">Skip — configure later →</button>
+        </form>
+
+    {{-- ══════════════════════════════════════════════════ --}}
+    {{-- Theme --}}
+    {{-- ══════════════════════════════════════════════════ --}}
+    @elseif ($step === 'theme')
+
+        <h1>Theme &amp; appearance <span class="badge-opt">optional</span></h1>
+        <p class="subtitle">Defaults for the app shell and user-facing appearance. Same as Settings → Theme.</p>
+        <form method="POST" action="{{ route('install.store') }}">
+            @csrf
+            <input type="hidden" name="step" value="theme">
+            <div class="two-col">
+                <div class="field"><label>Preset</label>
+                    <select name="preset">
+                        <option value="default" @selected(old('preset', 'default') === 'default')>Default</option>
+                        <option value="saas" @selected(old('preset') === 'saas')>SaaS</option>
+                        <option value="minimal" @selected(old('preset') === 'minimal')>Minimal</option>
+                    </select>
+                </div>
+                <div class="field"><label>Base color</label>
+                    <select name="base_color">
+                        <option value="neutral" @selected(old('base_color', 'neutral') === 'neutral')>Neutral</option>
+                        <option value="zinc" @selected(old('base_color') === 'zinc')>Zinc</option>
+                        <option value="stone" @selected(old('base_color') === 'stone')>Stone</option>
+                    </select>
+                </div>
+            </div>
+            <div class="two-col">
+                <div class="field"><label>Radius</label>
+                    <select name="radius">
+                        <option value="default" @selected(old('radius', 'default') === 'default')>Default</option>
+                        <option value="large" @selected(old('radius') === 'large')>Large</option>
+                        <option value="none" @selected(old('radius') === 'none')>None</option>
+                    </select>
+                </div>
+                <div class="field"><label>Font</label>
+                    <select name="font">
+                        @foreach (['instrument-sans','inter','geist','poppins','outfit','plus-jakarta-sans'] as $f)
+                            <option value="{{ $f }}" @selected(old('font', 'instrument-sans') === $f)>{{ $f }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="field"><label>Default appearance</label>
+                <select name="default_appearance">
+                    <option value="system" @selected(old('default_appearance', 'system') === 'system')>System</option>
+                    <option value="light" @selected(old('default_appearance') === 'light')>Light</option>
+                    <option value="dark" @selected(old('default_appearance') === 'dark')>Dark</option>
+                </select>
+            </div>
+            <div class="two-col">
+                <div class="field"><label>Sidebar layout</label>
+                    <select name="sidebar_layout">
+                        <option value="main" @selected(old('sidebar_layout', 'main') === 'main')>Main</option>
+                        <option value="sideblock" @selected(old('sidebar_layout') === 'sideblock')>Sideblock</option>
+                    </select>
+                </div>
+                <div class="field"><label>Card skin</label>
+                    <select name="card_skin">
+                        <option value="shadow" @selected(old('card_skin', 'shadow') === 'shadow')>Shadow</option>
+                        <option value="bordered" @selected(old('card_skin') === 'bordered')>Bordered</option>
+                        <option value="flat" @selected(old('card_skin') === 'flat')>Flat</option>
+                        <option value="elevated" @selected(old('card_skin') === 'elevated')>Elevated</option>
+                    </select>
+                </div>
+            </div>
+            <div class="two-col">
+                <div class="field"><label>Border radius</label>
+                    <select name="border_radius">
+                        <option value="none" @selected(old('border_radius', 'default') === 'none')>None</option>
+                        <option value="sm" @selected(old('border_radius') === 'sm')>Small</option>
+                        <option value="default" @selected(old('border_radius', 'default') === 'default')>Default</option>
+                        <option value="md" @selected(old('border_radius') === 'md')>Medium</option>
+                        <option value="lg" @selected(old('border_radius') === 'lg')>Large</option>
+                        <option value="full" @selected(old('border_radius') === 'full')>Full</option>
+                    </select>
+                </div>
+                <div class="field"><label>Menu color</label>
+                    <select name="menu_color">
+                        <option value="default" @selected(old('menu_color', 'default') === 'default')>Default</option>
+                        <option value="primary" @selected(old('menu_color') === 'primary')>Primary</option>
+                        <option value="muted" @selected(old('menu_color') === 'muted')>Muted</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field"><label>Menu accent</label>
+                <select name="menu_accent">
+                    <option value="subtle" @selected(old('menu_accent', 'subtle') === 'subtle')>Subtle</option>
+                    <option value="strong" @selected(old('menu_accent') === 'strong')>Strong</option>
+                    <option value="bordered" @selected(old('menu_accent') === 'bordered')>Bordered</option>
+                </select>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label">Allow user theme customization</div></div>
+                <div class="toggle-wrap"><input type="checkbox" name="allow_user_theme_customization" value="1" checked></div>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label">Allow user logo upload</div></div>
+                <div class="toggle-wrap"><input type="checkbox" name="allow_user_logo_upload" value="1"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
+        </form>
+        <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">
+            @csrf
+            <input type="hidden" name="step" value="theme">
+            <input type="hidden" name="skip" value="1">
+            <button type="submit" class="btn btn-skip">Skip — keep defaults →</button>
+        </form>
+
+    {{-- ══════════════════════════════════════════════════ --}}
+    {{-- AI Memory --}}
+    {{-- ══════════════════════════════════════════════════ --}}
+    @elseif ($step === 'memory')
+
+        <h1>AI memory <span class="badge-opt">optional</span></h1>
+        <p class="subtitle">Vector memory / recall limits for AI features. Same as Settings → Memory.</p>
+        <form method="POST" action="{{ route('install.store') }}">
+            @csrf
+            <input type="hidden" name="step" value="memory">
+            <div class="field"><label>Embedding dimensions</label><input type="number" name="dimensions" value="{{ old('dimensions', 1536) }}" min="256" max="8192"></div>
+            <div class="field"><label>Similarity threshold</label><input type="text" name="similarity_threshold" value="{{ old('similarity_threshold', '0.5') }}" placeholder="0.0–1.0"></div>
+            <div class="two-col">
+                <div class="field"><label>Recall limit</label><input type="number" name="recall_limit" value="{{ old('recall_limit', 10) }}" min="1" max="100"></div>
+                <div class="field"><label>Middleware recall limit</label><input type="number" name="middleware_recall_limit" value="{{ old('middleware_recall_limit', 5) }}" min="1" max="50"></div>
+            </div>
+            <div class="two-col">
+                <div class="field"><label>Oversample factor</label><input type="number" name="recall_oversample_factor" value="{{ old('recall_oversample_factor', 2) }}" min="1" max="10"></div>
+                <div class="field"><label>Table name</label><input type="text" name="table" value="{{ old('table', 'memories') }}"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
+        </form>
+        <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">
+            @csrf
+            <input type="hidden" name="step" value="memory">
+            <input type="hidden" name="skip" value="1">
+            <button type="submit" class="btn btn-skip">Skip — keep defaults →</button>
+        </form>
+
+    {{-- ══════════════════════════════════════════════════ --}}
+    {{-- Backups --}}
+    {{-- ══════════════════════════════════════════════════ --}}
+    @elseif ($step === 'backup')
+
+        <h1>Backups <span class="badge-opt">optional</span></h1>
+        <p class="subtitle">Spatie backup retention. Same as Settings → Backup.</p>
+        <form method="POST" action="{{ route('install.store') }}">
+            @csrf
+            <input type="hidden" name="step" value="backup">
+            <div class="field"><label>Backup name</label><input type="text" name="name" value="{{ old('name', 'laravel-backup') }}"></div>
+            <div class="two-col">
+                <div class="field"><label>Keep all backups (days)</label><input type="number" name="keep_all_backups_for_days" value="{{ old('keep_all_backups_for_days', 7) }}" min="0"></div>
+                <div class="field"><label>Keep daily backups (days)</label><input type="number" name="keep_daily_backups_for_days" value="{{ old('keep_daily_backups_for_days', 16) }}" min="0"></div>
+            </div>
+            <div class="two-col">
+                <div class="field"><label>Keep weekly backups (weeks)</label><input type="number" name="keep_weekly_backups_for_weeks" value="{{ old('keep_weekly_backups_for_weeks', 8) }}" min="0"></div>
+                <div class="field"><label>Keep monthly backups (months)</label><input type="number" name="keep_monthly_backups_for_months" value="{{ old('keep_monthly_backups_for_months', 4) }}" min="0"></div>
+            </div>
+            <div class="two-col">
+                <div class="field"><label>Keep yearly backups (years)</label><input type="number" name="keep_yearly_backups_for_years" value="{{ old('keep_yearly_backups_for_years', 2) }}" min="0"></div>
+                <div class="field"><label>Delete oldest when over (MB)</label><input type="number" name="delete_oldest_when_size_mb" value="{{ old('delete_oldest_when_size_mb', 5000) }}" min="0"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save &amp; continue →</button>
+        </form>
+        <form method="POST" action="{{ route('install.store') }}" style="margin-top:0.5rem">
+            @csrf
+            <input type="hidden" name="step" value="backup">
+            <input type="hidden" name="skip" value="1">
+            <button type="submit" class="btn btn-skip">Skip — keep defaults →</button>
+        </form>
+
+    {{-- ══════════════════════════════════════════════════ --}}
+    {{-- Feature flags (super-admin) --}}
     {{-- ══════════════════════════════════════════════════ --}}
     @elseif ($step === 'features')
 
@@ -1169,6 +1657,10 @@
             if (!form || !resultEl) return;
             var fd = new FormData(form);
             fd.set('step', step);
+            if (step === 'ai') {
+                var aiTest = this.getAttribute('data-ai-test');
+                if (aiTest) fd.set('ai_test', aiTest);
+            }
             if (token) fd.set('_token', token.value);
             resultEl.textContent = '';
             resultEl.className = 'test-result';

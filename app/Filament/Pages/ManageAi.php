@@ -16,7 +16,7 @@ use UnitEnum;
 final class ManageAi extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCpuChip;
@@ -61,6 +61,15 @@ final class ManageAi extends SettingsPage
                     ->label('Jina API key')
                     ->password()
                     ->revealable(),
+                TextInput::make('thesys_api_key')
+                    ->label('Thesys API key (C1)')
+                    ->helperText('Used for DataTable Visualize and other Thesys features. Optional — leave empty to rely on .env only.')
+                    ->password()
+                    ->revealable(),
+                TextInput::make('thesys_model')
+                    ->label('Thesys model')
+                    ->placeholder('c1-nightly')
+                    ->helperText('Default c1-nightly when empty; set to match your Thesys project.'),
             ]);
     }
 }

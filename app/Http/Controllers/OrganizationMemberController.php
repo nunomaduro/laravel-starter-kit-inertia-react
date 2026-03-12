@@ -8,6 +8,7 @@ use App\Actions\RemoveOrganizationMemberAction;
 use App\Models\Organization;
 use App\Models\User;
 use App\Services\TenantContext;
+use App\Support\AssignRoleViaDb;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -63,13 +64,7 @@ final readonly class OrganizationMemberController
             return back()->withErrors(['role' => __('Invalid role.')]);
         }
 
-        $previousTeamId = getPermissionsTeamId();
-        setPermissionsTeamId($organization->id);
-        try {
-            $member->syncRoles([$role]);
-        } finally {
-            setPermissionsTeamId($previousTeamId);
-        }
+        AssignRoleViaDb::syncOrg($member, $organization->id, $role);
 
         return back()->with('status', __('Role updated.'));
     }

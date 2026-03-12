@@ -1,8 +1,8 @@
 {
   "users": [
     {
-      "name": "Demo Admin",
-      "email": "admin@example.com",
+      "name": "Super Admin",
+      "email": "superadmin@example.com",
       "role": "super-admin",
       "_factory_state": "admin",
       "_comment": "Super-admin, no organization. System panel, setup wizard, impersonation."

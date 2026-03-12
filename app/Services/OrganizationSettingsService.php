@@ -114,7 +114,7 @@ final class OrganizationSettingsService
     /**
      * Get branding for an organization (group=branding). Used for Inertia shared props.
      *
-     * @return array{logoUrl: string|null, themePreset: string|null, themeRadius: string|null, themeFont: string|null, allowUserCustomization: bool}
+     * @return array{logoUrl: string|null, logoUrlDark: string|null, themePreset: string|null, themeRadius: string|null, themeFont: string|null, allowUserCustomization: bool}
      */
     public function getBranding(Organization $organization): array
     {
@@ -124,6 +124,7 @@ final class OrganizationSettingsService
         if ($overrides->isEmpty()) {
             return [
                 'logoUrl' => null,
+                'logoUrlDark' => null,
                 'themePreset' => null,
                 'themeRadius' => null,
                 'themeFont' => null,
@@ -132,6 +133,7 @@ final class OrganizationSettingsService
         }
 
         $logoPath = null;
+        $logoPathDark = null;
         $themePreset = null;
         $themeRadius = null;
         $themeFont = null;
@@ -141,6 +143,7 @@ final class OrganizationSettingsService
             $value = $this->decodePayload($override->payload, $override->is_encrypted);
             match ($override->name) {
                 'logo_path' => $logoPath = is_string($value) ? $value : null,
+                'logo_path_dark' => $logoPathDark = is_string($value) ? $value : null,
                 'theme_preset' => $themePreset = is_string($value) ? $value : null,
                 'theme_radius' => $themeRadius = is_string($value) ? $value : null,
                 'theme_font' => $themeFont = is_string($value) ? $value : null,
@@ -153,8 +156,13 @@ final class OrganizationSettingsService
             ? (Storage::disk('public')->exists($logoPath) ? Storage::disk('public')->url($logoPath) : null)
             : null;
 
+        $logoUrlDark = $logoPathDark
+            ? (Storage::disk('public')->exists($logoPathDark) ? Storage::disk('public')->url($logoPathDark) : null)
+            : null;
+
         return [
             'logoUrl' => $logoUrl,
+            'logoUrlDark' => $logoUrlDark,
             'themePreset' => $themePreset,
             'themeRadius' => $themeRadius,
             'themeFont' => $themeFont,

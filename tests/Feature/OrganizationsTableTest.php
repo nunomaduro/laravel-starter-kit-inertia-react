@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Settings\SetupWizardSettings;
+use App\Settings\TenancySettings;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -12,12 +14,22 @@ test('unauthenticated user cannot access organizations list table page', functio
 });
 
 test('authenticated user can access organizations list and receives tableData', function (): void {
+    // Route is behind tenancy.enabled — redirect to dashboard when multi-org mode is off
+    $tenancy = resolve(TenancySettings::class);
+    $tenancy->enabled = true;
+    $tenancy->save();
+
+    // Super-admin is redirected to setup wizard until completed (EnsureSetupComplete)
+    $setup = resolve(SetupWizardSettings::class);
+    $setup->setup_completed = true;
+    $setup->save();
+
     $this->seed(RolesAndPermissionsSeeder::class);
-    $user = User::withoutEvents(fn (): User => User::factory()->withoutTwoFactor()->create([
+    $user = User::withoutEvents(static fn (): User => User::factory()->withoutTwoFactor()->create([
         'email' => 'admin@organizations-table-test.example',
         'password' => Hash::make('password'),
     ]));
-    $user->assignRole('super-admin');
+    assignRoleForTestUser($user, 'super-admin');
 
     $response = $this->actingAs($user)
         ->get(route('organizations.list'));

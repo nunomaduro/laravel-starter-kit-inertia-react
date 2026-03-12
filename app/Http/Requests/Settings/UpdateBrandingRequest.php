@@ -29,6 +29,7 @@ final class UpdateBrandingRequest extends FormRequest
 
         return [
             'logo' => ['nullable', 'image', 'max:2048'],
+            'logo_dark' => ['nullable', 'image', 'max:2048'],
             'theme_preset' => ['nullable', 'string', Rule::in($presets)],
             'theme_radius' => ['nullable', 'string', Rule::in($radii)],
             'theme_font' => ['nullable', 'string', Rule::in($fonts)],

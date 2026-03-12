@@ -23,7 +23,7 @@ final class ProductAnalytics extends Page
     protected static ?int $navigationSort = 90;
 
     #[Override]
-    protected static UnitEnum|string|null $navigationGroup = 'System';
+    protected static UnitEnum|string|null $navigationGroup = 'Settings · System';
 
     #[Override]
     protected static ?string $navigationLabel = 'Product Analytics';

@@ -166,4 +166,10 @@ return [
         'default_share_new_to_all_orgs' => true,
     ],
 
+    /*
+    | Set to true only while DatabaseSeeder is running (suppresses UserCreated
+    | personal-org creation so Spatie assignRole is never hit during seed).
+    */
+    'seed_in_progress' => false,
+
 ];

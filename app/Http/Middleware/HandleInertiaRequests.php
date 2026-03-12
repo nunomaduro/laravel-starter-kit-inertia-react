@@ -19,6 +19,9 @@ use Override;
 use Spatie\Honeypot\Honeypot;
 use Throwable;
 
+use function getPermissionsTeamId;
+use function setPermissionsTeamId;
+
 final class HandleInertiaRequests extends Middleware
 {
     /**
@@ -56,10 +59,7 @@ final class HandleInertiaRequests extends Middleware
 
         $honeypot = resolve(Honeypot::class);
 
-        $features = [];
-        foreach (config('feature-flags.inertia_features', []) as $name => $featureClass) {
-            $features[$name] = FeatureHelper::isActiveForKey($name, $user);
-        }
+        [$authPayload, $features] = $this->resolveAuthAndFeaturesForInertia($user);
 
         $tenancyEnabled = config('tenancy.enabled', true);
         $currentOrganization = $user ? TenantContext::get() : null;
@@ -72,15 +72,11 @@ final class HandleInertiaRequests extends Middleware
             'flash' => fn () => $request->session()->get('flash'),
             'name' => config('app.name'),
             'quote' => ['message' => mb_trim((string) $message), 'author' => mb_trim((string) $author)],
-            'auth' => [
-                'user' => $user,
-                'permissions' => $user?->getAllPermissions()->pluck('name')->all() ?? [],
-                'roles' => $user?->getRoleNames()->all() ?? [],
-                'can_bypass' => $user && ($user->can('bypass-permissions') || $user->hasRole('super-admin')),
+            'auth' => array_merge($authPayload, [
                 'tenancy_enabled' => $tenancyEnabled,
                 'current_organization' => $currentOrganization?->only(['id', 'name', 'slug']),
                 'organizations' => $tenancyEnabled ? $userOrganizations : [],
-            ],
+            ]),
             'features' => $features,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'honeypot' => $honeypot->enabled() ? $honeypot->toArray() : null,
@@ -97,6 +93,80 @@ final class HandleInertiaRequests extends Middleware
                 'unread_count' => $user?->unreadNotifications()->count() ?? 0,
             ],
             'announcements' => $this->resolveAnnouncements($user),
+        ];
+    }
+
+    /**
+     * Build auth (roles/permissions/can_bypass) and shared features for Inertia.
+     *
+     * Spatie teams scope getRoleNames()/getAllPermissions() to the current team. Super-admin
+     * and bypass-permissions live in team 0; when TenantContext has an org, the resolver
+     * returns that org id and global roles disappear. We therefore resolve with team id 0
+     * when the user has super-admin globally so the sidebar and useCan see full access.
+     * For super-admins we also force all inertia_features to true so org overrides do not
+     * hide modules in the UI.
+     *
+     * @return array{0: array{user: mixed, permissions: array<string>, roles: array<string>, can_bypass: bool}, 1: array<string, bool>}
+     */
+    private function resolveAuthAndFeaturesForInertia(mixed $user): array
+    {
+        if (! $user) {
+            $features = [];
+            foreach (array_keys(config('feature-flags.inertia_features', [])) as $name) {
+                $features[$name] = false;
+            }
+
+            return [
+                [
+                    'user' => null,
+                    'permissions' => [],
+                    'roles' => [],
+                    'can_bypass' => false,
+                ],
+                $features,
+            ];
+        }
+
+        // Detect super-admin in global team 0 only (org context would hide it otherwise).
+        $previousTeamId = getPermissionsTeamId();
+        setPermissionsTeamId(0);
+        try {
+            $isSuperAdmin = $user->hasRole('super-admin');
+        } finally {
+            setPermissionsTeamId($previousTeamId);
+        }
+
+        if ($isSuperAdmin) {
+            setPermissionsTeamId(0);
+            try {
+                $canBypass = true;
+                $permissions = $user->getAllPermissions()->pluck('name')->all();
+                $roles = $user->getRoleNames()->all();
+            } finally {
+                setPermissionsTeamId($previousTeamId);
+            }
+            $features = [];
+            foreach (array_keys(config('feature-flags.inertia_features', [])) as $name) {
+                $features[$name] = true;
+            }
+        } else {
+            $permissions = $user->getAllPermissions()->pluck('name')->all();
+            $roles = $user->getRoleNames()->all();
+            $canBypass = $user->can('bypass-permissions') || $user->hasRole('super-admin');
+            $features = [];
+            foreach (config('feature-flags.inertia_features', []) as $name => $featureClass) {
+                $features[$name] = FeatureHelper::isActiveForKey($name, $user);
+            }
+        }
+
+        return [
+            [
+                'user' => $user,
+                'permissions' => $permissions,
+                'roles' => $roles,
+                'can_bypass' => $canBypass,
+            ],
+            $features,
         ];
     }
 
@@ -276,6 +346,7 @@ final class HandleInertiaRequests extends Middleware
         if (! $organization instanceof Organization) {
             return [
                 'logoUrl' => null,
+                'logoUrlDark' => null,
                 'themePreset' => null,
                 'themeRadius' => null,
                 'themeFont' => null,

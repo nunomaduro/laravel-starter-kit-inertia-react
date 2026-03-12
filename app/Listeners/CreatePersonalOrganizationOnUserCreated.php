@@ -16,6 +16,11 @@ final readonly class CreatePersonalOrganizationOnUserCreated
 
     public function handle(UserCreated $event): void
     {
+        // While DatabaseSeeder is running, skip — seed assigns org roles via DB insert.
+        if (config('tenancy.seed_in_progress', false)) {
+            return;
+        }
+
         $invitedAsRole = session('invitation_accept_role');
         if ($invitedAsRole === 'member') {
             $create = config('tenancy.auto_create_personal_organization_for_members', false);

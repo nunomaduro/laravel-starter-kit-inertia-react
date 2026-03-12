@@ -19,7 +19,7 @@ use UnitEnum;
 final class ManageScout extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'System';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentMagnifyingGlass;

@@ -102,7 +102,11 @@ function canShowNavItem(
     canBypass: boolean,
     features: SharedData['features'],
     tenancyEnabled: boolean,
+    isSuperAdmin: boolean,
 ): boolean {
+    if (isSuperAdmin) {
+        return true;
+    }
     if (item.tenancyRequired && !tenancyEnabled) return false;
     if (item.feature && !features?.[item.feature]) return false;
     if (canBypass || !item.permission) return true;
@@ -136,6 +140,7 @@ export function CommandPalette(): React.ReactElement {
     const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
     const abortRef = useRef<AbortController>(undefined);
     const { auth, features } = usePage<SharedData>().props;
+    const isSuperAdmin = auth.roles?.includes('super-admin') ?? false;
 
     const visibleNavItems = useMemo(
         () =>
@@ -146,9 +151,17 @@ export function CommandPalette(): React.ReactElement {
                     auth.can_bypass ?? false,
                     features ?? {},
                     auth.tenancy_enabled ?? true,
+                    isSuperAdmin,
                 ),
             ),
-        [auth.permissions, auth.can_bypass, auth.tenancy_enabled, features],
+        [
+            auth.permissions,
+            auth.can_bypass,
+            auth.tenancy_enabled,
+            auth.roles,
+            features,
+            isSuperAdmin,
+        ],
     );
 
     useEffect(() => {

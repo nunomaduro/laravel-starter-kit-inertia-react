@@ -20,7 +20,7 @@ use UnitEnum;
 final class ManageBilling extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Platform';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
@@ -48,8 +48,10 @@ final class ManageBilling extends SettingsPage
                         Select::make('default_gateway')
                             ->label('Default gateway')
                             ->options([
+                                'none' => 'None (free app)',
                                 'stripe' => 'Stripe',
                                 'paddle' => 'Paddle',
+                                'lemon_squeezy' => 'Lemon Squeezy',
                                 'manual' => 'Manual',
                             ]),
                         TextInput::make('currency')

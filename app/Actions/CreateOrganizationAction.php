@@ -10,9 +10,6 @@ use App\Services\TenantContext;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
-use function getPermissionsTeamId;
-use function setPermissionsTeamId;
-
 final readonly class CreateOrganizationAction
 {
     /**
@@ -49,12 +46,25 @@ final readonly class CreateOrganizationAction
 
             $previousContext = TenantContext::get();
             TenantContext::set($organization);
-            $previousTeamId = getPermissionsTeamId();
-            setPermissionsTeamId($organization->id);
             try {
-                $user->assignRole('admin');
+                $roleModel = Role::query()
+                    ->where('name', 'admin')
+                    ->where('guard_name', $guard)
+                    ->where($teamKey, $organization->id)
+                    ->first();
+                if ($roleModel instanceof Role) {
+                    $tableNames = config('permission.table_names');
+                    $pivotRole = config('permission.column_names.role_pivot_key') ?? 'role_id';
+                    $modelMorphKey = config('permission.column_names.model_morph_key') ?? 'model_id';
+                    DB::table($tableNames['model_has_roles'])->insertOrIgnore([
+                        $pivotRole => $roleModel->getKey(),
+                        'model_type' => User::class,
+                        $modelMorphKey => $user->getKey(),
+                        $teamKey => $organization->id,
+                    ]);
+                    $user->unsetRelation('roles');
+                }
             } finally {
-                setPermissionsTeamId($previousTeamId);
                 if ($previousContext instanceof Organization) {
                     TenantContext::set($previousContext);
                 } else {

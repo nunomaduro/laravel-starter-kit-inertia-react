@@ -50,8 +50,10 @@ final class AdminPanelProvider extends PanelProvider
             ->globalSearch()
             ->darkMode()
             ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('14rem')
+            ->collapsedSidebarWidth('3.5rem')
             ->spa()
-            ->maxContentWidth(Width::SevenExtraLarge)
+            ->maxContentWidth(Width::Full)
             ->databaseNotifications()
             ->navigationGroups([
                 NavigationGroup::make('User Management'),
@@ -59,13 +61,13 @@ final class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make('Engagement'),
                 NavigationGroup::make('Organizations'),
                 NavigationGroup::make('Billing'),
-                NavigationGroup::make('Platform')
+                NavigationGroup::make('Settings · App')
                     ->collapsed(),
-                NavigationGroup::make('Integrations')
+                NavigationGroup::make('Settings · Integrations')
                     ->collapsed(),
-                NavigationGroup::make('System')
+                NavigationGroup::make('Settings · System')
                     ->collapsed(),
-                NavigationGroup::make('Features & Access')
+                NavigationGroup::make('Settings · Features')
                     ->collapsed(),
                 NavigationGroup::make('Content & Legal')
                     ->collapsed(),
@@ -101,7 +103,8 @@ final class AdminPanelProvider extends PanelProvider
                 EnsureSetupComplete::class,
             ])
             ->renderHook(PanelsRenderHook::SIDEBAR_LOGO_AFTER, fn (): View => view('filament.components.organization-switcher'))
-            ->renderHook(PanelsRenderHook::SIDEBAR_NAV_START, fn (): View => view('filament.components.back-to-app'));
+            ->renderHook(PanelsRenderHook::SIDEBAR_NAV_START, fn (): View => view('filament.components.back-to-app'))
+            ->renderHook(PanelsRenderHook::STYLES_AFTER, fn (): View => view('filament.components.admin-panel-sidebar-styles'));
     }
 
     /** @return array<NavigationItem> */
@@ -110,40 +113,40 @@ final class AdminPanelProvider extends PanelProvider
         $isSuperAdmin = fn (): bool => (bool) filament()->auth()->user()?->isSuperAdmin();
 
         return [
-            // Platform
-            NavigationItem::make('App')->url('/system/manage-app')->icon(Heroicon::OutlinedCog6Tooth)->group('Platform')->sort(10)->visible($isSuperAdmin),
-            NavigationItem::make('Auth')->url('/system/manage-auth')->icon(Heroicon::OutlinedShieldCheck)->group('Platform')->sort(20)->visible($isSuperAdmin),
-            NavigationItem::make('Theme')->url('/system/manage-theme')->icon(Heroicon::OutlinedPaintBrush)->group('Platform')->sort(30)->visible($isSuperAdmin),
-            NavigationItem::make('SEO')->url('/system/manage-seo')->icon(Heroicon::OutlinedMagnifyingGlass)->group('Platform')->sort(40)->visible($isSuperAdmin),
-            NavigationItem::make('Cookie Consent')->url('/system/manage-cookie-consent')->icon(Heroicon::OutlinedFingerPrint)->group('Platform')->sort(50)->visible($isSuperAdmin),
-            NavigationItem::make('Logging')->url('/system/manage-logging')->icon(Heroicon::OutlinedDocumentText)->group('Platform')->sort(55)->visible($isSuperAdmin),
-            NavigationItem::make('Billing Settings')->url('/system/manage-billing')->icon(Heroicon::OutlinedBanknotes)->group('Platform')->sort(60)->visible($isSuperAdmin),
-            NavigationItem::make('Tenancy')->url('/system/manage-tenancy')->icon(Heroicon::OutlinedBuildingOffice2)->group('Platform')->sort(70)->visible($isSuperAdmin),
-            // Integrations
-            NavigationItem::make('Mail')->url('/system/manage-mail')->icon(Heroicon::OutlinedEnvelope)->group('Integrations')->sort(10)->visible($isSuperAdmin),
-            NavigationItem::make('Stripe')->url('/system/manage-stripe')->icon(Heroicon::OutlinedCreditCard)->group('Integrations')->sort(20)->visible($isSuperAdmin),
-            NavigationItem::make('Paddle')->url('/system/manage-paddle')->icon(Heroicon::OutlinedCurrencyDollar)->group('Integrations')->sort(30)->visible($isSuperAdmin),
-            NavigationItem::make('Lemon Squeezy')->url('/system/manage-lemon-squeezy')->icon(Heroicon::OutlinedReceiptPercent)->group('Integrations')->sort(40)->visible($isSuperAdmin),
-            NavigationItem::make('Prism')->url('/system/manage-prism')->icon(Heroicon::OutlinedSparkles)->group('Integrations')->sort(50)->visible($isSuperAdmin),
-            NavigationItem::make('AI')->url('/system/manage-ai')->icon(Heroicon::OutlinedCpuChip)->group('Integrations')->sort(60)->visible($isSuperAdmin),
-            NavigationItem::make('Broadcasting')->url('/system/manage-broadcasting')->icon(Heroicon::OutlinedSignal)->group('Integrations')->sort(70)->visible($isSuperAdmin),
-            NavigationItem::make('Integrations')->url('/system/manage-integrations')->icon(Heroicon::OutlinedPuzzlePiece)->group('Integrations')->sort(80)->visible($isSuperAdmin),
+            // Settings · App
+            NavigationItem::make('App')->url('/system/manage-app')->icon(Heroicon::OutlinedCog6Tooth)->group('Settings · App')->sort(10)->visible($isSuperAdmin),
+            NavigationItem::make('Auth')->url('/system/manage-auth')->icon(Heroicon::OutlinedShieldCheck)->group('Settings · App')->sort(20)->visible($isSuperAdmin),
+            NavigationItem::make('Theme')->url('/system/manage-theme')->icon(Heroicon::OutlinedPaintBrush)->group('Settings · App')->sort(30)->visible($isSuperAdmin),
+            NavigationItem::make('SEO')->url('/system/manage-seo')->icon(Heroicon::OutlinedMagnifyingGlass)->group('Settings · App')->sort(40)->visible($isSuperAdmin),
+            NavigationItem::make('Cookie Consent')->url('/system/manage-cookie-consent')->icon(Heroicon::OutlinedFingerPrint)->group('Settings · App')->sort(50)->visible($isSuperAdmin),
+            NavigationItem::make('Logging')->url('/system/manage-logging')->icon(Heroicon::OutlinedDocumentText)->group('Settings · App')->sort(55)->visible($isSuperAdmin),
+            NavigationItem::make('Billing Settings')->url('/system/manage-billing')->icon(Heroicon::OutlinedBanknotes)->group('Settings · App')->sort(60)->visible($isSuperAdmin),
+            NavigationItem::make('Tenancy')->url('/system/manage-tenancy')->icon(Heroicon::OutlinedBuildingOffice2)->group('Settings · App')->sort(70)->visible($isSuperAdmin),
+            // Settings · Integrations
+            NavigationItem::make('Mail')->url('/system/manage-mail')->icon(Heroicon::OutlinedEnvelope)->group('Settings · Integrations')->sort(10)->visible($isSuperAdmin),
+            NavigationItem::make('Stripe')->url('/system/manage-stripe')->icon(Heroicon::OutlinedCreditCard)->group('Settings · Integrations')->sort(20)->visible($isSuperAdmin),
+            NavigationItem::make('Paddle')->url('/system/manage-paddle')->icon(Heroicon::OutlinedCurrencyDollar)->group('Settings · Integrations')->sort(30)->visible($isSuperAdmin),
+            NavigationItem::make('Lemon Squeezy')->url('/system/manage-lemon-squeezy')->icon(Heroicon::OutlinedReceiptPercent)->group('Settings · Integrations')->sort(40)->visible($isSuperAdmin),
+            NavigationItem::make('Prism')->url('/system/manage-prism')->icon(Heroicon::OutlinedSparkles)->group('Settings · Integrations')->sort(50)->visible($isSuperAdmin),
+            NavigationItem::make('AI')->url('/system/manage-ai')->icon(Heroicon::OutlinedCpuChip)->group('Settings · Integrations')->sort(60)->visible($isSuperAdmin),
+            NavigationItem::make('Broadcasting')->url('/system/manage-broadcasting')->icon(Heroicon::OutlinedSignal)->group('Settings · Integrations')->sort(70)->visible($isSuperAdmin),
+            NavigationItem::make('Integrations')->url('/system/manage-integrations')->icon(Heroicon::OutlinedPuzzlePiece)->group('Settings · Integrations')->sort(80)->visible($isSuperAdmin),
             // System
-            NavigationItem::make('Backup')->url('/system/manage-backup')->icon(Heroicon::OutlinedCloudArrowUp)->group('System')->sort(10)->visible($isSuperAdmin),
-            NavigationItem::make('Infrastructure')->url('/system/manage-infrastructure')->icon(Heroicon::OutlinedServer)->group('System')->sort(15)->visible($isSuperAdmin),
-            NavigationItem::make('Search')->url('/system/manage-scout')->icon(Heroicon::OutlinedDocumentMagnifyingGlass)->group('System')->sort(20)->visible($isSuperAdmin),
-            NavigationItem::make('Media')->url('/system/manage-media')->icon(Heroicon::OutlinedPhoto)->group('System')->sort(30)->visible($isSuperAdmin),
-            NavigationItem::make('Filesystem')->url('/system/manage-filesystem')->icon(Heroicon::OutlinedFolderOpen)->group('System')->sort(40)->visible($isSuperAdmin),
-            NavigationItem::make('Security')->url('/system/manage-security')->icon(Heroicon::OutlinedShieldExclamation)->group('System')->sort(50)->visible($isSuperAdmin),
-            NavigationItem::make('Performance')->url('/system/manage-performance')->icon(Heroicon::OutlinedBolt)->group('System')->sort(60)->visible($isSuperAdmin),
-            NavigationItem::make('Monitoring')->url('/system/manage-monitoring')->icon(Heroicon::OutlinedChartBar)->group('System')->sort(70)->visible($isSuperAdmin),
-            NavigationItem::make('Memory')->url('/system/manage-memory')->icon(Heroicon::OutlinedCircleStack)->group('System')->sort(80)->visible($isSuperAdmin),
-            NavigationItem::make('Organization Overrides')->url('/system/manage-organization-overrides')->icon(Heroicon::OutlinedBuildingOffice)->group('System')->sort(120)->visible($isSuperAdmin),
-            // Features & Access
-            NavigationItem::make('Feature Flags')->url('/system/manage-feature-flags')->icon(Heroicon::OutlinedFlag)->group('Features & Access')->sort(10)->visible($isSuperAdmin),
-            NavigationItem::make('Permissions')->url('/system/manage-permissions')->icon(Heroicon::OutlinedLockClosed)->group('Features & Access')->sort(30)->visible($isSuperAdmin),
-            NavigationItem::make('Impersonate')->url('/system/manage-impersonate')->icon(Heroicon::OutlinedUserCircle)->group('Features & Access')->sort(40)->visible($isSuperAdmin),
-            NavigationItem::make('Activity Log')->url('/system/manage-activity-log')->icon(Heroicon::OutlinedClipboardDocumentList)->group('Features & Access')->sort(50)->visible($isSuperAdmin),
+            NavigationItem::make('Backup')->url('/system/manage-backup')->icon(Heroicon::OutlinedCloudArrowUp)->group('Settings · System')->sort(10)->visible($isSuperAdmin),
+            NavigationItem::make('Infrastructure')->url('/system/manage-infrastructure')->icon(Heroicon::OutlinedServer)->group('Settings · System')->sort(15)->visible($isSuperAdmin),
+            NavigationItem::make('Search')->url('/system/manage-scout')->icon(Heroicon::OutlinedDocumentMagnifyingGlass)->group('Settings · System')->sort(20)->visible($isSuperAdmin),
+            NavigationItem::make('Media')->url('/system/manage-media')->icon(Heroicon::OutlinedPhoto)->group('Settings · System')->sort(30)->visible($isSuperAdmin),
+            NavigationItem::make('Filesystem')->url('/system/manage-filesystem')->icon(Heroicon::OutlinedFolderOpen)->group('Settings · System')->sort(40)->visible($isSuperAdmin),
+            NavigationItem::make('Security')->url('/system/manage-security')->icon(Heroicon::OutlinedShieldExclamation)->group('Settings · System')->sort(50)->visible($isSuperAdmin),
+            NavigationItem::make('Performance')->url('/system/manage-performance')->icon(Heroicon::OutlinedBolt)->group('Settings · System')->sort(60)->visible($isSuperAdmin),
+            NavigationItem::make('Monitoring')->url('/system/manage-monitoring')->icon(Heroicon::OutlinedChartBar)->group('Settings · System')->sort(70)->visible($isSuperAdmin),
+            NavigationItem::make('Memory')->url('/system/manage-memory')->icon(Heroicon::OutlinedCircleStack)->group('Settings · System')->sort(80)->visible($isSuperAdmin),
+            NavigationItem::make('Organization Overrides')->url('/system/manage-organization-overrides')->icon(Heroicon::OutlinedBuildingOffice)->group('Settings · System')->sort(120)->visible($isSuperAdmin),
+            // Settings · Features
+            NavigationItem::make('Feature Flags')->url('/system/manage-feature-flags')->icon(Heroicon::OutlinedFlag)->group('Settings · Features')->sort(10)->visible($isSuperAdmin),
+            NavigationItem::make('Permissions')->url('/system/manage-permissions')->icon(Heroicon::OutlinedLockClosed)->group('Settings · Features')->sort(30)->visible($isSuperAdmin),
+            NavigationItem::make('Impersonate')->url('/system/manage-impersonate')->icon(Heroicon::OutlinedUserCircle)->group('Settings · Features')->sort(40)->visible($isSuperAdmin),
+            NavigationItem::make('Activity Log')->url('/system/manage-activity-log')->icon(Heroicon::OutlinedClipboardDocumentList)->group('Settings · Features')->sort(50)->visible($isSuperAdmin),
         ];
     }
 }

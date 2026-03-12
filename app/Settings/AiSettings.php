@@ -26,6 +26,13 @@ final class AiSettings extends Settings
 
     public ?string $jina_api_key = null;
 
+    /**
+     * Thesys C1 API key (DataTable Visualize, etc.). When null, env THESYS_API_KEY is used until overlay runs.
+     */
+    public ?string $thesys_api_key = null;
+
+    public string $thesys_model = 'c1-nightly';
+
     public static function group(): string
     {
         return 'ai';
@@ -34,6 +41,6 @@ final class AiSettings extends Settings
     /** @return array<string> */
     public static function encrypted(): array
     {
-        return ['cohere_api_key', 'jina_api_key'];
+        return ['cohere_api_key', 'jina_api_key', 'thesys_api_key'];
     }
 }

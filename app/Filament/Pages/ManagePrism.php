@@ -18,7 +18,7 @@ use UnitEnum;
 final class ManagePrism extends SettingsPage
 {
     #[Override]
-    protected static string|UnitEnum|null $navigationGroup = 'Integrations';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
     #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;

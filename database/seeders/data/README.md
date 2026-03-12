@@ -6,7 +6,7 @@ JSON files in this directory are loaded by Development seeders (e.g. `users.json
 
 | Email | Role | Password |
 |-------|------|----------|
-| admin@example.com | super-admin | password |
+| superadmin@example.com | super-admin | password |
 | test@example.com | user | password |
 | admin-app@example.com | admin | password |
 | owner@example.com | user | password |

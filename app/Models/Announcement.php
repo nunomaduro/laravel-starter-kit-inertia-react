@@ -10,6 +10,8 @@ use GeneaLabs\LaravelGovernor\Traits\Governable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Override;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 
 /**
  * @property int $id
@@ -30,10 +32,17 @@ use Override;
  * @property-read User|null $creator
  * @property-read User|null $ownedBy
  */
-final class Announcement extends Model
+final class Announcement extends Model implements Sortable
 {
     use Governable;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+    use SortableTrait;
+
+    /** @var array<string, mixed> */
+    public array $sortable = [
+        'order_column_name' => 'position',
+        'sort_when_creating' => true,
+    ];
 
     /** @var array<int, string> */
     #[Override]

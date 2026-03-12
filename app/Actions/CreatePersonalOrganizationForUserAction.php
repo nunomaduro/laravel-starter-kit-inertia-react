@@ -9,9 +9,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
-use function getPermissionsTeamId;
-use function setPermissionsTeamId;
-
 final readonly class CreatePersonalOrganizationForUserAction
 {
     /**
@@ -51,12 +48,23 @@ final readonly class CreatePersonalOrganizationForUserAction
                 'invited_by' => null,
             ]);
 
-            $previousTeamId = getPermissionsTeamId();
-            setPermissionsTeamId($organization->id);
-            try {
-                $user->assignRole('admin');
-            } finally {
-                setPermissionsTeamId($previousTeamId);
+            // Assign org admin role by id (insert into model_has_roles) — assignRole() can mis-bind on PostgreSQL.
+            $roleModel = Role::query()
+                ->where('name', 'admin')
+                ->where('guard_name', $guard)
+                ->where($teamKey, $organization->id)
+                ->first();
+            if ($roleModel instanceof Role) {
+                $tableNames = config('permission.table_names');
+                $pivotRole = config('permission.column_names.role_pivot_key') ?? 'role_id';
+                $modelMorphKey = config('permission.column_names.model_morph_key') ?? 'model_id';
+                DB::table($tableNames['model_has_roles'])->insertOrIgnore([
+                    $pivotRole => $roleModel->getKey(),
+                    'model_type' => User::class,
+                    $modelMorphKey => $user->getKey(),
+                    $teamKey => $organization->id,
+                ]);
+                $user->unsetRelation('roles');
             }
 
             return $organization;
