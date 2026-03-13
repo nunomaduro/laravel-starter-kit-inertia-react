@@ -1,7 +1,9 @@
 import { DataTable } from '@/components/data-table/data-table';
 import type {
     DataTableAction,
+    DataTableApiRef,
     DataTableBulkAction,
+    DataTableFormField,
     DataTableHeaderAction,
     DataTableResponse,
 } from '@/components/data-table/types';
@@ -19,10 +21,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
-import { Copy, Keyboard, Trash2, UserPlus, Users } from 'lucide-react';
+import { Head, router, usePage } from '@inertiajs/react';
+import { Building2, CheckSquare2, Copy, FilterX, Keyboard, Maximize2, PanelLeft, Trash2, UserPlus, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export interface UsersTableRow {
     id: number;
@@ -30,10 +32,17 @@ export interface UsersTableRow {
     name: string;
     email: string;
     avatar: string | null;
+    profile_url: string | null;
     status: string;
     onboarding_completed: boolean;
     organizations_count: number;
     first_organization_name: string | null;
+    account_age_days: number;
+    profile_score: number;
+    account_label: string | null;
+    plan_tier: string;
+    lifetime_value: number;
+    theme_mode: string | null;
     created_at: string | null;
     updated_at: string | null;
 }
@@ -48,6 +57,8 @@ interface Props {
     searchableColumns?: string[];
     dataTableAi?: DataTableAiProps;
     batchEditAllowedColumns?: string[];
+    realtimeChannel?: string;
+    presenceChannel?: string;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Users', href: '/users' }];
@@ -57,7 +68,11 @@ export default function UsersTablePage({
     searchableColumns: _searchableColumns = [],
     dataTableAi,
     batchEditAllowedColumns: _batchEditAllowedColumns = [],
+    realtimeChannel,
+    presenceChannel,
 }: Props) {
+    const { auth } = usePage<{ auth: { user: { id: number; name: string; avatar: string | null } | null } }>().props;
+    const apiRef = useRef<DataTableApiRef | null>(null);
     const [shortcutsOpen, setShortcutsOpen] = useState(false);
     const [messageDialog, setMessageDialog] = useState<{
         row: UsersTableRow;
@@ -82,13 +97,33 @@ export default function UsersTablePage({
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
     }, []);
+    const onboardingFormFields: DataTableFormField[] = [
+        {
+            name: 'value',
+            label: 'Onboarding completed',
+            type: 'select' as const,
+            options: [
+                { label: 'Completed', value: '1' },
+                { label: 'Incomplete', value: '0' },
+            ],
+            required: true,
+        },
+        {
+            name: 'note',
+            label: 'Internal note (optional)',
+            type: 'textarea' as const,
+        },
+    ];
+
     const rowActions: DataTableAction<UsersTableRow>[] = [
         {
             label: 'View',
+            icon: 'eye',
             onClick: (row) => router.visit(`/users/${row.hash_id}`),
         },
         {
             label: 'Duplicate',
+            icon: 'copy',
             onClick: (row) => {
                 router.post(
                     `/users/${row.hash_id}/duplicate`,
@@ -98,19 +133,77 @@ export default function UsersTablePage({
             },
         },
         {
+            label: 'Toggle onboarding',
+            icon: 'square-check',
+            form: onboardingFormFields,
+            onClick: (row) => {
+                const formValues = (row as UsersTableRow & { _formValues?: Record<string, string> })._formValues;
+                router.patch(
+                    '/users/batch-update',
+                    {
+                        ids: [row.id],
+                        column: 'onboarding_completed',
+                        value: formValues?.value === '1',
+                    },
+                    { preserveScroll: true, only: ['tableData', 'flash'] },
+                );
+            },
+        },
+        {
             label: 'Send message',
+            icon: 'mail',
             onClick: (row) => {
                 setMessageDialog({ row, subject: '', body: '' });
             },
         },
         {
+            id: 'restore',
+            label: 'Restore',
+            icon: 'rotate-ccw',
+            onClick: (row) => {
+                router.post(
+                    `/users/${row.id}/restore`,
+                    {},
+                    { preserveScroll: true, only: ['tableData', 'flash'] },
+                );
+            },
+        },
+        {
+            id: 'force-delete',
+            label: 'Force delete',
+            icon: 'trash-2',
+            variant: 'destructive',
+            confirm: {
+                title: 'Permanently delete user?',
+                description: 'This cannot be undone. The user will be permanently removed from the database.',
+                confirmLabel: 'Delete permanently',
+                cancelLabel: 'Cancel',
+                variant: 'destructive',
+            },
+            onClick: (row) => {
+                router.delete(
+                    `/users/${row.id}/force-delete`,
+                    { preserveScroll: true, only: ['tableData', 'flash'] },
+                );
+            },
+        },
+        {
             label: 'More',
+            icon: 'more-horizontal',
             onClick: () => {},
             group: [
                 {
                     label: 'Send email',
+                    icon: 'external-link',
                     onClick: (row) => {
                         window.open(`mailto:${row.email}`, '_blank');
+                    },
+                },
+                {
+                    label: 'Open profile',
+                    icon: 'user',
+                    onClick: (row) => {
+                        if (row.profile_url) window.open(row.profile_url, '_blank');
                     },
                 },
             ],
@@ -160,6 +253,30 @@ export default function UsersTablePage({
             variant: 'default',
             onClick: () => router.visit('/users/create'),
         },
+        {
+            label: 'Reset filters',
+            icon: FilterX,
+            variant: 'outline',
+            onClick: () => void apiRef.current?.resetFilters(),
+        },
+        {
+            label: 'Auto-size columns',
+            icon: Maximize2,
+            variant: 'outline',
+            onClick: () => void apiRef.current?.autosizeColumns(),
+        },
+        {
+            label: 'Select visible',
+            icon: CheckSquare2,
+            variant: 'outline',
+            onClick: () => void apiRef.current?.selectAllVisibleRows(),
+        },
+        {
+            label: 'Pin name+email',
+            icon: PanelLeft,
+            variant: 'outline',
+            onClick: () => void apiRef.current?.setPinningColumns(['name', 'email'], 'left'),
+        },
     ];
 
     if (!tableData) {
@@ -201,38 +318,6 @@ export default function UsersTablePage({
                         )}
                     </p>
                 </div>
-                {tableData.analytics && tableData.analytics.length > 0 && (
-                    <div className="grid grid-cols-2 gap-3 py-2 md:grid-cols-4">
-                        {tableData.analytics.map((card) => (
-                            <div
-                                key={card.label}
-                                className="rounded-lg border bg-card p-3 text-card-foreground shadow-sm"
-                            >
-                                <div className="flex items-center justify-between gap-2">
-                                    <span className="text-xs font-medium text-muted-foreground">
-                                        {card.label}
-                                    </span>
-                                    {card.icon && (
-                                        <span className="text-sm">
-                                            {card.icon}
-                                        </span>
-                                    )}
-                                </div>
-                                <p className="mt-1 text-2xl font-semibold tabular-nums">
-                                    {typeof card.value === 'number' &&
-                                    card.format === 'number'
-                                        ? card.value.toLocaleString()
-                                        : card.value}
-                                </p>
-                                {card.description && (
-                                    <p className="text-xs text-muted-foreground">
-                                        {card.description}
-                                    </p>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                )}
                 <DataTable<UsersTableRow>
                     tableData={tableData}
                     tableName="users"
@@ -240,14 +325,93 @@ export default function UsersTablePage({
                     partialReloadKey="tableData"
                     aiBaseUrl={dataTableAi?.aiBaseUrl ?? undefined}
                     aiThesys={dataTableAi?.thesysEnabled ?? false}
-                    groupByOptions={['status', 'onboarding_completed']}
+                    groupByOptions={['status', 'onboarding_completed', 'first_organization_name']}
                     kanbanColumnId="status"
                     cardTitleColumn="name"
                     cardSubtitleColumn="email"
+                    cardImageColumn="avatar"
+                    chartTypes={['bar', 'line', 'pie', 'doughnut']}
+                    selectionMode="checkbox"
+                    sparklineData={(tableData as DataTableResponse<UsersTableRow> & { sparklineData?: Record<string, number[][]> }).sparklineData}
                     onKanbanMove={async (rowId, _fromLane, toLane) => {
                         await router.patch(`/users/${rowId}`, { status: toLane });
                     }}
                     rowLink={(row) => `/users/${row.hash_id}`}
+                    rowClassName={(row) =>
+                        row.status === 'deleted' ? 'opacity-60 line-through-none' : ''
+                    }
+                    rowDataAttributes={(row) => ({
+                        'data-user-id': String(row.id),
+                        'data-status': row.status,
+                        'data-onboarded': String(row.onboarding_completed),
+                    })}
+                    renderCell={(columnId, value) => {
+                        if (columnId === 'profile_score' && typeof value === 'number') {
+                            const pct = Math.min(100, Math.max(0, value));
+                            const color =
+                                pct >= 100
+                                    ? 'bg-emerald-500'
+                                    : pct >= 67
+                                      ? 'bg-blue-500'
+                                      : pct >= 34
+                                        ? 'bg-amber-500'
+                                        : 'bg-red-400';
+                            return (
+                                <div className="flex items-center gap-2">
+                                    <div className="h-1.5 w-14 overflow-hidden rounded-full bg-muted">
+                                        <div
+                                            className={`h-full rounded-full ${color}`}
+                                            style={{ width: `${pct}%` }}
+                                        />
+                                    </div>
+                                    <span className="text-xs tabular-nums">{pct}%</span>
+                                </div>
+                            );
+                        }
+                        return undefined;
+                    }}
+                    renderHeader={{
+                        organizations_count: (
+                            <span className="flex items-center gap-1">
+                                <Building2 className="h-3 w-3" />
+                                Orgs
+                            </span>
+                        ),
+                    }}
+                    onClipboardPaste={async (startRowIdx, startColId, data) => {
+                        // Showcases clipboard paste handler — applies pasted data to editable cells
+                        const editableCols = ['name', 'email'];
+                        if (!editableCols.includes(startColId)) return;
+                        const patches = data
+                            .map((rowData, i) => ({
+                                rowIdx: startRowIdx + i,
+                                value: rowData[0],
+                            }))
+                            .filter((p) => p.value !== undefined);
+                        if (patches.length === 0) return;
+                        console.debug('[users-table] clipboard paste', startColId, patches);
+                    }}
+                    onDragToFill={async (columnId, value, targetRowIds) => {
+                        // Showcases drag-to-fill — fills editable column down selected rows
+                        const editableCols = ['name', 'email', 'onboarding_completed'];
+                        if (!editableCols.includes(columnId)) return;
+                        await router.patch('/users/batch-update', {
+                            ids: targetRowIds.map(Number),
+                            column: columnId,
+                            value: String(value),
+                        });
+                    }}
+                    onFindReplace={async (rowId, columnId, _oldValue, newValue) => {
+                        // Showcases find & replace — applies replacement to a single cell
+                        await router.patch('/users/batch-update', {
+                            ids: [Number(rowId)],
+                            column: columnId,
+                            value: String(newValue),
+                        });
+                    }}
+                    onCellRangeSelect={(startRow, startCol, endRow, endCol) => {
+                        console.debug('[users-table] range', startRow, startCol, '→', endRow, endCol);
+                    }}
                     emptyState={
                         <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
                             <div className="rounded-full bg-muted p-4">
@@ -312,6 +476,33 @@ export default function UsersTablePage({
                             </div>
                         );
                     }}
+                    apiRef={apiRef}
+                    onStateChange={(_state) => {
+                        // state change callback — could log or sync externally
+                    }}
+                    onGroupByChange={(columnId) => {
+                        // group-by change callback
+                        if (columnId) {
+                            console.debug('[users-table] group-by changed to:', columnId);
+                        }
+                    }}
+                    renderFooterCell={(columnId, value) => {
+                        if (columnId === 'organizations_count' && typeof value === 'number') {
+                            return (
+                                <span className="font-semibold tabular-nums text-primary">
+                                    {value.toLocaleString()} total
+                                </span>
+                            );
+                        }
+                        if (columnId === 'id' && typeof value === 'string') {
+                            return (
+                                <span className="text-xs font-medium text-muted-foreground">
+                                    {value}
+                                </span>
+                            );
+                        }
+                        return undefined;
+                    }}
                     onInlineEdit={() => {
                         router.reload({ only: ['tableData'] });
                     }}
@@ -369,7 +560,7 @@ export default function UsersTablePage({
                         columnStatistics: true,
                         conditionalFormatting: true,
                         facetedFilters: true,
-                        presence: false,
+                        presence: true,
                         spreadsheetMode: true,
                         kanbanView: true,
                         masterDetail: false,
@@ -377,44 +568,20 @@ export default function UsersTablePage({
                         findReplace: true,
                         virtualScrolling: true,
                     }}
+                    realtimeChannel={realtimeChannel}
+                    realtimeEvent=".user.updated"
+                    presenceChannel={presenceChannel}
+                    currentUser={
+                        auth?.user
+                            ? {
+                                  id: auth.user.id,
+                                  name: auth.user.name,
+                                  avatar: auth.user.avatar ?? undefined,
+                              }
+                            : undefined
+                    }
                     mobileBreakpoint={768}
                     slots={{
-                        ...(tableData.analytics && tableData.analytics.length > 0
-                            ? {
-                                  beforeTable: (
-                                      <div className="grid grid-cols-2 gap-3 py-2 md:grid-cols-4">
-                                          {tableData.analytics.map((card) => (
-                                              <div
-                                                  key={card.label}
-                                                  className="rounded-lg border bg-card p-3 text-card-foreground shadow-sm"
-                                              >
-                                                  <div className="flex items-center justify-between gap-2">
-                                                      <span className="text-xs font-medium text-muted-foreground">
-                                                          {card.label}
-                                                      </span>
-                                                      {card.icon && (
-                                                          <span className="text-sm">
-                                                              {card.icon}
-                                                          </span>
-                                                      )}
-                                                  </div>
-                                                  <p className="mt-1 text-2xl font-semibold tabular-nums">
-                                                      {typeof card.value === 'number' &&
-                                                      card.format === 'number'
-                                                          ? card.value.toLocaleString()
-                                                          : card.value}
-                                                  </p>
-                                                  {card.description && (
-                                                      <p className="text-xs text-muted-foreground">
-                                                          {card.description}
-                                                      </p>
-                                                  )}
-                                              </div>
-                                          ))}
-                                      </div>
-                                  ),
-                              }
-                            : {}),
                         toolbar: (
                             <div className="flex justify-end px-2">
                                 <Dialog

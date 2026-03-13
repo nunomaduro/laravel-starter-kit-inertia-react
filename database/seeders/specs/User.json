@@ -86,6 +86,26 @@
             "type": "string",
             "nullable": true,
             "default": null
+        },
+        "phone": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "color": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "tags": {
+            "type": "json",
+            "nullable": true,
+            "default": null
+        },
+        "position": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
         }
     },
     "relationships": {

@@ -157,11 +157,13 @@ final class AppServiceProvider extends ServiceProvider
             DataTableAiController::class,
             DataTableExportController::class,
             DataTableAsyncFilterController::class,
+            DataTableCascadingFilterController::class,
             DataTableInlineEditController::class,
             DataTableToggleController::class,
             DataTableSelectAllController::class,
             DataTableDetailRowController::class,
             DataTableImportController::class,
+            DataTableReorderController::class,
         ] as $controller) {
             $controller::register('users', UserDataTable::class);
         }

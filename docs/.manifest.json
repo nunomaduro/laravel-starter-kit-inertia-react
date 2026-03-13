@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastGenerated": "2026-03-12",
+    "lastGenerated": "2026-03-13",
     "actions": {
         "CreateUser": {
             "documented": true,
@@ -111,6 +111,8 @@
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.restore",
+                    "users.force-delete",
                     "user.destroy",
                     "register",
                     "register.store"
@@ -143,6 +145,8 @@
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.restore",
+                    "users.force-delete",
                     "user.preferences.update",
                     "user-profile.edit",
                     "user-profile.update",
@@ -443,7 +447,9 @@
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
-                    "users.show"
+                    "users.show",
+                    "users.restore",
+                    "users.force-delete"
                 ]
             }
         },
@@ -462,7 +468,9 @@
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
-                    "users.show"
+                    "users.show",
+                    "users.restore",
+                    "users.force-delete"
                 ]
             }
         },
@@ -572,7 +580,9 @@
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
-                    "users.show"
+                    "users.show",
+                    "users.restore",
+                    "users.force-delete"
                 ]
             }
         }
@@ -1056,7 +1066,9 @@
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
-                    "users.show"
+                    "users.show",
+                    "users.restore",
+                    "users.force-delete"
                 ],
                 "rendersPages": [
                     "users/table",
@@ -1570,6 +1582,8 @@
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.restore",
+                    "users.force-delete",
                     "organizations.switch",
                     "organizations.list",
                     "organizations.index",
@@ -2161,6 +2175,8 @@
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.restore",
+                    "users.force-delete",
                     "organizations.switch",
                     "organizations.list",
                     "organizations.index",
@@ -2677,6 +2693,8 @@
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.restore",
+                    "users.force-delete",
                     "organizations.switch",
                     "organizations.list",
                     "organizations.index",
@@ -3134,6 +3152,8 @@
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.restore",
+                    "users.force-delete",
                     "organizations.switch",
                     "organizations.list",
                     "organizations.index",
@@ -3577,6 +3597,8 @@
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.restore",
+                    "users.force-delete",
                     "organizations.switch",
                     "organizations.list",
                     "organizations.index",
@@ -4193,6 +4215,8 @@
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.restore",
+                    "users.force-delete",
                     "organizations.switch",
                     "organizations.list",
                     "organizations.index",
@@ -4420,7 +4444,9 @@
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
-                    "users.show"
+                    "users.show",
+                    "users.restore",
+                    "users.force-delete"
                 ]
             }
         },
@@ -4437,7 +4463,9 @@
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
-                    "users.show"
+                    "users.show",
+                    "users.restore",
+                    "users.force-delete"
                 ]
             }
         },

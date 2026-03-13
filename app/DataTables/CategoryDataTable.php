@@ -187,7 +187,7 @@ final class CategoryDataTable extends AbstractDataTable
     {
         return [
             'pollingInterval' => 0,
-            'deferLoading' => true,
+            'deferLoading' => false,
             'softDeletesEnabled' => false,
             'detailDisplay' => 'drawer',
             'detailRowEnabled' => false,

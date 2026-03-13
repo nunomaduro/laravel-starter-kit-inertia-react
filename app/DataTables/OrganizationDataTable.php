@@ -126,7 +126,7 @@ final class OrganizationDataTable extends AbstractDataTable
     {
         return [
             'pollingInterval' => 0,
-            'deferLoading' => true,
+            'deferLoading' => false,
             'softDeletesEnabled' => true,
             'detailDisplay' => 'drawer',
             'detailRowEnabled' => false,

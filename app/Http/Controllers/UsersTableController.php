@@ -63,6 +63,27 @@ final class UsersTableController extends Controller
         return Inertia::render('users/show', UserDataTable::showProps($user));
     }
 
+    public function restore(string $id, Request $request): RedirectResponse
+    {
+        $this->authorizeViewUsers($request);
+        $user = User::withTrashed()->findOrFail((int) $id);
+        abort_if(! $user->trashed(), 404);
+        abort_if($user->id === $request->user()?->id, 403, 'Cannot restore yourself.');
+        $user->restore();
+
+        return back()->with('flash', ['type' => 'success', 'message' => "User {$user->name} restored."]);
+    }
+
+    public function forceDelete(string $id, Request $request): RedirectResponse
+    {
+        $this->authorizeViewUsers($request);
+        $user = User::withTrashed()->findOrFail((int) $id);
+        abort_if($user->id === $request->user()?->id, 403, 'Cannot delete yourself.');
+        $user->forceDelete();
+
+        return back()->with('flash', ['type' => 'success', 'message' => 'User permanently deleted.']);
+    }
+
     /**
      * Opt-in AI props: only expose AI panel / Thesys when configured.
      * When no AI backend or no Thesys key, those features are disabled.
@@ -71,8 +92,10 @@ final class UsersTableController extends Controller
      */
     private function dataTableAiProps(): array
     {
-        $aiBackend = class_exists(\Laravel\Ai\Contracts\Agent::class)
-            || class_exists(\PrismPHP\Prism::class);
+        $aiBackend = interface_exists(\Laravel\Ai\Contracts\Agent::class)
+            || class_exists(\Laravel\Ai\AiManager::class)
+            || class_exists(\PrismPHP\Prism::class)
+            || class_exists(\EchoLabs\Prism\Prism::class);
         $thesysKey = (bool) config('services.thesys.api_key');
 
         return [

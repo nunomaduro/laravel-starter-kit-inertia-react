@@ -413,6 +413,8 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
             'onboarding_completed' => 'boolean',
             'onboarding_steps_completed' => 'array',
             'theme_mode' => 'string',
+            'tags' => 'array',
+            'position' => 'integer',
         ];
     }
 

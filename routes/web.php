@@ -167,6 +167,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::patch('users/batch-update', [UsersTableController::class, 'batchUpdate'])->name('users.batch-update');
     Route::post('users/{user}/duplicate', [UsersTableController::class, 'duplicate'])->name('users.duplicate');
     Route::get('users/{user}', [UsersTableController::class, 'show'])->name('users.show');
+    Route::post('users/{id}/restore', [UsersTableController::class, 'restore'])->name('users.restore');
+    Route::delete('users/{id}/force-delete', [UsersTableController::class, 'forceDelete'])->name('users.force-delete');
 
     Route::middleware('tenancy.enabled')->group(function (): void {
         Route::post('organizations/switch', OrganizationSwitchController::class)

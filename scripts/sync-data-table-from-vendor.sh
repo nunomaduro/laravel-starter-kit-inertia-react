@@ -15,7 +15,8 @@ if [[ ! -d "$VENDOR" ]]; then
 fi
 
 echo "→ Syncing DataTable files from vendor to $DEST"
+cp "$VENDOR/data-table.tsx" "$DEST/"
 cp "$VENDOR/data-table-column.tsx" "$DEST/"
 cp "$VENDOR/i18n.ts" "$DEST/"
 cp "$VENDOR/types.ts" "$DEST/"
-echo "  ✓ data-table-column.tsx, i18n.ts, types.ts updated."
+echo "  ✓ data-table.tsx, data-table-column.tsx, i18n.ts, types.ts updated."

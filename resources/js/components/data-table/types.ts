@@ -68,6 +68,8 @@ export interface DataTableColumnDef {
     valueFormatter?: string | null;
     /** Whether this column has an inline header filter */
     headerFilter?: boolean;
+    /** Column ID that holds per-row currency code, overriding the static currency */
+    currencyColumn?: string | null;
     /** Sparkline chart type: 'line' | 'bar' | null */
     sparkline?: string | null;
     /** Tree data parent column reference */
@@ -124,6 +126,8 @@ export interface DataTableConfig {
     pivotEnabled?: boolean;
     /** Pivot configuration */
     pivotConfig?: { rowFields?: string[]; columnFields?: string[]; valueField?: string; aggregation?: string };
+    /** Default layout mode set from server: 'table' | 'grid' | 'cards' | 'kanban' */
+    defaultLayout?: "table" | "grid" | "cards" | "kanban";
 }
 
 /** Conditional row/cell styling rule */
@@ -332,6 +336,8 @@ export interface DataTableConfirmOptions {
 }
 
 export interface DataTableAction<TData> {
+    /** Stable action identifier used for server-driven action rules matching. Falls back to label if not set. */
+    id?: string;
     label: string;
     icon?: string;
     onClick: (row: TData) => void;
@@ -459,8 +465,10 @@ export interface DataTableProps<TData extends object> {
     onLoadMore?: (page: number) => Promise<void> | void;
     /** Whether more data is available for infinite scroll */
     hasMore?: boolean;
-    /** Sparkline data: maps column ID to an array of values per row */
-    sparklineData?: Record<string, number[][]>;
+    /** Sparkline data: maps column ID to sparkline values per row.
+     * Accepts either an array indexed by row position (legacy) or an object keyed by row ID (preferred).
+     * Row ID keying is stable across sort/pagination changes. */
+    sparklineData?: Record<string, number[][] | Record<string | number, number[]>>;
     /** AI assistant prompt handler: receives natural language query, returns filter/sort config */
     onAiQuery?: (query: string) => Promise<{ filters?: Record<string, unknown>; sort?: string } | void>;
     /** Base URL for AI endpoints (e.g., '/data-table/ai/products'). Enables built-in AI features. */
@@ -493,18 +501,19 @@ export interface DataTableProps<TData extends object> {
     chartTypes?: ("bar" | "line" | "pie" | "doughnut")[];
 }
 
-/** Imperative API ref for programmatic grid control */
+/** Imperative API ref for programmatic grid control.
+ * Methods return Promise<void> so callers can await completion. */
 export interface DataTableApiRef {
     /** Scroll to a specific row by index */
-    scrollToRow: (index: number, alignment?: "start" | "center" | "end" | "auto") => void;
+    scrollToRow: (index: number, alignment?: "start" | "center" | "end" | "auto") => Promise<void>;
     /** Auto-size all columns to fit content */
-    autosizeColumns: () => void;
+    autosizeColumns: () => Promise<void>;
     /** Trigger export programmatically */
-    triggerExport: (format: "xlsx" | "csv" | "pdf") => void;
+    triggerExport: (format: "xlsx" | "csv" | "pdf") => Promise<void>;
     /** Reset all filters */
-    resetFilters: () => void;
+    resetFilters: () => Promise<void>;
     /** Get current table state */
     getState: () => Record<string, unknown>;
     /** Focus a specific cell */
-    focusCell: (rowIndex: number, columnId: string) => void;
+    focusCell: (rowIndex: number, columnId: string) => Promise<void>;
 }
