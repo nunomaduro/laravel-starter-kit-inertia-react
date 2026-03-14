@@ -3,7 +3,6 @@ import type {
     DataTableHeaderAction,
     DataTableResponse,
 } from '@/components/data-table/types';
-import { Skeleton } from '@/components/ui/skeleton';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
@@ -40,26 +39,6 @@ export default function OrganizationsTablePage({
         },
     ];
 
-    if (!tableData) {
-        return (
-            <AppSidebarLayout breadcrumbs={breadcrumbs}>
-                <Head title="Organizations" />
-                <div
-                    className="flex h-full flex-1 flex-col gap-4 p-4"
-                    data-pan="organizations-table"
-                >
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight">
-                            Organizations
-                        </h1>
-                        <Skeleton className="mt-1 h-5 w-24" />
-                    </div>
-                    <Skeleton className="h-[400px] w-full rounded-md" />
-                </div>
-            </AppSidebarLayout>
-        );
-    }
-
     return (
         <AppSidebarLayout breadcrumbs={breadcrumbs}>
             <Head title="Organizations" />
@@ -71,9 +50,7 @@ export default function OrganizationsTablePage({
                     <h1 className="text-2xl font-bold tracking-tight">
                         Organizations
                     </h1>
-                    <p className="text-muted-foreground">
-                        {tableData.meta.total} results
-                    </p>
+                    {tableData && <p className="text-muted-foreground">{tableData.meta.total} results</p>}
                 </div>
                 <DataTable<OrganizationsTableRow>
                     tableData={tableData}
@@ -99,15 +76,13 @@ export default function OrganizationsTablePage({
                     }
                     headerActions={headerActions}
                     options={{
-                        stickyHeader: true,
-                        globalSearch: true,
                         columnVisibility: true,
                         columnOrdering: true,
                         columnResizing: true,
                         columnPinning: true,
                         exports: true,
                         filters: true,
-                        density: 'comfortable',
+                        density: true,
                         copyCell: true,
                         emptyStateIllustration: true,
                         keyboardNavigation: true,
@@ -116,7 +91,7 @@ export default function OrganizationsTablePage({
                     translations={{
                         noData: 'No organizations',
                         search: 'Search organizations',
-                        clearFilters: 'Clear all filters',
+                        clearAllFilters: 'Clear all filters',
                         density: 'Row density',
                         selectAllMatching: (count) =>
                             `Select all ${count} organizations`,

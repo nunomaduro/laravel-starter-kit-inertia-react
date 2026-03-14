@@ -249,7 +249,12 @@
       "Bash(env -u CLAUDECODE ls -la /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/public/build/assets/data-table-*.js | tail -3)",
       "Bash(env -u CLAUDECODE npx vite build --minify false 2>&1 | tail -3)",
       "Bash(env -u CLAUDECODE ls /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/public/build/assets/data-table-*.js)",
-      "Bash(env -u CLAUDECODE grep -n \"} = useDataTable\\(\" /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/public/build/assets/data-table-BYvDnEPF.js | head -3)"
+      "Bash(env -u CLAUDECODE grep -n \"} = useDataTable\\(\" /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/public/build/assets/data-table-BYvDnEPF.js | head -3)",
+      "Bash(vendor/bin/pint app/DataTables/ --dirty --format agent 2>&1)",
+      "Bash(php -l app/DataTables/UserDataTable.php app/DataTables/OrganizationDataTable.php app/DataTables/CategoryDataTable.php app/DataTables/AnnouncementDataTable.php app/DataTables/PostDataTable.php 2>&1)",
+      "Bash(npx tsc:*)",
+      "Bash(gh api:*)",
+      "mcp__playwright__browser_snapshot"
     ]
   },
   "enableAllProjectMcpServers": true,

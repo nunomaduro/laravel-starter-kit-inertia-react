@@ -3,7 +3,6 @@ import type {
     DataTableHeaderAction,
     DataTableResponse,
 } from '@/components/data-table/types';
-import { Skeleton } from '@/components/ui/skeleton';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
@@ -41,26 +40,6 @@ export default function CategoriesTablePage({
         },
     ];
 
-    if (!tableData) {
-        return (
-            <AppSidebarLayout breadcrumbs={breadcrumbs}>
-                <Head title="Categories" />
-                <div
-                    className="flex h-full flex-1 flex-col gap-4 p-4"
-                    data-pan="categories-table"
-                >
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight">
-                            Categories
-                        </h1>
-                        <Skeleton className="mt-1 h-5 w-24" />
-                    </div>
-                    <Skeleton className="h-[400px] w-full rounded-md" />
-                </div>
-            </AppSidebarLayout>
-        );
-    }
-
     return (
         <AppSidebarLayout breadcrumbs={breadcrumbs}>
             <Head title="Categories" />
@@ -72,9 +51,7 @@ export default function CategoriesTablePage({
                     <h1 className="text-2xl font-bold tracking-tight">
                         Categories
                     </h1>
-                    <p className="text-muted-foreground">
-                        {tableData.meta.total} results
-                    </p>
+                    {tableData && <p className="text-muted-foreground">{tableData.meta.total} results</p>}
                 </div>
                 <DataTable<CategoriesTableRow>
                     tableData={tableData}
@@ -99,15 +76,13 @@ export default function CategoriesTablePage({
                     }
                     headerActions={headerActions}
                     options={{
-                        stickyHeader: true,
-                        globalSearch: true,
                         columnVisibility: true,
                         columnOrdering: true,
                         columnResizing: true,
                         columnPinning: true,
                         exports: true,
                         filters: true,
-                        density: 'comfortable',
+                        density: true,
                         copyCell: true,
                         emptyStateIllustration: true,
                         keyboardNavigation: true,
@@ -116,7 +91,7 @@ export default function CategoriesTablePage({
                     translations={{
                         noData: 'No categories',
                         search: 'Search categories',
-                        clearFilters: 'Clear all filters',
+                        clearAllFilters: 'Clear all filters',
                         density: 'Row density',
                         selectAllMatching: (count) =>
                             `Select all ${count} categories`,

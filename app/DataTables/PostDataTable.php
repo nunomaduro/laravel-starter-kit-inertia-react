@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\DataTables;
 
 use App\Models\Post;
-use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Inertia\Inertia;
 use Machour\DataTable\AbstractDataTable;
 use Machour\DataTable\Columns\ColumnBuilder;
 use Machour\DataTable\Concerns\HasExport;
@@ -178,51 +176,15 @@ final class PostDataTable extends AbstractDataTable
         ];
     }
 
-    /**
-     * @return array{pollingInterval: int, deferLoading: bool, softDeletesEnabled: bool, detailDisplay: string, detailRowEnabled: bool}
-     */
-    public static function tableOptions(): array
-    {
-        return [
-            'pollingInterval' => 0,
-            'deferLoading' => false,
-            'softDeletesEnabled' => true,
-            'detailDisplay' => 'drawer',
-            'detailRowEnabled' => false,
-        ];
-    }
-
-    public static function tableDeferLoading(): bool
-    {
-        return self::tableOptions()['deferLoading'];
-    }
-
-    public static function tableDetailRowEnabled(): bool
-    {
-        return self::tableOptions()['detailRowEnabled'];
-    }
-
     public static function tableSoftDeletesEnabled(): bool
     {
-        return self::tableOptions()['softDeletesEnabled'];
+        return true;
     }
 
-    /**
-     * @return array{tableData: array|\Inertia\Deferred, searchableColumns: list<string>}
-     */
     public static function inertiaProps(Request $request): array
     {
-        $opts = self::tableOptions();
-        $defer = $opts['deferLoading'] && ! app()->environment('testing');
-        $make = function () use ($request, $opts): array {
-            $data = self::makeTable($request)->toArray();
-            $data['config'] = array_merge($data['config'] ?? [], $opts);
-
-            return $data;
-        };
-
         return [
-            'tableData' => $defer ? Inertia::defer($make) : $make(),
+            'tableData' => self::makeTable($request)->toArray(),
             'searchableColumns' => self::tableSearchableColumns(),
         ];
     }
@@ -245,20 +207,5 @@ final class PostDataTable extends AbstractDataTable
     public static function tableExportName(): string
     {
         return 'posts';
-    }
-
-    public static function tableExportFilename(): Closure
-    {
-        return fn (): string => 'posts-'.now()->format('Y-m-d-His');
-    }
-
-    public static function tableExportEnabled(): bool
-    {
-        return true;
-    }
-
-    public static function tablePersistState(): bool
-    {
-        return true;
     }
 }

@@ -3,7 +3,6 @@ import type {
     DataTableHeaderAction,
     DataTableResponse,
 } from '@/components/data-table/types';
-import { Skeleton } from '@/components/ui/skeleton';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
@@ -39,26 +38,6 @@ export default function PostsTablePage({
         },
     ];
 
-    if (!tableData) {
-        return (
-            <AppSidebarLayout breadcrumbs={breadcrumbs}>
-                <Head title="Posts" />
-                <div
-                    className="flex h-full flex-1 flex-col gap-4 p-4"
-                    data-pan="posts-table"
-                >
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight">
-                            Posts
-                        </h1>
-                        <Skeleton className="mt-1 h-5 w-24" />
-                    </div>
-                    <Skeleton className="h-[400px] w-full rounded-md" />
-                </div>
-            </AppSidebarLayout>
-        );
-    }
-
     return (
         <AppSidebarLayout breadcrumbs={breadcrumbs}>
             <Head title="Posts" />
@@ -68,9 +47,7 @@ export default function PostsTablePage({
             >
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Posts</h1>
-                    <p className="text-muted-foreground">
-                        {tableData.meta.total} results
-                    </p>
+                    {tableData && <p className="text-muted-foreground">{tableData.meta.total} results</p>}
                 </div>
                 <DataTable<PostsTableRow>
                     tableData={tableData}
@@ -93,8 +70,6 @@ export default function PostsTablePage({
                     }
                     headerActions={headerActions}
                     options={{
-                        stickyHeader: true,
-                        globalSearch: true,
                         columnVisibility: true,
                         columnOrdering: true,
                         columnResizing: true,
@@ -103,7 +78,7 @@ export default function PostsTablePage({
                         customQuickViews: true,
                         exports: true,
                         filters: true,
-                        density: 'comfortable',
+                        density: true,
                         copyCell: true,
                         emptyStateIllustration: true,
                         keyboardNavigation: true,
@@ -112,7 +87,7 @@ export default function PostsTablePage({
                     translations={{
                         noData: 'No posts',
                         search: 'Search posts',
-                        clearFilters: 'Clear all filters',
+                        clearAllFilters: 'Clear all filters',
                         density: 'Row density',
                         selectAllMatching: (count) =>
                             `Select all ${count} posts`,

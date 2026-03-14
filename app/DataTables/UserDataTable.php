@@ -10,14 +10,12 @@ use App\Models\Organization;
 use App\Models\User;
 use App\Services\TenantContext;
 use BackedEnum;
-use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 use Machour\DataTable\AbstractDataTable;
 use Machour\DataTable\Columns\ColumnBuilder;
 use Machour\DataTable\Concerns\HasAi;
@@ -661,96 +659,66 @@ final class UserDataTable extends AbstractDataTable
         ];
     }
 
-    /**
-     * Single source of truth for table feature flags and config.
-     *
-     * @return array{pollingInterval: int, deferLoading: bool, softDeletesEnabled: bool, detailDisplay: string, detailRowEnabled: bool}
-     */
-    public static function tableOptions(): array
-    {
-        return [
-            'pollingInterval' => 60,
-            'deferLoading' => false,
-            'softDeletesEnabled' => true,
-            'detailDisplay' => 'drawer',
-            'detailRowEnabled' => true,
-        ];
-    }
-
     public static function tableDetailRowEnabled(): bool
     {
-        return self::tableOptions()['detailRowEnabled'];
+        return true;
     }
 
     public static function tableDetailDisplay(): string
     {
-        return self::tableOptions()['detailDisplay'];
+        return 'drawer';
     }
 
     public static function tablePollingInterval(): int
     {
-        return self::tableOptions()['pollingInterval'];
-    }
-
-    public static function tableDeferLoading(): bool
-    {
-        return self::tableOptions()['deferLoading'];
+        return 60;
     }
 
     public static function tableSoftDeletesEnabled(): bool
     {
-        return self::tableOptions()['softDeletesEnabled'];
+        return true;
     }
 
-    /**
-     * @return array{tableData: array|\Inertia\Deferred, searchableColumns: list<string>}
-     */
     public static function inertiaProps(Request $request): array
     {
-        $opts = self::tableOptions();
-        $defer = $opts['deferLoading'] && ! app()->environment('testing');
-        $make = function () use ($request, $opts): array {
-            $data = self::makeTable($request)->toArray();
-            $data['config'] = array_merge($data['config'] ?? [], $opts);
-            $data['analytics'] = self::tableAnalytics();
-            // Sparkline data: real per-user activity counts for the last 7 days
-            // Format: Record<columnId, number[][]> — outer array = rows, inner array = 7-day values
-            $rows = $data['data'] ?? [];
-            $rowIds = array_column($rows, 'id');
-            $activityCounts = [];
-            if (! empty($rowIds)) {
-                try {
-                    $days = collect(range(6, 0))->map(fn (int $d) => now()->subDays($d)->format('Y-m-d'));
-                    $raw = DB::table('activity_log')
-                        ->selectRaw('causer_id, DATE(created_at) as day, COUNT(*) as cnt')
-                        ->whereIn('causer_id', $rowIds)
-                        ->where('created_at', '>=', now()->subDays(6)->startOfDay())
-                        ->groupBy('causer_id', 'day')
-                        ->get()
-                        ->groupBy('causer_id');
-                    foreach ($rowIds as $uid) {
-                        $byDay = $raw->get($uid, collect())->keyBy('day');
-                        $activityCounts[$uid] = $days->map(fn (string $d): int => (int) ($byDay->get($d)?->cnt ?? 0))->values()->all();
-                    }
-                } catch (Throwable) {
-                    // activity_log unavailable — fall through to empty sparklines
+        $data = self::makeTable($request)->toArray();
+        $data['analytics'] = self::tableAnalytics();
+
+        // Sparkline data: real per-user activity counts for the last 7 days
+        // Format: Record<columnId, number[][]> — outer array = rows, inner array = 7-day values
+        $rows = $data['data'] ?? [];
+        $rowIds = array_column($rows, 'id');
+        $activityCounts = [];
+        if (! empty($rowIds)) {
+            try {
+                $days = collect(range(6, 0))->map(fn (int $d) => now()->subDays($d)->format('Y-m-d'));
+                $raw = DB::table('activity_log')
+                    ->selectRaw('causer_id, DATE(created_at) as day, COUNT(*) as cnt')
+                    ->whereIn('causer_id', $rowIds)
+                    ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+                    ->groupBy('causer_id', 'day')
+                    ->get()
+                    ->groupBy('causer_id');
+                foreach ($rowIds as $uid) {
+                    $byDay = $raw->get($uid, collect())->keyBy('day');
+                    $activityCounts[$uid] = $days->map(fn (string $d): int => (int) ($byDay->get($d)?->cnt ?? 0))->values()->all();
                 }
+            } catch (Throwable) {
+                // activity_log unavailable — fall through to empty sparklines
             }
+        }
 
-            // Use row-ID keying (Record<rowId, number[]>) — stable across sort/pagination changes
-            $sparklines = ['account_age_days' => []];
-            foreach ($rows as $row) {
-                $uid = $row['id'];
-                $sparklines['account_age_days'][$uid] = $activityCounts[$uid] ?? array_fill(0, 7, 0);
-            }
+        // Use row-ID keying (Record<rowId, number[]>) — stable across sort/pagination changes
+        $sparklines = ['account_age_days' => []];
+        foreach ($rows as $row) {
+            $uid = $row['id'];
+            $sparklines['account_age_days'][$uid] = $activityCounts[$uid] ?? array_fill(0, 7, 0);
+        }
 
-            $data['sparklineData'] = $sparklines;
-
-            return $data;
-        };
+        $data['sparklineData'] = $sparklines;
 
         return [
-            'tableData' => $defer ? Inertia::defer($make) : $make(),
+            'tableData' => $data,
             'searchableColumns' => self::tableSearchableColumns(),
             // Channel names consumed by the React DataTable's realtimeChannel + presenceChannel props
             'realtimeChannel' => 'users',
@@ -966,12 +934,6 @@ TEXT;
         return 'table';
     }
 
-    /** Persist filters/sort to localStorage. Full usage example. */
-    public static function tablePersistState(): bool
-    {
-        return true;
-    }
-
     /** Enable pivot mode (crosstab analysis). Showcases tablePivotEnabled + tablePivotConfig. */
     public static function tablePivotEnabled(): bool
     {
@@ -1010,19 +972,9 @@ TEXT;
 
     // ─── HasExport ───────────────────────────────────────────
 
-    public static function tableExportEnabled(): bool
-    {
-        return true;
-    }
-
     public static function tableExportName(): string
     {
         return 'users';
-    }
-
-    public static function tableExportFilename(): Closure
-    {
-        return fn (): string => 'users-'.now()->format('Y-m-d-His');
     }
 
     // ─── HasInlineEdit ────────────────────────────────────────

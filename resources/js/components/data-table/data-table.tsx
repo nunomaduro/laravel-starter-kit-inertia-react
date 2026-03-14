@@ -239,14 +239,24 @@ function useAutoSizer(enabled: boolean, containerRef: React.RefObject<HTMLElemen
 function useScrollAwareRendering(enabled: boolean, containerRef: React.RefObject<HTMLElement | null>, resetDelay = 150) {
     const [isScrolling, setIsScrolling] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout>>();
+    const lastScrollTop = useRef(0);
+    const lastScrollTime = useRef(0);
 
     useEffect(() => {
         if (!enabled || !containerRef.current) return;
         const el = containerRef.current;
+        const VELOCITY_THRESHOLD = 2; // px/ms — only activate for fast scroll
         const handleScroll = () => {
-            setIsScrolling(true);
-            if (timerRef.current) clearTimeout(timerRef.current);
-            timerRef.current = setTimeout(() => setIsScrolling(false), resetDelay);
+            const now = Date.now();
+            const dt = now - lastScrollTime.current;
+            const dy = Math.abs(el.scrollTop - lastScrollTop.current);
+            lastScrollTop.current = el.scrollTop;
+            lastScrollTime.current = now;
+            if (dt > 0 && dy / dt > VELOCITY_THRESHOLD) {
+                setIsScrolling(true);
+                if (timerRef.current) clearTimeout(timerRef.current);
+                timerRef.current = setTimeout(() => setIsScrolling(false), resetDelay);
+            }
         };
         el.addEventListener("scroll", handleScroll, { passive: true });
         return () => { el.removeEventListener("scroll", handleScroll); if (timerRef.current) clearTimeout(timerRef.current); };
@@ -3564,6 +3574,29 @@ function DataTableInner<TData extends object>({
     cardImageColumn, cardTitleColumn, cardSubtitleColumn,
     renderMasterDetail, onFindReplace, chartTypes, aiBaseUrl, aiThesys,
 }: DataTableProps<TData>) {
+    // Handle deferred/lazy loading: show skeleton until data is available
+    if (!tableData) {
+        return (
+            <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                    <Skeleton className="h-9 w-64" />
+                    <Skeleton className="h-9 w-24 ml-auto" />
+                    <Skeleton className="h-9 w-24" />
+                </div>
+                <div className="rounded-md border">
+                    <Skeleton className="h-10 w-full rounded-b-none" />
+                    {Array.from({ length: 5 }).map((_, i) => (
+                        <Skeleton key={i} className="h-12 w-full rounded-none border-t" />
+                    ))}
+                </div>
+                <div className="flex items-center justify-between">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-9 w-48" />
+                </div>
+            </div>
+        );
+    }
+
     // Extract column configs from JSX children (<DataTable.Column>)
     const jsxColumnConfigs = useMemo(
         () => children ? extractColumnConfigs<TData>(children) : null,
@@ -3580,7 +3613,7 @@ function DataTableInner<TData extends object>({
     const resolvedOptions = useMemo<DataTableOptions>(() => ({
         quickViews: true, customQuickViews: true, exports: true, filters: true,
         columnVisibility: true, columnOrdering: true, columnResizing: false,
-        stickyHeader: false, globalSearch: false, loading: true,
+        stickyHeader: true, globalSearch: true, loading: true,
         keyboardNavigation: false, printable: false, density: false,
         copyCell: false, contextMenu: false, virtualScrolling: false,
         rowGrouping: false, rowReorder: false, batchEdit: false,
@@ -3612,10 +3645,8 @@ function DataTableInner<TData extends object>({
     const [isNavigating, setIsNavigating] = useState(false);
     useEffect(() => {
         if (!resolvedOptions.loading) return;
-        const startHandler = () => setIsNavigating(true);
-        const finishHandler = () => setIsNavigating(false);
-        const removeStart = router.on("start", startHandler);
-        const removeFinish = router.on("finish", finishHandler);
+        const removeStart = router.on("start", () => setIsNavigating(true));
+        const removeFinish = router.on("finish", () => setIsNavigating(false));
         return () => {
             removeStart();
             removeFinish();
@@ -3738,25 +3769,11 @@ function DataTableInner<TData extends object>({
         });
     }, []);
 
-    // Merge enum options into columns (must be declared before numericCols and useFindReplace)
-    const mergedColumns = useMemo(() => {
-        if (!tableData.enumOptions) return tableData.columns;
-        return tableData.columns.map((col) =>
-            tableData.enumOptions?.[col.id] ? { ...col, options: tableData.enumOptions[col.id] } : col);
-    }, [tableData.columns, tableData.enumOptions]);
-
     // Integrated Charts
     const [chartState, setChartState] = useState<IntegratedChartState | null>(null);
     const resolvedChartTypes = chartTypes ?? (["bar", "line", "pie", "doughnut"] as ChartKind[]);
-    const numericCols = useMemo(() => mergedColumns.filter(c => c.type === "number" || c.type === "currency" || c.type === "percentage"), [mergedColumns]);
-    const openChart = useCallback(() => {
-        const firstNumCol = numericCols[0];
-        if (firstNumCol) setChartState({ columnId: firstNumCol.id, chartType: "bar" });
-    }, [numericCols]);
-
     // Find & Replace
     const [findReplaceOpen, setFindReplaceOpen] = useState(false);
-    const findReplace = useFindReplace(resolvedOptions.findReplace && findReplaceOpen, tableData.data as Record<string, unknown>[], mergedColumns);
 
     // Ctrl+F keyboard shortcut for Find & Replace
     useEffect(() => {
@@ -3771,49 +3788,8 @@ function DataTableInner<TData extends object>({
         return () => document.removeEventListener("keydown", handler);
     }, [resolvedOptions.findReplace]);
 
-    // Find & Replace highlight set for cell rendering
-    const findReplaceHighlights = useMemo<Set<string>>(() => {
-        if (!findReplaceOpen || findReplace.matches.length === 0) return new Set();
-        return new Set(findReplace.matches.map(m => `${m.rowIndex}:${m.columnId}`));
-    }, [findReplaceOpen, findReplace.matches]);
-
-    const findReplaceCurrentKey = findReplace.matches[findReplace.currentIndex]
-        ? `${findReplace.matches[findReplace.currentIndex].rowIndex}:${findReplace.matches[findReplace.currentIndex].columnId}`
-        : null;
-
-    const handleFindReplace = useCallback((match: FindReplaceMatch, newValue: string) => {
-        if (onFindReplace) {
-            const row = tableData.data[match.rowIndex] as Record<string, unknown>;
-            const oldValue = row[match.columnId];
-            const replaced = String(oldValue ?? "").replace(
-                findReplace.caseSensitive ? match.value : new RegExp(findReplace.query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"),
-                newValue
-            );
-            onFindReplace(match.rowId, match.columnId, oldValue, replaced);
-            showToast(t.replaceSuccess(1), "success");
-        }
-    }, [onFindReplace, tableData.data, findReplace.caseSensitive, findReplace.query, t]);
-
-    const handleFindReplaceAll = useCallback((matches: FindReplaceMatch[], replacement: string) => {
-        if (onFindReplace) {
-            for (const match of matches) {
-                const row = tableData.data[match.rowIndex] as Record<string, unknown>;
-                const oldValue = row[match.columnId];
-                const replaced = String(oldValue ?? "").replace(
-                    findReplace.caseSensitive
-                        ? new RegExp(findReplace.query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")
-                        : new RegExp(findReplace.query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"),
-                    replacement
-                );
-                onFindReplace(match.rowId, match.columnId, oldValue, replaced);
-            }
-            showToast(t.replaceSuccess(matches.length), "success");
-        }
-    }, [onFindReplace, tableData.data, findReplace.caseSensitive, findReplace.query, t]);
-
     // Faceted counts: merge from prop and server response
     const facetedCounts = facetedCountsProp ?? tableData.facetedCounts ?? null;
-
 
     // Header filter handler
     const handleHeaderFilterChange = useCallback((columnId: string, value: string) => {
@@ -3960,7 +3936,6 @@ function DataTableInner<TData extends object>({
         setDragFillEndIndex(null);
     }, [dragFillState, dragFillEndIndex, onDragToFill, tableData.data]);
 
-
     // Server-driven action rules helper — matches by action.id first, then falls back to action.label
     const checkActionRule = useCallback((actionId: string | undefined, actionLabel: string, row: Record<string, unknown>): boolean => {
         const rules = tableData.actionRules;
@@ -4015,6 +3990,61 @@ function DataTableInner<TData extends object>({
             filters: tableData.meta.filters, sorts: tableData.meta.sorts, perPage: tableData.meta.perPage,
         }));
     }, [config?.persistState, tableData.meta.filters, tableData.meta.sorts, tableData.meta.perPage, STATE_KEY]);
+
+    // Merge enum options into columns
+    const mergedColumns = useMemo(() => {
+        if (!tableData.enumOptions) return tableData.columns;
+        return tableData.columns.map((col) =>
+            tableData.enumOptions?.[col.id] ? { ...col, options: tableData.enumOptions[col.id] } : col);
+    }, [tableData.columns, tableData.enumOptions]);
+
+    const numericCols = useMemo(() => mergedColumns.filter(c => c.type === "number" || c.type === "currency" || c.type === "percentage"), [mergedColumns]);
+    const findReplace = useFindReplace(resolvedOptions.findReplace && findReplaceOpen, tableData.data as Record<string, unknown>[], mergedColumns);
+
+    const openChart = useCallback(() => {
+        const firstNumCol = numericCols[0];
+        if (firstNumCol) setChartState({ columnId: firstNumCol.id, chartType: "bar" });
+    }, [numericCols]);
+
+    // Find & Replace highlight set for cell rendering
+    const findReplaceHighlights = useMemo<Set<string>>(() => {
+        if (!findReplaceOpen || findReplace.matches.length === 0) return new Set();
+        return new Set(findReplace.matches.map(m => `${m.rowIndex}:${m.columnId}`));
+    }, [findReplaceOpen, findReplace.matches]);
+
+    const findReplaceCurrentKey = findReplace.matches[findReplace.currentIndex]
+        ? `${findReplace.matches[findReplace.currentIndex].rowIndex}:${findReplace.matches[findReplace.currentIndex].columnId}`
+        : null;
+
+    const handleFindReplace = useCallback((match: FindReplaceMatch, newValue: string) => {
+        if (onFindReplace) {
+            const row = tableData.data[match.rowIndex] as Record<string, unknown>;
+            const oldValue = row[match.columnId];
+            const replaced = String(oldValue ?? "").replace(
+                findReplace.caseSensitive ? match.value : new RegExp(findReplace.query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"),
+                newValue
+            );
+            onFindReplace(match.rowId, match.columnId, oldValue, replaced);
+            showToast(t.replaceSuccess(1), "success");
+        }
+    }, [onFindReplace, tableData.data, findReplace.caseSensitive, findReplace.query, t]);
+
+    const handleFindReplaceAll = useCallback((matches: FindReplaceMatch[], replacement: string) => {
+        if (onFindReplace) {
+            for (const match of matches) {
+                const row = tableData.data[match.rowIndex] as Record<string, unknown>;
+                const oldValue = row[match.columnId];
+                const replaced = String(oldValue ?? "").replace(
+                    findReplace.caseSensitive
+                        ? new RegExp(findReplace.query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")
+                        : new RegExp(findReplace.query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"),
+                    replacement
+                );
+                onFindReplace(match.rowId, match.columnId, oldValue, replaced);
+            }
+            showToast(t.replaceSuccess(matches.length), "success");
+        }
+    }, [onFindReplace, tableData.data, findReplace.caseSensitive, findReplace.query, t]);
 
     const columnDefs = useMemo<ColumnDef<TData>[]>(() => {
         function makeLeafCol(col: DataTableColumnDef): ColumnDef<TData> {
@@ -4373,22 +4403,8 @@ function DataTableInner<TData extends object>({
         density === "compact" ? 32 : density === "spacious" ? 52 : 40,
         resolvedOptions.directionalOverscan
     );
-    const treeRows = useMemo(() => {
-        if (!treeConfig?.treeDataEnabled) return null;
-        const parentKey = treeConfig.treeDataParentKey ?? "parent_id";
-        const rows = allRows;
-        // Group rows by parent
-        const childMap = new Map<string | null, typeof rows>();
-        for (const row of rows) {
-            const parentId = String((row.original as Record<string, unknown>)[parentKey] ?? "null");
-            const parent = parentId === "null" || parentId === "undefined" || parentId === "" ? null : parentId;
-            if (!childMap.has(parent)) childMap.set(parent, []);
-            childMap.get(parent)!.push(row);
-        }
-        return childMap;
-    }, [treeConfig, allRows]);
 
-    // Imperative API ref (needs table, meta, scrollToIndex — all available here)
+    // Imperative API ref
     useEffect(() => {
         if (!apiRef) return;
         apiRef.current = {
@@ -4423,7 +4439,7 @@ function DataTableInner<TData extends object>({
         };
     }, [apiRef, table, tableData.exportUrl, visibleColumnIds, meta, scrollToIndex]);
 
-    // Infinite scroll observer (needs meta)
+    // Infinite scroll observer
     useEffect(() => {
         if (!resolvedOptions.infiniteScroll || !onLoadMore || !hasMore) return;
         const sentinel = infiniteScrollSentinelRef.current;
@@ -4438,7 +4454,7 @@ function DataTableInner<TData extends object>({
         return () => observer.disconnect();
     }, [resolvedOptions.infiniteScroll, onLoadMore, hasMore, isLoadingMore, meta.currentPage]);
 
-    // Clipboard paste handler (needs table)
+    // Clipboard paste handler
     useEffect(() => {
         if (!resolvedOptions.clipboardPaste || !onClipboardPaste) return;
         const handlePaste = (e: ClipboardEvent) => {
@@ -4458,6 +4474,21 @@ function DataTableInner<TData extends object>({
         document.addEventListener("paste", handlePaste);
         return () => document.removeEventListener("paste", handlePaste);
     }, [resolvedOptions.clipboardPaste, onClipboardPaste, focusedRowIndex, table, mergedColumns, t]);
+
+    const treeRows = useMemo(() => {
+        if (!treeConfig?.treeDataEnabled) return null;
+        const parentKey = treeConfig.treeDataParentKey ?? "parent_id";
+        const rows = allRows;
+        // Group rows by parent
+        const childMap = new Map<string | null, typeof rows>();
+        for (const row of rows) {
+            const parentId = String((row.original as Record<string, unknown>)[parentKey] ?? "null");
+            const parent = parentId === "null" || parentId === "undefined" || parentId === "" ? null : parentId;
+            if (!childMap.has(parent)) childMap.set(parent, []);
+            childMap.get(parent)!.push(row);
+        }
+        return childMap;
+    }, [treeConfig, allRows]);
 
     const filterColumns = useMemo(() => buildFilterColumns(mergedColumns), [mergedColumns]);
     const selectedRows = useMemo(() => table.getFilteredSelectedRowModel().rows.map((r) => r.original),
@@ -4945,7 +4976,7 @@ function DataTableInner<TData extends object>({
                     tabIndex={resolvedOptions.keyboardNavigation ? 0 : undefined}
                     onKeyDown={resolvedOptions.keyboardNavigation ? handleTableKeyDown : undefined}>
                     <div ref={virtualContainerRef} className={cn("overflow-x-auto", resolvedOptions.virtualScrolling && "max-h-[600px] overflow-y-auto")}
-                        style={resolvedOptions.autoSizer && autoSizerDimensions ? { width: autoSizerDimensions.width, height: autoSizerDimensions.height } : undefined}>
+                        style={autoSizerDimensions ? { width: autoSizerDimensions.width, height: autoSizerDimensions.height } : undefined}>
                         <Table ref={tableElementRef} style={resolvedOptions.columnResizing ? { width: table.getCenterTotalSize() } : undefined}
                             role="grid" aria-rowcount={meta.total} aria-colcount={table.getVisibleLeafColumns().length}>
                             <TableHeader className={cn(resolvedOptions.stickyHeader && "sticky top-0 z-10 bg-background shadow-[0_1px_3px_-1px_rgba(0,0,0,0.1)]")}>

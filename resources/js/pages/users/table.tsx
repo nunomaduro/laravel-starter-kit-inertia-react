@@ -17,12 +17,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
-import { Building2, CheckSquare2, Copy, FilterX, Keyboard, Maximize2, PanelLeft, Trash2, UserPlus, Users } from 'lucide-react';
+import { Building2, Copy, FilterX, Keyboard, Maximize2, Trash2, UserPlus, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -265,39 +264,7 @@ export default function UsersTablePage({
             variant: 'outline',
             onClick: () => void apiRef.current?.autosizeColumns(),
         },
-        {
-            label: 'Select visible',
-            icon: CheckSquare2,
-            variant: 'outline',
-            onClick: () => void apiRef.current?.selectAllVisibleRows(),
-        },
-        {
-            label: 'Pin name+email',
-            icon: PanelLeft,
-            variant: 'outline',
-            onClick: () => void apiRef.current?.setPinningColumns(['name', 'email'], 'left'),
-        },
     ];
-
-    if (!tableData) {
-        return (
-            <AppSidebarLayout breadcrumbs={breadcrumbs}>
-                <Head title="Users" />
-                <div
-                    className="flex h-full flex-1 flex-col gap-4 p-4"
-                    data-pan="users-table"
-                >
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight">
-                            Users
-                        </h1>
-                        <Skeleton className="mt-1 h-5 w-24" />
-                    </div>
-                    <Skeleton className="h-[400px] w-full rounded-md" />
-                </div>
-            </AppSidebarLayout>
-        );
-    }
 
     return (
         <AppSidebarLayout breadcrumbs={breadcrumbs}>
@@ -308,9 +275,7 @@ export default function UsersTablePage({
             >
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Users</h1>
-                    <p className="text-muted-foreground">
-                        {tableData.meta.total} results
-                    </p>
+                    {tableData && <p className="text-muted-foreground">{tableData.meta.total} results</p>}
                     <p className="mt-1 text-xs text-muted-foreground">
                         Quick views = &quot;All&quot; dropdown. Columns = Colonnes. Export = Exporter.
                         {!dataTableAi?.aiBaseUrl && !dataTableAi?.thesysEnabled && (
@@ -524,8 +489,6 @@ export default function UsersTablePage({
                         columnVisibility: true,
                         columnOrdering: true,
                         columnResizing: true,
-                        stickyHeader: true,
-                        globalSearch: true,
                         loading: true,
                         keyboardNavigation: true,
                         printable: true,
@@ -554,7 +517,7 @@ export default function UsersTablePage({
                         autoSizer: true,
                         cellMeasurer: true,
                         scrollAwareRendering: true,
-                        windowScroller: true,
+                        windowScroller: false,
                         directionalOverscan: true,
                         layoutSwitcher: true,
                         columnStatistics: true,

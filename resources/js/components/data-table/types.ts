@@ -381,7 +381,7 @@ export interface DataTableBulkAction<TData> {
 
 export interface DataTableProps<TData extends object> {
     className?: string;
-    tableData: DataTableResponse<TData>;
+    tableData?: DataTableResponse<TData>;
     tableName: string;
     /** Prefix for URL query params — enables multiple tables per page */
     prefix?: string;
