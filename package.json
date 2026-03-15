@@ -55,7 +55,6 @@
     "@tailwindcss/oxide-linux-x64-gnu": "^4.2.1",
     "lightningcss-linux-x64-gnu": "^1.32.0"
   },
-  "packageManager": "pnpm@10.32.1",
   "overrides": {
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",
     "vitest": "npm:@voidzero-dev/vite-plus-test@latest"
