@@ -5,8 +5,8 @@
     "build": "vp build",
     "build:ssr": "vp build && vp build --ssr",
     "dev": "vp dev",
-    "lint": "vp lint --fix && vp fmt resources/",
-    "test:lint": "vp lint --type-aware && vp fmt --check resources/",
+    "lint": "bun ./node_modules/oxlint/bin/oxlint --fix && vp fmt resources/",
+    "test:lint": "bun ./node_modules/oxlint/bin/oxlint --type-aware && vp fmt --check resources/",
     "test:types": "tsc --noEmit"
   },
   "devDependencies": {
