@@ -6,53 +6,53 @@ import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
   lint: {
-      "options": {
-          "typeAware":true,
-          "typeCheck":true
+      options: {
+          typeAware:true,
+          typeCheck:true
       },
-      "plugins": ["eslint", "typescript", "unicorn", "oxc", "react"]
+      plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'react']
   },
   fmt: {
-      "printWidth": 80,
-      "tabWidth": 4,
-      "useTabs": false,
-      "semi": true,
-      "singleQuote": true,
-      "overrides": [
+      printWidth: 80,
+      tabWidth: 4,
+      useTabs: false,
+      semi: true,
+      singleQuote: true,
+      overrides: [
           {
-              "files": ["**/*.yml"],
-              "options": {
-                  "tabWidth": 2
+              files: ['**/*.yml'],
+              options: {
+                  'tabWidth': 2
               }
           }
       ],
-      "sortTailwindcss": {
-          "functions": ["clsx", "cn"],
-          "stylesheet": "resources/css/app.css"
+      sortTailwindcss: {
+          functions: ['clsx', 'cn'],
+          stylesheet: 'resources/css/app.css'
       },
-      "sortImports": {
-          "groups": [
-              "builtin",
-              "external",
-              "internal",
-              "parent",
-              "sibling",
-              "index"
+      sortImports: {
+          groups: [
+              'builtin',
+              'external',
+              'internal',
+              'parent',
+              'sibling',
+              'index'
           ],
-          "newlinesBetween": false
+          newlinesBetween: false
       },
-      "ignorePatterns": [
-          "resources/js/components/ui/*",
-          "resources/views/mail/*",
-          "resources/js/actions/*",
-          "resources/js/routes/*",
-          "resources/js/wayfinder/*"
+      ignorePatterns: [
+          'resources/js/components/ui/*',
+          'resources/views/mail/*',
+          'resources/js/actions/*',
+          'resources/js/routes/*',
+          'resources/js/wayfinder/*'
       ],
   },
   plugins: [
       laravel({
-          input: ["resources/css/app.css", "resources/js/app.tsx"],
-          ssr: "resources/js/ssr.tsx",
+          input: ['resources/css/app.css', 'resources/js/app.tsx'],
+          ssr: 'resources/js/ssr.tsx',
           refresh: true,
       }),
       react(),
