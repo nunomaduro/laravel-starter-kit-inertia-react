@@ -79,5 +79,8 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [reports/edit](./reports/edit.md) | reports.index, reports.create | ✅ |
 | [reports/index](./reports/index.md) | reports.index, reports.create | ✅ |
 | [reports/show](./reports/show.md) | reports.index, reports.create | ✅ |
+| [dashboards/edit](./dashboards/edit.md) | dashboards.index, dashboards.create | ✅ |
+| [dashboards/index](./dashboards/index.md) | dashboards.index, dashboards.create | ✅ |
+| [dashboards/show](./dashboards/show.md) | dashboards.index, dashboards.create | ✅ |
 
 

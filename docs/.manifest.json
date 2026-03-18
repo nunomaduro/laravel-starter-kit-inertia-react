@@ -1746,7 +1746,15 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
                 ]
             }
         },
@@ -2308,7 +2316,15 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
                 ]
             }
         },
@@ -2793,7 +2809,15 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
                 ]
             }
         },
@@ -3221,7 +3245,15 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
                 ]
             }
         },
@@ -3635,7 +3667,15 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
                 ]
             }
         },
@@ -4222,7 +4262,15 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
                 ]
             }
         },
@@ -4564,6 +4612,60 @@
                     "reports.edit",
                     "reports.update",
                     "reports.destroy"
+                ]
+            }
+        },
+        "dashboards/edit": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./dashboards/edit.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": [
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
+                ]
+            }
+        },
+        "dashboards/index": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./dashboards/index.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": [
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
+                ]
+            }
+        },
+        "dashboards/show": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./dashboards/show.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": [
+                    "dashboards.index",
+                    "dashboards.create",
+                    "dashboards.store",
+                    "dashboards.show",
+                    "dashboards.edit",
+                    "dashboards.update",
+                    "dashboards.destroy",
+                    "dashboards.set-default"
                 ]
             }
         }

@@ -20,4 +20,5 @@ return [
     'announcements' => true,
     'gamification' => true,
     'reports' => true,
+    'dashboards' => true,
 ];

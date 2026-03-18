@@ -142,7 +142,9 @@
             "Modules\\Gamification\\": "modules/gamification/src/",
             "Modules\\Gamification\\Database\\": "modules/gamification/database/",
             "Modules\\Reports\\": "modules/reports/src/",
-            "Modules\\Reports\\Database\\": "modules/reports/database/"
+            "Modules\\Reports\\Database\\": "modules/reports/database/",
+            "Modules\\Dashboards\\": "modules/dashboards/src/",
+            "Modules\\Dashboards\\Database\\": "modules/dashboards/database/"
         },
         "files": [
             "bootstrap/helpers.php"
