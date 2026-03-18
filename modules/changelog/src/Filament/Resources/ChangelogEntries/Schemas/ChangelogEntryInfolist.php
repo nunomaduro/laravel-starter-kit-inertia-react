@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ChangelogEntries\Schemas;
+namespace Modules\Changelog\Filament\Resources\ChangelogEntries\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;

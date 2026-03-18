@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ChangelogEntries\Schemas;
+namespace Modules\Changelog\Filament\Resources\ChangelogEntries\Schemas;
 
-use App\Enums\ChangelogType;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
@@ -13,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Modules\Changelog\Enums\ChangelogType;
 
 final class ChangelogEntryForm
 {

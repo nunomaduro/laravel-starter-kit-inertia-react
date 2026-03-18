@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Modules\Changelog\Database\Factories;
 
-use App\Enums\ChangelogType;
-use App\Models\ChangelogEntry;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Changelog\Enums\ChangelogType;
+use Modules\Changelog\Models\ChangelogEntry;
 
 /**
  * @extends Factory<ChangelogEntry>

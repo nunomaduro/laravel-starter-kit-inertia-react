@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Features\ApiAccessFeature;
 use App\Features\AppearanceSettingsFeature;
 use App\Features\BlogFeature;
-use App\Features\ChangelogFeature;
 use App\Features\ComponentShowcaseFeature;
 use App\Features\CookieConsentFeature;
 use App\Features\GamificationFeature;
@@ -16,6 +15,7 @@ use App\Features\ProfilePdfExportFeature;
 use App\Features\RegistrationFeature;
 use App\Features\ScrambleApiDocsFeature;
 use App\Features\TwoFactorAuthFeature;
+use Modules\Changelog\Features\ChangelogFeature;
 use Modules\Contact\Features\ContactFeature;
 use Modules\Help\Features\HelpFeature;
 

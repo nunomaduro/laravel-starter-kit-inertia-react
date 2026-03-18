@@ -132,7 +132,9 @@
             "Modules\\Contact\\": "modules/contact/src/",
             "Modules\\Contact\\Database\\": "modules/contact/database/",
             "Modules\\Help\\": "modules/help/src/",
-            "Modules\\Help\\Database\\": "modules/help/database/"
+            "Modules\\Help\\Database\\": "modules/help/database/",
+            "Modules\\Changelog\\": "modules/changelog/src/",
+            "Modules\\Changelog\\Database\\": "modules/changelog/database/"
         },
         "files": [
             "bootstrap/helpers.php"

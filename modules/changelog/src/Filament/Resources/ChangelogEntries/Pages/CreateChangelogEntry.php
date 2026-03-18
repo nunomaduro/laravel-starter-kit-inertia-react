@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ChangelogEntries\Pages;
+namespace Modules\Changelog\Filament\Resources\ChangelogEntries\Pages;
 
-use App\Filament\Resources\ChangelogEntries\ChangelogEntryResource;
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\ChangelogEntryResource;
 
 final class CreateChangelogEntry extends CreateRecord
 {

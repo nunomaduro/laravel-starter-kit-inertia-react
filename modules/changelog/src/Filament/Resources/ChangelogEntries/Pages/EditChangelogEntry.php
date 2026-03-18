@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ChangelogEntries\Pages;
+namespace Modules\Changelog\Filament\Resources\ChangelogEntries\Pages;
 
-use App\Filament\Resources\ChangelogEntries\ChangelogEntryResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\ChangelogEntryResource;
 
 final class EditChangelogEntry extends EditRecord
 {

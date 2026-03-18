@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ChangelogEntries\Tables;
+namespace Modules\Changelog\Filament\Resources\ChangelogEntries\Tables;
 
-use App\Enums\ChangelogType;
 use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -16,6 +15,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Modules\Changelog\Enums\ChangelogType;
 
 final class ChangelogEntriesTable
 {

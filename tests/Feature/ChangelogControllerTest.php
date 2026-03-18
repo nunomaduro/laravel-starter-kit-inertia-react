@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\ChangelogEntry;
+use Modules\Changelog\Models\ChangelogEntry;
 
 it('renders changelog index with published entries', function (): void {
     ChangelogEntry::factory()->published()->create(['title' => 'New feature']);

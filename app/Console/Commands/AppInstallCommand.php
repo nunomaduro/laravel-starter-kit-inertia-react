@@ -152,7 +152,7 @@ final class AppInstallCommand extends Command
                 \Database\Seeders\Development\PageSeeder::class,
                 \Database\Seeders\Development\PageRevisionSeeder::class,
                 \Database\Seeders\Development\HelpArticleSeeder::class,
-                \Database\Seeders\Development\ChangelogEntrySeeder::class,
+                \Modules\Changelog\Database\Seeders\ChangelogEntrySeeder::class,
             ],
         ],
         'marketing' => [

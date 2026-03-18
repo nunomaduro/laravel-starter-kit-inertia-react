@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use App\Features\BlogFeature;
-use App\Features\ChangelogFeature;
-use App\Models\ChangelogEntry;
 use App\Models\Organization;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\TenantContext;
 use Laravel\Pennant\Feature;
+use Modules\Changelog\Features\ChangelogFeature;
+use Modules\Changelog\Models\ChangelogEntry;
 use Modules\Help\Features\HelpFeature;
 use Modules\Help\Models\HelpArticle;
 

@@ -2,17 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ChangelogEntries;
+namespace Modules\Changelog\Filament\Resources\ChangelogEntries;
 
-use App\Features\ChangelogFeature;
-use App\Filament\Resources\ChangelogEntries\Pages\CreateChangelogEntry;
-use App\Filament\Resources\ChangelogEntries\Pages\EditChangelogEntry;
-use App\Filament\Resources\ChangelogEntries\Pages\ListChangelogEntries;
-use App\Filament\Resources\ChangelogEntries\Pages\ViewChangelogEntry;
-use App\Filament\Resources\ChangelogEntries\Schemas\ChangelogEntryForm;
-use App\Filament\Resources\ChangelogEntries\Schemas\ChangelogEntryInfolist;
-use App\Filament\Resources\ChangelogEntries\Tables\ChangelogEntriesTable;
-use App\Models\ChangelogEntry;
 use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -21,6 +12,15 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Modules\Changelog\Features\ChangelogFeature;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\Pages\CreateChangelogEntry;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\Pages\EditChangelogEntry;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\Pages\ListChangelogEntries;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\Pages\ViewChangelogEntry;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\Schemas\ChangelogEntryForm;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\Schemas\ChangelogEntryInfolist;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\Tables\ChangelogEntriesTable;
+use Modules\Changelog\Models\ChangelogEntry;
 use UnitEnum;
 
 final class ChangelogEntryResource extends Resource

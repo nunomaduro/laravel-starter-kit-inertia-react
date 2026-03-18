@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace Modules\Changelog\Models;
 
-use App\Enums\ChangelogType;
 use App\Models\Concerns\BelongsToOrganization;
-use Database\Factories\ChangelogEntryFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Mattiverse\Userstamps\Traits\Userstamps;
+use Modules\Changelog\Database\Factories\ChangelogEntryFactory;
+use Modules\Changelog\Enums\ChangelogType;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Tags\HasTags;
@@ -77,6 +77,11 @@ final class ChangelogEntry extends Model
             'created_at' => $this->created_at?->timestamp ?? 0,
             'updated_at' => $this->updated_at?->timestamp ?? 0,
         ];
+    }
+
+    protected static function newFactory(): ChangelogEntryFactory
+    {
+        return ChangelogEntryFactory::new();
     }
 
     protected function casts(): array

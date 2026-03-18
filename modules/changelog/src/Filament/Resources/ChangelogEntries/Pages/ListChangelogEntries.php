@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ChangelogEntries\Pages;
+namespace Modules\Changelog\Filament\Resources\ChangelogEntries\Pages;
 
-use App\Filament\Resources\ChangelogEntries\ChangelogEntryResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Modules\Changelog\Filament\Resources\ChangelogEntries\ChangelogEntryResource;
 
 final class ListChangelogEntries extends ListRecords
 {

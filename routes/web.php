@@ -18,7 +18,6 @@ use App\Http\Controllers\Billing\PricingController;
 use App\Http\Controllers\Billing\StripeWebhookController;
 use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\CategoriesTableController;
-use App\Http\Controllers\Changelog\ChangelogController;
 use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Dev\ComponentShowcaseController;
@@ -122,10 +121,6 @@ Route::prefix('blog')->name('blog.')->middleware('feature:blog')->group(function
     Route::get('/', [BlogController::class, 'index'])->name('index');
     Route::get('/{post:slug}', [BlogController::class, 'show'])->name('show');
 });
-
-Route::get('changelog', [ChangelogController::class, 'index'])
-    ->middleware('feature:changelog')
-    ->name('changelog.index');
 
 Route::get('pricing', [PricingController::class, 'index'])->name('pricing');
 

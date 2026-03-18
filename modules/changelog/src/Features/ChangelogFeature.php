@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Features;
+namespace Modules\Changelog\Features;
 
 use Stephenjude\FilamentFeatureFlag\Traits\WithFeatureResolver;
 

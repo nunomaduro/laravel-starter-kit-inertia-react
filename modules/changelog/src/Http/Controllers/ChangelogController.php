@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Changelog;
+namespace Modules\Changelog\Http\Controllers;
 
-use App\Models\ChangelogEntry;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Changelog\Models\ChangelogEntry;
 
 final class ChangelogController
 {

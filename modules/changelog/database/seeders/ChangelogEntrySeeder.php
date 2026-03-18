@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders\Development;
+namespace Modules\Changelog\Database\Seeders;
 
-use App\Enums\ChangelogType;
-use App\Models\ChangelogEntry;
 use Database\Seeders\Concerns\LoadsJsonData;
 use Illuminate\Database\Seeder;
+use Modules\Changelog\Enums\ChangelogType;
+use Modules\Changelog\Models\ChangelogEntry;
 use RuntimeException;
 
 final class ChangelogEntrySeeder extends Seeder
