@@ -100,4 +100,24 @@ final class ModuleLoader
     {
         return (bool) config("modules.{$name}", false);
     }
+
+    /**
+     * Write a module's enabled/disabled state to config/modules.php on disk.
+     *
+     * @param  array<string, bool>  $modules  The full modules map with the updated state.
+     */
+    public static function writeConfig(array $modules): void
+    {
+        $configPath = config_path('modules.php');
+
+        $entries = [];
+        foreach ($modules as $moduleName => $moduleEnabled) {
+            $value = $moduleEnabled ? 'true' : 'false';
+            $entries[] = "    '{$moduleName}' => {$value},";
+        }
+
+        $content = "<?php\n\ndeclare(strict_types=1);\n\nreturn [\n".implode("\n", $entries)."\n];\n";
+
+        file_put_contents($configPath, $content);
+    }
 }
