@@ -19,4 +19,5 @@ return [
     'contact' => true,
     'announcements' => true,
     'gamification' => true,
+    'reports' => true,
 ];

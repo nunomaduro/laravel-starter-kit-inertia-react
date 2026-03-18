@@ -140,7 +140,9 @@
             "Modules\\Blog\\": "modules/blog/src/",
             "Modules\\Blog\\Database\\": "modules/blog/database/",
             "Modules\\Gamification\\": "modules/gamification/src/",
-            "Modules\\Gamification\\Database\\": "modules/gamification/database/"
+            "Modules\\Gamification\\Database\\": "modules/gamification/database/",
+            "Modules\\Reports\\": "modules/reports/src/",
+            "Modules\\Reports\\Database\\": "modules/reports/database/"
         },
         "files": [
             "bootstrap/helpers.php"

@@ -62,8 +62,8 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [pages/index](./pages/index.md) | pages.index, pages.create | ✅ |
 | [pages/show](./pages/show.md) | pages.index, pages.create | ✅ |
 | [settings/branding](./settings/branding.md) | settings.branding.edit, settings.branding.update | ✅ |
-| [dev/components](docs/developer/frontend/pages/dev/components.md) | N/A | ✅ |
-| dev/pages | N/A | ✅ |
+| [dev/components](docs/developer/frontend/pages/dev/components.md) | dev.components | ✅ |
+| dev/pages | dev.pages | ✅ |
 | error | N/A | ✅ |
 | [settings/audit-log](docs/developer/frontend/pages/settings/audit-log.md) | settings.audit-log | ✅ |
 | settings/features | settings.features.show, settings.features.update | ✅ |
@@ -76,5 +76,8 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [categories/table](./categories/table.md) | categories.table | ✅ |
 | [organizations/table](./organizations/table.md) | organizations.list | ✅ |
 | [posts/table](./posts/table.md) | posts.table | ✅ |
+| [reports/edit](./reports/edit.md) | reports.index, reports.create | ✅ |
+| [reports/index](./reports/index.md) | reports.index, reports.create | ✅ |
+| [reports/show](./reports/show.md) | reports.index, reports.create | ✅ |
 
 

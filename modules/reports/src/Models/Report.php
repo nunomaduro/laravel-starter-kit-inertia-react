@@ -1,0 +1,45 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Reports\Models;
+
+use App\Models\Concerns\BelongsToOrganization;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Reports\Enums\OutputFormat;
+
+/**
+ * @property int $id
+ * @property int $organization_id
+ * @property string $name
+ * @property array<string, mixed>|null $puck_json
+ * @property string|null $schedule
+ * @property OutputFormat $output_format
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
+final class Report extends Model
+{
+    use BelongsToOrganization;
+    use HasFactory;
+
+    /** @var list<string> */
+    protected $fillable = [
+        'name',
+        'puck_json',
+        'schedule',
+        'output_format',
+    ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'puck_json' => 'array',
+            'output_format' => OutputFormat::class,
+        ];
+    }
+}
