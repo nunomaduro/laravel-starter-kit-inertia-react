@@ -41,7 +41,6 @@ use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\PersonalDataExportController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessionController;
-use App\Http\Controllers\Settings\AchievementsController;
 use App\Http\Controllers\Settings\AuditLogController;
 use App\Http\Controllers\Settings\BrandingController;
 use App\Http\Controllers\Settings\NotificationPreferencesController;
@@ -257,10 +256,6 @@ Route::middleware('auth')->group(function (): void {
     Route::get('settings/two-factor', [UserTwoFactorAuthenticationController::class, 'show'])
         ->middleware('feature:two_factor_auth')
         ->name('two-factor.show');
-
-    Route::get('settings/achievements', [AchievementsController::class, 'show'])
-        ->middleware('feature:gamification')
-        ->name('achievements.show');
 
     Route::get('settings/notifications', [NotificationPreferencesController::class, 'show'])->name('settings.notifications.show');
     Route::patch('settings/notifications', [NotificationPreferencesController::class, 'update'])->name('settings.notifications.update');

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Listeners\Gamification;
+namespace Modules\Gamification\Listeners;
 
 use App\Events\User\UserCreated;
-use App\Features\GamificationFeature;
 use App\Support\FeatureHelper;
+use Modules\Gamification\Features\GamificationFeature;
 use Throwable;
 
 final class GrantGamificationOnUserCreated

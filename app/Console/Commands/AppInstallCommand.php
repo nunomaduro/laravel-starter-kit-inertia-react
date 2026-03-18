@@ -328,7 +328,7 @@ final class AppInstallCommand extends Command
                 'Seeding roles and permissions…'
             );
             spin(
-                fn () => Artisan::call('db:seed', ['--class' => \Database\Seeders\Essential\GamificationSeeder::class, '--force' => true]),
+                fn () => Artisan::call('db:seed', ['--class' => \Modules\Gamification\Database\Seeders\GamificationSeeder::class, '--force' => true]),
                 'Seeding gamification levels and achievements…'
             );
             spin(

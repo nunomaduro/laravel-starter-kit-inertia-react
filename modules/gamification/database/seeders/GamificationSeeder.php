@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders\Essential;
+namespace Modules\Gamification\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use LevelUp\Experience\Models\Achievement;

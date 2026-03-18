@@ -104,7 +104,7 @@ final class AppUpgradeCommand extends Command
     {
         $seeders = [
             \Database\Seeders\Essential\RolesAndPermissionsSeeder::class => 'Seeding roles and permissions…',
-            \Database\Seeders\Essential\GamificationSeeder::class => 'Seeding gamification data…',
+            \Modules\Gamification\Database\Seeders\GamificationSeeder::class => 'Seeding gamification data…',
             \Database\Seeders\Essential\MailTemplatesSeeder::class => 'Seeding mail templates…',
             \GeneaLabs\LaravelGovernor\Database\Seeders\LaravelGovernorDatabaseSeeder::class => 'Seeding Governor (entities, roles)…',
         ];

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Settings;
+namespace Modules\Gamification\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;

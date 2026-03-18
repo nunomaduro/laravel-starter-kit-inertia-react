@@ -1,0 +1,9 @@
+{
+    "name": "gamification",
+    "label": "Gamification",
+    "description": "Badges, points, levels, and achievements for users.",
+    "provider": "Modules\\Gamification\\GamificationServiceProvider",
+    "seeders": [
+        "Modules\\Gamification\\Database\\Seeders\\GamificationSeeder"
+    ]
+}

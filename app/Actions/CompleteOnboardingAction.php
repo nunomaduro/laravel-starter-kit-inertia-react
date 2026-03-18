@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Features\GamificationFeature;
 use App\Models\User;
 use App\Support\FeatureHelper;
 use LevelUp\Experience\Models\Achievement;
+use Modules\Gamification\Features\GamificationFeature;
 use Throwable;
 
 final readonly class CompleteOnboardingAction

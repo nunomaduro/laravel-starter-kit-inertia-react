@@ -13,7 +13,6 @@ use App\Events\User\UserCreated;
 use App\Listeners\Billing\AddCreditsFromLemonSqueezyOrder;
 use App\Listeners\Billing\SyncSubscriptionSeatsOnMemberChange;
 use App\Listeners\CreatePersonalOrganizationOnUserCreated;
-use App\Listeners\Gamification\GrantGamificationOnUserCreated;
 use App\Listeners\LogImpersonationEvents;
 use App\Listeners\MigrationListener;
 use App\Listeners\SendSlackAlertOnJobFailed;
@@ -131,7 +130,6 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(EnterImpersonation::class, [LogImpersonationEvents::class, 'handleEnterImpersonation']);
         Event::listen(LeaveImpersonation::class, [LogImpersonationEvents::class, 'handleLeaveImpersonation']);
         Event::listen(JobFailed::class, SendSlackAlertOnJobFailed::class);
-        Event::listen(UserCreated::class, GrantGamificationOnUserCreated::class);
         Event::listen(UserCreated::class, CreatePersonalOrganizationOnUserCreated::class);
         Event::listen(OrganizationMemberAdded::class, SyncSubscriptionSeatsOnMemberChange::class);
         Event::listen(OrganizationMemberRemoved::class, SyncSubscriptionSeatsOnMemberChange::class);

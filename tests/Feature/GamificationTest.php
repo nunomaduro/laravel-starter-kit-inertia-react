@@ -5,10 +5,10 @@ declare(strict_types=1);
 use App\Actions\CompleteOnboardingAction;
 use App\Events\User\UserCreated;
 use App\Models\User;
-use Database\Seeders\Essential\GamificationSeeder;
 use Illuminate\Support\Facades\Event;
 use LevelUp\Experience\Models\Achievement;
 use LevelUp\Experience\Models\Level;
+use Modules\Gamification\Database\Seeders\GamificationSeeder;
 
 beforeEach(function (): void {
     $this->seed(GamificationSeeder::class);

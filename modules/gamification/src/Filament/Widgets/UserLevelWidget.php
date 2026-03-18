@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Widgets;
+namespace Modules\Gamification\Filament\Widgets;
 
 use App\Support\FeatureHelper;
 use Filament\Widgets\StatsOverviewWidget as BaseStatsOverviewWidget;

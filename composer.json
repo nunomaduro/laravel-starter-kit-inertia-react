@@ -138,7 +138,9 @@
             "Modules\\Announcements\\": "modules/announcements/src/",
             "Modules\\Announcements\\Database\\": "modules/announcements/database/",
             "Modules\\Blog\\": "modules/blog/src/",
-            "Modules\\Blog\\Database\\": "modules/blog/database/"
+            "Modules\\Blog\\Database\\": "modules/blog/database/",
+            "Modules\\Gamification\\": "modules/gamification/src/",
+            "Modules\\Gamification\\Database\\": "modules/gamification/database/"
         },
         "files": [
             "bootstrap/helpers.php"

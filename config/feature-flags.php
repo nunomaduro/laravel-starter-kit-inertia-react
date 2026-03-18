@@ -6,7 +6,6 @@ use App\Features\ApiAccessFeature;
 use App\Features\AppearanceSettingsFeature;
 use App\Features\ComponentShowcaseFeature;
 use App\Features\CookieConsentFeature;
-use App\Features\GamificationFeature;
 use App\Features\ImpersonationFeature;
 use App\Features\OnboardingFeature;
 use App\Features\PersonalDataExportFeature;
@@ -17,6 +16,7 @@ use App\Features\TwoFactorAuthFeature;
 use Modules\Blog\Features\BlogFeature;
 use Modules\Changelog\Features\ChangelogFeature;
 use Modules\Contact\Features\ContactFeature;
+use Modules\Gamification\Features\GamificationFeature;
 use Modules\Help\Features\HelpFeature;
 
 return [
