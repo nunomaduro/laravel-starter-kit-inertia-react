@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactSubmission;
 use App\Models\Organization;
 use App\Models\User;
 use Closure;
@@ -13,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Contact\Models\ContactSubmission;
 
 final class DashboardController
 {

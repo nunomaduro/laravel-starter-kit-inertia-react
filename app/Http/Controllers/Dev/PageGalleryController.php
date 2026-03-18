@@ -279,7 +279,7 @@ final class PageGalleryController
                 'route' => 'help.index',
                 'url' => route('help.index'),
                 'component' => 'pages/help-center/index.tsx',
-                'controller' => 'app/Http/Controllers/HelpCenter/HelpCenterController.php',
+                'controller' => 'modules/help/src/Http/Controllers/HelpCenterController.php',
                 'tags' => ['help', 'knowledge-base', 'search', 'public'],
                 'guestOnly' => false,
                 'color' => 'indigo',
