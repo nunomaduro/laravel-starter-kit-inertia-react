@@ -2445,7 +2445,7 @@ Supported providers: `google`, `github` (controlled by `AuthSettings::google_oau
 
 ## BlogController
 
-**Controller**: `App\Http\Controllers\Blog\BlogController`
+**Controller**: `Modules\Blog\Http\Controllers\BlogController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
@@ -2476,12 +2476,12 @@ Supported providers: `google`, `github` (controlled by `AuthSettings::google_oau
 **Middleware**: web, feature:blog
 
 **Method Parameters**:
-- `post`: `App\Models\Post`
+- `post`: `Modules\Blog\Models\Post`
 
 
 ## ChangelogController
 
-**Controller**: `App\Http\Controllers\Changelog\ChangelogController`
+**Controller**: `Modules\Changelog\Http\Controllers\ChangelogController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
@@ -2500,7 +2500,7 @@ Supported providers: `google`, `github` (controlled by `AuthSettings::google_oau
 
 ## HelpCenterController
 
-**Controller**: `App\Http\Controllers\HelpCenter\HelpCenterController`
+**Controller**: `Modules\Help\Http\Controllers\HelpCenterController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
@@ -2531,7 +2531,7 @@ Supported providers: `google`, `github` (controlled by `AuthSettings::google_oau
 **Middleware**: web, feature:help
 
 **Method Parameters**:
-- `helpArticle`: `App\Models\HelpArticle`
+- `helpArticle`: `Modules\Help\Models\HelpArticle`
 
 
 ## PricingController
@@ -2555,7 +2555,7 @@ Supported providers: `google`, `github` (controlled by `AuthSettings::google_oau
 
 ## ContactSubmissionController
 
-**Controller**: `App\Http\Controllers\ContactSubmissionController`
+**Controller**: `Modules\Contact\Http\Controllers\ContactSubmissionController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|

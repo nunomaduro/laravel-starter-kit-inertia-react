@@ -1,4 +1,6 @@
-# Site-wide announcements
+# Site-wide announcements (Announcements Module)
+
+> **Module location:** `modules/announcements/` — enable/disable via `config/modules.php` or `php artisan module:enable announcements`.
 
 Site-wide announcements let super-admins and org admins display dismissible banners to users. Announcements can be **global** (all users) or **organization-scoped** (only members of a given organization).
 
@@ -10,9 +12,9 @@ Site-wide announcements let super-admins and org admins display dismissible bann
 
 ## Model and database
 
-- **Model:** `App\Models\Announcement`
+- **Model:** `Modules\Announcements\Models\Announcement`
 - **Table:** `announcements` — `id`, `title`, `body`, `level` (info, warning, maintenance), `scope` (global, organization), `organization_id` (nullable), `starts_at`, `ends_at`, `is_active`, `created_by`, `timestamps`
-- **Enums:** `App\Enums\AnnouncementLevel` (Info, Warning, Maintenance), `App\Enums\AnnouncementScope` (Global, Organization)
+- **Enums:** `Modules\Announcements\Enums\AnnouncementLevel` (Info, Warning, Maintenance), `Modules\Announcements\Enums\AnnouncementScope` (Global, Organization)
 - **Scope:** `Announcement::active()` — `is_active` true, `starts_at` in the past or null, `ends_at` in the future or null
 
 ## Permissions
@@ -24,11 +26,11 @@ Run `php artisan permission:sync` after changing organization permissions so org
 
 ## Policy
 
-- **App\Policies\AnnouncementPolicy:** `viewAny` / `view` allow any authenticated user. `create` allows users with `announcements.manage_global` or `announcements.manage` in the current org (when tenant context is set). `update` / `delete` allow super-admin for any announcement; org admin only for organization-scoped announcements belonging to their org.
+- **Modules\Announcements\Policies\AnnouncementPolicy:** `viewAny` / `view` allow any authenticated user. `create` allows users with `announcements.manage_global` or `announcements.manage` in the current org (when tenant context is set). `update` / `delete` allow super-admin for any announcement; org admin only for organization-scoped announcements belonging to their org.
 
 ## Filament
 
-- **Resource:** `App\Filament\Resources\Announcements\AnnouncementResource` (admin panel, Content group)
+- **Resource:** `Modules\Announcements\Filament\Resources\Announcements\AnnouncementResource` (admin panel, Content group)
 - **Access:** `canAccess()` — user has `announcements.manage_global` or has `announcements.manage` in the current organization.
 - **Query:** Super-admin sees all announcements; others see global plus current tenant’s announcements (`getEloquentQuery()`).
 - **Form:** Title, body, level, scope (super-admin only), organization (super-admin only when scope is organization), is_active, starts_at, ends_at. Non–super-admin create flow sets scope to organization and organization_id to current tenant in `CreateAnnouncement::mutateFormDataBeforeCreate()`.

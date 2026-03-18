@@ -138,7 +138,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Post;
+use Modules\Blog\Models\Post;
 use Database\Seeders\Concerns\LoadsJsonData;
 use Illuminate\Database\Seeder;
 

@@ -1747,6 +1747,8 @@
                     "reports.edit",
                     "reports.update",
                     "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download",
                     "dashboards.index",
                     "dashboards.create",
                     "dashboards.store",
@@ -2317,6 +2319,8 @@
                     "reports.edit",
                     "reports.update",
                     "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download",
                     "dashboards.index",
                     "dashboards.create",
                     "dashboards.store",
@@ -2810,6 +2814,8 @@
                     "reports.edit",
                     "reports.update",
                     "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download",
                     "dashboards.index",
                     "dashboards.create",
                     "dashboards.store",
@@ -3246,6 +3252,8 @@
                     "reports.edit",
                     "reports.update",
                     "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download",
                     "dashboards.index",
                     "dashboards.create",
                     "dashboards.store",
@@ -3668,6 +3676,8 @@
                     "reports.edit",
                     "reports.update",
                     "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download",
                     "dashboards.index",
                     "dashboards.create",
                     "dashboards.store",
@@ -4263,6 +4273,8 @@
                     "reports.edit",
                     "reports.update",
                     "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download",
                     "dashboards.index",
                     "dashboards.create",
                     "dashboards.store",
@@ -4577,7 +4589,9 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download"
                 ]
             }
         },
@@ -4594,7 +4608,9 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download"
                 ]
             }
         },
@@ -4611,7 +4627,9 @@
                     "reports.show",
                     "reports.edit",
                     "reports.update",
-                    "reports.destroy"
+                    "reports.destroy",
+                    "reports.export",
+                    "reports.outputs.download"
                 ]
             }
         },

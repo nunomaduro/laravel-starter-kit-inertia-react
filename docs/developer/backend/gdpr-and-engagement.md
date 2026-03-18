@@ -15,9 +15,9 @@
 
 ## Contact form
 
-- **Model**: `App\Models\ContactSubmission` (name, email, subject, message, status).
+- **Model**: `Modules\Contact\Models\ContactSubmission` (name, email, subject, message, status).
 - **Routes**: GET `contact` → Inertia `contact/create`; POST `contact` with `ProtectAgainstSpam` → `ContactSubmissionController@store`.
-- **Action**: `App\Actions\StoreContactSubmission`.
+- **Action**: `Modules\Contact\Actions\StoreContactSubmission`.
 - **Filament**: `ContactSubmissionResource` under “Engagement” (list, view, edit status; create disabled). Submissions are only created from the public form.
 - **Frontend**: `resources/js/pages/contact/create.tsx`; includes `HoneypotFields`. “Contact” link on welcome page.
 

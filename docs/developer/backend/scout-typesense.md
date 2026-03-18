@@ -42,7 +42,7 @@ The following models use the `Laravel\Scout\Searchable` trait and are indexed fo
 
 Search parameters: `query_by: name,email`
 
-### Post (`App\Models\Post`)
+### Post (`Modules\Blog\Models\Post`)
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -53,7 +53,7 @@ Search parameters: `query_by: name,email`
 | `created_at` | `int64` | UNIX timestamp |
 | `updated_at` | `int64` | UNIX timestamp |
 
-### HelpArticle (`App\Models\HelpArticle`)
+### HelpArticle (`Modules\Help\Models\HelpArticle`)
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -65,7 +65,7 @@ Search parameters: `query_by: name,email`
 | `created_at` | `int64` | UNIX timestamp |
 | `updated_at` | `int64` | UNIX timestamp |
 
-### ChangelogEntry (`App\Models\ChangelogEntry`)
+### ChangelogEntry (`Modules\Changelog\Models\ChangelogEntry`)
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -135,9 +135,9 @@ After enabling Typesense or adding a new searchable model, import existing recor
 ```bash
 # Import all records for a model
 php artisan scout:import "App\Models\User"
-php artisan scout:import "App\Models\Post"
-php artisan scout:import "App\Models\HelpArticle"
-php artisan scout:import "App\Models\ChangelogEntry"
+php artisan scout:import "Modules\Blog\Models\Post"
+php artisan scout:import "Modules\Help\Models\HelpArticle"
+php artisan scout:import "Modules\Changelog\Models\ChangelogEntry"
 
 # Flush all indexed documents for a model
 php artisan scout:flush "App\Models\User"
@@ -200,9 +200,9 @@ TYPESENSE_PROTOCOL=https
 
 ```bash
 php artisan scout:import "App\Models\User"
-php artisan scout:import "App\Models\Post"
-php artisan scout:import "App\Models\HelpArticle"
-php artisan scout:import "App\Models\ChangelogEntry"
+php artisan scout:import "Modules\Blog\Models\Post"
+php artisan scout:import "Modules\Help\Models\HelpArticle"
+php artisan scout:import "Modules\Changelog\Models\ChangelogEntry"
 ```
 
 ### Self-hosted Typesense
