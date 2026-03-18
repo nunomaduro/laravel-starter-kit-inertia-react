@@ -10,6 +10,7 @@ use App\Models\Concerns\HasOrganizationPermissions;
 use App\Services\TenantContext;
 use App\Support\FeatureHelper;
 use App\Traits\Billing\HasAffiliate;
+use Askedio\SoftCascade\Traits\SoftCascadeTrait;
 use BeyondCode\Vouchers\Traits\CanRedeemVouchers;
 use Carbon\CarbonInterface;
 use DateTimeInterface;
@@ -87,8 +88,19 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     use Referrable;
     use Searchable;
     use SnoozeNotifiable;
+    use SoftCascadeTrait;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
+
+    /**
+     * @var list<string>
+     */
+    protected $softCascade = [
+        'ownedOrganizations',
+        'socialAccounts',
+        'termsAcceptances',
+        'notificationPreferences',
+    ];
 
     /**
      * @var list<string>

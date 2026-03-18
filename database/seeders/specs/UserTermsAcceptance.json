@@ -41,6 +41,11 @@
             "type": "timestamp",
             "nullable": true,
             "default": null
+        },
+        "deleted_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
         }
     },
     "relationships": {

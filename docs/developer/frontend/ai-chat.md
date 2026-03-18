@@ -2,6 +2,14 @@
 
 The chat UI uses **@tanstack/ai-react** `useChat` with a **fetchHttpStream** connection to the Laravel `/api/chat` endpoint, which streams NDJSON in the AG-UI protocol. Conversations are persisted; the page shows a conversation list and loads messages by conversation id.
 
+## Assistant UI (modal / overlay)
+
+The **Assistant Modal** (`AssistantModal`, used for on-demand overlays) is powered by **@assistant-ui/react** and a **Laravel chat adapter** instead of TanStack useChat:
+
+- **Adapter**: `resources/js/components/ai/laravel-chat-adapter.ts` — `createLaravelChatAdapter({ endpoint, model?, headers?, systemPrompt? })` returns a runtime adapter that POSTs to the given Laravel streaming endpoint (SSE or JSON), maps messages to the format the backend expects, and yields assistant replies (streamed or single) into assistant-ui’s thread.
+- **Thread**: `resources/js/components/ai/assistant-thread-aui.tsx` — `AssistantThreadAui` wraps assistant-ui’s `ThreadPrimitive.Root`, `ThreadPrimitive.Messages`, and `ComposerPrimitive` with `AssistantRuntimeProvider` and `useLocalRuntime(createLaravelChatAdapter(...))`.
+- **Modal**: `resources/js/components/ai/assistant-modal.tsx` — Renders a dialog that uses `AssistantThreadAui` with the same props (`endpoint`, `model`, `headers`, `systemPrompt`, `placeholder`). The full chat page (`/chat`) still uses the custom TanStack-based implementation; only the modal (and optionally the sidebar) use assistant-ui.
+
 ## Page
 
 - **Route**: GET `/chat` (name: `chat`). Optional query `?conversation={id}` to open a specific conversation.

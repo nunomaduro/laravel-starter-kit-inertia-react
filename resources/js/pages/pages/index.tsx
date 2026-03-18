@@ -2,6 +2,7 @@ import PageController from '@/actions/App/Http/Controllers/PageController';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Form, Head, Link } from '@inertiajs/react';
 import { Copy, FileText, Pencil, Plus, Trash2 } from 'lucide-react';
 
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export default function PagesIndex({ pages }: Props) {
+    const [autoAnimateParent] = useAutoAnimate({ duration: 200 });
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: dashboard().url },
         { title: 'Pages', href: PageController.index().url },
@@ -63,7 +65,10 @@ export default function PagesIndex({ pages }: Props) {
                         </Button>
                     </div>
                 ) : (
-                    <ul className="space-y-2">
+                    <ul
+                        ref={autoAnimateParent}
+                        className="space-y-2"
+                    >
                         {pages.map((page) => (
                             <li
                                 key={page.id}

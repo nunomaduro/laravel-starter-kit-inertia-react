@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -15,11 +16,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $token
  * @property string|null $refresh_token
  * @property \Carbon\Carbon|null $token_expires_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read User $user
  */
 final class SocialAccount extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',

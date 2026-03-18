@@ -166,17 +166,21 @@ State machines for workflows (draft → published, pending → shipped).
 
 ## Soft Cascade
 
-Cascade soft deletes and restores to related models.
+Cascade soft deletes and restores to related models. Implemented via **askedio/laravel-soft-cascade**.
 
-**Usage:**
-1. Add `SoftDeletes` to models.
-2. Use `SoftCascade` trait and define `$softCascade`:
+**In this app:**
+- **User** uses `Askedio\SoftCascade\Traits\SoftCascadeTrait` with `$softCascade = ['ownedOrganizations', 'socialAccounts', 'termsAcceptances', 'notificationPreferences']`. When a user is soft-deleted, their owned organizations, social accounts, terms acceptances, and notification preferences are soft-deleted.
+- **Organization** uses `SoftCascadeTrait` with `$softCascade = ['domains', 'invitations']`. When an organization is soft-deleted, its domains and invitations are soft-deleted.
+
+**Usage (for new models):**
+1. Add `SoftDeletes` to the model and to any related models that should cascade.
+2. Use `SoftCascadeTrait` and define `$softCascade` on the parent:
 ```php
-use Askedio\SoftCascade\Traits\SoftCascade;
+use Askedio\SoftCascade\Traits\SoftCascadeTrait;
 
 class User extends Model
 {
-    use SoftDeletes, SoftCascade;
+    use SoftDeletes, SoftCascadeTrait;
 
     protected $softCascade = ['posts'];
 }

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -25,12 +26,14 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property \Carbon\Carbon|null $last_dns_check_at
  * @property \Carbon\Carbon|null $ssl_issued_at
  * @property \Carbon\Carbon|null $ssl_expires_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read Organization $organization
  */
 final class OrganizationDomain extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use LogsActivity;
+    use SoftDeletes;
 
     protected $fillable = [
         'organization_id',

@@ -79,6 +79,7 @@
         "@types/react-dom": "^19.2.3",
         "@types/react-signature-canvas": "^1.0.7",
         "@types/react-syntax-highlighter": "^15.5.13",
+        "@assistant-ui/react": "^0.12.19",
         "@vitejs/plugin-react": "^6.0.1",
         "assistant-ui": "^0.0.84",
         "class-variance-authority": "^0.7.1",

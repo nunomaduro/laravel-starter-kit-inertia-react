@@ -8,6 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -69,6 +70,7 @@ export function ConversationSidebar({
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editTitle, setEditTitle] = useState('');
     const editInputRef = useRef<HTMLInputElement>(null);
+    const [autoAnimateParent] = useAutoAnimate({ duration: 200 });
 
     const handleDelete = useCallback(async () => {
         if (!deleteTarget) return;
@@ -197,7 +199,8 @@ export function ConversationSidebar({
                         No conversations yet
                     </p>
                 ) : (
-                    groups.map((group) => (
+                    <div ref={autoAnimateParent}>
+                        {groups.map((group) => (
                         <div key={group.label} className="mb-3">
                             <p className="mb-1 px-2 text-xs font-medium text-muted-foreground">
                                 {group.label}
@@ -273,7 +276,8 @@ export function ConversationSidebar({
                                 ))}
                             </ul>
                         </div>
-                    ))
+                        ))}
+                    </div>
                 )}
             </div>
 

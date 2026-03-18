@@ -7,31 +7,24 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import {
-    AssistantRuntimeProvider,
-    type AssistantRuntimeProviderProps,
-} from './assistant-runtime-provider';
-import { AssistantThread, type AssistantThreadProps } from './assistant-thread';
+import { AssistantThreadAui } from './assistant-thread-aui';
+import type { LaravelAdapterConfig } from './laravel-chat-adapter';
 
-export interface AssistantModalProps
-    extends
-        Pick<
-            AssistantRuntimeProviderProps,
-            'endpoint' | 'model' | 'headers' | 'systemPrompt'
-        >,
-        Omit<AssistantThreadProps, 'className'> {
+export interface AssistantModalProps extends LaravelAdapterConfig {
     /** Controls the open state of the modal. */
     open: boolean;
     /** Called when the modal should close. */
     onOpenChange: (open: boolean) => void;
     /** Modal title. */
     title?: string;
+    /** Placeholder for the composer input. */
+    placeholder?: string;
     /** Custom class for the dialog content. */
     contentClassName?: string;
 }
 
 /**
- * A modal dialog wrapping `AssistantThread` and `AssistantRuntimeProvider`.
+ * A modal dialog wrapping the assistant-ui Thread (Laravel streaming backend).
  * Use this for on-demand AI assistant overlays.
  */
 export function AssistantModal({
@@ -43,8 +36,6 @@ export function AssistantModal({
     headers,
     systemPrompt,
     placeholder,
-    assistantName,
-    welcomeMessage,
     contentClassName,
 }: AssistantModalProps) {
     return (
@@ -62,19 +53,14 @@ export function AssistantModal({
                     </DialogTitle>
                 </DialogHeader>
 
-                <AssistantRuntimeProvider
+                <AssistantThreadAui
                     endpoint={endpoint}
                     model={model}
                     headers={headers}
                     systemPrompt={systemPrompt}
-                >
-                    <AssistantThread
-                        placeholder={placeholder}
-                        assistantName={assistantName}
-                        welcomeMessage={welcomeMessage}
-                        className="min-h-0 flex-1"
-                    />
-                </AssistantRuntimeProvider>
+                    placeholder={placeholder}
+                    className="min-h-0 flex-1"
+                />
             </DialogContent>
         </Dialog>
     );

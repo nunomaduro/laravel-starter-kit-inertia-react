@@ -17,6 +17,7 @@ import { index as helpIndex } from '@/routes/help';
 import organizations from '@/routes/organizations';
 import { edit as editUserProfile } from '@/routes/user-profile';
 import { type NavItem, type SharedData } from '@/types';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { router, usePage } from '@inertiajs/react';
 import { getHotkeyManager, type RegisterableHotkey } from '@tanstack/hotkeys';
 import {
@@ -246,6 +247,7 @@ export function CommandPalette(): React.ReactElement {
     const isSearchMode = query.length > 0;
     const hasResults =
         results && Object.values(results).some((arr) => arr.length > 0);
+    const [autoAnimateParent] = useAutoAnimate({ duration: 200 });
 
     return (
         <CommandDialog
@@ -262,8 +264,9 @@ export function CommandPalette(): React.ReactElement {
                 onValueChange={setQuery}
             />
             <CommandList>
-                {isSearchMode ? (
-                    <>
+                <div ref={autoAnimateParent}>
+                    {isSearchMode ? (
+                        <>
                         {isSearching && <SearchResultSkeleton />}
                         {!isSearching && !hasResults && (
                             <CommandEmpty>
@@ -315,11 +318,11 @@ export function CommandPalette(): React.ReactElement {
                                     );
                                 },
                             )}
-                    </>
-                ) : (
-                    <>
-                        <CommandEmpty>No results found.</CommandEmpty>
-                        <CommandGroup heading="Navigation">
+                        </>
+                    ) : (
+                        <>
+                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandGroup heading="Navigation">
                             {visibleNavItems.map((item) => {
                                 const Icon = item.icon;
                                 const href =
@@ -337,9 +340,9 @@ export function CommandPalette(): React.ReactElement {
                                     </CommandItem>
                                 );
                             })}
-                        </CommandGroup>
-                        <CommandGroup heading="Account">
-                            <CommandItem
+                            </CommandGroup>
+                            <CommandGroup heading="Account">
+                                <CommandItem
                                 value="Settings"
                                 onSelect={() => run(editUserProfile().url)}
                             >
@@ -353,9 +356,10 @@ export function CommandPalette(): React.ReactElement {
                                 <LogOut className="size-4" />
                                 Log out
                             </CommandItem>
-                        </CommandGroup>
-                    </>
-                )}
+                            </CommandGroup>
+                        </>
+                    )}
+                </div>
             </CommandList>
         </CommandDialog>
     );

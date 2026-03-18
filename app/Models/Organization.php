@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Services\TenantContext;
 use App\Traits\Billing\HasBilling;
 use App\Traits\Billing\HasCredits;
+use Askedio\SoftCascade\Traits\SoftCascadeTrait;
 use Database\Factories\OrganizationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -58,6 +59,7 @@ final class Organization extends Model
     use HasSlug;
     use LogsActivity;
     use SchemalessAttributesTrait;
+    use SoftCascadeTrait;
     use SoftDeletes;
     use Userstamps;
 
@@ -67,6 +69,11 @@ final class Organization extends Model
      * @var list<string>
      */
     public const array ASSIGNABLE_ORG_ROLES = ['admin', 'member'];
+
+    /**
+     * @var list<string>
+     */
+    protected $softCascade = ['domains', 'invitations'];
 
     /** @var list<string> */
     protected $schemalessAttributes = ['extra_attributes'];

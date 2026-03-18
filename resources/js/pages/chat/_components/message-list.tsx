@@ -1,5 +1,6 @@
 import type { User } from '@/types';
 import type { UIMessage } from '@tanstack/ai-client';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { ArrowDown } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MessageBubble, StreamingIndicator } from './message-bubble';
@@ -14,6 +15,7 @@ export function MessageList({
     user: User;
 }) {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const [autoAnimateParent] = useAutoAnimate({ duration: 200 });
     const [showScrollButton, setShowScrollButton] = useState(false);
 
     const isNearBottom = useCallback(() => {
@@ -44,15 +46,17 @@ export function MessageList({
             <div
                 ref={scrollRef}
                 onScroll={handleScroll}
-                className="absolute inset-0 space-y-4 overflow-y-auto px-4 py-4"
+                className="absolute inset-0 overflow-y-auto px-4 py-4"
             >
-                {messages.map((m) => (
-                    <MessageBubble key={m.id} message={m} user={user} />
-                ))}
-                {isLoading &&
-                    messages[messages.length - 1]?.role !== 'assistant' && (
-                        <StreamingIndicator />
-                    )}
+                <div ref={autoAnimateParent} className="space-y-4">
+                    {messages.map((m) => (
+                        <MessageBubble key={m.id} message={m} user={user} />
+                    ))}
+                    {isLoading &&
+                        messages[messages.length - 1]?.role !== 'assistant' && (
+                            <StreamingIndicator />
+                        )}
+                </div>
             </div>
             {showScrollButton && (
                 <button

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -13,11 +14,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $notification_type
  * @property bool $via_database
  * @property bool $via_email
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read User $user
  */
 final class NotificationPreference extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',

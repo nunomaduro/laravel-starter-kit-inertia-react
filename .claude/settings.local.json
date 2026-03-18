@@ -257,7 +257,8 @@
       "mcp__playwright__browser_snapshot",
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
       "mcp__plugin_context-mode_context-mode__ctx_search",
-      "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/storage/app -name install_progress_*)"
+      "Bash(find /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/storage/app -name install_progress_*)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute"
     ]
   },
   "enableAllProjectMcpServers": true,

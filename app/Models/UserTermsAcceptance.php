@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -16,12 +17,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $user_agent
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read User $user
  * @property-read TermsVersion $termsVersion
  */
 final class UserTermsAcceptance extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',

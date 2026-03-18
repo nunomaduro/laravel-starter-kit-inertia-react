@@ -1,3 +1,4 @@
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { GridIcon, ListIcon, TableIcon } from 'lucide-react';
 import * as React from 'react';
 
@@ -56,6 +57,7 @@ function DataView<T>({
 }: DataViewProps<T>) {
     const [mode, setMode] = React.useState<DataViewMode>(defaultMode);
     const [search, setSearch] = React.useState('');
+    const [autoAnimateParent] = useAutoAnimate({ duration: 200 });
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
@@ -179,7 +181,10 @@ function DataView<T>({
                                 ))}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-border">
+                        <tbody
+                            ref={autoAnimateParent}
+                            className="divide-y divide-border"
+                        >
                             {items.map((item) => (
                                 <tr
                                     key={keyExtractor(item)}
@@ -211,7 +216,10 @@ function DataView<T>({
                     </table>
                 </div>
             ) : effectiveMode === 'grid' && renderGridItem ? (
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                <div
+                    ref={autoAnimateParent}
+                    className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
+                >
                     {items.map((item) => (
                         <React.Fragment key={keyExtractor(item)}>
                             {renderGridItem(item)}
@@ -219,7 +227,10 @@ function DataView<T>({
                     ))}
                 </div>
             ) : renderListItem ? (
-                <div className="space-y-1">
+                <div
+                    ref={autoAnimateParent}
+                    className="space-y-1"
+                >
                     {items.map((item) => (
                         <React.Fragment key={keyExtractor(item)}>
                             {renderListItem(item)}

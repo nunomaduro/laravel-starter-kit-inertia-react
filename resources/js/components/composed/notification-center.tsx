@@ -1,3 +1,4 @@
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { usePage } from '@inertiajs/react';
 import { BellIcon, CheckCheckIcon, InboxIcon, Trash2Icon } from 'lucide-react';
 import * as React from 'react';
@@ -158,6 +159,7 @@ function NotificationCenter({
 }: NotificationCenterProps) {
     const unreadCount = notifications.filter((n) => !n.read).length;
     const [open, setOpen] = React.useState(false);
+    const [autoAnimateParent] = useAutoAnimate({ duration: 200 });
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -225,7 +227,10 @@ function NotificationCenter({
                             <p className="text-sm">No notifications</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-border">
+                        <div
+                            ref={autoAnimateParent}
+                            className="divide-y divide-border"
+                        >
                             {notifications.map((notification) => (
                                 <NotificationItem
                                     key={notification.id}
@@ -378,6 +383,8 @@ function ConnectedNotificationCenter({ className }: { className?: string }) {
         setLocalUnreadCount(0);
     }, []);
 
+    const [autoAnimateParent] = useAutoAnimate({ duration: 200 });
+
     return (
         <Popover open={open} onOpenChange={handleOpenChange}>
             <PopoverTrigger asChild>
@@ -440,7 +447,10 @@ function ConnectedNotificationCenter({ className }: { className?: string }) {
                             <p className="text-sm">No notifications</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-border">
+                        <div
+                            ref={autoAnimateParent}
+                            className="divide-y divide-border"
+                        >
                             {items.map((notification) => (
                                 <NotificationItem
                                     key={notification.id}

@@ -12,6 +12,7 @@ use Database\Factories\OrganizationInvitationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -32,6 +33,7 @@ use Throwable;
  * @property \Carbon\Carbon|null $accepted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon|null $deleted_at
  * @property-read Organization $organization
  * @property-read User $inviter
  */
@@ -42,6 +44,7 @@ final class OrganizationInvitation extends Model
 
     use HasStates;
     use LogsActivity;
+    use SoftDeletes;
 
     /**
      * @var list<string>
