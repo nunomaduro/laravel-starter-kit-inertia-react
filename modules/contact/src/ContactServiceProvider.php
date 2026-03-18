@@ -4,16 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Contact;
 
-use App\Features\ContactFeature;
 use App\Support\ModuleServiceProvider;
-use Illuminate\Support\Facades\Route;
+use Modules\Contact\Features\ContactFeature;
 
-/**
- * Stub service provider for validating the module loading pipeline.
- *
- * Registers a single /module-test route to confirm the infrastructure
- * correctly loads and unloads module providers based on config/modules.php.
- */
 final class ContactServiceProvider extends ModuleServiceProvider
 {
     public function moduleName(): string
@@ -36,6 +29,19 @@ final class ContactServiceProvider extends ModuleServiceProvider
 
     protected function bootModule(): void
     {
-        Route::get('/module-test', fn () => response()->json(['module' => 'contact', 'status' => 'ok']));
+        $this->registerFilamentResources();
+    }
+
+    protected function registerFilamentResources(): void
+    {
+        $panels = filament()->getPanels();
+
+        foreach ($panels as $panel) {
+            $panel
+                ->discoverResources(
+                    in: __DIR__.'/Filament/Resources',
+                    for: 'Modules\\Contact\\Filament\\Resources',
+                );
+        }
     }
 }

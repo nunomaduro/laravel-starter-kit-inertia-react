@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders\Development;
+namespace Modules\Contact\Database\Seeders;
 
-use App\Models\ContactSubmission;
 use Illuminate\Database\Seeder;
+use Modules\Contact\Models\ContactSubmission;
 
 final class ContactSubmissionSeeder extends Seeder
 {

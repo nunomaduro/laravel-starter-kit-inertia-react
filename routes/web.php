@@ -19,7 +19,6 @@ use App\Http\Controllers\Billing\StripeWebhookController;
 use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\CategoriesTableController;
 use App\Http\Controllers\Changelog\ChangelogController;
-use App\Http\Controllers\ContactSubmissionController;
 use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Dev\ComponentShowcaseController;
@@ -137,13 +136,6 @@ Route::prefix('help')->name('help.')->middleware('feature:help')->group(function
 });
 
 Route::get('pricing', [PricingController::class, 'index'])->name('pricing');
-
-Route::get('contact', [ContactSubmissionController::class, 'create'])
-    ->middleware('feature:contact')
-    ->name('contact.create');
-Route::post('contact', [ContactSubmissionController::class, 'store'])
-    ->middleware(['feature:contact', ProtectAgainstSpam::class])
-    ->name('contact.store');
 
 Route::get('enterprise', [EnterpriseInquiryController::class, 'create'])
     ->name('enterprise-inquiries.create');

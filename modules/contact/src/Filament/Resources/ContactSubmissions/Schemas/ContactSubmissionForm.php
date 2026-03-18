@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ContactSubmissions\Schemas;
+namespace Modules\Contact\Filament\Resources\ContactSubmissions\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;

@@ -7,7 +7,6 @@ use App\Features\AppearanceSettingsFeature;
 use App\Features\BlogFeature;
 use App\Features\ChangelogFeature;
 use App\Features\ComponentShowcaseFeature;
-use App\Features\ContactFeature;
 use App\Features\CookieConsentFeature;
 use App\Features\GamificationFeature;
 use App\Features\HelpFeature;
@@ -18,6 +17,7 @@ use App\Features\ProfilePdfExportFeature;
 use App\Features\RegistrationFeature;
 use App\Features\ScrambleApiDocsFeature;
 use App\Features\TwoFactorAuthFeature;
+use Modules\Contact\Features\ContactFeature;
 
 return [
     /*

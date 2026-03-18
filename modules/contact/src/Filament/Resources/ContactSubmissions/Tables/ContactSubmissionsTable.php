@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ContactSubmissions\Tables;
+namespace Modules\Contact\Filament\Resources\ContactSubmissions\Tables;
 
 use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\BulkActionGroup;

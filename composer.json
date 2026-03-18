@@ -129,7 +129,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Modules\\Contact\\": "modules/contact/src/"
+            "Modules\\Contact\\": "modules/contact/src/",
+            "Modules\\Contact\\Database\\": "modules/contact/database/"
         },
         "files": [
             "bootstrap/helpers.php"

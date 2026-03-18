@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ContactSubmissions\Pages;
+namespace Modules\Contact\Filament\Resources\ContactSubmissions\Pages;
 
-use App\Filament\Resources\ContactSubmissions\ContactSubmissionResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Modules\Contact\Filament\Resources\ContactSubmissions\ContactSubmissionResource;
 
 final class ViewContactSubmission extends ViewRecord
 {

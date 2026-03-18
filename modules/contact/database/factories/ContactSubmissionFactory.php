@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Modules\Contact\Database\Factories;
 
-use App\Models\ContactSubmission;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Contact\Models\ContactSubmission;
 
 /**
  * @extends Factory<ContactSubmission>

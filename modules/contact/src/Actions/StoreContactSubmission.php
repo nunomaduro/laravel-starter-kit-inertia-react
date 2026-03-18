@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Actions;
+namespace Modules\Contact\Actions;
 
-use App\Models\ContactSubmission;
+use Modules\Contact\Models\ContactSubmission;
 
 final readonly class StoreContactSubmission
 {

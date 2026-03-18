@@ -3,5 +3,7 @@
     "label": "Contact",
     "description": "Contact form and submission management.",
     "provider": "Modules\\Contact\\ContactServiceProvider",
-    "seeders": []
+    "seeders": [
+        "Modules\\Contact\\Database\\Seeders\\ContactSubmissionSeeder"
+    ]
 }

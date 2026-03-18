@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ContactSubmissions\Pages;
+namespace Modules\Contact\Filament\Resources\ContactSubmissions\Pages;
 
-use App\Filament\Resources\ContactSubmissions\ContactSubmissionResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Contact\Filament\Resources\ContactSubmissions\ContactSubmissionResource;
 
 final class EditContactSubmission extends EditRecord
 {

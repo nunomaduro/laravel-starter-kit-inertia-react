@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\ContactSubmissions;
+namespace Modules\Contact\Filament\Resources\ContactSubmissions;
 
-use App\Features\ContactFeature;
-use App\Filament\Resources\ContactSubmissions\Pages\EditContactSubmission;
-use App\Filament\Resources\ContactSubmissions\Pages\ListContactSubmissions;
-use App\Filament\Resources\ContactSubmissions\Pages\ViewContactSubmission;
-use App\Filament\Resources\ContactSubmissions\Schemas\ContactSubmissionForm;
-use App\Filament\Resources\ContactSubmissions\Schemas\ContactSubmissionInfolist;
-use App\Filament\Resources\ContactSubmissions\Tables\ContactSubmissionsTable;
-use App\Models\ContactSubmission;
 use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Contact\Features\ContactFeature;
+use Modules\Contact\Filament\Resources\ContactSubmissions\Pages\EditContactSubmission;
+use Modules\Contact\Filament\Resources\ContactSubmissions\Pages\ListContactSubmissions;
+use Modules\Contact\Filament\Resources\ContactSubmissions\Pages\ViewContactSubmission;
+use Modules\Contact\Filament\Resources\ContactSubmissions\Schemas\ContactSubmissionForm;
+use Modules\Contact\Filament\Resources\ContactSubmissions\Schemas\ContactSubmissionInfolist;
+use Modules\Contact\Filament\Resources\ContactSubmissions\Tables\ContactSubmissionsTable;
+use Modules\Contact\Models\ContactSubmission;
 use UnitEnum;
 
 final class ContactSubmissionResource extends Resource

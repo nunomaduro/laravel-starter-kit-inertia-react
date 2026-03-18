@@ -2,23 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace Modules\Contact\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Mattiverse\Userstamps\Traits\Userstamps;
+use Modules\Contact\Database\Factories\ContactSubmissionFactory;
 
 final class ContactSubmission extends Model
 {
-    /** @use HasFactory<\Database\Factories\ContactSubmissionFactory> */
     use BelongsToOrganization;
 
+    /** @use HasFactory<ContactSubmissionFactory> */
     use HasFactory;
+
     use Userstamps;
 
     /**
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -27,4 +29,9 @@ final class ContactSubmission extends Model
         'message',
         'status',
     ];
+
+    protected static function newFactory(): ContactSubmissionFactory
+    {
+        return ContactSubmissionFactory::new();
+    }
 }

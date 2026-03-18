@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Models\ContactSubmission;
 use App\Models\User;
+use Modules\Contact\Models\ContactSubmission;
 
 /**
  * Valid honeypot fields for contact.store (same as register when ProtectAgainstSpam is enabled).
