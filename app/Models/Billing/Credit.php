@@ -8,6 +8,7 @@ use App\Enums\Billing\CreditTransactionType;
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Spatie\SchemalessAttributes\SchemalessAttributesTrait;
 
 /**
  * @property int $id
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property CreditTransactionType $type
  * @property string|null $description
  * @property array|null $metadata
+ * @property \Spatie\SchemalessAttributes\SchemalessAttributes $extra_attributes
  * @property \Carbon\Carbon|null $expires_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -27,6 +29,10 @@ final class Credit extends Model
 {
     use BelongsToOrganization;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+    use SchemalessAttributesTrait;
+
+    /** @var list<string> */
+    protected $schemalessAttributes = ['extra_attributes'];
 
     protected $fillable = [
         'creditable_type',

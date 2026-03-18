@@ -44,6 +44,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\PersonalDataExport\ExportsPersonalData;
 use Spatie\PersonalDataExport\PersonalDataSelection;
 use Spatie\Tags\HasTags;
+use Thomasjohnkane\Snooze\Traits\SnoozeNotifiable;
 
 /**
  * @property-read int $id
@@ -64,6 +65,7 @@ use Spatie\Tags\HasTags;
  * @property-read CarbonInterface $updated_at
  * @property-read CarbonInterface|null $deleted_at
  * @property-read string $hashId
+ * @property string|null $phone
  */
 final class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasMedia, MustVerifyEmail
 {
@@ -84,8 +86,27 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     use Notifiable;
     use Referrable;
     use Searchable;
+    use SnoozeNotifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
+
+    /**
+     * @var list<string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'email_verified_at',
+        'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
+        'onboarding_completed',
+        'onboarding_steps_completed',
+        'theme_mode',
+        'phone',
+    ];
 
     /**
      * @var list<string>

@@ -17,6 +17,7 @@ use Laravel\Scout\Searchable;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\ModelFlags\Models\Concerns\HasFlags;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Tags\HasTags;
@@ -46,6 +47,7 @@ final class Post extends Model implements HasMedia
 
     use Categorizable;
     use HasFactory;
+    use HasFlags;
     use HasSlug;
     use HasTags;
     use InteractsWithMedia;
@@ -109,6 +111,14 @@ final class Post extends Model implements HasMedia
             'published_at' => 'immutable_datetime',
             'views' => 'integer',
         ];
+    }
+
+    #[Scope]
+    protected function featured(Builder $query): Builder
+    {
+        $query->flagged('featured');
+
+        return $query;
     }
 
     #[Scope]

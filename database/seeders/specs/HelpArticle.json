@@ -57,11 +57,6 @@
             "nullable": true,
             "default": null
         },
-        "is_featured": {
-            "type": "boolean",
-            "nullable": true,
-            "default": null
-        },
         "created_by": {
             "type": "integer",
             "nullable": true,

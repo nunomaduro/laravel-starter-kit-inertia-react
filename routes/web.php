@@ -246,6 +246,8 @@ Route::get('/internal/caddy/ask', CaddyAskController::class)
 Route::post('webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe')->withoutMiddleware([ValidateCsrfToken::class]);
 Route::post('webhooks/paddle', PaddleWebhookController::class)->name('webhooks.paddle')->withoutMiddleware([ValidateCsrfToken::class]);
 
+Route::webhooks('webhooks/spatie', 'default');
+
 Route::middleware(['auth', 'feature:onboarding'])->group(function (): void {
     Route::get('onboarding', [OnboardingController::class, 'show'])->name('onboarding');
     Route::post('onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Pages\Billing\Analytics;
 
 use App\Filament\Widgets\Billing\RevenueOverviewStats;
+use App\Filament\Widgets\Ga4OverviewWidget;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
@@ -40,6 +41,7 @@ final class RevenueDashboard extends Page
     {
         return [
             RevenueOverviewStats::class,
+            Ga4OverviewWidget::class,
         ];
     }
 }

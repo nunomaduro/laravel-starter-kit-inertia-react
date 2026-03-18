@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Http\Integrations\Typesense\Requests\HealthCheckRequest;
+use App\Http\Integrations\Typesense\TypesenseConnector;
 use App\Models\User;
 use App\Providers\SettingsOverlayServiceProvider;
 use App\Settings\AiSettings;
@@ -927,12 +929,12 @@ final class AppInstallCommand extends Command
                 validate: fn ($v): ?string => mb_strlen((string) $v) < 8 ? 'Password must be at least 8 characters.' : null,
             );
 
-        $user = User::query()->create([
+        $user = User::withoutEvents(fn (): User => User::query()->create([
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($pass),
             'email_verified_at' => now(),
-        ]);
+        ]));
 
         AssignRoleViaDb::assignGlobal($user, ['super-admin']);
 
@@ -1615,9 +1617,9 @@ final class AppInstallCommand extends Command
     {
         try {
             $scheme = $port === 443 ? 'https' : 'http';
-            $response = Http::withHeaders(['X-TYPESENSE-API-KEY' => $apiKey])
-                ->timeout(5)
-                ->get(sprintf('%s://%s:%d/health', $scheme, $host, $port));
+            $baseUrl = sprintf('%s://%s:%d', $scheme, $host, $port);
+            $connector = new TypesenseConnector($baseUrl, $apiKey);
+            $response = $connector->send(new HealthCheckRequest);
 
             if ($response->successful()) {
                 info(sprintf('  ✔ Typesense connection verified (%s:%d)', $host, $port));

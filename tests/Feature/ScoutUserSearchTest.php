@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 
 test('user model is searchable via scout', function (): void {
-    $user = User::factory()->create(['name' => 'Scout Searchable User']);
+    $user = User::withoutEvents(fn (): User => User::factory()->create(['name' => 'Scout Searchable User']));
 
     $results = User::search('Scout Searchable')->get();
 
@@ -13,7 +13,7 @@ test('user model is searchable via scout', function (): void {
 });
 
 test('user toSearchableArray returns required types for Typesense', function (): void {
-    $user = User::factory()->create(['name' => 'Test', 'email' => 'scout-typesense@example.com']);
+    $user = User::withoutEvents(fn (): User => User::factory()->create(['name' => 'Test', 'email' => 'scout-typesense@example.com']));
 
     $array = $user->toSearchableArray();
 

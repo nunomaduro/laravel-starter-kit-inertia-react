@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Posts\Tables;
 
 use App\Filament\Concerns\HasStandardExports;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -39,6 +40,10 @@ final class PostsTable
                 IconColumn::make('is_published')
                     ->label('Published')
                     ->boolean(),
+                IconColumn::make('featured_flag')
+                    ->label('Featured')
+                    ->getStateUsing(fn ($record) => $record->hasFlag('featured'))
+                    ->boolean(),
                 TextColumn::make('published_at')
                     ->label('Published At')
                     ->dateTime()
@@ -58,6 +63,16 @@ final class PostsTable
                 self::makeExportHeaderAction('posts'),
             ])
             ->recordActions([
+                Action::make('feature')
+                    ->label('Feature')
+                    ->action(fn ($record) => $record->flag('featured'))
+                    ->visible(fn ($record) => ! $record->hasFlag('featured'))
+                    ->successNotificationTitle('Post featured'),
+                Action::make('unfeature')
+                    ->label('Unfeature')
+                    ->action(fn ($record) => $record->unflag('featured'))
+                    ->visible(fn ($record) => $record->hasFlag('featured'))
+                    ->successNotificationTitle('Post unfeatured'),
                 ViewAction::make(),
                 EditAction::make(),
             ])

@@ -20,6 +20,7 @@ use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\ModelFlags\Models\Concerns\HasFlags;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Tags\HasTags;
@@ -37,7 +38,6 @@ use Spatie\Tags\HasTags;
  * @property int $not_helpful_count
  * @property int $order
  * @property bool $is_published
- * @property bool $is_featured
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon|null $deleted_at
@@ -49,6 +49,7 @@ final class HelpArticle extends Model implements HasMedia, Sortable
 
     use Categorizable;
     use HasFactory;
+    use HasFlags;
     use HasSlug;
     use HasTags;
     use InteractsWithMedia;
@@ -79,7 +80,6 @@ final class HelpArticle extends Model implements HasMedia, Sortable
         'not_helpful_count',
         'order',
         'is_published',
-        'is_featured',
     ];
 
     public function getSlugOptions(): SlugOptions
@@ -113,7 +113,7 @@ final class HelpArticle extends Model implements HasMedia, Sortable
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title', 'category', 'is_published', 'is_featured', 'order'])
+            ->logOnly(['title', 'category', 'is_published', 'order'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->useLogName('help_article');
@@ -132,7 +132,6 @@ final class HelpArticle extends Model implements HasMedia, Sortable
             'not_helpful_count' => 'integer',
             'order' => 'integer',
             'is_published' => 'boolean',
-            'is_featured' => 'boolean',
         ];
     }
 
@@ -145,6 +144,8 @@ final class HelpArticle extends Model implements HasMedia, Sortable
     #[Scope]
     protected function featured(Builder $query): Builder
     {
-        return $query->where('is_featured', true);
+        $query->flagged('featured');
+
+        return $query;
     }
 }

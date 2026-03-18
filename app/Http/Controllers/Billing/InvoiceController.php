@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Billing;
 
+use App\Actions\Billing\BuildLaravelDailyInvoice;
 use App\Models\Billing\Invoice;
 use App\Services\TenantContext;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 final readonly class InvoiceController
 {
+    public function __construct(
+        private BuildLaravelDailyInvoice $buildLaravelDailyInvoice
+    ) {}
+
     public function index(): Response
     {
         $organization = TenantContext::get();
@@ -25,9 +31,10 @@ final readonly class InvoiceController
 
     public function download(Invoice $invoice): HttpResponse
     {
-        $organization = TenantContext::get();
-        abort_if(! $organization || $invoice->organization_id !== $organization->id, 403);
+        Gate::authorize('download', $invoice);
 
-        return response('Invoice PDF not yet implemented.', 501);
+        $laravelInvoice = $this->buildLaravelDailyInvoice->handle($invoice);
+
+        return $laravelInvoice->filename("invoice-{$invoice->number}")->download();
     }
 }

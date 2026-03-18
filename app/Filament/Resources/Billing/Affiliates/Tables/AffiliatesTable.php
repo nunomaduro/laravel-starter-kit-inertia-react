@@ -31,11 +31,12 @@ final class AffiliatesTable
                 TextColumn::make('affiliate_code')->searchable(),
                 TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        Affiliate::STATUS_ACTIVE => 'success',
-                        Affiliate::STATUS_PENDING => 'warning',
-                        Affiliate::STATUS_SUSPENDED => 'gray',
-                        Affiliate::STATUS_REJECTED => 'danger',
+                    ->formatStateUsing(fn ($state) => $state instanceof \Spatie\ModelStates\State ? $state->getValue() : $state)
+                    ->color(fn ($state): string => match ($state instanceof \Spatie\ModelStates\State ? $state->getValue() : $state) {
+                        'active' => 'success',
+                        'pending' => 'warning',
+                        'suspended' => 'gray',
+                        'rejected' => 'danger',
                         default => 'gray',
                     }),
                 TextColumn::make('commission_rate')->suffix('%'),
@@ -51,10 +52,10 @@ final class AffiliatesTable
             ->filters([
                 SelectFilter::make('status')
                     ->options([
-                        Affiliate::STATUS_PENDING => 'Pending',
-                        Affiliate::STATUS_ACTIVE => 'Active',
-                        Affiliate::STATUS_SUSPENDED => 'Suspended',
-                        Affiliate::STATUS_REJECTED => 'Rejected',
+                        'pending' => 'Pending',
+                        'active' => 'Active',
+                        'suspended' => 'Suspended',
+                        'rejected' => 'Rejected',
                     ]),
             ])
             ->headerActions([

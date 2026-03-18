@@ -36,6 +36,14 @@ Configuration is done in `App\Providers\AppServiceProvider::configurePan()` usin
 
 When adding new tracked elements, add their `data-pan` value to the `allowedAnalytics` array in `AppServiceProvider`; otherwise they will not be persisted.
 
+## Audit and troubleshooting
+
+**Audit:** To ensure every tracked element is whitelisted, search the codebase for `data-pan` and `dataPan` (e.g. in `resources/js` and `resources/views`). For each distinct value (including template literals like `` `appearance-theme-${p.value}` `` — expand to concrete values such as `appearance-theme-default`, `appearance-theme-vega`), confirm it appears in `AppServiceProvider::configurePan()` `allowedAnalytics`. Add any missing names; events for names not in the whitelist are dropped by `DatabaseAnalyticsRepository`.
+
+**Script not loading:** Pan’s middleware injects the script only when the response `Content-Type` is `text/html; charset=UTF-8`. For Inertia’s initial HTML load this should work. If events never appear, verify in the browser that the Pan script is present in the initial page source (not only after client-side navigation). Ensure the route that serves the app layout is not cached with a different content type.
+
+**Whitelist gaps:** If you add new UI elements with `data-pan` but forget to whitelist them, events will be sent from the client but not stored. No error is shown; check the whitelist when adding new names.
+
 ## Artisan commands
 
 | Command | Description |

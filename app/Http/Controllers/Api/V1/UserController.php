@@ -32,7 +32,7 @@ final class UserController extends BaseApiController
     {
         $users = QueryBuilder::for(User::class)
             ->allowedFields([
-                'id', 'name', 'email', 'email_verified_at', 'created_at', 'updated_at',
+                'id', 'name', 'email', 'phone', 'email_verified_at', 'created_at', 'updated_at',
             ])
             ->allowedFilters([
                 AllowedFilter::partial('name'),

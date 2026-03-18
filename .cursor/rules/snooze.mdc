@@ -1,0 +1,25 @@
+---
+description: Snooze (thomasjohnkane/snooze) — schedule future notifications and reminders
+globs: app/Notifications/**/*.php, config/snooze.php, app/Models/User.php
+---
+
+# Snooze (scheduled notifications)
+
+This project uses **thomasjohnkane/snooze** to schedule notifications to be sent at a future time.
+
+## Scheduling notifications
+
+1. **Model trait:** Add `SnoozeNotifiable` to any `Notifiable` model (e.g. User). Use `$user->notifyAt($notification, $sendAt)`.
+2. **Helper:** `ScheduledNotification::create($target, $notification, $sendAt)` for one-off or anonymous targets (e.g. `AnonymousNotifiable` with `->route('mail', 'email@example.com')`).
+
+## Scheduler
+
+`snooze:send` runs every minute (configurable in `config/snooze.php`). Ensure `schedule:run` is in cron. The package auto-schedules the command when `scheduleCommands` is true.
+
+## Cancel / reschedule
+
+- `$notification->cancel()`
+- `$notification->reschedule($newDate)`
+- `$notification->scheduleAgainAt($newDate)` — duplicates and returns new instance
+
+See **docs/developer/backend/snooze.md** for full documentation.

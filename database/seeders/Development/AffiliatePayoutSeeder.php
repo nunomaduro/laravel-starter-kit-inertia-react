@@ -22,7 +22,7 @@ final class AffiliatePayoutSeeder extends Seeder
             'affiliate_id' => $affiliate->id,
             'amount' => 5000,
             'currency' => 'USD',
-            'status' => AffiliatePayout::STATUS_PENDING,
+            'status' => 'pending',
             'payment_method' => 'bank_transfer',
         ]);
     }

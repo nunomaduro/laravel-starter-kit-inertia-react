@@ -6,6 +6,7 @@ namespace App\Filament\Resources\Announcements\Tables;
 
 use App\Enums\AnnouncementLevel;
 use App\Enums\AnnouncementScope;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -53,8 +54,22 @@ final class AnnouncementsTable
                 IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean(),
+                IconColumn::make('featured_flag')
+                    ->label('Featured')
+                    ->getStateUsing(fn ($record) => $record->hasFlag('featured'))
+                    ->boolean(),
             ])
             ->recordActions([
+                Action::make('feature')
+                    ->label('Feature')
+                    ->action(fn ($record) => $record->flag('featured'))
+                    ->visible(fn ($record) => ! $record->hasFlag('featured'))
+                    ->successNotificationTitle('Announcement featured'),
+                Action::make('unfeature')
+                    ->label('Unfeature')
+                    ->action(fn ($record) => $record->unflag('featured'))
+                    ->visible(fn ($record) => $record->hasFlag('featured'))
+                    ->successNotificationTitle('Announcement unfeatured'),
                 EditAction::make(),
             ])
             ->toolbarActions([

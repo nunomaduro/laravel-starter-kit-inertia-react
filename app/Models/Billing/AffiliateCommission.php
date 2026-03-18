@@ -7,20 +7,19 @@ namespace App\Models\Billing;
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
 use App\Models\Organization;
+use App\States\AffiliateCommission\Approved;
+use App\States\AffiliateCommission\Cancelled;
+use App\States\AffiliateCommission\CommissionStatus;
+use App\States\AffiliateCommission\Paid;
+use App\States\AffiliateCommission\Pending;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\ModelStates\HasStates;
 
 final class AffiliateCommission extends Model
 {
+    use HasStates;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-
-    public const string STATUS_PENDING = 'pending';
-
-    public const string STATUS_APPROVED = 'approved';
-
-    public const string STATUS_PAID = 'paid';
-
-    public const string STATUS_CANCELLED = 'cancelled';
 
     protected $fillable = [
         'affiliate_id',
@@ -56,41 +55,29 @@ final class AffiliateCommission extends Model
 
     public function isPending(): bool
     {
-        return $this->status === self::STATUS_PENDING;
+        return $this->status->equals(Pending::class);
     }
 
     public function approve(): void
     {
-        $this->update([
-            'status' => self::STATUS_APPROVED,
-            'approved_at' => now(),
-        ]);
-        $this->affiliate->increment('pending_earnings', $this->amount);
+        $this->status->transitionTo(Approved::class);
     }
 
     public function markAsPaid(): void
     {
-        $this->update([
-            'status' => self::STATUS_PAID,
-            'paid_at' => now(),
-        ]);
-        $this->affiliate->decrement('pending_earnings', $this->amount);
-        $this->affiliate->increment('paid_earnings', $this->amount);
+        $this->status->transitionTo(Paid::class);
     }
 
     public function cancel(): void
     {
-        if ($this->status === self::STATUS_APPROVED) {
-            $this->affiliate->decrement('pending_earnings', $this->amount);
-        }
-
-        $this->update(['status' => self::STATUS_CANCELLED]);
+        $this->status->transitionTo(Cancelled::class);
     }
 
     protected function casts(): array
     {
         return [
             'amount' => 'integer',
+            'status' => CommissionStatus::class,
             'approved_at' => 'datetime',
             'paid_at' => 'datetime',
         ];

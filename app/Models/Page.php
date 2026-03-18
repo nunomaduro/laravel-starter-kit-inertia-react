@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\SchemalessAttributes\SchemalessAttributesTrait;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -23,12 +24,17 @@ use Spatie\Sluggable\SlugOptions;
  * @property \Carbon\Carbon $updated_at
  * @property-read Organization $organization
  * @property-read \Illuminate\Database\Eloquent\Collection<int, PageRevision> $revisions
+ * @property \Spatie\SchemalessAttributes\SchemalessAttributes $extra_attributes
  */
 final class Page extends Model
 {
     use BelongsToOrganization;
     use HasSlug;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
+    use SchemalessAttributesTrait;
+
+    /** @var list<string> */
+    protected $schemalessAttributes = ['extra_attributes'];
 
     /**
      * @var array<int, string>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\HelpArticles\Tables;
 
 use App\Filament\Concerns\HasStandardExports;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -45,8 +46,13 @@ final class HelpArticlesTable
                 IconColumn::make('is_published')
                     ->label('Published')
                     ->boolean(),
-                IconColumn::make('is_featured')
+                IconColumn::make('featured_flag')
                     ->label('Featured')
+                    ->getStateUsing(fn ($record) => $record->hasFlag('featured'))
+                    ->boolean(),
+                IconColumn::make('pinned_flag')
+                    ->label('Pinned')
+                    ->getStateUsing(fn ($record) => $record->hasFlag('pinned'))
                     ->boolean(),
                 TextColumn::make('order')
                     ->label('Order')
@@ -64,6 +70,26 @@ final class HelpArticlesTable
                 self::makeExportHeaderAction('help-articles'),
             ])
             ->recordActions([
+                Action::make('feature')
+                    ->label('Feature')
+                    ->action(fn ($record) => $record->flag('featured'))
+                    ->visible(fn ($record) => ! $record->hasFlag('featured'))
+                    ->successNotificationTitle('Article featured'),
+                Action::make('unfeature')
+                    ->label('Unfeature')
+                    ->action(fn ($record) => $record->unflag('featured'))
+                    ->visible(fn ($record) => $record->hasFlag('featured'))
+                    ->successNotificationTitle('Article unfeatured'),
+                Action::make('pin')
+                    ->label('Pin')
+                    ->action(fn ($record) => $record->flag('pinned'))
+                    ->visible(fn ($record) => ! $record->hasFlag('pinned'))
+                    ->successNotificationTitle('Article pinned'),
+                Action::make('unpin')
+                    ->label('Unpin')
+                    ->action(fn ($record) => $record->unflag('pinned'))
+                    ->visible(fn ($record) => $record->hasFlag('pinned'))
+                    ->successNotificationTitle('Article unpinned'),
                 ViewAction::make(),
                 EditAction::make(),
             ])

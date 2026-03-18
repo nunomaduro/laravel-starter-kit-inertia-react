@@ -7,11 +7,16 @@ declare(strict_types=1);
  * when Rector's bootstrap resolves Laravel's bootstrap path relative to rector's dir.
  * Run after composer install/update (e.g. post-install-cmd).
  */
-$stubDir = __DIR__.'/../vendor/rector/rector/bootstrap';
+$rectorBase = __DIR__.'/../vendor/rector/rector';
+$stubDir = $rectorBase.'/bootstrap';
 $stubFile = $stubDir.'/app.php';
 
-if (! is_dir($stubDir)) {
+if (! is_dir($rectorBase)) {
     return;
+}
+
+if (! is_dir($stubDir)) {
+    mkdir($stubDir, 0755, true);
 }
 
 $stub = <<<'PHP'
@@ -45,7 +50,4 @@ if (file_exists($stubFile) && file_get_contents($stubFile) === $stub) {
     return;
 }
 
-if (! is_dir($stubDir)) {
-    mkdir($stubDir, 0755, true);
-}
 file_put_contents($stubFile, $stub);

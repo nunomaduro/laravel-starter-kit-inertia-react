@@ -254,7 +254,9 @@
       "Bash(php -l app/DataTables/UserDataTable.php app/DataTables/OrganizationDataTable.php app/DataTables/CategoryDataTable.php app/DataTables/AnnouncementDataTable.php app/DataTables/PostDataTable.php 2>&1)",
       "Bash(npx tsc:*)",
       "Bash(gh api:*)",
-      "mcp__playwright__browser_snapshot"
+      "mcp__playwright__browser_snapshot",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "mcp__plugin_context-mode_context-mode__ctx_search"
     ]
   },
   "enableAllProjectMcpServers": true,

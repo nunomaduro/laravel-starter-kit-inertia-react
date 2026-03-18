@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\States\OrganizationInvitation\Accepted;
+use App\States\OrganizationInvitation\Cancelled;
+use App\States\OrganizationInvitation\InvitationStatus;
+use App\States\OrganizationInvitation\Pending;
 use Database\Factories\OrganizationInvitationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +17,7 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\ModelStates\HasStates;
 use Throwable;
 
 /**
@@ -20,7 +25,7 @@ use Throwable;
  * @property int $organization_id
  * @property string $email
  * @property string $role
- * @property string $status
+ * @property InvitationStatus $status
  * @property string $token
  * @property int $invited_by
  * @property \Carbon\Carbon $expires_at
@@ -35,15 +40,8 @@ final class OrganizationInvitation extends Model
     /** @use HasFactory<OrganizationInvitationFactory> */
     use HasFactory;
 
+    use HasStates;
     use LogsActivity;
-
-    public const string STATUS_PENDING = 'pending';
-
-    public const string STATUS_ACCEPTED = 'accepted';
-
-    public const string STATUS_CANCELLED = 'cancelled';
-
-    public const string STATUS_EXPIRED = 'expired';
 
     /**
      * @var list<string>
@@ -61,7 +59,6 @@ final class OrganizationInvitation extends Model
      */
     protected $guarded = [
         'token',
-        'status',
         'accepted_at',
     ];
 
@@ -73,8 +70,8 @@ final class OrganizationInvitation extends Model
     public static function findValidByToken(string $token): ?self
     {
         return self::query()
+            ->whereState('status', Pending::class)
             ->where('token', $token)
-            ->where('status', self::STATUS_PENDING)
             ->whereNull('accepted_at')
             ->where('expires_at', '>', now())
             ->first();
@@ -113,19 +110,17 @@ final class OrganizationInvitation extends Model
 
     public function isPending(): bool
     {
-        return $this->status === self::STATUS_PENDING;
+        return $this->status->equals(Pending::class);
     }
 
     public function isCancelled(): bool
     {
-        return $this->status === self::STATUS_CANCELLED;
+        return $this->status->equals(Cancelled::class);
     }
 
     public function markAsAccepted(): self
     {
-        $this->status = self::STATUS_ACCEPTED;
-        $this->accepted_at = now();
-        $this->save();
+        $this->status->transitionTo(Accepted::class);
 
         return $this;
     }
@@ -142,9 +137,7 @@ final class OrganizationInvitation extends Model
 
         return DB::transaction(function () use ($user): self {
             $this->organization->addMember($user, $this->role, $this->inviter);
-            $this->status = self::STATUS_ACCEPTED;
-            $this->accepted_at = now();
-            $this->save();
+            $this->status->transitionTo(Accepted::class);
 
             return $this;
         });
@@ -152,8 +145,7 @@ final class OrganizationInvitation extends Model
 
     public function markAsCancelled(): self
     {
-        $this->status = self::STATUS_CANCELLED;
-        $this->save();
+        $this->status->transitionTo(Cancelled::class);
 
         return $this;
     }
@@ -192,10 +184,6 @@ final class OrganizationInvitation extends Model
                 $invitation->token = Str::random(64);
             }
 
-            if (empty($invitation->status)) {
-                $invitation->status = self::STATUS_PENDING;
-            }
-
             if (empty($invitation->expires_at)) {
                 $days = (int) config('tenancy.invitations.expires_in_days', 7);
                 $invitation->expires_at = now()->addDays($days);
@@ -209,6 +197,7 @@ final class OrganizationInvitation extends Model
     protected function casts(): array
     {
         return [
+            'status' => InvitationStatus::class,
             'expires_at' => 'datetime',
             'accepted_at' => 'datetime',
         ];

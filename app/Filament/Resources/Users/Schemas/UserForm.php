@@ -23,6 +23,10 @@ final class UserForm
                     ->label('Email address')
                     ->email()
                     ->required(),
+                TextInput::make('phone')
+                    ->label('Phone')
+                    ->tel()
+                    ->rules(['nullable', 'phone:INTERNATIONAL']),
                 Select::make('roles')
                     ->relationship(titleAttribute: 'name')
                     ->multiple()

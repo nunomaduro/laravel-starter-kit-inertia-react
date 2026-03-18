@@ -67,6 +67,7 @@
         "pgvector/pgvector": "^0.2.2",
         "prism-php/prism": "^0.99.22",
         "prism-php/relay": "^1.7",
+        "propaganistas/laravel-phone": "^6.0.3",
         "pxlrbt/filament-excel": "^3.6.1",
         "saloonphp/saloon": "^3.15.0",
         "sentry/sentry-laravel": "^4.22.0",
@@ -95,9 +96,12 @@
         "spatie/laravel-sitemap": "^8.1.0",
         "spatie/laravel-sluggable": "^3.8.0",
         "spatie/laravel-tags": "^4.11.0",
+        "spatie/laravel-webhook-client": "^3.5",
+        "spatie/laravel-webhook-server": "^3.10",
         "stechstudio/filament-impersonate": "^5.1",
         "stephenjude/filament-feature-flags": "^5.0.2",
         "stripe/stripe-php": "^19.4.1",
+        "thomasjohnkane/snooze": "^2.9",
         "typesense/typesense-php": "^6.0",
         "wildside/userstamps": "^3.1.1"
     },
@@ -210,7 +214,8 @@
         ],
         "docs:check": "php artisan docs:sync --check",
         "docs:sync": "php artisan docs:sync",
-        "docs:generate": "php artisan docs:sync --generate"
+        "docs:generate": "php artisan docs:sync --generate",
+        "schedule:cronless": "php artisan schedule:run-cronless"
     },
     "extra": {
         "laravel": {

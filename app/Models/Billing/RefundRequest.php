@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models\Billing;
 
-use App\Enums\Billing\RefundStatus;
 use App\Models\Concerns\BelongsToOrganization;
 use App\Models\User;
+use App\States\RefundRequest\RefundRequestStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
@@ -16,13 +17,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $invoice_id
  * @property int $amount
  * @property string|null $reason
- * @property RefundStatus $status
+ * @property RefundRequestStatus $status
  * @property \Carbon\Carbon|null $processed_at
  * @property int|null $processed_by
  */
 final class RefundRequest extends Model
 {
     use BelongsToOrganization;
+    use HasStates;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     protected $fillable = [
@@ -48,7 +50,7 @@ final class RefundRequest extends Model
     {
         return [
             'amount' => 'integer',
-            'status' => RefundStatus::class,
+            'status' => RefundRequestStatus::class,
             'processed_at' => 'datetime',
         ];
     }

@@ -21,6 +21,7 @@ use Mattiverse\Userstamps\Traits\Userstamps;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Models\Role;
+use Spatie\SchemalessAttributes\SchemalessAttributesTrait;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -44,6 +45,7 @@ use function setPermissionsTeamId;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $members
  * @property-read \Illuminate\Database\Eloquent\Collection<int, OrganizationInvitation> $invitations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, OrganizationInvitation> $pendingInvitations
+ * @property \Spatie\SchemalessAttributes\SchemalessAttributes $extra_attributes
  */
 final class Organization extends Model
 {
@@ -55,6 +57,7 @@ final class Organization extends Model
     use HasPlanSubscriptions;
     use HasSlug;
     use LogsActivity;
+    use SchemalessAttributesTrait;
     use SoftDeletes;
     use Userstamps;
 
@@ -64,6 +67,9 @@ final class Organization extends Model
      * @var list<string>
      */
     public const array ASSIGNABLE_ORG_ROLES = ['admin', 'member'];
+
+    /** @var list<string> */
+    protected $schemalessAttributes = ['extra_attributes'];
 
     /**
      * @var list<string>
@@ -144,7 +150,7 @@ final class Organization extends Model
     public function pendingInvitations(): HasMany
     {
         return $this->invitations()
-            ->where('status', OrganizationInvitation::STATUS_PENDING)
+            ->whereState('status', \App\States\OrganizationInvitation\Pending::class)
             ->where('expires_at', '>', now());
     }
 

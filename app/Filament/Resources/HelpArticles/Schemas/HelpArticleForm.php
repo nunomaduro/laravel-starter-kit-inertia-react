@@ -66,11 +66,6 @@ final class HelpArticleForm
                         Toggle::make('is_published')
                             ->label('Published')
                             ->default(false),
-
-                        Toggle::make('is_featured')
-                            ->label('Featured')
-                            ->helperText('Show on help center homepage')
-                            ->default(false),
                     ])
                     ->collapsible(),
             ]);

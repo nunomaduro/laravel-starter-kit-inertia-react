@@ -14,5 +14,6 @@ When working with **typed DTOs**, **slugs**, **sort order**, **model flags**, **
 - **spatie/laravel-schemaless-attributes**: JSON columns (e.g. `extra_attributes`) with cast and accessors.
 - **a909m/filament-statefusion**: Filament panel plugin in `AdminPanelProvider`; syncs table/form state with Livewire/URL.
 - **askedio/laravel-soft-cascade**: Cascade deletes/restores when using soft deletes; configure in model.
+- **propaganistas/laravel-phone**: Phone validation (`phone:INTERNATIONAL`, `phone:US,BE`), E164PhoneNumberCast, `phone()` helper — [laravel-phone.md](../../docs/developer/backend/laravel-phone.md).
 
 Use the `search-docs` tool for version-specific docs when implementing a feature with any of these packages.

@@ -7,15 +7,21 @@ namespace App\Models\Billing;
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
 use App\Models\User;
+use App\States\AffiliatePayout\Completed;
+use App\States\AffiliatePayout\Failed;
+use App\States\AffiliatePayout\PayoutStatus;
+use App\States\AffiliatePayout\Pending;
+use App\States\AffiliatePayout\Processing;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\ModelStates\HasStates;
 
 /**
  * @property int $id
  * @property int $affiliate_id
  * @property int $amount
  * @property string $currency
- * @property string $status
+ * @property PayoutStatus $status
  * @property string $payment_method
  * @property string|null $transaction_id
  * @property string|null $notes
@@ -26,15 +32,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 final class AffiliatePayout extends Model
 {
+    use HasStates;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-
-    public const string STATUS_PENDING = 'pending';
-
-    public const string STATUS_PROCESSING = 'processing';
-
-    public const string STATUS_COMPLETED = 'completed';
-
-    public const string STATUS_FAILED = 'failed';
 
     protected $fillable = [
         'affiliate_id',
@@ -65,43 +64,34 @@ final class AffiliatePayout extends Model
 
     public function isPending(): bool
     {
-        return $this->status === self::STATUS_PENDING;
+        return $this->status->equals(Pending::class);
     }
 
     public function isCompleted(): bool
     {
-        return $this->status === self::STATUS_COMPLETED;
+        return $this->status->equals(Completed::class);
     }
 
     public function markAsProcessing(): void
     {
-        $this->update(['status' => self::STATUS_PROCESSING]);
+        $this->status->transitionTo(Processing::class);
     }
 
     public function markAsCompleted(string $transactionId, User $processor): void
     {
-        $this->update([
-            'status' => self::STATUS_COMPLETED,
-            'transaction_id' => $transactionId,
-            'processed_by' => $processor->id,
-            'processed_at' => now(),
-        ]);
+        $this->status->transitionTo(Completed::class, $transactionId, $processor);
     }
 
     public function markAsFailed(string $notes, User $processor): void
     {
-        $this->update([
-            'status' => self::STATUS_FAILED,
-            'notes' => $notes,
-            'processed_by' => $processor->id,
-            'processed_at' => now(),
-        ]);
+        $this->status->transitionTo(Failed::class, $notes, $processor);
     }
 
     protected function casts(): array
     {
         return [
             'amount' => 'integer',
+            'status' => PayoutStatus::class,
             'processed_at' => 'datetime',
         ];
     }

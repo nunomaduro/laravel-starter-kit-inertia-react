@@ -33,6 +33,8 @@ final class CreateUserRequest extends FormRequest
                 'confirmed',
                 Password::defaults(),
             ],
+
+            'phone' => ['nullable', 'phone:INTERNATIONAL'],
         ];
     }
 }

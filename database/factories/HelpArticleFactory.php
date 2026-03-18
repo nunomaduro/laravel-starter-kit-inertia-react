@@ -34,7 +34,6 @@ final class HelpArticleFactory extends Factory
             'not_helpful_count' => 0,
             'order' => 0,
             'is_published' => false,
-            'is_featured' => false,
         ];
     }
 
@@ -47,9 +46,7 @@ final class HelpArticleFactory extends Factory
 
     public function featured(): self
     {
-        return $this->state(fn (array $attributes): array => [
-            'is_featured' => true,
-        ]);
+        return $this->afterCreating(fn (HelpArticle $article): HelpArticle => $article->flag('featured'));
     }
 
     public function withCategory(string $category): self

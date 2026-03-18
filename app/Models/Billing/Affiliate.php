@@ -6,22 +6,21 @@ namespace App\Models\Billing;
 
 use Akaunting\Money\Money;
 use App\Models\User;
+use App\States\Affiliate\Active;
+use App\States\Affiliate\AffiliateStatus;
+use App\States\Affiliate\Pending;
+use App\States\Affiliate\Rejected;
+use App\States\Affiliate\Suspended;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Spatie\ModelStates\HasStates;
 
 final class Affiliate extends Model
 {
+    use HasStates;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
-
-    public const string STATUS_PENDING = 'pending';
-
-    public const string STATUS_ACTIVE = 'active';
-
-    public const string STATUS_SUSPENDED = 'suspended';
-
-    public const string STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
         'user_id',
@@ -66,30 +65,27 @@ final class Affiliate extends Model
 
     public function isActive(): bool
     {
-        return $this->status === self::STATUS_ACTIVE;
+        return $this->status->equals(Active::class);
     }
 
     public function isPending(): bool
     {
-        return $this->status === self::STATUS_PENDING;
+        return $this->status->equals(Pending::class);
     }
 
     public function approve(): void
     {
-        $this->update([
-            'status' => self::STATUS_ACTIVE,
-            'approved_at' => now(),
-        ]);
+        $this->status->transitionTo(Active::class);
     }
 
     public function suspend(): void
     {
-        $this->update(['status' => self::STATUS_SUSPENDED]);
+        $this->status->transitionTo(Suspended::class);
     }
 
     public function reject(): void
     {
-        $this->update(['status' => self::STATUS_REJECTED]);
+        $this->status->transitionTo(Rejected::class);
     }
 
     public function getFormattedTotalEarnings(): string
@@ -123,6 +119,7 @@ final class Affiliate extends Model
     protected function casts(): array
     {
         return [
+            'status' => AffiliateStatus::class,
             'commission_rate' => 'decimal:2',
             'payment_details' => 'array',
             'total_earnings' => 'integer',

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories\Billing;
 
-use App\Enums\Billing\RefundStatus;
 use App\Models\Billing\Invoice;
 use App\Models\Billing\RefundRequest;
+use App\States\RefundRequest\Approved;
+use App\States\RefundRequest\Pending;
+use App\States\RefundRequest\Processed;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,7 +27,7 @@ final class RefundRequestFactory extends Factory
             'invoice_id' => Invoice::factory(),
             'amount' => fake()->numberBetween(500, 10000),
             'reason' => fake()->optional(0.8)->sentence(),
-            'status' => RefundStatus::Pending,
+            'status' => Pending::class,
             'processed_at' => null,
             'processed_by' => null,
         ];
@@ -34,7 +36,7 @@ final class RefundRequestFactory extends Factory
     public function approved(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'status' => RefundStatus::Approved,
+            'status' => Approved::class,
             'processed_at' => now(),
         ]);
     }
@@ -42,7 +44,7 @@ final class RefundRequestFactory extends Factory
     public function processed(): static
     {
         return $this->state(fn (array $attributes): array => [
-            'status' => RefundStatus::Processed,
+            'status' => Processed::class,
             'processed_at' => now(),
         ]);
     }

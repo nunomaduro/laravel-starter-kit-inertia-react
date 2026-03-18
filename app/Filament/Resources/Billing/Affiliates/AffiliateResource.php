@@ -54,10 +54,10 @@ final class AffiliateResource extends Resource
                             ->disabled(),
                         Select::make('status')
                             ->options([
-                                Affiliate::STATUS_PENDING => 'Pending',
-                                Affiliate::STATUS_ACTIVE => 'Active',
-                                Affiliate::STATUS_SUSPENDED => 'Suspended',
-                                Affiliate::STATUS_REJECTED => 'Rejected',
+                                'pending' => 'Pending',
+                                'active' => 'Active',
+                                'suspended' => 'Suspended',
+                                'rejected' => 'Rejected',
                             ])
                             ->required(),
                         TextInput::make('commission_rate')

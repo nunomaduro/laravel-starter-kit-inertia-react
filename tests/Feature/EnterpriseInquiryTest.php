@@ -30,7 +30,7 @@ it('stores an enterprise inquiry', function (): void {
             'name' => 'Acme Corp',
             'email' => 'sales@acme.com',
             'company' => 'Acme Inc',
-            'phone' => '+1 555 123 4567',
+            'phone' => '+32 2 123 45 67',
             'message' => 'We need an enterprise plan.',
             ...enterpriseHoneypotFields(),
         ]);
@@ -43,9 +43,23 @@ it('stores an enterprise inquiry', function (): void {
     expect($inquiry)->not->toBeNull()
         ->and($inquiry->name)->toBe('Acme Corp')
         ->and($inquiry->company)->toBe('Acme Inc')
-        ->and($inquiry->phone)->toBe('+1 555 123 4567')
+        ->and($inquiry->phone)->toBe('+32 2 123 45 67')
         ->and($inquiry->message)->toBe('We need an enterprise plan.')
         ->and($inquiry->status)->toBe('new');
+});
+
+it('rejects invalid phone number', function (): void {
+    $response = $this->fromRoute('enterprise-inquiries.create')
+        ->post(route('enterprise-inquiries.store'), [
+            'name' => 'Acme Corp',
+            'email' => 'sales@acme.com',
+            'phone' => 'not-a-phone',
+            'message' => 'Message',
+            ...enterpriseHoneypotFields(),
+        ]);
+
+    $response->assertRedirectToRoute('enterprise-inquiries.create')
+        ->assertSessionHasErrors('phone');
 });
 
 it('requires name', function (): void {

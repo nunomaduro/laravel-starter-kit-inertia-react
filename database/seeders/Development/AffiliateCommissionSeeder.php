@@ -36,7 +36,7 @@ final class AffiliateCommissionSeeder extends Seeder
             'invoice_id' => $invoice->id,
             'amount' => 1000,
             'currency' => 'USD',
-            'status' => AffiliateCommission::STATUS_PENDING,
+            'status' => 'pending',
             'description' => 'Test commission',
         ]);
     }

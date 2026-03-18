@@ -7,27 +7,19 @@ Third-party API integrations use **Saloon** (`saloonphp/saloon` v3) for a consis
 - **Connectors**: `App\Http\Integrations\{ApiName}\{ApiName}Connector.php` — base URL, default headers, optional auth.
 - **Requests**: `App\Http\Integrations\{ApiName}\Requests\*.php` — one class per endpoint (method + path).
 
-## Example (included)
+## Integrations in this app
 
-An example integration targets the public [JSONPlaceholder](https://jsonplaceholder.typicode.com) API:
+### Paddle (billing)
 
-- **Connector**: `App\Http\Integrations\ExampleApi\ExampleApiConnector`
-- **Request**: `App\Http\Integrations\ExampleApi\Requests\GetPostRequest`
+- **Connector**: `App\Http\Integrations\Paddle\PaddleConnector` — base URL from `config('paddle.sandbox')` (sandbox vs production), Bearer token from `config('paddle.vendor_auth_code')`.
+- **Requests**: `PaddleGetRequest` (GET), `PaddleApiRequest` (POST/PATCH with JSON body).
+- **Usage**: Injected into `App\Services\PaymentGateway\Gateways\PaddleGateway`; the gateway calls `$this->connector->send(new PaddleGetRequest('/subscriptions/'.$id))` or `$this->connector->send(new PaddleApiRequest(Method::POST, '/customers', $data))` and uses `$response->json()`.
 
-Usage:
+### Typesense (search health check)
 
-```php
-use App\Http\Integrations\ExampleApi\ExampleApiConnector;
-use App\Http\Integrations\ExampleApi\Requests\GetPostRequest;
-
-$connector = new ExampleApiConnector;
-$response = $connector->send(new GetPostRequest(1));
-
-$response->successful(); // true/false
-$data = $response->json(); // decoded JSON
-```
-
-Base URL is configurable via `config('services.example_api.url')` (default: `https://jsonplaceholder.typicode.com`). Optional env: `EXAMPLE_API_URL`.
+- **Connector**: `App\Http\Integrations\Typesense\TypesenseConnector` — base URL and API key passed in the constructor (used with dynamic host/port during install).
+- **Request**: `HealthCheckRequest` — GET `/health`.
+- **Usage**: `InstallController::testSearchConnection()` and `AppInstallCommand::verifyTypesense()` build the connector with the user-provided host/port/key and send `HealthCheckRequest`.
 
 ## Adding a new integration
 
@@ -44,4 +36,4 @@ Base URL is configurable via `config('services.example_api.url')` (default: `htt
 ## References
 
 - [Saloon v3 docs](https://docs.saloon.dev)
-- Config: `config/services.php` → `example_api` (and your API keys as needed)
+- Paddle: `config/paddle.php`; Typesense: install/setup flow and Scout settings.

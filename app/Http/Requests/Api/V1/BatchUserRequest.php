@@ -42,6 +42,7 @@ final class BatchUserRequest extends FormRequest
                 'string',
                 Password::defaults(),
             ],
+            'create.*.phone' => ['nullable', 'phone:INTERNATIONAL'],
             'update' => ['sometimes', 'array'],
             'update.*.id' => ['required_with:update.*', 'integer', 'exists:users,id'],
             'update.*.name' => ['sometimes', 'string', 'max:255'],
@@ -65,6 +66,7 @@ final class BatchUserRequest extends FormRequest
                     }
                 },
             ],
+            'update.*.phone' => ['nullable', 'phone:INTERNATIONAL'],
             'delete' => ['sometimes', 'array'],
             'delete.*' => ['integer', 'exists:users,id'],
         ];

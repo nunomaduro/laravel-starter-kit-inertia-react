@@ -33,7 +33,7 @@ final class HelpArticleSeeder extends Seeder
                 continue;
             }
 
-            HelpArticle::query()->create([
+            $model = HelpArticle::query()->create([
                 'title' => $article['title'],
                 'slug' => $article['slug'],
                 'excerpt' => $article['excerpt'] ?? null,
@@ -41,8 +41,10 @@ final class HelpArticleSeeder extends Seeder
                 'category' => $article['category'] ?? null,
                 'order' => $article['order'] ?? 0,
                 'is_published' => $article['is_published'] ?? false,
-                'is_featured' => $article['is_featured'] ?? false,
             ]);
+            if (! empty($article['is_featured'])) {
+                $model->flag('featured');
+            }
         }
 
         $this->ensureMinimumArticles();

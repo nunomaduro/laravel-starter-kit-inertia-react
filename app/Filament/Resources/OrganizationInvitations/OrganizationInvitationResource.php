@@ -11,6 +11,7 @@ use App\Filament\Resources\OrganizationInvitations\Pages\ListOrganizationInvitat
 use App\Filament\Resources\OrganizationInvitations\Schemas\OrganizationInvitationForm;
 use App\Filament\Resources\OrganizationInvitations\Tables\OrganizationInvitationsTable;
 use App\Models\OrganizationInvitation;
+use App\States\OrganizationInvitation\Pending;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -45,7 +46,7 @@ final class OrganizationInvitationResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = self::getModel()::query()->where('status', OrganizationInvitation::STATUS_PENDING)->count();
+        $count = self::getModel()::query()->whereState('status', Pending::class)->count();
 
         return $count > 0 ? (string) $count : null;
     }

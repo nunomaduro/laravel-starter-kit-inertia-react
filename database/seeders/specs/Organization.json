@@ -81,6 +81,11 @@
             "type": "string",
             "nullable": true,
             "default": null
+        },
+        "extra_attributes": {
+            "type": "text",
+            "nullable": true,
+            "default": null
         }
     },
     "relationships": {

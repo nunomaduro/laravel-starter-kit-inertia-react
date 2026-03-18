@@ -21,7 +21,7 @@ final class AffiliateSeeder extends Seeder
 
             Affiliate::query()->create([
                 'user_id' => $user->id,
-                'status' => Affiliate::STATUS_ACTIVE,
+                'status' => 'active',
                 'commission_rate' => 0.10,
                 'payment_email' => $user->email,
                 'total_earnings' => 0,

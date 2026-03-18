@@ -38,6 +38,8 @@ final class UpdateUserRequest extends FormRequest
                     ->max(2 * 1024)
                     ->dimensions(Rule::dimensions()->maxWidth(2000)->maxHeight(2000)),
             ],
+
+            'phone' => ['nullable', 'phone:INTERNATIONAL'],
         ];
     }
 }

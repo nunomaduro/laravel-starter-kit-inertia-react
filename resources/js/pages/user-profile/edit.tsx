@@ -190,6 +190,22 @@ export default function Edit({ status }: { status?: string }) {
                                     />
                                 </FormField>
 
+                                <FormField
+                                    label="Phone"
+                                    htmlFor="phone"
+                                    error={errors.phone}
+                                >
+                                    <Input
+                                        id="phone"
+                                        type="tel"
+                                        className="block w-full"
+                                        defaultValue={auth.user.phone ?? ''}
+                                        name="phone"
+                                        autoComplete="tel"
+                                        placeholder="+1 234 567 8900"
+                                    />
+                                </FormField>
+
                                 {auth.user.email_verified_at === null && (
                                     <div>
                                         <p className="-mt-4 text-sm text-muted-foreground">

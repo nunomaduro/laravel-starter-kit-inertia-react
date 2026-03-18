@@ -14,6 +14,7 @@ This document covers the Search & Data packages available in this starter kit, a
 | **spatie/laravel-model-states** | Good to have | State machines (draft → published, etc.) |
 | **a909m/filament-statefusion** | Good to have | Filament UI for Model States |
 | **askedio/laravel-soft-cascade** | Good to have | Cascade soft deletes/restore on relations |
+| **propaganistas/laravel-phone** | Good to have | Phone validation, formatting, E164 casting — see [laravel-phone.md](./laravel-phone.md) |
 
 ## Spatie Laravel Data (DTOs)
 
@@ -121,6 +122,8 @@ $post->unflag('featured');
 Post::flagged('featured')->get();
 ```
 
+**In this app:** `HelpArticle` (featured, pinned), `Announcement`, `Post` (featured). Filament table actions "Feature" / "Unfeature" and "Pin" / "Unpin".
+
 ## Schemaless Attributes
 
 Store flexible JSON on models without migrations.
@@ -145,6 +148,8 @@ class User extends Model
 
 Add `$table->schemalessAttributes('extra_attributes');` in migration.
 
+**In this app:** `Credit`, `Organization`, `Page` each have an `extra_attributes` JSON column for flexible metadata (e.g. `$credit->extra_attributes->campaign_id`).
+
 ## Model States
 
 State machines for workflows (draft → published, pending → shipped).
@@ -156,6 +161,8 @@ State machines for workflows (draft → published, pending → shipped).
 4. Define allowed transitions in the state config.
 
 **Filament StateFusion** provides badges, filters, and transition actions in Filament. The plugin is registered in `AdminPanelProvider`.
+
+**In this app:** `RefundRequest` (RefundRequestStatus), `OrganizationInvitation` (InvitationStatus), `Affiliate`, `AffiliateCommission`, `AffiliatePayout` (each with state classes and custom transitions where needed). Use `$model->status->transitionTo(NewState::class)` instead of updating `status` directly.
 
 ## Soft Cascade
 

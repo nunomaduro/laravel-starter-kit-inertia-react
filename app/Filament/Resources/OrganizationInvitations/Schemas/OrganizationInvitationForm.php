@@ -25,9 +25,6 @@ final class OrganizationInvitationForm
                 TextInput::make('role')
                     ->required()
                     ->default('member'),
-                TextInput::make('status')
-                    ->required()
-                    ->default('pending'),
                 TextInput::make('token')
                     ->required(),
                 TextInput::make('invited_by')

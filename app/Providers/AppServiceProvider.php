@@ -272,6 +272,9 @@ final class AppServiceProvider extends ServiceProvider
             'appearance-tab-light',
             'appearance-tab-dark',
             'appearance-tab-system',
+            'appearance-theme-default',
+            'appearance-theme-vega',
+            'appearance-theme-nova',
             'auth-login-button',
             'auth-google-login',
             'auth-github-login',
@@ -374,7 +377,11 @@ final class AppServiceProvider extends ServiceProvider
             'pages-delete',
             'settings-nav-domains',
             'nav-admin-panel',
+            'nav-pages',
             'settings-nav-admin-panel',
+            'mode-toggle-light',
+            'mode-toggle-dark',
+            'mode-toggle-system',
         ]);
     }
 

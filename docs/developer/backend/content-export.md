@@ -15,6 +15,21 @@ Tags, PDF generation, and Excel/CSV export (Step 4 of the feature roadmap). All 
 - **Inertia**: Dashboard has an "Export profile (PDF)" button linking to `/profile/export-pdf`.
 - **Requirements**: Browsershot (Node/Puppeteer) for real PDF generation; tests use `Pdf::fake()`.
 
+### PDF driver (Browsershot vs dompdf)
+
+PDFs are generated via [spatie/laravel-pdf](https://github.com/spatie/laravel-pdf) with driver configured in `config/laravel-pdf.php`:
+
+- **Default: Browsershot** (`LARAVEL_PDF_DRIVER=browsershot`) — uses [spatie/browsershot](https://github.com/spatie/browsershot) (Puppeteer/Chrome). Requires Node.js and a Chromium install. Best for complex layouts and JS-rendered content.
+- **Alternative: dompdf** (`LARAVEL_PDF_DRIVER=dompdf`) — pure PHP, no Node. Use on serverless or environments where Node/Chrome are not available. Set in `.env` for those deployments.
+
+### PDF features in this app
+
+| Feature | Route / context | Notes |
+|--------|------------------|-------|
+| Profile export | `GET /profile/export-pdf` | Blade `pdf.profile` |
+| Invoice download | `GET /billing/invoices/{invoice}` (tenant) | LaravelDaily facade; see [InvoiceController](controllers/InvoiceController.md) |
+| DataTable export | Filament / Inertia table exports | Header/bulk Export → PDF option where enabled |
+
 ## Excel / CSV export (maatwebsite/excel + pxlrbt/filament-excel)
 
 - **Filament resources**: All list tables have **header** Export action (XLSX and CSV) and **bulk** Export action where applicable. Columns are derived from the table; model `$hidden` (e.g. password) is respected.

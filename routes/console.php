@@ -28,6 +28,10 @@ Schedule::command('model:prune', [
     '--model' => [MartinPetricko\LaravelDatabaseMail\Models\MailException::class],
 ])->daily();
 
+Schedule::command('model:prune', [
+    '--model' => [Spatie\WebhookClient\Models\WebhookCall::class],
+])->daily();
+
 Schedule::job(new App\Jobs\Billing\GenerateBillingMetrics)->daily()->at('02:00');
 Schedule::job(new App\Jobs\Billing\ExpireCredits)->daily()->at('03:00');
 Schedule::job(new App\Jobs\Billing\ProcessTrialEndingReminders)->daily()->at('04:00');

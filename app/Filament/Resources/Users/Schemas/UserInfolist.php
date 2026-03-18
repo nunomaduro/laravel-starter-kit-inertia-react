@@ -21,6 +21,9 @@ final class UserInfolist
                 TextEntry::make('name'),
                 TextEntry::make('email')
                     ->label('Email address'),
+                TextEntry::make('phone')
+                    ->label('Phone')
+                    ->placeholder('-'),
                 TextEntry::make('roles.name')
                     ->label('Roles')
                     ->badge(),

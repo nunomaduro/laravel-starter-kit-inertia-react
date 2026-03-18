@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace App\Services\PaymentGateway\Gateways;
 
+use App\Http\Integrations\Paddle\PaddleConnector;
+use App\Http\Integrations\Paddle\Requests\PaddleApiRequest;
+use App\Http\Integrations\Paddle\Requests\PaddleGetRequest;
 use App\Models\Organization;
 use App\Services\PaymentGateway\Contracts\PaymentGatewayInterface;
-use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use RuntimeException;
+use Saloon\Enums\Method;
+use Saloon\Exceptions\Request\RequestException;
 
 /**
  * Paddle Billing payment gateway implementation.
- * Uses Paddle Billing API; Paddle Classic is deprecated.
+ * Uses Paddle Billing API via Saloon connector; Paddle Classic is deprecated.
  */
-final class PaddleGateway implements PaymentGatewayInterface
+final readonly class PaddleGateway implements PaymentGatewayInterface
 {
-    private ?string $baseUrl = null;
+    public function __construct(
+        private PaddleConnector $connector
+    ) {}
 
     public function createCustomer(Organization $organization): string
     {
@@ -24,7 +30,7 @@ final class PaddleGateway implements PaymentGatewayInterface
         $name = $organization->name ?? '';
 
         if ($organization->paddle_customer_id) {
-            $this->request('patch', '/customers/'.$organization->paddle_customer_id, [
+            $this->send(Method::PATCH, '/customers/'.$organization->paddle_customer_id, [
                 'email' => $email,
                 'name' => $name,
             ]);
@@ -32,7 +38,7 @@ final class PaddleGateway implements PaymentGatewayInterface
             return $organization->paddle_customer_id;
         }
 
-        $response = $this->request('post', '/customers', [
+        $response = $this->send(Method::POST, '/customers', [
             'email' => $email,
             'name' => $name,
         ]);
@@ -65,7 +71,7 @@ final class PaddleGateway implements PaymentGatewayInterface
 
         throw_if($items === [], InvalidArgumentException::class, 'Paddle checkout requires at least one item with price_id.');
 
-        $response = $this->request('post', '/transactions', [
+        $response = $this->send(Method::POST, '/transactions', [
             'items' => $items,
             'customer_id' => $customerId,
             'custom_data' => [
@@ -89,27 +95,27 @@ final class PaddleGateway implements PaymentGatewayInterface
 
     public function cancelSubscription(string $subscriptionId): void
     {
-        $this->request('post', sprintf('/subscriptions/%s/cancel', $subscriptionId), [
+        $this->send(Method::POST, sprintf('/subscriptions/%s/cancel', $subscriptionId), [
             'effective_from' => 'next_billing_period',
         ]);
     }
 
     public function resumeSubscription(string $subscriptionId): void
     {
-        $this->request('post', sprintf('/subscriptions/%s/resume', $subscriptionId), [
+        $this->send(Method::POST, sprintf('/subscriptions/%s/resume', $subscriptionId), [
             'effective_from' => 'immediately',
         ]);
     }
 
     public function changeSubscriptionPlan(string $subscriptionId, string $newPlanId): void
     {
-        $sub = $this->request('get', '/subscriptions/'.$subscriptionId);
+        $sub = $this->sendGet('/subscriptions/'.$subscriptionId);
         $currentItem = $sub['data']['items'][0] ?? null;
         if (! $currentItem) {
             return;
         }
 
-        $this->request('patch', '/subscriptions/'.$subscriptionId, [
+        $this->send(Method::PATCH, '/subscriptions/'.$subscriptionId, [
             'items' => [
                 [
                     'item_id' => $currentItem['id'],
@@ -123,13 +129,13 @@ final class PaddleGateway implements PaymentGatewayInterface
 
     public function updateSubscriptionQuantity(string $subscriptionId, int $quantity): bool
     {
-        $sub = $this->request('get', '/subscriptions/'.$subscriptionId);
+        $sub = $this->sendGet('/subscriptions/'.$subscriptionId);
         $item = $sub['data']['items'][0] ?? null;
         if (! $item) {
             return false;
         }
 
-        $this->request('patch', '/subscriptions/'.$subscriptionId, [
+        $this->send(Method::PATCH, '/subscriptions/'.$subscriptionId, [
             'items' => [
                 [
                     'item_id' => $item['id'],
@@ -145,7 +151,7 @@ final class PaddleGateway implements PaymentGatewayInterface
 
     public function processRefund(string $transactionId, int $amountCents): void
     {
-        $this->request('post', sprintf('/transactions/%s/refund', $transactionId), [
+        $this->send(Method::POST, sprintf('/transactions/%s/refund', $transactionId), [
             'amount' => (string) ($amountCents / 100),
             'reason' => 'Customer request',
         ]);
@@ -197,37 +203,40 @@ final class PaddleGateway implements PaymentGatewayInterface
         return ! empty(config('paddle.vendor_auth_code'));
     }
 
-    private function getBaseUrl(): string
+    /**
+     * @return array<string, mixed>
+     */
+    private function sendGet(string $endpoint): array
     {
-        if ($this->baseUrl === null) {
-            $this->baseUrl = config('paddle.sandbox', true)
-                ? 'https://sandbox-api.paddle.com'
-                : 'https://api.paddle.com';
-        }
+        try {
+            $response = $this->connector->send(new PaddleGetRequest($endpoint));
 
-        return $this->baseUrl;
+            return $response->json();
+        } catch (RequestException $e) {
+            throw new RuntimeException(
+                'Paddle API error: '.$e->getResponse()->body(),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    private function request(string $method, string $endpoint, array $data = []): array
+    private function send(Method $method, string $endpoint, array $data = []): array
     {
-        $url = $this->getBaseUrl().$endpoint;
+        try {
+            $response = $this->connector->send(new PaddleApiRequest($method, $endpoint, $data));
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.config('paddle.vendor_auth_code'),
-            'Content-Type' => 'application/json',
-        ])->{$method}($url, $data);
-
-        if (! $response->successful()) {
+            return $response->json();
+        } catch (RequestException $e) {
             throw new RuntimeException(
-                'Paddle API error: '.$response->body(),
-                $response->status()
+                'Paddle API error: '.$e->getResponse()->body(),
+                $e->getCode(),
+                $e
             );
         }
-
-        return $response->json();
     }
 }

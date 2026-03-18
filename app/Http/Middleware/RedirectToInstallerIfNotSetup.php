@@ -30,6 +30,10 @@ final class RedirectToInstallerIfNotSetup
             return $next($request);
         }
 
+        if (str_starts_with($request->path(), 'webhooks/')) {
+            return $next($request);
+        }
+
         try {
             $wizard = resolve(SetupWizardSettings::class);
             if ($wizard->setup_completed) {

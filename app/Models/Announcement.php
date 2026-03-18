@@ -7,10 +7,12 @@ namespace App\Models;
 use App\Enums\AnnouncementLevel;
 use App\Enums\AnnouncementScope;
 use GeneaLabs\LaravelGovernor\Traits\Governable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
+use Spatie\ModelFlags\Models\Concerns\HasFlags;
 
 /**
  * @property int $id
@@ -34,6 +36,7 @@ use Spatie\EloquentSortable\SortableTrait;
 final class Announcement extends Model implements Sortable
 {
     use Governable;
+    use HasFlags;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use SortableTrait;
 
@@ -75,7 +78,15 @@ final class Announcement extends Model implements Sortable
     }
 
     #[\Illuminate\Database\Eloquent\Attributes\Scope]
-    protected function active(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    protected function featured(Builder $query): Builder
+    {
+        $query->flagged('featured');
+
+        return $query;
+    }
+
+    #[\Illuminate\Database\Eloquent\Attributes\Scope]
+    protected function active(Builder $query): Builder
     {
         return $query->where('is_active', true)
             ->where(function ($q): void {

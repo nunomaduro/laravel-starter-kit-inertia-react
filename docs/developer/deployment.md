@@ -170,6 +170,15 @@ php artisan schedule:run-cronless
 
 This runs the same scheduler every minute without cron. See [Cronless schedule](backend/cronless-schedule.md) for options and deployment notes.
 
+**Procfile example (Heroku/Render):** run the web app and a separate process for the scheduler:
+
+```
+web: php artisan serve
+scheduler: php artisan schedule:run-cronless
+```
+
+Or use the composer script: `composer schedule:cronless` (runs `php artisan schedule:run-cronless`).
+
 ## Webhook security
 
 Stripe (`POST /webhooks/stripe`), Paddle (`POST /webhooks/paddle`), and Lemon Squeezy (`POST /lemon-squeezy/webhook`) endpoints are excluded from CSRF. Each verifies the request signature (Stripe-Signature, Paddle-Signature, or Lemon Squeezy HMAC) before processing. Do not disable signature verification; keep webhook secrets in config and never expose them to the client.

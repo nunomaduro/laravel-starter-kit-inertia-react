@@ -190,6 +190,7 @@ Supported providers: `google`, `github` (controlled by `AuthSettings::google_oau
 | GET | `profile/export-pdf` | profile.export-pdf | web, auth, verified |
 | POST | `webhooks/stripe` | webhooks.stripe | web |
 | POST | `webhooks/paddle` | webhooks.paddle | web |
+| POST | `webhooks/spatie` | webhook-client-default | web |
 | GET, POST, PUT, PATCH, DELETE | `settings` | settings | web, auth |
 | GET | `settings/appearance` | appearance.edit | web, auth, feature:appearance_settings |
 | GET | `settings/personal-data-export` | personal-data-export.edit | web, auth, feature:personal_data_export |

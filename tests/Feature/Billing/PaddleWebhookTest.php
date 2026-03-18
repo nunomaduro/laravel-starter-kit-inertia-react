@@ -17,7 +17,7 @@ beforeEach(function (): void {
     $this->webhookSecret = 'pdl_test_secret_for_testing';
     config(['paddle.webhook_secret' => $this->webhookSecret]);
 
-    $this->owner = User::factory()->withoutTwoFactor()->create();
+    $this->owner = User::withoutEvents(fn (): User => User::factory()->withoutTwoFactor()->create());
     $this->org = Organization::factory()->forOwner($this->owner)->create([
         'paddle_customer_id' => 'ctm_test_'.uniqid(),
     ]);

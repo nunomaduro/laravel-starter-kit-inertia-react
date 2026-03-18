@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Integrations\Typesense\Requests\HealthCheckRequest;
+use App\Http\Integrations\Typesense\TypesenseConnector;
 use App\Models\User;
 use App\Providers\SettingsOverlayServiceProvider;
 use App\Settings\AiSettings;
@@ -1699,10 +1701,9 @@ final class InstallController extends Controller
 
         throw_if($apiKey === '', RuntimeException::class, 'Typesense API key is required.');
 
-        $url = sprintf('%s://%s:%d/health', $protocol, $host, $port);
-        $response = Http::withHeaders(['X-TYPESENSE-API-KEY' => $apiKey])
-            ->timeout(5)
-            ->get($url);
+        $baseUrl = sprintf('%s://%s:%d', $protocol, $host, $port);
+        $connector = new TypesenseConnector($baseUrl, $apiKey);
+        $response = $connector->send(new HealthCheckRequest);
 
         if (! $response->successful()) {
             throw new RuntimeException(sprintf('Typesense returned HTTP %d.', $response->status()));

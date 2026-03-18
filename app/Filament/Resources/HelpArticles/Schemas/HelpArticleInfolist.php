@@ -25,7 +25,14 @@ final class HelpArticleInfolist
                 TextEntry::make('not_helpful_count')->numeric()->placeholder('-'),
                 TextEntry::make('order')->numeric()->placeholder('-'),
                 IconEntry::make('is_published')->label('Published')->boolean(),
-                IconEntry::make('is_featured')->label('Featured')->boolean(),
+                IconEntry::make('featured_flag')
+                    ->label('Featured')
+                    ->getStateUsing(fn (HelpArticle $record): bool => $record->hasFlag('featured'))
+                    ->boolean(),
+                IconEntry::make('pinned_flag')
+                    ->label('Pinned')
+                    ->getStateUsing(fn (HelpArticle $record): bool => $record->hasFlag('pinned'))
+                    ->boolean(),
                 TextEntry::make('tags.name')->label('Tags')->badge(),
                 TextEntry::make('created_at')->dateTime()->placeholder('-'),
                 TextEntry::make('updated_at')->dateTime()->placeholder('-'),
