@@ -21,7 +21,10 @@ interface Props {
 }
 
 export default function DashboardShow({ dashboard: dashboardRecord }: Props) {
-    const config = useMemo(() => createDashboardPuckConfig([]), []);
+    const config = useMemo(
+        () => createDashboardPuckConfig([], dashboardRecord.refresh_interval),
+        [dashboardRecord.refresh_interval],
+    );
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: dashboard().url },

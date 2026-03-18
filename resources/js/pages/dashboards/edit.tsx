@@ -53,8 +53,12 @@ export default function DashboardEdit({
     const initialData = puckJson?.content ? puckJson : emptyPuckData;
 
     const dashboardPuckConfig = useMemo(
-        () => createDashboardPuckConfig(dataSources),
-        [dataSources],
+        () =>
+            createDashboardPuckConfig(
+                dataSources,
+                dashboardRecord?.refresh_interval,
+            ),
+        [dataSources, dashboardRecord?.refresh_interval],
     );
 
     const { data, setData, post, put, processing, errors } = useForm({

@@ -1,4 +1,24 @@
 import {
+    ActivityFeedBlock,
+    type ActivityFeedBlockProps,
+} from '@/components/puck-blocks/dashboards/activity-feed-block';
+import {
+    KpiGridBlock,
+    type KpiGridBlockProps,
+} from '@/components/puck-blocks/dashboards/kpi-grid-block';
+import {
+    LiveChartBlock,
+    type LiveChartBlockProps,
+} from '@/components/puck-blocks/dashboards/live-chart-block';
+import {
+    MapBlock,
+    type MapBlockProps,
+} from '@/components/puck-blocks/dashboards/map-block';
+import {
+    WidgetBlock,
+    type WidgetBlockProps,
+} from '@/components/puck-blocks/dashboards/widget-block';
+import {
     KpiCard,
     type KpiCardProps,
 } from '@/components/puck-blocks/reports/kpi-card';
@@ -106,6 +126,7 @@ function RecentList({ title, labelKey, valueKey, data }: RecentListProps) {
 
 export function createDashboardPuckConfig(
     dataSources: DataSourceOption[] = [],
+    refreshInterval?: number | null,
 ): Config<{
     Heading: HeadingProps;
     Text: TextProps;
@@ -113,6 +134,11 @@ export function createDashboardPuckConfig(
     StatCard: StatCardProps;
     QuickLink: QuickLinkProps;
     RecentList: RecentListProps;
+    LiveChart: LiveChartBlockProps;
+    KpiGrid: KpiGridBlockProps;
+    ActivityFeed: ActivityFeedBlockProps;
+    Map: MapBlockProps;
+    Widget: WidgetBlockProps;
 }> {
     const dsOptions = dataSources.map((ds) => ({
         label: ds.label,
@@ -124,15 +150,27 @@ export function createDashboardPuckConfig(
             layout: { title: 'Layout', components: ['Heading', 'Text'] },
             metrics: {
                 title: 'Metrics',
-                components: ['KpiCard', 'StatCard'],
+                components: ['KpiCard', 'StatCard', 'KpiGrid'],
+            },
+            charts: {
+                title: 'Charts',
+                components: ['LiveChart'],
             },
             data: {
                 title: 'Data',
-                components: ['RecentList'],
+                components: ['RecentList', 'ActivityFeed'],
+            },
+            geo: {
+                title: 'Geographic',
+                components: ['Map'],
             },
             navigation: {
                 title: 'Navigation',
                 components: ['QuickLink'],
+            },
+            embeds: {
+                title: 'Embeds',
+                components: ['Widget'],
             },
         },
         components: {
@@ -230,6 +268,156 @@ export function createDashboardPuckConfig(
                     data: undefined,
                 },
                 render: RecentList,
+            },
+            LiveChart: {
+                fields: {
+                    title: { type: 'text', label: 'Title' },
+                    dataSource: {
+                        type: 'select',
+                        label: 'Data source',
+                        options: dsOptions,
+                    },
+                    chartType: {
+                        type: 'select',
+                        label: 'Chart type',
+                        options: [
+                            { label: 'Bar', value: 'bar' },
+                            { label: 'Line', value: 'line' },
+                            { label: 'Pie', value: 'pie' },
+                        ],
+                    },
+                    xKey: { type: 'text', label: 'X axis key' },
+                    yKey: { type: 'text', label: 'Y axis key' },
+                },
+                defaultProps: {
+                    title: 'Live chart',
+                    dataSource: dsOptions[0]?.value ?? '',
+                    chartType: 'bar',
+                    xKey: 'name',
+                    yKey: 'value',
+                    refreshInterval: refreshInterval ?? null,
+                    data: undefined,
+                },
+                render: LiveChartBlock,
+            },
+            KpiGrid: {
+                fields: {
+                    columns: {
+                        type: 'select',
+                        label: 'Columns',
+                        options: [
+                            { label: '2 columns', value: 2 },
+                            { label: '3 columns', value: 3 },
+                            { label: '4 columns', value: 4 },
+                        ],
+                    },
+                    items: {
+                        type: 'custom',
+                        render: () => (
+                            <p className="text-xs text-muted-foreground">
+                                Configure items in JSON via the data field.
+                            </p>
+                        ),
+                    },
+                },
+                defaultProps: {
+                    columns: 3,
+                    items: [
+                        {
+                            label: 'Revenue',
+                            value: '$0',
+                            trend: 'neutral' as const,
+                            trendLabel: '',
+                        },
+                        {
+                            label: 'Users',
+                            value: '0',
+                            trend: 'neutral' as const,
+                            trendLabel: '',
+                        },
+                        {
+                            label: 'Orders',
+                            value: '0',
+                            trend: 'neutral' as const,
+                            trendLabel: '',
+                        },
+                    ],
+                },
+                render: KpiGridBlock,
+            },
+            ActivityFeed: {
+                fields: {
+                    title: { type: 'text', label: 'Title' },
+                    dataSource: {
+                        type: 'select',
+                        label: 'Data source',
+                        options: dsOptions,
+                    },
+                    maxItems: {
+                        type: 'number',
+                        label: 'Max items',
+                        min: 1,
+                        max: 50,
+                    },
+                },
+                defaultProps: {
+                    title: 'Recent activity',
+                    dataSource: dsOptions[0]?.value ?? '',
+                    maxItems: 10,
+                    refreshInterval: refreshInterval ?? null,
+                    data: undefined,
+                },
+                render: ActivityFeedBlock,
+            },
+            Map: {
+                fields: {
+                    title: { type: 'text', label: 'Title' },
+                    dataSource: {
+                        type: 'select',
+                        label: 'Data source',
+                        options: dsOptions,
+                    },
+                    height: {
+                        type: 'number',
+                        label: 'Height (px)',
+                        min: 200,
+                        max: 800,
+                    },
+                },
+                defaultProps: {
+                    title: 'Locations',
+                    dataSource: dsOptions[0]?.value ?? '',
+                    height: 400,
+                    data: undefined,
+                },
+                render: MapBlock,
+            },
+            Widget: {
+                fields: {
+                    title: { type: 'text', label: 'Title' },
+                    url: { type: 'text', label: 'URL' },
+                    height: {
+                        type: 'number',
+                        label: 'Height (px)',
+                        min: 100,
+                        max: 1200,
+                    },
+                    allowFullscreen: {
+                        type: 'radio',
+                        label: 'Allow fullscreen',
+                        options: [
+                            { label: 'Yes', value: true },
+                            { label: 'No', value: false },
+                        ],
+                    },
+                },
+                defaultProps: {
+                    title: '',
+                    url: '',
+                    height: 400,
+                    allowFullscreen: false,
+                },
+                render: WidgetBlock,
             },
         },
         root: {
