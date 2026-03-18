@@ -30,6 +30,7 @@ use App\Services\PaymentGateway\PaymentGatewayManager;
 use App\Services\PrismService;
 use App\Settings\AuthSettings;
 use App\Settings\SeoSettings;
+use App\Support\ModuleLoader;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\MigrationsEnded;
@@ -89,6 +90,10 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PaymentGatewayManager::class);
 
         config(['filament-impersonate.redirect_to' => '/dashboard']);
+
+        foreach (ModuleLoader::providers() as $provider) {
+            $this->app->register($provider);
+        }
     }
 
     public function boot(): void

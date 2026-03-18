@@ -10,6 +10,7 @@ use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
 use App\Settings\SeoSettings;
 use App\Support\FeatureHelper;
+use App\Support\ModuleFeatureRegistry;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -110,7 +111,7 @@ final class HandleInertiaRequests extends Middleware
     {
         if (! $user) {
             $features = [];
-            foreach (array_keys(config('feature-flags.inertia_features', [])) as $name) {
+            foreach (array_keys(ModuleFeatureRegistry::allInertiaFeatures()) as $name) {
                 $features[$name] = false;
             }
 
@@ -144,7 +145,7 @@ final class HandleInertiaRequests extends Middleware
                 setPermissionsTeamId($previousTeamId);
             }
             $features = [];
-            foreach (array_keys(config('feature-flags.inertia_features', [])) as $name) {
+            foreach (array_keys(ModuleFeatureRegistry::allInertiaFeatures()) as $name) {
                 $features[$name] = true;
             }
         } else {
@@ -152,7 +153,7 @@ final class HandleInertiaRequests extends Middleware
             $roles = $user->getRoleNames()->all();
             $canBypass = $user->can('bypass-permissions') || $user->hasRole('super-admin');
             $features = [];
-            foreach (config('feature-flags.inertia_features', []) as $name => $featureClass) {
+            foreach (ModuleFeatureRegistry::allInertiaFeatures() as $name => $featureClass) {
                 $features[$name] = FeatureHelper::isActiveForKey($name, $user);
             }
         }
