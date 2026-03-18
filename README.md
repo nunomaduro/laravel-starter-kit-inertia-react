@@ -39,6 +39,17 @@ Modern PHP has evolved into a mature, type-safe language, yet many Laravel proje
 - **Automated Seeder System**: Comprehensive seeder automation with category-based organization, JSON support, and relationship-aware generation
 - **Activity Logging**: [Spatie Laravel Activity Log](https://spatie.be/docs/laravel-activitylog/v4/introduction) and [Filament Activity Log](https://filamentphp.com/plugins/alizharb-activity-log) for user and model changes, including 2FA and role/permission changes, with IP and user agent; new models from `make:model:full` get activity logging by default
 -
+### Features & integrated packages
+
+- **Invoice PDF**: LaravelDaily Invoices for billing; `BuildLaravelDailyInvoice` action and download route — see [Content & export](docs/developer/backend/content-export.md)
+- **GA4 widget**: Filament dashboard widget for [Spatie Laravel Analytics](https://github.com/spatie/laravel-analytics) (7-day visitors and top pages) — see [SEO & monitoring](docs/developer/backend/seo-and-monitoring.md)
+- **Cronless schedule**: Run the scheduler without cron (e.g. on PaaS); `composer schedule:cronless` and `schedule:run-cronless` — see [Cronless schedule](docs/developer/backend/cronless-schedule.md) and [Deployment](docs/developer/deployment.md)
+- **Model states**: [Spatie Laravel Model States](https://github.com/spatie/laravel-model-states) for RefundRequest, OrganizationInvitation, Affiliate, AffiliateCommission, AffiliatePayout — see [Search & data](docs/developer/backend/search-and-data.md)
+- **Model flags**: [Spatie Laravel Model Flags](https://github.com/spatie/laravel-model-flags) for HelpArticle (featured, pinned), Announcement and Post (featured) — see [Search & data](docs/developer/backend/search-and-data.md)
+- **Schemaless attributes**: [Spatie Laravel Schemaless Attributes](https://github.com/spatie/laravel-schemaless-attributes) on Credit, Organization, Page (`extra_attributes`) — see [Search & data](docs/developer/backend/search-and-data.md)
+- **Saloon**: HTTP client for Paddle and Typesense; connectors in `App\Http\Integrations\*` — see [Saloon](docs/developer/backend/saloon.md)
+- **Pan (product analytics)**: Impressions, hovers, clicks via `data-pan`; whitelist in `AppServiceProvider::configurePan()`; `php artisan pan` — see [Pan](docs/developer/backend/pan.md)
+
 This isn't just another Laravel boilerplate—it's a statement that PHP applications can and should be built with the same rigor as strongly-typed languages like Rust or TypeScript.
 
 ## Getting Started
