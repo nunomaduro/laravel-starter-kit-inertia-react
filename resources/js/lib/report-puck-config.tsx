@@ -1,4 +1,13 @@
 import {
+    ChartBlock,
+    type ChartBlockProps,
+} from '@/components/puck-blocks/reports/chart-block';
+import {
+    FilterBlock,
+    type FilterBlockProps,
+    type FilterOption,
+} from '@/components/puck-blocks/reports/filter-block';
+import {
     KpiCard,
     type KpiCardProps,
 } from '@/components/puck-blocks/reports/kpi-card';
@@ -42,7 +51,9 @@ export function createReportPuckConfig(
     Heading: HeadingProps;
     Text: TextProps;
     ReportTable: TableBlockProps;
+    Chart: ChartBlockProps;
     KpiCard: KpiCardProps;
+    Filter: FilterBlockProps;
     Summary: SummaryBlockProps;
 }> {
     const dsOptions = dataSources.map((ds) => ({
@@ -53,9 +64,17 @@ export function createReportPuckConfig(
     return {
         categories: {
             layout: { title: 'Layout', components: ['Heading', 'Text'] },
-            reports: {
-                title: 'Reports',
-                components: ['ReportTable', 'KpiCard', 'Summary'],
+            data: {
+                title: 'Data',
+                components: ['ReportTable', 'Chart', 'KpiCard'],
+            },
+            controls: {
+                title: 'Controls',
+                components: ['Filter'],
+            },
+            content: {
+                title: 'Content',
+                components: ['Summary'],
             },
         },
         components: {
@@ -101,6 +120,36 @@ export function createReportPuckConfig(
                 },
                 render: TableBlock,
             },
+            Chart: {
+                fields: {
+                    dataSource: {
+                        type: 'select',
+                        label: 'Data source',
+                        options: dsOptions,
+                    },
+                    title: { type: 'text', label: 'Title' },
+                    chartType: {
+                        type: 'select',
+                        label: 'Chart type',
+                        options: [
+                            { label: 'Bar', value: 'bar' },
+                            { label: 'Line', value: 'line' },
+                            { label: 'Pie', value: 'pie' },
+                        ],
+                    },
+                    xKey: { type: 'text', label: 'X-axis key' },
+                    yKey: { type: 'text', label: 'Y-axis key' },
+                },
+                defaultProps: {
+                    dataSource: dsOptions[0]?.value ?? '',
+                    title: 'Chart',
+                    chartType: 'bar',
+                    xKey: 'name',
+                    yKey: 'value',
+                    data: undefined,
+                },
+                render: ChartBlock,
+            },
             KpiCard: {
                 fields: {
                     label: { type: 'text', label: 'Label' },
@@ -124,11 +173,63 @@ export function createReportPuckConfig(
                 },
                 render: KpiCard,
             },
+            Filter: {
+                fields: {
+                    label: { type: 'text', label: 'Label' },
+                    filterType: {
+                        type: 'select',
+                        label: 'Filter type',
+                        options: [
+                            { label: 'Date range', value: 'date_range' },
+                            { label: 'Dropdown', value: 'dropdown' },
+                        ],
+                    },
+                    parameterName: { type: 'text', label: 'Parameter name' },
+                    options: {
+                        type: 'array',
+                        label: 'Dropdown options',
+                        arrayFields: {
+                            label: { type: 'text', label: 'Label' },
+                            value: { type: 'text', label: 'Value' },
+                        },
+                        getItemSummary: (item: FilterOption) =>
+                            item?.label ?? 'Option',
+                    },
+                    defaultFrom: { type: 'text', label: 'Default from date' },
+                    defaultTo: { type: 'text', label: 'Default to date' },
+                    defaultValue: {
+                        type: 'text',
+                        label: 'Default dropdown value',
+                    },
+                },
+                defaultProps: {
+                    label: 'Filter',
+                    filterType: 'dropdown',
+                    parameterName: 'filter',
+                    options: [],
+                    defaultFrom: '',
+                    defaultTo: '',
+                    defaultValue: '',
+                },
+                render: FilterBlock,
+            },
             Summary: {
                 fields: {
-                    content: { type: 'textarea', label: 'Summary text' },
+                    dataSource: {
+                        type: 'select',
+                        label: 'Data source',
+                        options: dsOptions,
+                    },
+                    content: {
+                        type: 'textarea',
+                        label: 'Summary text (use {{key}} for variables)',
+                    },
                 },
-                defaultProps: { content: 'Report summary text.' },
+                defaultProps: {
+                    content: 'Report summary text.',
+                    dataSource: '',
+                    data: undefined,
+                },
                 render: SummaryBlock,
             },
         },
