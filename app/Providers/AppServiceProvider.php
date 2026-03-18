@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\DataTables\AnnouncementDataTable;
 use App\DataTables\CategoryDataTable;
 use App\DataTables\OrganizationDataTable;
 use App\DataTables\PostDataTable;
@@ -159,14 +158,6 @@ final class AppServiceProvider extends ServiceProvider
             DataTableReorderController::class,
         ] as $controller) {
             $controller::register('users', UserDataTable::class);
-        }
-
-        foreach ([
-            DataTableExportController::class,
-            DataTableToggleController::class,
-            DataTableReorderController::class,
-        ] as $controller) {
-            $controller::register('announcements', AnnouncementDataTable::class);
         }
 
         DataTableExportController::register('posts', PostDataTable::class);

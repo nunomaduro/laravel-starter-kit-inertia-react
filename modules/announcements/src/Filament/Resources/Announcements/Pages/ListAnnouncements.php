@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Announcements\Pages;
+namespace Modules\Announcements\Filament\Resources\Announcements\Pages;
 
-use App\Filament\Resources\Announcements\AnnouncementResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Modules\Announcements\Filament\Resources\Announcements\AnnouncementResource;
 
 final class ListAnnouncements extends ListRecords
 {

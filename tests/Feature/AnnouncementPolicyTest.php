@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use App\Actions\CreateOrganizationAction;
-use App\Enums\AnnouncementScope;
-use App\Models\Announcement;
 use App\Models\User;
 use App\Services\TenantContext;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\Gate;
+use Modules\Announcements\Enums\AnnouncementScope;
+use Modules\Announcements\Models\Announcement;
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Policies;
+namespace Modules\Announcements\Policies;
 
-use App\Enums\AnnouncementScope;
-use App\Models\Announcement;
 use App\Models\User;
 use App\Services\TenantContext;
+use Modules\Announcements\Enums\AnnouncementScope;
+use Modules\Announcements\Models\Announcement;
 
 final class AnnouncementPolicy
 {

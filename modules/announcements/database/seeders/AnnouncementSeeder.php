@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders\Development;
+namespace Modules\Announcements\Database\Seeders;
 
-use App\Enums\AnnouncementLevel;
-use App\Enums\AnnouncementScope;
-use App\Models\Announcement;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Modules\Announcements\Enums\AnnouncementLevel;
+use Modules\Announcements\Enums\AnnouncementScope;
+use Modules\Announcements\Models\Announcement;
 
 /**
  * Seeds rich announcement data for development (banners, DataTable, filters).

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Announcements\Pages;
+namespace Modules\Announcements\Filament\Resources\Announcements\Pages;
 
-use App\Enums\AnnouncementScope;
-use App\Filament\Resources\Announcements\AnnouncementResource;
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Announcements\Enums\AnnouncementScope;
+use Modules\Announcements\Filament\Resources\Announcements\AnnouncementResource;
 
 final class CreateAnnouncement extends CreateRecord
 {

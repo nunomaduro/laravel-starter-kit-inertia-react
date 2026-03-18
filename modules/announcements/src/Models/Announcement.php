@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace Modules\Announcements\Models;
 
-use App\Enums\AnnouncementLevel;
-use App\Enums\AnnouncementScope;
+use App\Models\Organization;
+use App\Models\User;
 use GeneaLabs\LaravelGovernor\Traits\Governable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Announcements\Database\Factories\AnnouncementFactory;
+use Modules\Announcements\Enums\AnnouncementLevel;
+use Modules\Announcements\Enums\AnnouncementScope;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\ModelFlags\Models\Concerns\HasFlags;
@@ -36,8 +40,8 @@ use Spatie\ModelFlags\Models\Concerns\HasFlags;
 final class Announcement extends Model implements Sortable
 {
     use Governable;
+    use HasFactory;
     use HasFlags;
-    use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use SortableTrait;
 
     /** @var array<string, mixed> */
@@ -46,7 +50,7 @@ final class Announcement extends Model implements Sortable
         'sort_when_creating' => true,
     ];
 
-    /** @var array<int, string> */
+    /** @var list<string> */
     protected $fillable = [
         'title',
         'body',
@@ -75,6 +79,11 @@ final class Announcement extends Model implements Sortable
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    protected static function newFactory(): AnnouncementFactory
+    {
+        return AnnouncementFactory::new();
     }
 
     #[\Illuminate\Database\Eloquent\Attributes\Scope]

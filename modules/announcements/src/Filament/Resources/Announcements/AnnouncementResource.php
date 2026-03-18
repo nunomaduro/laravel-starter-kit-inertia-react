@@ -2,14 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Announcements;
+namespace Modules\Announcements\Filament\Resources\Announcements;
 
-use App\Filament\Resources\Announcements\Pages\CreateAnnouncement;
-use App\Filament\Resources\Announcements\Pages\EditAnnouncement;
-use App\Filament\Resources\Announcements\Pages\ListAnnouncements;
-use App\Filament\Resources\Announcements\Schemas\AnnouncementForm;
-use App\Filament\Resources\Announcements\Tables\AnnouncementsTable;
-use App\Models\Announcement;
 use App\Services\TenantContext;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -17,6 +11,12 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Announcements\Filament\Resources\Announcements\Pages\CreateAnnouncement;
+use Modules\Announcements\Filament\Resources\Announcements\Pages\EditAnnouncement;
+use Modules\Announcements\Filament\Resources\Announcements\Pages\ListAnnouncements;
+use Modules\Announcements\Filament\Resources\Announcements\Schemas\AnnouncementForm;
+use Modules\Announcements\Filament\Resources\Announcements\Tables\AnnouncementsTable;
+use Modules\Announcements\Models\Announcement;
 use UnitEnum;
 
 final class AnnouncementResource extends Resource

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Models\Announcement;
 use App\Models\Organization;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
@@ -16,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Inertia\Middleware;
+use Modules\Announcements\Models\Announcement;
 use Spatie\Honeypot\Honeypot;
 use Throwable;
 

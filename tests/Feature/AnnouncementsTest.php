@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use App\Actions\CreateOrganizationAction;
-use App\Models\Announcement;
 use App\Models\User;
 use App\Services\TenantContext;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
+use Modules\Announcements\Models\Announcement;
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
@@ -20,7 +20,7 @@ it('shows active announcements in shared props on dashboard', function (): void 
     Announcement::query()->create([
         'title' => 'Global notice',
         'body' => 'A global message.',
-        'scope' => App\Enums\AnnouncementScope::Global,
+        'scope' => Modules\Announcements\Enums\AnnouncementScope::Global,
         'organization_id' => null,
         'starts_at' => null,
         'ends_at' => null,
@@ -46,7 +46,7 @@ it('excludes inactive or expired announcements from shared props', function (): 
     Announcement::query()->create([
         'title' => 'Expired',
         'body' => 'Old.',
-        'scope' => App\Enums\AnnouncementScope::Global,
+        'scope' => Modules\Announcements\Enums\AnnouncementScope::Global,
         'organization_id' => null,
         'starts_at' => now()->subDays(2),
         'ends_at' => now()->subDay(),

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace Modules\Announcements\Http\Controllers;
 
-use App\DataTables\AnnouncementDataTable;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Announcements\DataTables\AnnouncementDataTable;
 
 final class AnnouncementsTableController extends Controller
 {

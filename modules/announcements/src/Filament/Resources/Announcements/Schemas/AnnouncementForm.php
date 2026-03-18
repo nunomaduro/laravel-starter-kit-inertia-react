@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Announcements\Schemas;
+namespace Modules\Announcements\Filament\Resources\Announcements\Schemas;
 
-use App\Enums\AnnouncementLevel;
-use App\Enums\AnnouncementScope;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -14,6 +12,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Modules\Announcements\Enums\AnnouncementLevel;
+use Modules\Announcements\Enums\AnnouncementScope;
 
 final class AnnouncementForm
 {

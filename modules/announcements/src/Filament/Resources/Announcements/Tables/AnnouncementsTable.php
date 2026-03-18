@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Announcements\Tables;
+namespace Modules\Announcements\Filament\Resources\Announcements\Tables;
 
-use App\Enums\AnnouncementLevel;
-use App\Enums\AnnouncementScope;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -13,6 +11,8 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Modules\Announcements\Enums\AnnouncementLevel;
+use Modules\Announcements\Enums\AnnouncementScope;
 
 final class AnnouncementsTable
 {

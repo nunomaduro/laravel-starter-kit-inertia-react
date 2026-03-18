@@ -134,7 +134,9 @@
             "Modules\\Help\\": "modules/help/src/",
             "Modules\\Help\\Database\\": "modules/help/database/",
             "Modules\\Changelog\\": "modules/changelog/src/",
-            "Modules\\Changelog\\Database\\": "modules/changelog/database/"
+            "Modules\\Changelog\\Database\\": "modules/changelog/database/",
+            "Modules\\Announcements\\": "modules/announcements/src/",
+            "Modules\\Announcements\\Database\\": "modules/announcements/database/"
         },
         "files": [
             "bootstrap/helpers.php"

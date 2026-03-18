@@ -1,0 +1,9 @@
+{
+    "name": "announcements",
+    "label": "Announcements",
+    "description": "In-app announcement banners with audience targeting, scheduling, and DataTable management.",
+    "provider": "Modules\\Announcements\\AnnouncementsServiceProvider",
+    "seeders": [
+        "Modules\\Announcements\\Database\\Seeders\\AnnouncementSeeder"
+    ]
+}

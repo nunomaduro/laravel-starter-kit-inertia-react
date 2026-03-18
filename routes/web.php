@@ -8,7 +8,6 @@ declare(strict_types=1);
  * after adding or changing routes.
  */
 
-use App\Http\Controllers\AnnouncementsTableController;
 use App\Http\Controllers\Api\SlugAvailabilityController;
 use App\Http\Controllers\Billing\BillingDashboardController;
 use App\Http\Controllers\Billing\CreditController;
@@ -138,7 +137,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
 
-    Route::get('announcements', [AnnouncementsTableController::class, 'index'])->name('announcements.table');
     Route::get('categories', [CategoriesTableController::class, 'index'])->name('categories.table');
     Route::get('posts', [PostsTableController::class, 'index'])->name('posts.table');
     Route::get('users', [UsersTableController::class, 'index'])->name('users.table');

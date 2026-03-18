@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\DataTables;
+namespace Modules\Announcements\DataTables;
 
-use App\Enums\AnnouncementLevel;
-use App\Enums\AnnouncementScope;
-use App\Models\Announcement;
 use App\Models\Organization;
 use App\Services\TenantContext;
 use BackedEnum;
@@ -19,6 +16,9 @@ use Machour\DataTable\Concerns\HasExport;
 use Machour\DataTable\Concerns\HasReorder;
 use Machour\DataTable\Concerns\HasToggle;
 use Machour\DataTable\QuickView;
+use Modules\Announcements\Enums\AnnouncementLevel;
+use Modules\Announcements\Enums\AnnouncementScope;
+use Modules\Announcements\Models\Announcement;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 

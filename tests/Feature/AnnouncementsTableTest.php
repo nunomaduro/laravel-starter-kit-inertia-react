@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Enums\AnnouncementLevel;
-use App\Enums\AnnouncementScope;
-use App\Models\Announcement;
 use App\Models\User;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\Hash;
+use Modules\Announcements\Enums\AnnouncementLevel;
+use Modules\Announcements\Enums\AnnouncementScope;
+use Modules\Announcements\Models\Announcement;
 
 test('unauthenticated user cannot access announcements table page', function (): void {
     $this->get(route('announcements.table'))
