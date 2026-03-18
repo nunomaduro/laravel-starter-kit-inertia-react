@@ -19,7 +19,7 @@ Third-party API integrations use **Saloon** (`saloonphp/saloon` v3) for a consis
 
 - **Connector**: `App\Http\Integrations\Typesense\TypesenseConnector` — base URL and API key passed in the constructor (used with dynamic host/port during install).
 - **Request**: `HealthCheckRequest` — GET `/health`.
-- **Usage**: `InstallController::testSearchConnection()` and `AppInstallCommand::verifyTypesense()` build the connector with the user-provided host/port/key and send `HealthCheckRequest`.
+- **Usage**: `AppInstallCommand::verifyTypesense()` builds the connector with the user-provided host/port/key and sends `HealthCheckRequest`.
 
 ## Adding a new integration
 
@@ -36,4 +36,4 @@ Third-party API integrations use **Saloon** (`saloonphp/saloon` v3) for a consis
 ## References
 
 - [Saloon v3 docs](https://docs.saloon.dev)
-- Paddle: `config/paddle.php`; Typesense: install/setup flow and Scout settings.
+- Paddle: `config/paddle.php`; Typesense: CLI installer and Scout settings.

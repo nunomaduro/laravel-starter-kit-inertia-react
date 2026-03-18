@@ -114,30 +114,22 @@ php artisan optimize:clear
 # or individually: config:clear, route:clear, view:clear, cache:clear
 ```
 
-## Web installer and express install
+## CLI installer
 
-When the app is not yet installed (no completed setup wizard), the **web installer** at **GET `/install`** guides you through database, migrations, admin user, app settings, optional steps (tenancy, mail, billing, feature flags, etc.), and demo data. Use it for first-time setup in a browser.
+Setup is CLI-only via `php artisan app:install`. The interactive installer walks through every setup phase: database, migrations, admin user, app settings, tenancy, infrastructure, mail, search, AI providers, social auth, S3 storage, broadcasting, SEO, monitoring, billing, and demo data.
 
-**Availability:** Install routes (including express) are only available when **`APP_ENV`** is **`local`** or **`testing`**; in production or staging they return 404. They are rate-limited (10 requests per minute per IP). Progress files are deleted when status is read as `done` or `error`. Express returns 409 if already installed; invalid body returns 422.
-
-**Express install** (POST `/install/express`) skips the wizard: it configures SQLite and `.env`, then runs migrations, essential seeders, creates a default super-admin (`superadmin@example.com` / `password`), and saves app/mail/setup settings in the background. The response is JSON `{ "progressFile": "install_progress_<uuid>.json" }`; poll **GET `/install/express/status?key=<progressFile>`** until `status` is `done` or `error`, then redirect to `redirect` (e.g. `/admin`).
-
-Express accepts an optional JSON body to customize run:
-
-| Parameter | Values | Effect |
-|-----------|--------|--------|
-| `tenancy` | `multi`, `single` | Single = one organization, no user org creation |
-| `demo` | `none`, `minimal`, `full` | Minimal = users, organizations, content seeders; full = all demo modules |
-| `single_org_name` | string | When `tenancy` is `single`, used as default organization name |
-| `preset` | `saas`, `internal`, `ai_first` | If `tenancy`/`demo` are omitted: `internal` → single-tenant, no demo; `saas` → multi, no demo; `ai_first` → multi, minimal demo |
-
-Example (single-tenant, no demo, custom org name):
+**Non-interactive mode** (CI/CD):
 
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{"tenancy":"single","demo":"none","single_org_name":"Acme Corp"}' https://yourapp.test/install/express
+php artisan app:install --non-interactive \
+    --admin-email=superadmin@example.com --admin-password=secret --admin-name="Admin" \
+    --site-name="My App" --url=https://example.com \
+    --tenancy=multi --mail-mailer=smtp --mail-from=hello@example.com
 ```
 
-**Install presets** (step-by-step wizard): On the App step you can choose a preset (None, SaaS, Internal tool, AI-first). The preset prefills later steps (e.g. Internal → single-tenant default on Tenancy, hint to skip Billing, Registration unchecked on Feature flags). You can still change any value.
+**Key flags**: `--resume` (continue after failure), `--modules=users,content,billing` (pre-select demo data), `--tenancy=multi|single`, `--demo` / `--no-demo`, `--ai-provider=openrouter`, `--cache-driver=redis`, `--search-driver=typesense`.
+
+When the app is not yet installed and `APP_ENV` is `local` or `testing`, browser requests receive a static 503 page with instructions to run the CLI installer.
 
 ## First-run and post-deploy
 

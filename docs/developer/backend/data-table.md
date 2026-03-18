@@ -124,7 +124,7 @@ DataTable AI (NLQ, insights, suggest, column summary, enrich) and the **Thesys C
 
 - **AI panel**: Shown only when an AI backend is available (Laravel AI SDK or Prism) and configured (provider + API key or Ollama). The controller passes `dataTableAi.aiBaseUrl` only in that case; the frontend does not render the AI panel when `aiBaseUrl` is missing.
 - **Thesys Visualize tab**: Shown when the app-level Thesys API key is set — via `.env` (`THESYS_API_KEY`) or **Filament → Settings · Integrations → AI** (`AiSettings.thesys_api_key`), which overlays `config('services.thesys.api_key')` at boot. The controller sets `dataTableAi.thesysEnabled` from `config('services.thesys.api_key')`; the frontend passes `aiThesys={true}` only when enabled. The same key is used for any other Thesys C1 features in the app.
-- **Installer**: The web installer (AI step) and CLI `app:install` (AI phase) offer an **optional, skippable** field for the Thesys C1 API key. If omitted, Thesys features are disabled; you can add `THESYS_API_KEY` to `.env` later. Express install accepts optional `thesys_api_key` in the request.
+- **Installer**: The CLI `app:install` (AI phase) offers an **optional, skippable** field for the Thesys C1 API key. If omitted, Thesys features are disabled; you can add `THESYS_API_KEY` to `.env` later.
 
 If no AI provider/key is set, AI features are disabled; if the Thesys key is not set, the Visualize tab is hidden. No runtime errors when keys are absent.
 

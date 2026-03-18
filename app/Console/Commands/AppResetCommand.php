@@ -89,7 +89,6 @@ final class AppResetCommand extends Command
             '',
             '  Run the installer to set up again:',
             '    php artisan app:install',
-            '  Or visit /install in the browser.',
         ]));
 
         return self::SUCCESS;

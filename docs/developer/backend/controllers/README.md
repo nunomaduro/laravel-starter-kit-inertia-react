@@ -57,7 +57,6 @@ All Controllers:
 | [MarkAllNotificationsReadController](docs/developer/backend/controllers/Notifications/MarkAllNotificationsReadController.md) | N/A | ✅ |
 | [DeleteNotificationController](docs/developer/backend/controllers/Notifications/DeleteNotificationController.md) | N/A | ✅ |
 | [ClearAllNotificationsController](docs/developer/backend/controllers/Notifications/ClearAllNotificationsController.md) | N/A | ✅ |
-| [InstallController](docs/developer/backend/controllers/InstallController.md) | N/A | ✅ |
 | [HealthController](./healthcontroller.md) | N/A | ✅ |
 | [AnnouncementsTableController](./announcementstablecontroller.md) | N/A | ✅ |
 | [CategoriesTableController](./categoriestablecontroller.md) | N/A | ✅ |

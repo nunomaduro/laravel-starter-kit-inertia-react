@@ -368,10 +368,10 @@ const featureGroups: FeatureGroup[] = [
             },
             {
                 icon: Rocket,
-                title: 'Web Installer',
+                title: 'CLI Installer',
                 description:
-                    'Step-by-step and express install with presets, AI keys, tenancy, and demo data. No CLI required to go live.',
-                dataPan: 'welcome-feature-installer',
+                    'Interactive CLI installer with presets, AI keys, tenancy, and demo data. One command to go live.',
+                dataPan: 'welcome-feature-cli-installer',
             },
         ],
     },

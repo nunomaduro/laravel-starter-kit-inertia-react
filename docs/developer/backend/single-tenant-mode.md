@@ -33,9 +33,9 @@ The database schema and internal logic stay the same. Users still have a persona
 
 ## Install and presets
 
-When using the **web installer** (`/install`), you can choose an **Install preset** on the App step. The **Internal tool** preset sets single-organization by default on the Tenancy step and suggests skipping billing and disabling registration, API access, and contact form on the Feature flags step.
+The CLI installer (`php artisan app:install`) lets you choose an **Install preset** during the App phase. The **Internal tool** preset sets single-organization by default on the Tenancy phase and suggests skipping billing and disabling registration, API access, and contact form on the Feature flags phase.
 
-**Express install** (POST `/install/express`) accepts a `preset` body parameter: `internal` → single-tenant, no demo; `saas` → multi-tenant, no demo; `ai_first` → multi-tenant, minimal demo. You can also pass `tenancy`, `demo`, and `single_org_name` explicitly. See [Deployment](../../deployment.md#web-installer-and-express-install) and [InstallController](./controllers/InstallController.md).
+For non-interactive installs, pass `--tenancy=single` (or `--tenancy=multi`) and `--org-name="My Org"` directly. See [Deployment](../../deployment.md#cli-installer) for all available flags.
 
 ## When to Use
 

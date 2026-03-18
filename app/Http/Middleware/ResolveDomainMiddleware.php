@@ -29,11 +29,6 @@ final class ResolveDomainMiddleware
             return $next($request);
         }
 
-        // Skip DB queries when running the web installer (no DB or migrations yet)
-        if ($request->is('install') || $request->is('install/*')) {
-            return $next($request);
-        }
-
         $host = $request->getHost();
 
         $domain = OrganizationDomain::query()

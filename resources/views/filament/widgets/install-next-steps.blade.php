@@ -2,7 +2,7 @@
     <x-filament::section>
         <x-slot name="heading">Next steps after install</x-slot>
         <ul class="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
-            <li>If you used <strong>Express install</strong>: change the default admin password (<code class="rounded bg-gray-100 dark:bg-gray-800 px-1 py-0.5">superadmin@example.com</code>) in your profile or User Management.</li>
+            <li>If you used the default admin credentials during install: change the admin password (<code class="rounded bg-gray-100 dark:bg-gray-800 px-1 py-0.5">superadmin@example.com</code>) in your profile or User Management.</li>
             <li>Run <code class="rounded bg-gray-100 dark:bg-gray-800 px-1 py-0.5">php artisan env:validate</code> to verify environment variables.</li>
             <li>Run <code class="rounded bg-gray-100 dark:bg-gray-800 px-1 py-0.5">php artisan app:health</code> to check subsystems (database, cache, queue, mail).</li>
             <li>Configure Mail, Billing, and AI in <strong>Settings</strong> (Platform group) if you skipped them during install.</li>

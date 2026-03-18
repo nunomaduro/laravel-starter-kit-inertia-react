@@ -187,7 +187,7 @@ final class AppHealthCommand extends Command
             $app = resolve(AppSettings::class);
 
             if (! $wizard->setup_completed) {
-                $this->reportWarn('Setup Wizard', 'Not complete — visit /install or run: php artisan app:install');
+                $this->reportWarn('Setup Wizard', 'Not complete — run: php artisan app:install');
 
                 return;
             }

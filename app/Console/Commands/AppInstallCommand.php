@@ -108,7 +108,7 @@ final class AppInstallCommand extends Command
 
     private const string PROGRESS_FILE = '.install-progress.json';
 
-    // ─── Module definitions (keep in sync with InstallController::MODULES) ───
+    // ─── Module definitions ───
 
     /** @var array<string, array{label: string, description: string, seeders: list<string>}> */
     private const array MODULES = [
@@ -555,7 +555,7 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // Phase 17 — Billing (optional, mirrors web installer)
+        // Phase 17 — Billing (optional, optional)
         // ════════════════════════════════════════════════════════
         $hasBillingFlag = $this->option('default-gateway') !== null || $this->option('currency') !== null || $this->option('trial-days') !== null;
 
@@ -570,7 +570,7 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // Integrations — Slack, Postmark, Resend (optional, mirrors web)
+        // Integrations — Slack, Postmark, Resend (optional, optional)
         // ════════════════════════════════════════════════════════
         if (! $this->runPhase(self::PHASE_INTEGRATIONS, 'Integrations', $resume, optional: true)) {
             if (! $nonInteractive && confirm('  Configure integrations (Slack, Postmark, Resend)?', default: false)) {
@@ -581,7 +581,7 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // Theme — appearance defaults (optional, mirrors web)
+        // Theme — appearance defaults (optional, optional)
         // ════════════════════════════════════════════════════════
         if (! $this->runPhase(self::PHASE_THEME, 'Theme', $resume, optional: true)) {
             if (! $nonInteractive && confirm('  Configure theme & appearance defaults?', default: false)) {
@@ -592,7 +592,7 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // AI Memory — recall limits (optional, mirrors web)
+        // AI Memory — recall limits (optional, optional)
         // ════════════════════════════════════════════════════════
         if (! $this->runPhase(self::PHASE_MEMORY, 'AI Memory', $resume, optional: true)) {
             if (! $nonInteractive && confirm('  Configure AI memory / vector recall settings?', default: false)) {
@@ -603,7 +603,7 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // Backups — retention (optional, mirrors web)
+        // Backups — retention (optional, optional)
         // ════════════════════════════════════════════════════════
         if (! $this->runPhase(self::PHASE_BACKUP, 'Backups', $resume, optional: true)) {
             if (! $nonInteractive && confirm('  Configure backup retention?', default: false)) {
@@ -614,7 +614,7 @@ final class AppInstallCommand extends Command
         }
 
         // ════════════════════════════════════════════════════════
-        // Feature flags (optional, mirrors web installer)
+        // Feature flags (optional, optional)
         // ════════════════════════════════════════════════════════
         if (! $this->runPhase(self::PHASE_FEATURES, 'Feature Flags', $resume, optional: true)) {
             if (! $nonInteractive && confirm('  Configure which features to enable globally?', default: false)) {
@@ -1123,7 +1123,7 @@ final class AppInstallCommand extends Command
             $this->verifyTypesense($host, (int) $port, $apiKey);
         }
 
-        // Scout prefix / queue / identify (mirrors web installer saveSearch)
+        // Scout prefix / queue / identify (optional saveSearch)
         if ($nonInteractive) {
             if ($this->option('scout-prefix') !== null && (string) $this->option('scout-prefix') !== '') {
                 $scout->prefix = (string) $this->option('scout-prefix');
@@ -1395,7 +1395,7 @@ final class AppInstallCommand extends Command
         info('  Sentry error tracking configured');
     }
 
-    // ─── Billing (mirrors web installer saveBilling) ───────────────────────────
+    // ─── Billing (optional saveBilling) ───────────────────────────
 
     private function configureBilling(bool $nonInteractive = false): void
     {
@@ -1527,7 +1527,7 @@ final class AppInstallCommand extends Command
         info('  Backup retention saved');
     }
 
-    // ─── Feature flags (mirrors web installer saveFeatures) ─────────────────────
+    // ─── Feature flags (optional saveFeatures) ─────────────────────
 
     private function configureFeatures(bool $nonInteractive = false): void
     {

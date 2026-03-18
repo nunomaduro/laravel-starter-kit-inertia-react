@@ -22,7 +22,6 @@ use App\Http\Middleware\RedirectToInstallerIfNotSetup;
 use App\Http\Middleware\ResolveDomainMiddleware;
 use App\Http\Middleware\ServeFavicon;
 use App\Http\Middleware\SetTenantContext;
-use App\Http\Middleware\StopTelescopeForInstaller;
 use App\Http\Middleware\ThrottleTwoFactorManagement;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -44,9 +43,6 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         then: function (): void {
             require base_path('routes/ai.php');
-            if (app()->environment(['local', 'testing'])) {
-                require base_path('routes/install.php');
-            }
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -55,7 +51,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: ['webhooks/*', 'lemon-squeezy/*']);
 
         $middleware->alias([
-            'install.env' => App\Http\Middleware\EnsureInstallEnvironment::class,
             'feature' => EnsureFeatureActive::class,
             'registration.enabled' => EnsureRegistrationEnabled::class,
             'permission' => PermissionMiddleware::class,
@@ -85,10 +80,6 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureOnboardingComplete::class,
             EnsureTermsAccepted::class,
         ];
-
-        // Must run before package global middleware (e.g. Governor's ParseCustomPolicyActions
-        // which is pushed via pushMiddleware and runs before web group middleware).
-        $middleware->prepend(StopTelescopeForInstaller::class);
 
         $middleware->web(
             append: $webAppend,

@@ -1265,17 +1265,6 @@
             "lastUpdated": "2026-03-09",
             "relationships": []
         },
-        "InstallController": {
-            "documented": true,
-            "path": "docs/developer/backend/controllers/InstallController.md",
-            "relationships": {
-                "usesActions": [],
-                "usesFormRequests": [],
-                "relatedRoutes": [],
-                "rendersPages": []
-            },
-            "lastUpdated": "2026-03-10"
-        },
         "HealthController": {
             "documented": true,
             "path": "./healthcontroller.md",
