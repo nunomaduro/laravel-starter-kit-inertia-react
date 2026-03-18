@@ -1,4 +1,4 @@
-import ContactSubmissionController from '@/actions/App/Http/Controllers/ContactSubmissionController';
+import ContactSubmissionController from '@/actions/Modules/Contact/Http/Controllers/ContactSubmissionController';
 import { dashboard, home } from '@/routes';
 import { create as contactCreate } from '@/routes/contact';
 import { type BreadcrumbItem, type SharedData } from '@/types';
