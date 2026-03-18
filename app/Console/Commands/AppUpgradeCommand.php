@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Providers\SettingsOverlayServiceProvider;
 use App\Settings\SetupWizardSettings;
+use App\Support\ModuleLoader;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Throwable;
@@ -104,7 +105,6 @@ final class AppUpgradeCommand extends Command
     {
         $seeders = [
             \Database\Seeders\Essential\RolesAndPermissionsSeeder::class => 'Seeding roles and permissions…',
-            \Modules\Gamification\Database\Seeders\GamificationSeeder::class => 'Seeding gamification data…',
             \Database\Seeders\Essential\MailTemplatesSeeder::class => 'Seeding mail templates…',
             \GeneaLabs\LaravelGovernor\Database\Seeders\LaravelGovernorDatabaseSeeder::class => 'Seeding Governor (entities, roles)…',
         ];
@@ -122,7 +122,49 @@ final class AppUpgradeCommand extends Command
             );
         }
 
+        // Run seeders from enabled modules' module.json
+        $this->runEnabledModuleSeeders();
+
         info('  Essential seeders complete');
+    }
+
+    /**
+     * Run seeders declared in each enabled module's module.json "seeders" arrays.
+     */
+    private function runEnabledModuleSeeders(): void
+    {
+        /** @var array<string, bool> $modules */
+        $modules = ModuleLoader::all();
+
+        foreach ($modules as $name => $enabled) {
+            if (! $enabled) {
+                continue;
+            }
+
+            $manifest = ModuleLoader::readManifest($name);
+            if ($manifest === null) {
+                continue;
+            }
+
+            /** @var list<string> $seeders */
+            $seeders = $manifest['seeders'] ?? [];
+            if ($seeders === []) {
+                continue;
+            }
+
+            /** @var string $label */
+            $label = $manifest['label'] ?? ucfirst($name);
+
+            spin(function () use ($seeders): void {
+                foreach ($seeders as $seederClass) {
+                    try {
+                        Artisan::call('db:seed', ['--class' => $seederClass, '--force' => true]);
+                    } catch (Throwable) {
+                        // Non-fatal — seeder may not exist or may fail in some environments
+                    }
+                }
+            }, sprintf('Seeding %s module data…', $label));
+        }
     }
 
     private function rebuildCaches(): void

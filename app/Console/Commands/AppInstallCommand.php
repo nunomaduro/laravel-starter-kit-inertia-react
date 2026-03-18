@@ -31,6 +31,7 @@ use App\Settings\StripeSettings;
 use App\Settings\TenancySettings;
 use App\Settings\ThemeSettings;
 use App\Support\AssignRoleViaDb;
+use App\Support\ModuleLoader;
 use DateTimeZone;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -103,6 +104,8 @@ final class AppInstallCommand extends Command
     private const string PHASE_BACKUP = 'backup';
 
     private const string PHASE_FEATURES = 'features';
+
+    private const string PHASE_MODULES = 'modules';
 
     private const string PHASE_DEMO = 'demo';
 
@@ -622,6 +625,14 @@ final class AppInstallCommand extends Command
             }
 
             $this->completePhase(self::PHASE_FEATURES);
+        }
+
+        // ════════════════════════════════════════════════════════
+        // Modules — choose which modules to enable
+        // ════════════════════════════════════════════════════════
+        if (! $this->runPhase(self::PHASE_MODULES, 'Modules', $resume, optional: true)) {
+            $this->configureModules($nonInteractive);
+            $this->completePhase(self::PHASE_MODULES);
         }
 
         // ════════════════════════════════════════════════════════
@@ -1711,6 +1722,59 @@ final class AppInstallCommand extends Command
         }
     }
 
+    // ─── Module selection ─────────────────────────────────────────────────────
+
+    private function configureModules(bool $nonInteractive): void
+    {
+        /** @var array<string, bool> $modules */
+        $modules = ModuleLoader::all();
+
+        if ($modules === []) {
+            return;
+        }
+
+        if ($nonInteractive) {
+            // In non-interactive mode, keep current config/modules.php as-is
+            return;
+        }
+
+        $choices = [];
+        $defaults = [];
+
+        foreach ($modules as $name => $enabled) {
+            $manifest = ModuleLoader::readManifest($name);
+            /** @var string $label */
+            $label = $manifest['label'] ?? ucfirst($name);
+            /** @var string $description */
+            $description = $manifest['description'] ?? '';
+            $choices[$name] = $description !== '' ? "{$label}  — {$description}" : $label;
+
+            if ($enabled) {
+                $defaults[] = $name;
+            }
+        }
+
+        $selected = multiselect(
+            label: '  Which modules should be enabled?',
+            options: $choices,
+            default: $defaults,
+            hint: 'Space to toggle, Enter to confirm',
+        );
+
+        // Build the new modules map
+        $updatedModules = [];
+        foreach ($modules as $name => $enabled) {
+            $updatedModules[$name] = in_array($name, $selected, true);
+        }
+
+        ModuleLoader::writeConfig($updatedModules);
+
+        spin(fn () => Artisan::call('config:clear'), 'Clearing config cache…');
+
+        $enabledCount = count(array_filter($updatedModules));
+        info(sprintf('  %d module(s) enabled', $enabledCount));
+    }
+
     // ─── Demo data ────────────────────────────────────────────────────────────
 
     private function installDemoData(bool $nonInteractive): void
@@ -1789,6 +1853,50 @@ final class AppInstallCommand extends Command
             }, sprintf('Installing %s…', $module['label']));
 
             info(sprintf('  %s installed', $module['label']));
+        }
+
+        // Run seeders declared in each enabled module's module.json
+        $this->runEnabledModuleSeeders();
+    }
+
+    /**
+     * Run seeders from enabled modules' module.json "seeders" arrays.
+     */
+    private function runEnabledModuleSeeders(): void
+    {
+        /** @var array<string, bool> $modules */
+        $modules = ModuleLoader::all();
+
+        foreach ($modules as $name => $enabled) {
+            if (! $enabled) {
+                continue;
+            }
+
+            $manifest = ModuleLoader::readManifest($name);
+            if ($manifest === null) {
+                continue;
+            }
+
+            /** @var list<string> $seeders */
+            $seeders = $manifest['seeders'] ?? [];
+            if ($seeders === []) {
+                continue;
+            }
+
+            /** @var string $label */
+            $label = $manifest['label'] ?? ucfirst($name);
+
+            spin(function () use ($seeders): void {
+                foreach ($seeders as $seederClass) {
+                    try {
+                        Artisan::call('db:seed', ['--class' => $seederClass, '--force' => true]);
+                    } catch (Throwable) {
+                        // Individual seeder failures are non-fatal
+                    }
+                }
+            }, sprintf('Seeding %s module data…', $label));
+
+            info(sprintf('  %s module data seeded', $label));
         }
     }
 
