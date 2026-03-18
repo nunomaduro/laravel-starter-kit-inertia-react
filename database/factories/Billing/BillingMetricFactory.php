@@ -7,14 +7,12 @@ namespace Database\Factories\Billing;
 use App\Models\Billing\BillingMetric;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<BillingMetric>
  */
 final class BillingMetricFactory extends Factory
 {
-    #[Override]
     protected $model = BillingMetric::class;
 
     /**

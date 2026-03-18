@@ -11,24 +11,18 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageSeo extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlass;
 
-    #[Override]
     protected static ?string $navigationLabel = 'SEO';
 
-    #[Override]
     protected static ?int $navigationSort = 40;
 
-    #[Override]
     protected static string $settings = SeoSettings::class;
 
     public static function canAccess(): bool

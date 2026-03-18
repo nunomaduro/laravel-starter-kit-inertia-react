@@ -9,18 +9,15 @@ use App\Services\PrismService;
 use App\Services\SeedSpecGenerator;
 use Exception;
 use Illuminate\Console\Command;
-use Override;
 use Prism\Prism\Enums\Provider;
 
 final class SeedsReviewCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:review
                             {--model= : Review specific model only}
                             {--dry-run : Show review prompts without calling AI}
                             {--provider= : AI provider (openai, anthropic, local)}';
 
-    #[Override]
     protected $description = 'AI-based review of seeders and specs';
 
     public function handle(SeedSpecGenerator $specGenerator, ModelRegistry $registry, PrismService $prismService): int

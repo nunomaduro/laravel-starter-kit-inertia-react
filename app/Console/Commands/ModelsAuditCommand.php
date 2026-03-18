@@ -7,18 +7,15 @@ namespace App\Console\Commands;
 use App\Services\ModelRegistry;
 use App\Services\SeedSpecGenerator;
 use Illuminate\Console\Command;
-use Override;
 
 final class ModelsAuditCommand extends Command
 {
-    #[Override]
     protected $signature = 'models:audit
                             {--generate : Auto-generate missing factories and seeders}
                             {--category=development : Default category for generated seeders}
                             {--check-specs : Also check for missing seed specs}
                             {--fail-on-missing : Fail if any components are missing}';
 
-    #[Override]
     protected $description = 'Audit models for missing factories, seeders, and seed specs';
 
     public function handle(ModelRegistry $registry, SeedSpecGenerator $specGenerator): int

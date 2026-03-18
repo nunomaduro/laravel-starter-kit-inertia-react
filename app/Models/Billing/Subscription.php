@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Billing;
 
 use Laravelcm\Subscriptions\Models\Subscription as BaseSubscription;
-use Override;
 
 /**
  * @property-read string|null $gateway_subscription_id
@@ -13,7 +12,6 @@ use Override;
  */
 final class Subscription extends BaseSubscription
 {
-    #[Override]
     protected $fillable = [
         'subscriber_id',
         'subscriber_type',

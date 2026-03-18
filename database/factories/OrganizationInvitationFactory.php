@@ -8,14 +8,12 @@ use App\Models\Organization;
 use App\Models\OrganizationInvitation;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<OrganizationInvitation>
  */
 final class OrganizationInvitationFactory extends Factory
 {
-    #[Override]
     protected $model = OrganizationInvitation::class;
 
     /**

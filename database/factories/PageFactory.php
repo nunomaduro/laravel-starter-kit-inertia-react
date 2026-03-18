@@ -8,14 +8,12 @@ use App\Models\Organization;
 use App\Models\Page;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Override;
 
 /**
  * @extends Factory<Page>
  */
 final class PageFactory extends Factory
 {
-    #[Override]
     protected $model = Page::class;
 
     /**

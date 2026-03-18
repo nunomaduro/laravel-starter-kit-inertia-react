@@ -16,25 +16,19 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Override;
 use Spatie\Permission\Models\Role;
 use UnitEnum;
 
 final class RoleResource extends Resource
 {
-    #[Override]
     protected static ?string $model = Role::class;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'User Management';
 
-    #[Override]
     protected static ?int $navigationSort = 20;
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldCheck;
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function canAccess(): bool

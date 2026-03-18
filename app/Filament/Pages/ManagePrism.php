@@ -12,24 +12,18 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManagePrism extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Prism';
 
-    #[Override]
     protected static ?int $navigationSort = 50;
 
-    #[Override]
     protected static string $settings = PrismSettings::class;
 
     public static function canAccess(): bool

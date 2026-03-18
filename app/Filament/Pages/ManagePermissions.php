@@ -11,24 +11,18 @@ use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManagePermissions extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · Features';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedLockClosed;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Permission Settings';
 
-    #[Override]
     protected static ?int $navigationSort = 30;
 
-    #[Override]
     protected static string $settings = PermissionSettings::class;
 
     public static function canAccess(): bool

@@ -8,7 +8,6 @@ use App\Enums\Billing\CreditTransactionType;
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Override;
 
 /**
  * @property int $id
@@ -29,7 +28,6 @@ final class Credit extends Model
     use BelongsToOrganization;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    #[Override]
     protected $fillable = [
         'creditable_type',
         'creditable_id',

@@ -6,7 +6,6 @@ namespace App\Models\Billing;
 
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
-use Override;
 
 /**
  * @property int $id
@@ -24,7 +23,6 @@ final class BillingMetric extends Model
     use BelongsToOrganization;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    #[Override]
     protected $fillable = [
         'date',
         'mrr',

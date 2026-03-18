@@ -10,13 +10,11 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Validation\ValidationException;
-use Override;
 use Spatie\Permission\Models\Role;
 use STS\FilamentImpersonate\Actions\Impersonate;
 
 final class EditUser extends EditRecord
 {
-    #[Override]
     protected static string $resource = UserResource::class;
 
     /**

@@ -9,11 +9,9 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
-use Override;
 
 final class EditOrganization extends EditRecord
 {
-    #[Override]
     protected static string $resource = OrganizationResource::class;
 
     protected function getHeaderActions(): array

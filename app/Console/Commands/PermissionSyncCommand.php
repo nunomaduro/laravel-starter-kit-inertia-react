@@ -7,7 +7,6 @@ namespace App\Console\Commands;
 use App\Models\Organization;
 use App\Services\Organization\OrganizationRoleService;
 use Illuminate\Console\Command;
-use Override;
 use RuntimeException;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -17,13 +16,11 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(name: 'permission:sync')]
 final class PermissionSyncCommand extends Command
 {
-    #[Override]
     protected $signature = 'permission:sync
                             {--dry-run : Preview changes without applying}
                             {--org-only : Sync only organization permissions}
                             {--silent : Suppress output}';
 
-    #[Override]
     protected $description = 'Sync org permissions from organization-permissions.json and assign to org roles';
 
     public function handle(): int

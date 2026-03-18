@@ -10,17 +10,13 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
-use Override;
 
 final class UsersShowTool extends Tool
 {
-    #[Override]
     protected string $name = 'users_show';
 
-    #[Override]
     protected string $title = 'Show user';
 
-    #[Override]
     protected string $description = <<<'MARKDOWN'
         Get a single user by ID.
     MARKDOWN;

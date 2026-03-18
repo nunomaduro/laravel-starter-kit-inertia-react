@@ -8,7 +8,6 @@ use App\Providers\SettingsOverlayServiceProvider;
 use App\Settings\SetupWizardSettings;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Override;
 use Throwable;
 
 use function Laravel\Prompts\confirm;
@@ -31,13 +30,11 @@ use function Laravel\Prompts\warning;
  */
 final class AppUpgradeCommand extends Command
 {
-    #[Override]
     protected $signature = 'app:upgrade
                             {--force : Skip the confirmation prompt}
                             {--skip-cache : Do not clear and rebuild caches}
                             {--skip-seeders : Do not re-run essential seeders}';
 
-    #[Override]
     protected $description = 'Upgrade an existing installation — migrations, seeders, and cache rebuild';
 
     public function handle(): int

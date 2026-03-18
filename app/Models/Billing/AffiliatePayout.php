@@ -9,7 +9,6 @@ use Akaunting\Money\Money;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 /**
  * @property int $id
@@ -37,7 +36,6 @@ final class AffiliatePayout extends Model
 
     public const string STATUS_FAILED = 'failed';
 
-    #[Override]
     protected $fillable = [
         'affiliate_id',
         'amount',

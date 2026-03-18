@@ -9,14 +9,12 @@ use App\Models\Shareable;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
-use Override;
 
 /**
  * @extends Factory<Shareable>
  */
 final class ShareableFactory extends Factory
 {
-    #[Override]
     protected $model = Shareable::class;
 
     /**

@@ -29,7 +29,6 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
-use Override;
 use UnitEnum;
 
 final class SetupWizard extends Page implements HasForms
@@ -39,28 +38,20 @@ final class SetupWizard extends Page implements HasForms
     /** @var array<string, mixed> */
     public ?array $data = [];
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRocketLaunch;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Setup Wizard';
 
-    #[Override]
     protected static ?int $navigationSort = -1;
 
-    #[Override]
     protected string $view = 'filament.pages.setup-wizard';
 
-    #[Override]
     protected static ?string $title = 'Setup Wizard';
 
-    #[Override]
     protected static ?string $slug = 'setup-wizard';
 
-    #[Override]
     protected static bool $shouldRegisterNavigation = false;
 
     public static function canAccess(): bool

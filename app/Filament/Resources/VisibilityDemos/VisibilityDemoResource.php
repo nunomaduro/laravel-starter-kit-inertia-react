@@ -20,27 +20,20 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Override;
 use UnitEnum;
 
 final class VisibilityDemoResource extends Resource
 {
-    #[Override]
     protected static ?string $model = VisibilityDemo::class;
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'title';
 
-    #[Override]
     protected static ?string $navigationLabel = 'Visibility demos';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShare;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
-    #[Override]
     protected static ?int $navigationSort = 50;
 
     public static function canAccess(): bool

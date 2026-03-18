@@ -7,14 +7,12 @@ namespace Database\Factories\Billing;
 use App\Models\Billing\WebhookLog;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<WebhookLog>
  */
 final class WebhookLogFactory extends Factory
 {
-    #[Override]
     protected $model = WebhookLog::class;
 
     /**

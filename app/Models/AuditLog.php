@@ -6,17 +6,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 final class AuditLog extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    #[Override]
     public $timestamps = false;
 
     /** @var list<string> */
-    #[Override]
     protected $fillable = [
         'organization_id',
         'actor_id',

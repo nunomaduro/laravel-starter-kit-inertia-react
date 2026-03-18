@@ -8,15 +8,12 @@ use App\Services\SeedScenarioManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Override;
 
 final class SeedsTestCoverageCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:test-coverage
                             {--json : Output as JSON}';
 
-    #[Override]
     protected $description = 'Analyze test coverage of seed scenarios';
 
     public function handle(SeedScenarioManager $scenarioManager): int

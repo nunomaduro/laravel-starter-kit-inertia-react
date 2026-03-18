@@ -11,11 +11,9 @@ use App\Services\PermissionCategoryResolver;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
-use Override;
 
 final class EditRole extends EditRecord
 {
-    #[Override]
     protected static string $resource = RoleResource::class;
 
     /**

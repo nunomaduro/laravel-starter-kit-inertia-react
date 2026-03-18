@@ -38,7 +38,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Override;
 use Throwable;
 
 use function Laravel\Prompts\confirm;
@@ -180,7 +179,6 @@ final class AppInstallCommand extends Command
         ],
     ];
 
-    #[Override]
     protected $signature = 'app:install
                             {--non-interactive : Skip prompts, use option values or defaults}
                             {--resume : Resume from last checkpoint, skip completed phases}
@@ -234,7 +232,6 @@ final class AppInstallCommand extends Command
                             {--scout-queue : Queue Scout indexing}
                             {--scout-identify : Identify models when indexing}';
 
-    #[Override]
     protected $description = 'Full application installer — database, admin, app, tenancy, infra, mail, search, AI, social, storage, broadcasting, SEO, monitoring, billing, integrations, theme, memory, backup, features, demo';
 
     /** @var array<string, bool> */

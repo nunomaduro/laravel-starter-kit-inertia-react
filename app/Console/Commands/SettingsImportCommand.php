@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Override;
 use Throwable;
 
 use function Laravel\Prompts\confirm;
@@ -31,7 +30,6 @@ use function Laravel\Prompts\warning;
  */
 final class SettingsImportCommand extends Command
 {
-    #[Override]
     protected $signature = 'settings:import
                             {file : Path to the JSON snapshot file}
                             {--dry-run : Preview changes without writing to the database}
@@ -39,7 +37,6 @@ final class SettingsImportCommand extends Command
                             {--force : Skip the confirmation prompt}
                             {--group=* : Import only specific group(s)}';
 
-    #[Override]
     protected $description = 'Import database settings from a JSON snapshot';
 
     public function handle(): int

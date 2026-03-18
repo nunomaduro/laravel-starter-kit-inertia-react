@@ -6,14 +6,12 @@ namespace Database\Factories;
 
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<Category>
  */
 final class CategoryFactory extends Factory
 {
-    #[Override]
     protected $model = Category::class;
 
     /**

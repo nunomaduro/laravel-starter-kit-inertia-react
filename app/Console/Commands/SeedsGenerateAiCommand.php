@@ -13,12 +13,10 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Override;
 use Prism\Prism\Enums\Provider;
 
 final class SeedsGenerateAiCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:generate-ai
                             {--model= : Generate for specific model only}
                             {--scenario=basic_demo : Scenario to generate (basic_demo, edge_cases, performance, i18n)}
@@ -26,7 +24,6 @@ final class SeedsGenerateAiCommand extends Command
                             {--api-key= : API key for AI provider}
                             {--dry-run : Show prompts without calling AI}';
 
-    #[Override]
     protected $description = 'Generate seed JSON data using AI (offline, curated)';
 
     public function handle(

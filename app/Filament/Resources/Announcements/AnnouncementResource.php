@@ -17,24 +17,18 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Override;
 use UnitEnum;
 
 final class AnnouncementResource extends Resource
 {
-    #[Override]
     protected static ?string $model = Announcement::class;
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMegaphone;
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'title';
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
-    #[Override]
     protected static ?int $navigationSort = 25;
 
     public static function form(Schema $schema): Schema

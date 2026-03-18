@@ -15,24 +15,18 @@ use Filament\Notifications\Notification;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageApp extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
-    #[Override]
     protected static ?string $navigationLabel = 'App';
 
-    #[Override]
     protected static ?int $navigationSort = 10;
 
-    #[Override]
     protected static string $settings = AppSettings::class;
 
     public static function canAccess(): bool

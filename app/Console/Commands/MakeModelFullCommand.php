@@ -17,11 +17,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Override;
 
 final class MakeModelFullCommand extends Command
 {
-    #[Override]
     protected $signature = 'make:model:full
                             {name : The name of the model}
                             {--category=development : Seeder category (essential, development, production)}
@@ -36,7 +34,6 @@ final class MakeModelFullCommand extends Command
                             {--all : Generate a migration, factory, seeder, and resource controller}
                             {--no-ai : Skip AI generation even if available}';
 
-    #[Override]
     protected $description = 'Create a new Eloquent model with factory, seeder, and JSON data file';
 
     public function handle(): int

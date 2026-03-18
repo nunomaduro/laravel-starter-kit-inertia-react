@@ -18,24 +18,18 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Override;
 use UnitEnum;
 
 final class ContactSubmissionResource extends Resource
 {
-    #[Override]
     protected static ?string $model = ContactSubmission::class;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Engagement';
 
-    #[Override]
     protected static ?int $navigationSort = 10;
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'subject';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInboxArrowDown;
 
     /** @return array<string> */

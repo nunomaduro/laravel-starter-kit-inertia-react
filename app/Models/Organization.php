@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Laravelcm\Subscriptions\Traits\HasPlanSubscriptions;
 use Mattiverse\Userstamps\Traits\Userstamps;
-use Override;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Models\Role;
@@ -69,7 +68,6 @@ final class Organization extends Model
     /**
      * @var list<string>
      */
-    #[Override]
     protected $fillable = [
         'name',
         'slug',

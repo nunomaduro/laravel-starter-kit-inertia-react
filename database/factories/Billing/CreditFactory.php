@@ -8,14 +8,12 @@ use App\Enums\Billing\CreditTransactionType;
 use App\Models\Billing\Credit;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<Credit>
  */
 final class CreditFactory extends Factory
 {
-    #[Override]
     protected $model = Credit::class;
 
     /**

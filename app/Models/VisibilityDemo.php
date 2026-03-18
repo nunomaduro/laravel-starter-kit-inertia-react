@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Models\Concerns\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
-use Override;
 
 /**
  * Demo model for HasVisibility trait. Used in tests and as a reference.
@@ -22,7 +21,6 @@ final class VisibilityDemo extends Model
     use HasVisibility;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    #[Override]
     protected $fillable = [
         'title',
         'cloned_from',

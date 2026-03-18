@@ -6,14 +6,12 @@ namespace Database\Factories;
 
 use App\Models\EmbeddingDemo;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<EmbeddingDemo>
  */
 final class EmbeddingDemoFactory extends Factory
 {
-    #[Override]
     protected $model = EmbeddingDemo::class;
 
     /**

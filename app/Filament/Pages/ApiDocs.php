@@ -12,24 +12,18 @@ use Filament\Schemas\Components\Html;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
-use Override;
 use UnitEnum;
 
 final class ApiDocs extends Page
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCodeBracketSquare;
 
-    #[Override]
     protected static ?string $navigationLabel = 'API docs';
 
-    #[Override]
     protected static ?int $navigationSort = 100;
 
-    #[Override]
     protected static ?string $title = 'API documentation';
 
     public static function canAccess(): bool

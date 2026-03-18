@@ -8,14 +8,12 @@ use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Override;
 
 /**
  * @extends Factory<Organization>
  */
 final class OrganizationFactory extends Factory
 {
-    #[Override]
     protected $model = Organization::class;
 
     /**

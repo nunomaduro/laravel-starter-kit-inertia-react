@@ -7,11 +7,9 @@ namespace App\Filament\Resources\OrganizationInvitations\Pages;
 use App\Filament\Resources\OrganizationInvitations\OrganizationInvitationResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use Override;
 
 final class EditOrganizationInvitation extends EditRecord
 {
-    #[Override]
     protected static string $resource = OrganizationInvitationResource::class;
 
     protected function getHeaderActions(): array

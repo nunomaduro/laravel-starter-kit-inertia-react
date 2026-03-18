@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Billing;
 
 use Laravelcm\Subscriptions\Models\Plan as BasePlan;
-use Override;
 
 /**
  * @property-read bool $is_per_seat
@@ -13,7 +12,6 @@ use Override;
  */
 final class Plan extends BasePlan
 {
-    #[Override]
     protected $fillable = [
         'slug',
         'name',

@@ -12,24 +12,18 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageMonitoring extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Monitoring';
 
-    #[Override]
     protected static ?int $navigationSort = 70;
 
-    #[Override]
     protected static string $settings = MonitoringSettings::class;
 
     public static function canAccess(): bool

@@ -10,17 +10,13 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
-use Override;
 
 final class UsersIndexTool extends Tool
 {
-    #[Override]
     protected string $name = 'users_index';
 
-    #[Override]
     protected string $title = 'List users';
 
-    #[Override]
     protected string $description = <<<'MARKDOWN'
         List users with optional filters (name, email), sort, per_page, and include (e.g. roles).
     MARKDOWN;

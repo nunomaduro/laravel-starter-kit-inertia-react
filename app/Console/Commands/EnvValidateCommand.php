@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Override;
 
 final class EnvValidateCommand extends Command
 {
-    #[Override]
     protected $signature = 'env:validate
                             {--production : Also warn when recommended production vars are missing or weak}
                             {--strict : Treat warnings as failures}';
 
-    #[Override]
     protected $description = 'Validate required and recommended environment variables';
 
     private bool $failed = false;

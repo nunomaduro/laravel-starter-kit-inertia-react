@@ -7,16 +7,13 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Override;
 
 final class PageAddCommand extends Command
 {
-    #[Override]
     protected $signature = 'page:add
         {name : The page path, e.g. settings/notifications or marketing/landing}
         {--force : Overwrite existing files}';
 
-    #[Override]
     protected $description = 'Scaffold a new Inertia + React page with its Laravel controller';
 
     public function handle(): int

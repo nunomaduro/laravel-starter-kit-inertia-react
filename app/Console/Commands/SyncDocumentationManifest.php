@@ -10,7 +10,6 @@ use App\Services\DocumentationPromptGenerator;
 use App\Services\DocumentationTemplateSelector;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -19,14 +18,12 @@ use ReflectionParameter;
 
 final class SyncDocumentationManifest extends Command
 {
-    #[Override]
     protected $signature = 'docs:sync
                             {--check : Only check for undocumented items, do not update manifest}
                             {--generate : Generate documentation stubs for undocumented items}
                             {--ai : Use AI (Prism) to generate full documentation}
                             {--auto : Call Prism to generate and write docs (requires --ai); without --auto only writes prompts to docs/.ai-prompts/}';
 
-    #[Override]
     protected $description = 'Sync documentation manifest with actual codebase';
 
     public function __construct(

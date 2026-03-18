@@ -7,15 +7,12 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Laravel\Pennant\Feature;
-use Override;
 
 final class FeaturesResetToDefaultsCommand extends Command
 {
-    #[Override]
     protected $signature = 'features:reset-to-defaults
                             {--force : Skip confirmation}';
 
-    #[Override]
     protected $description = 'Clear stored feature state and segments so all features use class defaults (on). Run after setup so gamification and others are visible for everyone; adjust later in Filament → Manage Features & Segments.';
 
     public function handle(): int

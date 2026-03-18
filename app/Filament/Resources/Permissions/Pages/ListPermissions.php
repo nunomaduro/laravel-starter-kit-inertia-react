@@ -9,11 +9,9 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Artisan;
-use Override;
 
 final class ListPermissions extends ListRecords
 {
-    #[Override]
     protected static string $resource = PermissionResource::class;
 
     protected function getHeaderActions(): array

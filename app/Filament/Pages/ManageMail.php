@@ -12,24 +12,18 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageMail extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Mail';
 
-    #[Override]
     protected static ?int $navigationSort = 10;
 
-    #[Override]
     protected static string $settings = MailSettings::class;
 
     public static function canAccess(): bool

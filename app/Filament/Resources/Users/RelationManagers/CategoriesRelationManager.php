@@ -11,14 +11,11 @@ use Filament\Actions\DetachBulkAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Override;
 
 final class CategoriesRelationManager extends RelationManager
 {
-    #[Override]
     protected static string $relationship = 'categories';
 
-    #[Override]
     protected static ?string $title = 'Categories';
 
     public function table(Table $table): Table

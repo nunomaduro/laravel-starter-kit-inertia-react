@@ -8,15 +8,12 @@ use Closure;
 use Illuminate\Console\Command;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Route as RouteFacade;
-use Override;
 
 final class CheckRouteNamesCommand extends Command
 {
-    #[Override]
     protected $signature = 'permission:check-routes
                             {--strict : Fail when unnamed app routes exist (default: use config permission.require_named_routes)}';
 
-    #[Override]
     protected $description = 'Ensure all application routes have names (for route-based permissions and CI)';
 
     public function handle(): int

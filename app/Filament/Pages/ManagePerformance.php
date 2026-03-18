@@ -12,24 +12,18 @@ use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManagePerformance extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBolt;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Performance';
 
-    #[Override]
     protected static ?int $navigationSort = 60;
 
-    #[Override]
     protected static string $settings = PerformanceSettings::class;
 
     public static function canAccess(): bool

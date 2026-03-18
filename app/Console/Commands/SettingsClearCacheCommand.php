@@ -7,15 +7,12 @@ namespace App\Console\Commands;
 use App\Models\Organization;
 use App\Services\OrganizationSettingsService;
 use Illuminate\Console\Command;
-use Override;
 
 final class SettingsClearCacheCommand extends Command
 {
-    #[Override]
     protected $signature = 'settings:clear-cache
                             {--org= : Clear cache for a specific organization ID only}';
 
-    #[Override]
     protected $description = 'Clear the organization settings cache';
 
     public function handle(OrganizationSettingsService $service): int

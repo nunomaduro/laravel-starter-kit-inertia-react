@@ -13,24 +13,18 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageSecurity extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldExclamation;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Security';
 
-    #[Override]
     protected static ?int $navigationSort = 50;
 
-    #[Override]
     protected static string $settings = SecuritySettings::class;
 
     public static function canAccess(): bool

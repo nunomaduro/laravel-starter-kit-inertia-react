@@ -6,16 +6,13 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Override;
 
 final class SeedsMetricsCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:metrics
                             {--file= : Specific metrics file to display}
                             {--latest : Show latest metrics file}';
 
-    #[Override]
     protected $description = 'Display seeding metrics from last run';
 
     public function handle(): int

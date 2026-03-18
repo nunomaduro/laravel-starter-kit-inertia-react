@@ -7,13 +7,11 @@ namespace App\Models\Billing;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 final class FailedPaymentAttempt extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    #[Override]
     protected $fillable = [
         'organization_id',
         'gateway',

@@ -7,17 +7,14 @@ namespace App\Console\Commands;
 use App\Services\PrismService;
 use Exception;
 use Illuminate\Console\Command;
-use Override;
 use Prism\Prism\Enums\Provider;
 use Prism\Relay\Facades\Relay;
 use ValueError;
 
 final class PrismValidate extends Command
 {
-    #[Override]
     protected $signature = 'prism:validate';
 
-    #[Override]
     protected $description = 'Validate Prism and Relay configuration';
 
     public function handle(PrismService $prism): int

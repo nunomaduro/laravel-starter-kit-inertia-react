@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Enums\TermsType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Override;
 
 /**
  * @property int $id
@@ -26,7 +25,6 @@ final class TermsVersion extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    #[Override]
     protected $fillable = [
         'title',
         'slug',

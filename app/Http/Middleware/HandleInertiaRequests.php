@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Inertia\Middleware;
-use Override;
 use Spatie\Honeypot\Honeypot;
 use Throwable;
 
@@ -29,7 +28,6 @@ final class HandleInertiaRequests extends Middleware
      *
      * @var string
      */
-    #[Override]
     protected $rootView = 'app';
 
     /**

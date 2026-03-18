@@ -11,7 +11,6 @@ use Illuminate\Support\Collection;
 use Machour\DataTable\AbstractDataTable;
 use Machour\DataTable\Columns\ColumnBuilder;
 use Machour\DataTable\Concerns\HasExport;
-use Override;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -20,10 +19,8 @@ final class OrganizationDataTable extends AbstractDataTable
 {
     use HasExport;
 
-    #[Override]
     protected static ?int $defaultPerPage = 25;
 
-    #[Override]
     protected static ?int $maxPerPage = 100;
 
     public function __construct(

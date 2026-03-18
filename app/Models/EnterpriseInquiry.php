@@ -6,7 +6,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Override;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -26,7 +25,6 @@ final class EnterpriseInquiry extends Model
     use HasFactory;
     use LogsActivity;
 
-    #[Override]
     protected $fillable = [
         'name',
         'email',

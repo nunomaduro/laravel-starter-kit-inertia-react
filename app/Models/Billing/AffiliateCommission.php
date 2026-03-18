@@ -9,7 +9,6 @@ use Akaunting\Money\Money;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 final class AffiliateCommission extends Model
 {
@@ -23,7 +22,6 @@ final class AffiliateCommission extends Model
 
     public const string STATUS_CANCELLED = 'cancelled';
 
-    #[Override]
     protected $fillable = [
         'affiliate_id',
         'referred_organization_id',

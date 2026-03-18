@@ -8,11 +8,9 @@ use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\Roles\Schemas\RoleForm;
 use App\Services\ActivityLogRbac;
 use Filament\Resources\Pages\CreateRecord;
-use Override;
 
 final class CreateRole extends CreateRecord
 {
-    #[Override]
     protected static string $resource = RoleResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array

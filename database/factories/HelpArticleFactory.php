@@ -7,14 +7,12 @@ namespace Database\Factories;
 use App\Models\HelpArticle;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Override;
 
 /**
  * @extends Factory<HelpArticle>
  */
 final class HelpArticleFactory extends Factory
 {
-    #[Override]
     protected $model = HelpArticle::class;
 
     /**

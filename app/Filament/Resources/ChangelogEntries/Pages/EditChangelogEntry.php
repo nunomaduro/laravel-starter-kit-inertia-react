@@ -10,11 +10,9 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
-use Override;
 
 final class EditChangelogEntry extends EditRecord
 {
-    #[Override]
     protected static string $resource = ChangelogEntryResource::class;
 
     /**

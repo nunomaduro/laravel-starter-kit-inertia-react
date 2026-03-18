@@ -8,14 +8,12 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Override;
 
 /**
  * @extends Factory<Post>
  */
 final class PostFactory extends Factory
 {
-    #[Override]
     protected $model = Post::class;
 
     /**

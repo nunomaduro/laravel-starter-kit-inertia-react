@@ -8,11 +8,9 @@ use App\Features\GamificationFeature;
 use App\Support\FeatureHelper;
 use Filament\Widgets\StatsOverviewWidget as BaseStatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Override;
 
 final class UserLevelWidget extends BaseStatsOverviewWidget
 {
-    #[Override]
     protected static ?int $sort = 1;
 
     /**

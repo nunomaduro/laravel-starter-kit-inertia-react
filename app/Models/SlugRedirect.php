@@ -6,7 +6,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 /**
  * @property int $id
@@ -21,10 +20,8 @@ final class SlugRedirect extends Model
 {
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
-    #[Override]
     public $timestamps = false;
 
-    #[Override]
     protected $fillable = [
         'old_slug',
         'organization_id',

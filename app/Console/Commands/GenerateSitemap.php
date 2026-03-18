@@ -7,16 +7,13 @@ namespace App\Console\Commands;
 use App\Models\Page;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Route;
-use Override;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
 final class GenerateSitemap extends Command
 {
-    #[Override]
     protected $signature = 'sitemap:generate';
 
-    #[Override]
     protected $description = 'Generate the sitemap (static and public routes).';
 
     public function handle(): int

@@ -8,11 +8,9 @@ use App\Filament\Resources\TermsVersions\TermsVersionResource;
 use App\Jobs\NotifyUsersOfNewTermsVersion;
 use App\Models\TermsVersion;
 use Filament\Resources\Pages\CreateRecord;
-use Override;
 
 final class CreateTermsVersion extends CreateRecord
 {
-    #[Override]
     protected static string $resource = TermsVersionResource::class;
 
     protected function afterCreate(): void

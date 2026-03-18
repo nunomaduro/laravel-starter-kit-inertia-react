@@ -8,11 +8,9 @@ use App\Filament\Resources\Permissions\PermissionResource;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Schema;
-use Override;
 
 final class ViewPermission extends ViewRecord
 {
-    #[Override]
     protected static string $resource = PermissionResource::class;
 
     public function infolist(Schema $schema): Schema

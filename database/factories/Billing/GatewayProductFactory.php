@@ -7,14 +7,12 @@ namespace Database\Factories\Billing;
 use App\Models\Billing\GatewayProduct;
 use App\Models\Billing\PaymentGateway;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<GatewayProduct>
  */
 final class GatewayProductFactory extends Factory
 {
-    #[Override]
     protected $model = GatewayProduct::class;
 
     /**

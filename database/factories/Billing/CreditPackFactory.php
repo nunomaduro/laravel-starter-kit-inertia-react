@@ -6,14 +6,12 @@ namespace Database\Factories\Billing;
 
 use App\Models\Billing\CreditPack;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<CreditPack>
  */
 final class CreditPackFactory extends Factory
 {
-    #[Override]
     protected $model = CreditPack::class;
 
     /**

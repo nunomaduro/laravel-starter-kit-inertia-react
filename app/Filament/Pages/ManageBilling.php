@@ -14,24 +14,18 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageBilling extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Billing';
 
-    #[Override]
     protected static ?int $navigationSort = 60;
 
-    #[Override]
     protected static string $settings = BillingSettings::class;
 
     public static function canAccess(): bool

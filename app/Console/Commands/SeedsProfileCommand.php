@@ -9,17 +9,14 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Override;
 
 final class SeedsProfileCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:profile
                             {--connection= : Database connection to profile}
                             {--output= : Output file path (default: database/seeders/profiles/production.json)}
                             {--safe : Only profile if connection is not production}';
 
-    #[Override]
     protected $description = 'Profile production/staging database to generate seed profiles (read-only)';
 
     public function handle(ModelRegistry $registry): int

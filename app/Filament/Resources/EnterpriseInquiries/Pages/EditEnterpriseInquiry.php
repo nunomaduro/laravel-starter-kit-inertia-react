@@ -8,11 +8,9 @@ use App\Filament\Resources\EnterpriseInquiries\EnterpriseInquiryResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
-use Override;
 
 final class EditEnterpriseInquiry extends EditRecord
 {
-    #[Override]
     protected static string $resource = EnterpriseInquiryResource::class;
 
     protected function getHeaderActions(): array

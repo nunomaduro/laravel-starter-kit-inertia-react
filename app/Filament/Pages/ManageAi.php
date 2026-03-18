@@ -10,24 +10,18 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageAi extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCpuChip;
 
-    #[Override]
     protected static ?string $navigationLabel = 'AI';
 
-    #[Override]
     protected static ?int $navigationSort = 60;
 
-    #[Override]
     protected static string $settings = AiSettings::class;
 
     public static function canAccess(): bool

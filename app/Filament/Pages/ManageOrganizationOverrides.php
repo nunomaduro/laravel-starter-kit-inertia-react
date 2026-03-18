@@ -23,7 +23,6 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Override;
 use UnitEnum;
 
 final class ManageOrganizationOverrides extends Page implements HasTable
@@ -32,19 +31,14 @@ final class ManageOrganizationOverrides extends Page implements HasTable
 
     public ?int $selectedOrganizationId = null;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Organization Overrides';
 
-    #[Override]
     protected string $view = 'filament.pages.manage-organization-overrides';
 
-    #[Override]
     protected static ?int $navigationSort = 120;
 
     public static function canAccess(): bool

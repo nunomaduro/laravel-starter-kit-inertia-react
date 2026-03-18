@@ -8,14 +8,12 @@ use App\Models\Page;
 use App\Models\PageRevision;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use Override;
 
 /**
  * @extends Factory<PageRevision>
  */
 final class PageRevisionFactory extends Factory
 {
-    #[Override]
     protected $model = PageRevision::class;
 
     /**

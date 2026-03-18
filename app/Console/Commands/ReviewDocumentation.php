@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -14,12 +13,10 @@ use ReflectionType;
 
 final class ReviewDocumentation extends Command
 {
-    #[Override]
     protected $signature = 'docs:review
                             {--component= : Review specific component (action, controller, page)}
                             {--name= : Name of specific component to review}';
 
-    #[Override]
     protected $description = 'Review documentation quality and completeness';
 
     public function handle(): int

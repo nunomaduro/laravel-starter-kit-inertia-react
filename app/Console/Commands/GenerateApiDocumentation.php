@@ -7,18 +7,15 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
-use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionType;
 
 final class GenerateApiDocumentation extends Command
 {
-    #[Override]
     protected $signature = 'docs:api
                             {--format=markdown : Output format (markdown, openapi)}';
 
-    #[Override]
     protected $description = 'Generate API documentation from routes and controllers';
 
     public function handle(): int

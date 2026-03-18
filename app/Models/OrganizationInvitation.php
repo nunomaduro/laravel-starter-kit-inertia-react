@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Override;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Throwable;
@@ -49,7 +48,6 @@ final class OrganizationInvitation extends Model
     /**
      * @var list<string>
      */
-    #[Override]
     protected $fillable = [
         'organization_id',
         'email',
@@ -61,7 +59,6 @@ final class OrganizationInvitation extends Model
     /**
      * @var list<string>
      */
-    #[Override]
     protected $guarded = [
         'token',
         'status',

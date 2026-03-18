@@ -9,11 +9,9 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Override;
 
 final class ProductAnalyticsOverviewWidget extends StatsOverviewWidget
 {
-    #[Override]
     protected static ?int $sort = 1;
 
     protected function getStats(): array

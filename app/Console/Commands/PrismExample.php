@@ -7,14 +7,12 @@ namespace App\Console\Commands;
 use App\Services\PrismService;
 use Exception;
 use Illuminate\Console\Command;
-use Override;
 use Prism\Prism\Enums\Provider;
 
 use function Laravel\Prompts\textarea;
 
 final class PrismExample extends Command
 {
-    #[Override]
     protected $signature = 'prism:example
                             {--model= : Model to use (defaults to config)}
                             {--prompt= : Prompt to send (or will prompt interactively)}
@@ -24,7 +22,6 @@ final class PrismExample extends Command
                             {--tools= : Comma-separated list of MCP server names}
                             {--provider= : Override default provider}';
 
-    #[Override]
     protected $description = 'Example command demonstrating Prism with OpenRouter';
 
     public function handle(PrismService $prism): int

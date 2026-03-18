@@ -15,30 +15,22 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Override;
 use UnitEnum;
 
 final class VoucherResource extends Resource
 {
-    #[Override]
     protected static ?string $model = Voucher::class;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Billing';
 
-    #[Override]
     protected static ?int $navigationSort = 30;
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;
 
-    #[Override]
     protected static ?string $modelLabel = 'Voucher';
 
-    #[Override]
     protected static ?string $pluralModelLabel = 'Vouchers';
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'code';
 
     public static function canAccess(): bool

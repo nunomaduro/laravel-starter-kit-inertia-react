@@ -12,24 +12,18 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Override;
 use UnitEnum;
 
 final class AuditLogResource extends Resource
 {
-    #[Override]
     protected static ?string $model = AuditLog::class;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
-    #[Override]
     protected static ?int $navigationSort = 40;
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Audit Log';
 
     public static function canAccess(): bool

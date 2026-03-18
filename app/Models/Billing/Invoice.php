@@ -10,7 +10,6 @@ use Deligoez\LaravelModelHashId\Traits\HasHashIdRouting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Override;
 
 /**
  * @property int $id
@@ -41,12 +40,10 @@ final class Invoice extends Model
     /**
      * @var list<string>
      */
-    #[Override]
     protected $appends = [
         'hash_id',
     ];
 
-    #[Override]
     protected $fillable = [
         'billable_type',
         'billable_id',

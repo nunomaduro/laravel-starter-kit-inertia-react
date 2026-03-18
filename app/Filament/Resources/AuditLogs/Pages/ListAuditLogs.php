@@ -6,11 +6,9 @@ namespace App\Filament\Resources\AuditLogs\Pages;
 
 use App\Filament\Resources\AuditLogs\AuditLogResource;
 use Filament\Resources\Pages\ListRecords;
-use Override;
 
 final class ListAuditLogs extends ListRecords
 {
-    #[Override]
     protected static string $resource = AuditLogResource::class;
 
     protected function getHeaderActions(): array

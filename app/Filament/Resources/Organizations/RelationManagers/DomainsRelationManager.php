@@ -10,11 +10,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Override;
 
 final class DomainsRelationManager extends RelationManager
 {
-    #[Override]
     protected static string $relationship = 'domains';
 
     public function table(Table $table): Table

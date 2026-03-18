@@ -33,7 +33,6 @@ use Laravel\Sanctum\NewAccessToken;
 use Laravel\Scout\Searchable;
 use LevelUp\Experience\Concerns\GiveExperience;
 use LevelUp\Experience\Concerns\HasAchievements;
-use Override;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Image\Enums\Fit;
@@ -91,7 +90,6 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     /**
      * @var list<string>
      */
-    #[Override]
     protected $appends = [
         'avatar',
         'avatar_profile',
@@ -101,7 +99,6 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     /**
      * @var list<string>
      */
-    #[Override]
     protected $hidden = [
         'password',
         'remember_token',

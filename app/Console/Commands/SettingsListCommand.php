@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Override;
 
 /**
  * Human-readable table of all DB-backed settings.
@@ -36,12 +35,10 @@ final class SettingsListCommand extends Command
         'paddle_secret', 'lemon_squeezy_api_key', 'lemon_squeezy_signing_secret',
     ];
 
-    #[Override]
     protected $signature = 'settings:list
                             {--group= : Filter by settings group (e.g. mail, app, auth, prism)}
                             {--show-encrypted : Show encrypted values in plain text (use with caution)}';
 
-    #[Override]
     protected $description = 'List all DB-backed settings in a human-readable table';
 
     public function handle(): int

@@ -11,24 +11,18 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageBroadcasting extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSignal;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Broadcasting';
 
-    #[Override]
     protected static ?int $navigationSort = 70;
 
-    #[Override]
     protected static string $settings = BroadcastingSettings::class;
 
     public static function canAccess(): bool

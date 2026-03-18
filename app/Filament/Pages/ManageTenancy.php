@@ -13,24 +13,18 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageTenancy extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · App';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Tenancy';
 
-    #[Override]
     protected static ?int $navigationSort = 70;
 
-    #[Override]
     protected static string $settings = TenancySettings::class;
 
     public static function canAccess(): bool

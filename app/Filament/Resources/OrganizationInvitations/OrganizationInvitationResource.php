@@ -16,26 +16,20 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Override;
 use UnitEnum;
 
 final class OrganizationInvitationResource extends Resource
 {
     use ScopesToCurrentTenant;
 
-    #[Override]
     protected static ?string $model = OrganizationInvitation::class;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Organizations';
 
-    #[Override]
     protected static ?int $navigationSort = 20;
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Envelope;
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'email';
 
     public static function canAccess(): bool

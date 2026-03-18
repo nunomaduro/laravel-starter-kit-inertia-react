@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Override;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -34,7 +33,6 @@ final class Page extends Model
     /**
      * @var array<int, string>
      */
-    #[Override]
     protected $fillable = [
         'name',
         'slug',

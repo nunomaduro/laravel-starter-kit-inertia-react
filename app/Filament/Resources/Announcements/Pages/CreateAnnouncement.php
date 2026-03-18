@@ -7,11 +7,9 @@ namespace App\Filament\Resources\Announcements\Pages;
 use App\Enums\AnnouncementScope;
 use App\Filament\Resources\Announcements\AnnouncementResource;
 use Filament\Resources\Pages\CreateRecord;
-use Override;
 
 final class CreateAnnouncement extends CreateRecord
 {
-    #[Override]
     protected static string $resource = AnnouncementResource::class;
 
     /**

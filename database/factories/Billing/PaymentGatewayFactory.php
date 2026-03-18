@@ -8,14 +8,12 @@ use App\Enums\Billing\PaymentGatewayType;
 use App\Models\Billing\PaymentGateway;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Crypt;
-use Override;
 
 /**
  * @extends Factory<PaymentGateway>
  */
 final class PaymentGatewayFactory extends Factory
 {
-    #[Override]
     protected $model = PaymentGateway::class;
 
     /**

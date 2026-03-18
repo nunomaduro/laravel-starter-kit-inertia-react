@@ -12,17 +12,14 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Override;
 
 final class SeedsRegenerateCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:regenerate
                             {--check : Check mode - only report what would change}
                             {--model= : Regenerate specific model only}
                             {--force : Force regeneration even if custom code exists}';
 
-    #[Override]
     protected $description = 'Regenerate seeder and JSON files from seed specs';
 
     public function handle(SeedSpecGenerator $generator, ModelRegistry $registry): int

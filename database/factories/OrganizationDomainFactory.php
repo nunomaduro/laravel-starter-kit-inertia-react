@@ -7,14 +7,12 @@ namespace Database\Factories;
 use App\Models\Organization;
 use App\Models\OrganizationDomain;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<OrganizationDomain>
  */
 final class OrganizationDomainFactory extends Factory
 {
-    #[Override]
     protected $model = OrganizationDomain::class;
 
     /**

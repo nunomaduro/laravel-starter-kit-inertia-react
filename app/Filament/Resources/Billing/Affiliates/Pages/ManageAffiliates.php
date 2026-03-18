@@ -7,11 +7,9 @@ namespace App\Filament\Resources\Billing\Affiliates\Pages;
 use App\Filament\Resources\Billing\Affiliates\AffiliateResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ManageRecords;
-use Override;
 
 final class ManageAffiliates extends ManageRecords
 {
-    #[Override]
     protected static string $resource = AffiliateResource::class;
 
     protected function getHeaderActions(): array

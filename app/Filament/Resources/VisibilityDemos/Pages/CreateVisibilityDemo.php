@@ -7,11 +7,9 @@ namespace App\Filament\Resources\VisibilityDemos\Pages;
 use App\Enums\VisibilityEnum;
 use App\Filament\Resources\VisibilityDemos\VisibilityDemoResource;
 use Filament\Resources\Pages\CreateRecord;
-use Override;
 
 final class CreateVisibilityDemo extends CreateRecord
 {
-    #[Override]
     protected static string $resource = VisibilityDemoResource::class;
 
     private bool $shareToAllOrgs = false;

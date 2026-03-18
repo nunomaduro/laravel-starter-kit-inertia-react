@@ -11,24 +11,18 @@ use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageIntegrations extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPuzzlePiece;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Integrations';
 
-    #[Override]
     protected static ?int $navigationSort = 80;
 
-    #[Override]
     protected static string $settings = IntegrationsSettings::class;
 
     public static function canAccess(): bool

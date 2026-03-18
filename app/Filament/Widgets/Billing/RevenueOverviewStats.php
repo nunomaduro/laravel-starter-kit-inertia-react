@@ -11,11 +11,9 @@ use App\Models\Organization;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
-use Override;
 
 final class RevenueOverviewStats extends StatsOverviewWidget
 {
-    #[Override]
     protected ?string $pollingInterval = '60s';
 
     protected function getStats(): array

@@ -7,11 +7,9 @@ namespace App\Filament\Resources\Vouchers\Pages;
 use App\Filament\Resources\Vouchers\VoucherResource;
 use App\Models\VoucherScope;
 use Filament\Resources\Pages\CreateRecord;
-use Override;
 
 final class CreateVoucher extends CreateRecord
 {
-    #[Override]
     protected static string $resource = VoucherResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array

@@ -16,24 +16,18 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Override;
 use UnitEnum;
 
 final class EnterpriseInquiryResource extends Resource
 {
-    #[Override]
     protected static ?string $model = EnterpriseInquiry::class;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Engagement';
 
-    #[Override]
     protected static ?int $navigationSort = 20;
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'email';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBriefcase;
 
     public static function canAccess(): bool

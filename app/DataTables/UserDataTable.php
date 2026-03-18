@@ -28,7 +28,6 @@ use Machour\DataTable\Concerns\HasSelectAll;
 use Machour\DataTable\Concerns\HasToggle;
 use Machour\DataTable\Filters\OperatorFilter;
 use Machour\DataTable\QuickView;
-use Override;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -47,10 +46,8 @@ final class UserDataTable extends AbstractDataTable
     use HasSelectAll;
     use HasToggle;
 
-    #[Override]
     protected static ?int $defaultPerPage = 25;
 
-    #[Override]
     protected static ?int $maxPerPage = 100;
 
     public function __construct(

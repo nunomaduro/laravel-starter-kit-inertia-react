@@ -21,24 +21,18 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Override;
 use UnitEnum;
 
 final class HelpArticleResource extends Resource
 {
-    #[Override]
     protected static ?string $model = HelpArticle::class;
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedQuestionMarkCircle;
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'title';
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
-    #[Override]
     protected static ?int $navigationSort = 30;
 
     /** @return array<string> */

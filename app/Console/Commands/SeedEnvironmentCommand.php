@@ -8,11 +8,9 @@ use App\Enums\SeederCategory;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Override;
 
 final class SeedEnvironmentCommand extends Command
 {
-    #[Override]
     protected $signature = 'seed:environment
                             {--category= : Run specific category only (essential, development, production)}
                             {--only= : Run specific seeder(s) (comma-separated)}
@@ -22,7 +20,6 @@ final class SeedEnvironmentCommand extends Command
                             {--strict : Strict mode - fail on any errors}
                             {--lenient : Lenient mode - continue on warnings (default in local)}';
 
-    #[Override]
     protected $description = 'Seed the database with environment-aware seeders';
 
     public function handle(): int

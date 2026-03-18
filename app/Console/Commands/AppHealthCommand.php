@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
-use Override;
 use Throwable;
 
 use function Laravel\Prompts\error;
@@ -35,12 +34,10 @@ use function Laravel\Prompts\warning;
  */
 final class AppHealthCommand extends Command
 {
-    #[Override]
     protected $signature = 'app:health
                             {--json : Output results as JSON (useful for CI / monitoring)}
                             {--fail-on-warn : Exit with code 1 when any warnings exist}';
 
-    #[Override]
     protected $description = 'Run a comprehensive health check on all application subsystems';
 
     /** @var list<array{check: string, status: string, detail: string}> */

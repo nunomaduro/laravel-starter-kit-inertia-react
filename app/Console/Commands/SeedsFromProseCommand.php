@@ -9,19 +9,16 @@ use App\Services\SeedSpecGenerator;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use Override;
 use Prism\Prism\Enums\Provider;
 
 final class SeedsFromProseCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:from-prose
                             {description : Natural language description of the model/domain}
                             {--model= : Model name to generate spec for}
                             {--dry-run : Show generated spec without saving}
                             {--provider= : AI provider (openai, anthropic, local)}';
 
-    #[Override]
     protected $description = 'Generate seed spec from natural language description';
 
     public function handle(SeedSpecGenerator $specGenerator, PrismService $prismService): int

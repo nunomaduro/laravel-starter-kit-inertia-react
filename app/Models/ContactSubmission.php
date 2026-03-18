@@ -8,7 +8,6 @@ use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Mattiverse\Userstamps\Traits\Userstamps;
-use Override;
 
 final class ContactSubmission extends Model
 {
@@ -21,7 +20,6 @@ final class ContactSubmission extends Model
     /**
      * @var array<int, string>
      */
-    #[Override]
     protected $fillable = [
         'name',
         'email',

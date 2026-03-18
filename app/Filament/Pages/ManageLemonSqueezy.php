@@ -10,24 +10,18 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageLemonSqueezy extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedReceiptPercent;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Lemon Squeezy';
 
-    #[Override]
     protected static ?int $navigationSort = 40;
 
-    #[Override]
     protected static string $settings = LemonSqueezySettings::class;
 
     public static function canAccess(): bool

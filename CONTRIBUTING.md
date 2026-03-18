@@ -83,4 +83,4 @@ New **Actions**, **Controllers**, and **Pages** must be documented. The pre-comm
   Run `bun run build` or `bun run dev` so assets are built.
 
 - **PHP version**  
-  This project requires **PHP 8.5+**. See `composer.json` and the main [README](README.md).
+  This project requires **PHP 8.4+**. See `composer.json` and the main [README](README.md).

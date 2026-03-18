@@ -7,14 +7,11 @@ namespace App\Console\Commands;
 use App\Enums\ActivityType;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Override;
 
 final class ActivityLogStatusCommand extends Command
 {
-    #[Override]
     protected $signature = 'activitylog:status';
 
-    #[Override]
     protected $description = 'Show activity logging status: models with LogsActivity, custom event types, and doc link';
 
     public function handle(): int

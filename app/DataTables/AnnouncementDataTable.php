@@ -19,7 +19,6 @@ use Machour\DataTable\Concerns\HasExport;
 use Machour\DataTable\Concerns\HasReorder;
 use Machour\DataTable\Concerns\HasToggle;
 use Machour\DataTable\QuickView;
-use Override;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -30,10 +29,8 @@ final class AnnouncementDataTable extends AbstractDataTable
     use HasReorder;
     use HasToggle;
 
-    #[Override]
     protected static ?int $defaultPerPage = 25;
 
-    #[Override]
     protected static ?int $maxPerPage = 100;
 
     public function __construct(

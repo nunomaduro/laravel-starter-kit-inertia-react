@@ -47,3 +47,6 @@ storage/app/.install-progress.json
 /*.png
 polyscope.json
 /screenshots
+
+# Storybook build output
+/storybook-static

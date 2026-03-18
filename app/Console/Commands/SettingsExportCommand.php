@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Override;
 
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\intro;
@@ -25,13 +24,11 @@ use function Laravel\Prompts\outro;
  */
 final class SettingsExportCommand extends Command
 {
-    #[Override]
     protected $signature = 'settings:export
                             {--output= : Path to write the JSON file (defaults to stdout)}
                             {--pretty : Pretty-print the JSON output}
                             {--group=* : Export only specific group(s), e.g. --group=app --group=mail}';
 
-    #[Override]
     protected $description = 'Export all database settings to a JSON snapshot';
 
     public function handle(): int

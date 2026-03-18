@@ -8,17 +8,14 @@ use App\Services\ModelRegistry;
 use App\Services\SeedSpecGenerator;
 use Exception;
 use Illuminate\Console\Command;
-use Override;
 
 final class SeedsSpecSyncCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:spec-sync
                             {--check : Check mode - only report differences without updating}
                             {--model= : Sync specific model only}
                             {--force : Force update even if needs approval items exist}';
 
-    #[Override]
     protected $description = 'Sync seed specs with current model and migration state';
 
     public function handle(SeedSpecGenerator $generator, ModelRegistry $registry): int

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Integrations\ExampleApi\Requests;
 
-use Override;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 
@@ -15,7 +14,6 @@ use Saloon\Http\Request;
  */
 final class GetPostRequest extends Request
 {
-    #[Override]
     protected Method $method = Method::GET;
 
     public function __construct(

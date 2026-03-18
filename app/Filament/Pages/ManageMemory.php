@@ -10,24 +10,18 @@ use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManageMemory extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · System';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCircleStack;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Memory';
 
-    #[Override]
     protected static ?int $navigationSort = 80;
 
-    #[Override]
     protected static string $settings = MemorySettings::class;
 
     public static function canAccess(): bool

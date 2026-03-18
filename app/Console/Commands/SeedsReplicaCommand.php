@@ -9,17 +9,14 @@ use App\Services\SeedSpecGenerator;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Override;
 
 final class SeedsReplicaCommand extends Command
 {
-    #[Override]
     protected $signature = 'seeds:replica
                             {--profile= : Path to production profile JSON}
                             {--count=1000 : Number of records to generate}
                             {--force : Force operation in non-dev environments}';
 
-    #[Override]
     protected $description = 'Generate synthetic replica data based on production profiles';
 
     public function handle(SeedSpecGenerator $specGenerator, ModelRegistry $registry): int

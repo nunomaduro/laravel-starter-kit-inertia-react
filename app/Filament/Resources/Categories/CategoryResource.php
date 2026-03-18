@@ -18,24 +18,18 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Override;
 use UnitEnum;
 
 final class CategoryResource extends Resource
 {
-    #[Override]
     protected static ?string $model = Category::class;
 
-    #[Override]
     protected static ?string $recordTitleAttribute = 'name';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Content';
 
-    #[Override]
     protected static ?int $navigationSort = 40;
 
     public static function canAccess(): bool

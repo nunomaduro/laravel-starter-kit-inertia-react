@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
-use Override;
 use Spatie\Permission\Models\Role;
 
 final class PermissionHealthCommand extends Command
@@ -15,11 +14,9 @@ final class PermissionHealthCommand extends Command
 
     private const string DEFAULT_ROLE = 'user';
 
-    #[Override]
     protected $signature = 'permission:health
                             {--strict : Exit with code 1 on warnings (e.g. users with no roles)}';
 
-    #[Override]
     protected $description = 'Check RBAC health: super-admin role exists, users have roles, default role has permissions';
 
     public function handle(): int

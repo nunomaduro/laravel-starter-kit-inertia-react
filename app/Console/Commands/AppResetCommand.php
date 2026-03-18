@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Override;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\error;
@@ -24,13 +23,11 @@ use function Laravel\Prompts\warning;
  */
 final class AppResetCommand extends Command
 {
-    #[Override]
     protected $signature = 'app:reset
                             {--force : Skip the confirmation prompt}
                             {--production-force : Allow running in production (dangerous)}
                             {--keep-env : Do not remove DB credentials from .env}';
 
-    #[Override]
     protected $description = 'Reset the application to a blank state — drops all tables and clears all caches (development only)';
 
     public function handle(): int

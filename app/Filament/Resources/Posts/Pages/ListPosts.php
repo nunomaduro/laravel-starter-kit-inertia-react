@@ -7,11 +7,9 @@ namespace App\Filament\Resources\Posts\Pages;
 use App\Filament\Resources\Posts\PostResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Override;
 
 final class ListPosts extends ListRecords
 {
-    #[Override]
     protected static string $resource = PostResource::class;
 
     protected function getHeaderActions(): array

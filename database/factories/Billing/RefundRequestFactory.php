@@ -8,14 +8,12 @@ use App\Enums\Billing\RefundStatus;
 use App\Models\Billing\Invoice;
 use App\Models\Billing\RefundRequest;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Override;
 
 /**
  * @extends Factory<RefundRequest>
  */
 final class RefundRequestFactory extends Factory
 {
-    #[Override]
     protected $model = RefundRequest::class;
 
     /**

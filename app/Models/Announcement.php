@@ -9,7 +9,6 @@ use App\Enums\AnnouncementScope;
 use GeneaLabs\LaravelGovernor\Traits\Governable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
@@ -45,7 +44,6 @@ final class Announcement extends Model implements Sortable
     ];
 
     /** @var array<int, string> */
-    #[Override]
     protected $fillable = [
         'title',
         'body',

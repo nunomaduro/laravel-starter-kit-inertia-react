@@ -11,24 +11,18 @@ use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Override;
 use UnitEnum;
 
 final class ManagePaddle extends SettingsPage
 {
-    #[Override]
     protected static string|UnitEnum|null $navigationGroup = 'Settings · Integrations';
 
-    #[Override]
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCurrencyDollar;
 
-    #[Override]
     protected static ?string $navigationLabel = 'Paddle';
 
-    #[Override]
     protected static ?int $navigationSort = 30;
 
-    #[Override]
     protected static string $settings = PaddleSettings::class;
 
     public static function canAccess(): bool
