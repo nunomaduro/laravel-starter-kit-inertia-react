@@ -41,3 +41,9 @@ yarn-error.log
 
 # Install progress
 storage/app/.install-progress.json
+/storage/debugbar
+
+# PNG files in root folder only
+/*.png
+polyscope.json
+/screenshots
