@@ -8,13 +8,19 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Reports\Actions\ExportReportAsCsv;
+use Modules\Reports\Actions\ExportReportAsHtml;
+use Modules\Reports\Actions\ExportReportAsPdf;
 use Modules\Reports\Enums\OutputFormat;
 use Modules\Reports\Http\Requests\StoreReportRequest;
 use Modules\Reports\Http\Requests\UpdateReportRequest;
 use Modules\Reports\Models\Report;
+use Modules\Reports\Models\ReportOutput;
 use Modules\Reports\Services\ReportDataSourceRegistry;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 final class ReportController extends Controller
 {
@@ -62,32 +68,11 @@ final class ReportController extends Controller
         $organization = TenantContext::get();
         abort_unless($organization !== null, 404);
 
-        /** @var array{root: array<string, mixed>, content: list<array<string, mixed>>} $puckJson */
-        $puckJson = $report->puck_json ?? ['root' => (object) [], 'content' => []];
-        $content = $puckJson['content'];
-        $user = request()->user();
+        $puckJson = $this->resolveReportData($report);
 
-        $content = array_map(function (array $item) use ($user, $organization): array {
-            /** @var array<string, mixed> $props */
-            $props = $item['props'] ?? [];
-            if (! isset($props['dataSource'])) {
-                return $item;
-            }
-
-            /** @var string $dataSourceKey */
-            $dataSourceKey = $props['dataSource'];
-            $resolved = $this->dataSourceRegistry->resolve(
-                $dataSourceKey,
-                $organization,
-                $user instanceof User ? $user : null,
-                $props,
-            );
-            $item['props'] = array_merge($props, ['data' => is_array($resolved) ? $resolved : $resolved->all()]);
-
-            return $item;
-        }, $content);
-
-        $puckJson['content'] = $content;
+        $outputs = $report->outputs()
+            ->take(20)
+            ->get(['id', 'format', 'size_bytes', 'is_scheduled', 'created_at']);
 
         return Inertia::render('reports/show', [
             'report' => [
@@ -95,7 +80,9 @@ final class ReportController extends Controller
                 'name' => $report->name,
                 'puck_json' => $puckJson,
                 'output_format' => $report->output_format->value,
+                'schedule' => $report->schedule,
             ],
+            'outputs' => $outputs,
         ]);
     }
 
@@ -128,5 +115,82 @@ final class ReportController extends Controller
         $report->delete();
 
         return to_route('reports.index')->with('flash', ['status' => 'success', 'message' => 'Report deleted.']);
+    }
+
+    public function export(Request $request, Report $report): RedirectResponse
+    {
+        $organization = TenantContext::get();
+        abort_unless($organization !== null, 404);
+
+        /** @var string $formatValue */
+        $formatValue = $request->input('format', $report->output_format->value);
+        $format = OutputFormat::tryFrom($formatValue);
+
+        if ($format === null) {
+            return back()->with('flash', ['status' => 'error', 'message' => 'Invalid export format.']);
+        }
+
+        $user = $request->user();
+
+        /** @var ReportOutput $output */
+        $output = match ($format) {
+            OutputFormat::Pdf => app(ExportReportAsPdf::class)->handle($report, $organization, $user instanceof User ? $user : null),
+            OutputFormat::Html => app(ExportReportAsHtml::class)->handle($report, $organization, $user instanceof User ? $user : null),
+            OutputFormat::Csv => app(ExportReportAsCsv::class)->handle($report, $organization, $user instanceof User ? $user : null),
+        };
+
+        return to_route('reports.outputs.download', [$report, $output])
+            ->with('flash', ['status' => 'success', 'message' => 'Report exported successfully.']);
+    }
+
+    public function downloadOutput(Report $report, ReportOutput $output): BinaryFileResponse
+    {
+        abort_unless($output->report_id === $report->id, 404);
+
+        $path = $output->fullPath();
+        abort_unless(file_exists($path), 404);
+
+        $extension = $output->format;
+        $filename = sprintf('%s-%s.%s', str($report->name)->slug(), $output->created_at->format('Y-m-d-His'), $extension);
+
+        return response()->download($path, $filename);
+    }
+
+    /**
+     * @return array{root: array<string, mixed>, content: list<array<string, mixed>>}
+     */
+    private function resolveReportData(Report $report): array
+    {
+        $organization = TenantContext::get();
+        abort_unless($organization !== null, 404);
+
+        /** @var array{root: array<string, mixed>, content: list<array<string, mixed>>} $puckJson */
+        $puckJson = $report->puck_json ?? ['root' => (object) [], 'content' => []];
+        $content = $puckJson['content'];
+        $user = request()->user();
+
+        $content = array_map(function (array $item) use ($user, $organization): array {
+            /** @var array<string, mixed> $props */
+            $props = $item['props'] ?? [];
+            if (! isset($props['dataSource'])) {
+                return $item;
+            }
+
+            /** @var string $dataSourceKey */
+            $dataSourceKey = $props['dataSource'];
+            $resolved = $this->dataSourceRegistry->resolve(
+                $dataSourceKey,
+                $organization,
+                $user instanceof User ? $user : null,
+                $props,
+            );
+            $item['props'] = array_merge($props, ['data' => is_array($resolved) ? $resolved : $resolved->all()]);
+
+            return $item;
+        }, $content);
+
+        $puckJson['content'] = $content;
+
+        return $puckJson;
     }
 }

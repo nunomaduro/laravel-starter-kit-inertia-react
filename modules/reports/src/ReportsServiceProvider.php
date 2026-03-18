@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Reports;
 
 use App\Support\ModuleServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
+use Modules\Reports\Console\Commands\DispatchScheduledReportsCommand;
 use Modules\Reports\Features\ReportsFeature;
 use Modules\Reports\Services\ReportDataSourceRegistry;
 
@@ -31,5 +33,14 @@ final class ReportsServiceProvider extends ModuleServiceProvider
     protected function registerModule(): void
     {
         $this->app->singleton(ReportDataSourceRegistry::class);
+    }
+
+    protected function bootModule(): void
+    {
+        $this->commands([DispatchScheduledReportsCommand::class]);
+
+        $this->app->afterResolving(Schedule::class, function (Schedule $schedule): void {
+            $schedule->command('reports:dispatch-scheduled')->everyMinute();
+        });
     }
 }

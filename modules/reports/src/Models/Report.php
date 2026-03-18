@@ -7,6 +7,7 @@ namespace Modules\Reports\Models;
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Reports\Enums\OutputFormat;
 
 /**
@@ -31,6 +32,14 @@ final class Report extends Model
         'schedule',
         'output_format',
     ];
+
+    /**
+     * @return HasMany<ReportOutput, $this>
+     */
+    public function outputs(): HasMany
+    {
+        return $this->hasMany(ReportOutput::class)->latest();
+    }
 
     /**
      * @return array<string, string>

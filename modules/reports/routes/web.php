@@ -13,4 +13,6 @@ Route::middleware(['auth', 'verified', 'tenant', 'feature:reports'])->group(func
     Route::get('reports/{report}/edit', [ReportController::class, 'edit'])->name('reports.edit');
     Route::put('reports/{report}', [ReportController::class, 'update'])->name('reports.update')->middleware('throttle:30,1');
     Route::delete('reports/{report}', [ReportController::class, 'destroy'])->name('reports.destroy');
+    Route::post('reports/{report}/export', [ReportController::class, 'export'])->name('reports.export')->middleware('throttle:10,1');
+    Route::get('reports/{report}/outputs/{output}/download', [ReportController::class, 'downloadOutput'])->name('reports.outputs.download');
 });

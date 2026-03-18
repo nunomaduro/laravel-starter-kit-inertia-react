@@ -8,6 +8,7 @@ use App\Rules\ValidPuckJson;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Modules\Reports\Enums\OutputFormat;
+use Modules\Reports\Rules\ValidCronExpression;
 
 final class StoreReportRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ final class StoreReportRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'puck_json' => ['nullable', 'array', new ValidPuckJson],
-            'schedule' => ['nullable', 'string', 'max:255'],
+            'schedule' => ['nullable', 'string', 'max:255', new ValidCronExpression],
             'output_format' => ['required', Rule::enum(OutputFormat::class)],
         ];
     }
