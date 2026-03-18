@@ -254,7 +254,7 @@ export function AppSidebar() {
         isSuperAdmin || permissions.includes('access admin panel');
 
     return (
-        <Sidebar collapsible="icon" variant="inset">
+        <Sidebar collapsible="icon" variant="sidebar">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -279,7 +279,7 @@ export function AppSidebar() {
                         <a
                             href={adminPanelHref}
                             data-pan="nav-admin-panel"
-                            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         >
                             <ShieldCheck className="size-4 shrink-0" />
                             <span>{adminPanelLabel}</span>

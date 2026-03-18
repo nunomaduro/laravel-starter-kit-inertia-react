@@ -63,12 +63,12 @@
             "default": null
         },
         "line_items": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "billing_address": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },

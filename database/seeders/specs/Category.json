@@ -33,7 +33,7 @@
             "default": null
         },
         "parent_id": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

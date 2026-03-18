@@ -13,7 +13,7 @@
             "default": null
         },
         "puck_json": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },

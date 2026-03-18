@@ -169,7 +169,7 @@ final class SeedSpecGenerator
             }
 
             $fields[$column] = [
-                'type' => $this->normalizeColumnType($type),
+                'type' => $this->normalizeColumnType($type, $column),
                 'nullable' => $nullable,
                 'default' => $default,
             ];
@@ -190,10 +190,14 @@ final class SeedSpecGenerator
      * Normalize driver-specific column types to canonical names so spec JSON
      * does not flip between e.g. datetime/timestamp or integer/int8 when
      * running in different environments or after migrations.
+     *
+     * SQLite reports both integer() and bigInteger() as "integer", so we infer
+     * bigint for id and *_id columns (Laravel convention: id, foreignId).
      */
-    private function normalizeColumnType(string $type): string
+    private function normalizeColumnType(string $type, string $column): string
     {
-        return match (mb_strtolower($type)) {
+        $lower = mb_strtolower($type);
+        $normalized = match ($lower) {
             'datetime', 'timestamp', 'timestamps' => 'timestamp',
             'int8', 'bigint' => 'bigint',
             'int', 'int4', 'integer' => 'integer',
@@ -205,6 +209,21 @@ final class SeedSpecGenerator
             'json', 'jsonb' => 'json',
             default => $type,
         };
+
+        // SQLite reports integer for both integer and bigint. Laravel uses bigint
+        // for id, foreignId, *_id, and reference columns like cloned_from.
+        if ($normalized === 'integer' && $this->isSqlite()) {
+            if ($column === 'id' || Str::endsWith($column, '_id') || Str::endsWith($column, '_from')) {
+                return 'bigint';
+            }
+        }
+
+        return $normalized;
+    }
+
+    private function isSqlite(): bool
+    {
+        return Schema::getConnection()->getDriverName() === 'sqlite';
     }
 
     /**

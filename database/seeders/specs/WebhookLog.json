@@ -18,7 +18,7 @@
             "default": null
         },
         "payload": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
