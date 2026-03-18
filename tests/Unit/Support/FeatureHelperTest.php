@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Features\BlogFeature;
 use App\Models\User;
 use App\Support\FeatureHelper;
 use Laravel\Pennant\Feature;
+use Modules\Blog\Features\BlogFeature;
 
 test('isActiveForKey returns false when feature is globally disabled', function (): void {
     config(['feature-flags.globally_disabled' => ['blog']]);

@@ -15,7 +15,6 @@ use App\Http\Controllers\Billing\InvoiceController;
 use App\Http\Controllers\Billing\PaddleWebhookController;
 use App\Http\Controllers\Billing\PricingController;
 use App\Http\Controllers\Billing\StripeWebhookController;
-use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\CategoriesTableController;
 use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
@@ -40,7 +39,6 @@ use App\Http\Controllers\OrgThemeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\PersonalDataExportController;
-use App\Http\Controllers\PostsTableController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\Settings\AchievementsController;
@@ -116,11 +114,6 @@ Route::get('cookie-consent/accept', CookieConsentController::class)
 Route::get('legal/terms', fn () => Inertia::render('legal/terms'))->name('legal.terms');
 Route::get('legal/privacy', fn () => Inertia::render('legal/privacy'))->name('legal.privacy');
 
-Route::prefix('blog')->name('blog.')->middleware('feature:blog')->group(function (): void {
-    Route::get('/', [BlogController::class, 'index'])->name('index');
-    Route::get('/{post:slug}', [BlogController::class, 'show'])->name('show');
-});
-
 Route::get('pricing', [PricingController::class, 'index'])->name('pricing');
 
 Route::get('enterprise', [EnterpriseInquiryController::class, 'create'])
@@ -138,7 +131,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
 
     Route::get('categories', [CategoriesTableController::class, 'index'])->name('categories.table');
-    Route::get('posts', [PostsTableController::class, 'index'])->name('posts.table');
     Route::get('users', [UsersTableController::class, 'index'])->name('users.table');
     Route::post('users/bulk-soft-delete', [UsersTableController::class, 'bulkSoftDelete'])->name('users.bulk-soft-delete');
     Route::patch('users/batch-update', [UsersTableController::class, 'batchUpdate'])->name('users.batch-update');

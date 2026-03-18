@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders\Development;
+namespace Modules\Blog\Database\Seeders;
 
-use App\Models\Post;
 use App\Models\User;
 use Database\Seeders\Concerns\LoadsJsonData;
 use Illuminate\Database\Seeder;
+use Modules\Blog\Models\Post;
 use RuntimeException;
 
 final class PostSeeder extends Seeder

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Features\BlogFeature;
 use App\Models\Organization;
-use App\Models\Post;
 use App\Models\User;
 use App\Services\TenantContext;
 use Laravel\Pennant\Feature;
+use Modules\Blog\Features\BlogFeature;
+use Modules\Blog\Models\Post;
 use Modules\Changelog\Features\ChangelogFeature;
 use Modules\Changelog\Models\ChangelogEntry;
 use Modules\Help\Features\HelpFeature;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\Post;
+use Modules\Blog\Models\Post;
 
 it('renders blog index with published posts', function (): void {
     $post = Post::factory()->published()->create(['title' => 'Test Post']);

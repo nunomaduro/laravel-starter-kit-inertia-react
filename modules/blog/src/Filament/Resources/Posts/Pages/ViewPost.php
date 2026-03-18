@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Posts\Pages;
+namespace Modules\Blog\Filament\Resources\Posts\Pages;
 
-use App\Filament\Resources\Posts\PostResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Modules\Blog\Filament\Resources\Posts\PostResource;
 
 final class ViewPost extends ViewRecord
 {

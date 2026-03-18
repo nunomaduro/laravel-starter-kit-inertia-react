@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Blog;
+namespace Modules\Blog\Http\Controllers;
 
-use App\Models\Post;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Blog\Models\Post;
 
 final class BlogController
 {

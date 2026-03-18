@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Posts\Tables;
+namespace Modules\Blog\Filament\Resources\Posts\Tables;
 
 use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\Action;

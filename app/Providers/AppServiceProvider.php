@@ -6,7 +6,6 @@ namespace App\Providers;
 
 use App\DataTables\CategoryDataTable;
 use App\DataTables\OrganizationDataTable;
-use App\DataTables\PostDataTable;
 use App\DataTables\UserDataTable;
 use App\Events\OrganizationMemberAdded;
 use App\Events\OrganizationMemberRemoved;
@@ -160,7 +159,6 @@ final class AppServiceProvider extends ServiceProvider
             $controller::register('users', UserDataTable::class);
         }
 
-        DataTableExportController::register('posts', PostDataTable::class);
         DataTableExportController::register('organizations', OrganizationDataTable::class);
 
         foreach ([

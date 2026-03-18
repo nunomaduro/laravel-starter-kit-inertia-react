@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\DataTables;
+namespace Modules\Blog\DataTables;
 
-use App\Models\Post;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -13,6 +12,7 @@ use Machour\DataTable\Columns\ColumnBuilder;
 use Machour\DataTable\Concerns\HasExport;
 use Machour\DataTable\Filters\OperatorFilter;
 use Machour\DataTable\QuickView;
+use Modules\Blog\Models\Post;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 

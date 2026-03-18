@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Posts\Pages;
+namespace Modules\Blog\Filament\Resources\Posts\Pages;
 
-use App\Filament\Resources\Posts\PostResource;
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Blog\Filament\Resources\Posts\PostResource;
 
 final class CreatePost extends CreateRecord
 {

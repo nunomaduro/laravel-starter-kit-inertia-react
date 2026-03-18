@@ -1,0 +1,9 @@
+{
+    "name": "blog",
+    "label": "Blog",
+    "description": "Blog posts with categories, tags, and SEO support.",
+    "provider": "Modules\\Blog\\BlogServiceProvider",
+    "seeders": [
+        "Modules\\Blog\\Database\\Seeders\\PostSeeder"
+    ]
+}

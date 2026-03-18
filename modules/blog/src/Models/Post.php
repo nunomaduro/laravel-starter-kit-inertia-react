@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace Modules\Blog\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
 use App\Models\Concerns\Categorizable;
-use Database\Factories\PostFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Mattiverse\Userstamps\Traits\Userstamps;
+use Modules\Blog\Database\Factories\PostFactory;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\ModelFlags\Models\Concerns\HasFlags;
@@ -102,6 +103,11 @@ final class Post extends Model implements HasMedia
             'created_at' => $this->created_at?->timestamp ?? 0,
             'updated_at' => $this->updated_at?->timestamp ?? 0,
         ];
+    }
+
+    protected static function newFactory(): PostFactory
+    {
+        return PostFactory::new();
     }
 
     protected function casts(): array

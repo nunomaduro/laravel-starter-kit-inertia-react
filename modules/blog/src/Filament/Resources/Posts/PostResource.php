@@ -2,17 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Posts;
+namespace Modules\Blog\Filament\Resources\Posts;
 
-use App\Features\BlogFeature;
-use App\Filament\Resources\Posts\Pages\CreatePost;
-use App\Filament\Resources\Posts\Pages\EditPost;
-use App\Filament\Resources\Posts\Pages\ListPosts;
-use App\Filament\Resources\Posts\Pages\ViewPost;
-use App\Filament\Resources\Posts\Schemas\PostForm;
-use App\Filament\Resources\Posts\Schemas\PostInfolist;
-use App\Filament\Resources\Posts\Tables\PostsTable;
-use App\Models\Post;
 use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -21,6 +12,15 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Modules\Blog\Features\BlogFeature;
+use Modules\Blog\Filament\Resources\Posts\Pages\CreatePost;
+use Modules\Blog\Filament\Resources\Posts\Pages\EditPost;
+use Modules\Blog\Filament\Resources\Posts\Pages\ListPosts;
+use Modules\Blog\Filament\Resources\Posts\Pages\ViewPost;
+use Modules\Blog\Filament\Resources\Posts\Schemas\PostForm;
+use Modules\Blog\Filament\Resources\Posts\Schemas\PostInfolist;
+use Modules\Blog\Filament\Resources\Posts\Tables\PostsTable;
+use Modules\Blog\Models\Post;
 use UnitEnum;
 
 final class PostResource extends Resource

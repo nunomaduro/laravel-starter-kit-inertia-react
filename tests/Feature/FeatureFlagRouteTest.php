@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Features\BlogFeature;
 use App\Models\User;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Laravel\Pennant\Feature;
+use Modules\Blog\Features\BlogFeature;
 
 test('globally disabled feature returns 404 for all users including super-admin', function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);

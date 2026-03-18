@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use App\Models\User;
 use App\Services\TenantContext;
 use App\Support\FeatureHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\Blog\Models\Post;
 use Modules\Changelog\Models\ChangelogEntry;
 use Modules\Help\Models\HelpArticle;
 

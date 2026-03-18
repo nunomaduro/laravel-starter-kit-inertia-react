@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\Posts\Pages;
+namespace Modules\Blog\Filament\Resources\Posts\Pages;
 
-use App\Filament\Resources\Posts\PostResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Blog\Filament\Resources\Posts\PostResource;
 
 final class EditPost extends EditRecord
 {

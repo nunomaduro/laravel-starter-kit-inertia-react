@@ -136,7 +136,9 @@
             "Modules\\Changelog\\": "modules/changelog/src/",
             "Modules\\Changelog\\Database\\": "modules/changelog/database/",
             "Modules\\Announcements\\": "modules/announcements/src/",
-            "Modules\\Announcements\\Database\\": "modules/announcements/database/"
+            "Modules\\Announcements\\Database\\": "modules/announcements/database/",
+            "Modules\\Blog\\": "modules/blog/src/",
+            "Modules\\Blog\\Database\\": "modules/blog/database/"
         },
         "files": [
             "bootstrap/helpers.php"
