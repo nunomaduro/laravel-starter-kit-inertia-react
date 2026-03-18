@@ -22,31 +22,18 @@ import {
     KpiCard,
     type KpiCardProps,
 } from '@/components/puck-blocks/reports/kpi-card';
+import {
+    baseHeadingComponent,
+    baseRootRender,
+    baseTextComponent,
+    dataSourceOptions,
+    type DataSourceOption,
+    type HeadingProps,
+    type TextProps,
+} from '@/lib/puck-config-factory';
 import type { Config } from '@measured/puck';
-import type { ElementType } from 'react';
 
-export interface HeadingProps {
-    text: string;
-    level: 1 | 2 | 3 | 4 | 5 | 6;
-}
-
-export interface TextProps {
-    content: string;
-}
-
-function HeadingBlock({ text, level: Level }: HeadingProps) {
-    const Tag = `h${Level}` as ElementType;
-    return <Tag className="font-semibold">{text}</Tag>;
-}
-
-function TextBlock({ content }: TextProps) {
-    return <p className="text-muted-foreground">{content}</p>;
-}
-
-export interface DataSourceOption {
-    key: string;
-    label: string;
-}
+export type { DataSourceOption, HeadingProps, TextProps };
 
 export interface StatCardProps {
     label: string;
@@ -140,10 +127,7 @@ export function createDashboardPuckConfig(
     Map: MapBlockProps;
     Widget: WidgetBlockProps;
 }> {
-    const dsOptions = dataSources.map((ds) => ({
-        label: ds.label,
-        value: ds.key,
-    }));
+    const dsOptions = dataSourceOptions(dataSources);
 
     return {
         categories: {
@@ -174,32 +158,8 @@ export function createDashboardPuckConfig(
             },
         },
         components: {
-            Heading: {
-                fields: {
-                    text: { type: 'text', label: 'Text' },
-                    level: {
-                        type: 'select',
-                        label: 'Level',
-                        options: [
-                            { label: 'H1', value: 1 },
-                            { label: 'H2', value: 2 },
-                            { label: 'H3', value: 3 },
-                            { label: 'H4', value: 4 },
-                            { label: 'H5', value: 5 },
-                            { label: 'H6', value: 6 },
-                        ],
-                    },
-                },
-                defaultProps: { text: 'Dashboard heading', level: 2 },
-                render: HeadingBlock,
-            },
-            Text: {
-                fields: {
-                    content: { type: 'textarea', label: 'Content' },
-                },
-                defaultProps: { content: 'Enter text here.' },
-                render: TextBlock,
-            },
+            Heading: baseHeadingComponent('Dashboard heading'),
+            Text: baseTextComponent(),
             KpiCard: {
                 fields: {
                     label: { type: 'text', label: 'Label' },
@@ -420,10 +380,6 @@ export function createDashboardPuckConfig(
                 render: WidgetBlock,
             },
         },
-        root: {
-            render: ({ children }) => (
-                <div className="space-y-4">{children}</div>
-            ),
-        },
+        root: baseRootRender(),
     };
 }
