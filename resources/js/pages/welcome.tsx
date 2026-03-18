@@ -16,8 +16,10 @@ import {
     CloudCog,
     Coins,
     CreditCard,
+    Database,
     Download,
     FileText,
+    Flag,
     Globe,
     ImageIcon,
     Key,
@@ -27,15 +29,19 @@ import {
     Megaphone,
     MessageCircle,
     MessageSquare,
+    Network,
     Palette,
     RadioTower,
+    Receipt,
     Rocket,
     Search,
     Share2,
     Shield,
     Sparkles,
     Table,
+    Timer,
     ToggleLeft,
+    TrendingUp,
     UserCog,
     UserPlus,
     Users,
@@ -287,8 +293,50 @@ const featureGroups: FeatureGroup[] = [
                 icon: BarChart3,
                 title: 'Analytics & Monitoring',
                 description:
-                    'Pan product analytics, Laravel Telescope for request/query debugging, and Horizon for queue monitoring.',
+                    'Pan product analytics (impressions, hovers, clicks), GA4 widget on Filament dashboard, Laravel Telescope for request/query debugging, and Horizon for queue monitoring.',
                 dataPan: 'welcome-feature-analytics',
+            },
+            {
+                icon: Receipt,
+                title: 'Invoice PDF',
+                description:
+                    'LaravelDaily Invoices for billing: generate and download PDFs from app invoices. BuildLaravelDailyInvoice action and tenant-scoped download route.',
+                dataPan: 'welcome-feature-invoice-pdf',
+            },
+            {
+                icon: TrendingUp,
+                title: 'GA4 Widget',
+                description:
+                    'Filament dashboard widget for Spatie Laravel Analytics: 7-day visitors and top pages. Optional; requires analytics property ID.',
+                dataPan: 'welcome-feature-ga4',
+            },
+            {
+                icon: Timer,
+                title: 'Cronless Schedule',
+                description:
+                    'Run the Laravel scheduler without cron (e.g. on PaaS). Use composer schedule:cronless or schedule:run-cronless; Procfile example in deployment docs.',
+                dataPan: 'welcome-feature-cronless',
+            },
+            {
+                icon: Flag,
+                title: 'Model States & Flags',
+                description:
+                    'Spatie Model States for RefundRequest, OrganizationInvitation, Affiliate flows. Model Flags for HelpArticle (featured, pinned) and Announcement/Post (featured).',
+                dataPan: 'welcome-feature-model-states-flags',
+            },
+            {
+                icon: Database,
+                title: 'Schemaless Attributes',
+                description:
+                    'Spatie Schemaless Attributes on Credit, Organization, and Page (extra_attributes) for flexible JSON without migrations.',
+                dataPan: 'welcome-feature-schemaless',
+            },
+            {
+                icon: Network,
+                title: 'Saloon HTTP Client',
+                description:
+                    'Paddle and Typesense connectors via Saloon. Typed requests, health checks, and gateway integration for third-party APIs.',
+                dataPan: 'welcome-feature-saloon',
             },
             {
                 icon: Table,
