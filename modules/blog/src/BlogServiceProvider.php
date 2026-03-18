@@ -34,7 +34,6 @@ final class BlogServiceProvider extends ModuleServiceProvider
     protected function bootModule(): void
     {
         $this->registerDataTables();
-        $this->registerFilamentResources();
     }
 
     protected function registerDataTables(): void
@@ -45,19 +44,6 @@ final class BlogServiceProvider extends ModuleServiceProvider
             DataTableReorderController::class,
         ] as $controller) {
             $controller::register('posts', PostDataTable::class);
-        }
-    }
-
-    protected function registerFilamentResources(): void
-    {
-        $panels = filament()->getPanels();
-
-        foreach ($panels as $panel) {
-            $panel
-                ->discoverResources(
-                    in: __DIR__.'/Filament/Resources',
-                    for: 'Modules\\Blog\\Filament\\Resources',
-                );
         }
     }
 }

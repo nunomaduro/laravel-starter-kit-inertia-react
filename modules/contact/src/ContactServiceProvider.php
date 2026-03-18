@@ -26,22 +26,4 @@ final class ContactServiceProvider extends ModuleServiceProvider
     {
         return ContactFeature::class;
     }
-
-    protected function bootModule(): void
-    {
-        $this->registerFilamentResources();
-    }
-
-    protected function registerFilamentResources(): void
-    {
-        $panels = filament()->getPanels();
-
-        foreach ($panels as $panel) {
-            $panel
-                ->discoverResources(
-                    in: __DIR__.'/Filament/Resources',
-                    for: 'Modules\\Contact\\Filament\\Resources',
-                );
-        }
-    }
 }

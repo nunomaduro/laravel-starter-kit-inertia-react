@@ -33,20 +33,5 @@ final class GamificationServiceProvider extends ModuleServiceProvider
     protected function bootModule(): void
     {
         Event::listen(UserCreated::class, GrantGamificationOnUserCreated::class);
-
-        $this->registerFilamentWidgets();
-    }
-
-    protected function registerFilamentWidgets(): void
-    {
-        $panels = filament()->getPanels();
-
-        foreach ($panels as $panel) {
-            $panel
-                ->discoverWidgets(
-                    in: __DIR__.'/Filament/Widgets',
-                    for: 'Modules\\Gamification\\Filament\\Widgets',
-                );
-        }
     }
 }

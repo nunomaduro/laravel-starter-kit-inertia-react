@@ -34,7 +34,6 @@ final class AnnouncementsServiceProvider extends ModuleServiceProvider
     protected function bootModule(): void
     {
         $this->registerDataTables();
-        $this->registerFilamentResources();
     }
 
     protected function registerDataTables(): void
@@ -45,19 +44,6 @@ final class AnnouncementsServiceProvider extends ModuleServiceProvider
             DataTableReorderController::class,
         ] as $controller) {
             $controller::register('announcements', AnnouncementDataTable::class);
-        }
-    }
-
-    protected function registerFilamentResources(): void
-    {
-        $panels = filament()->getPanels();
-
-        foreach ($panels as $panel) {
-            $panel
-                ->discoverResources(
-                    in: __DIR__.'/Filament/Resources',
-                    for: 'Modules\\Announcements\\Filament\\Resources',
-                );
         }
     }
 }
