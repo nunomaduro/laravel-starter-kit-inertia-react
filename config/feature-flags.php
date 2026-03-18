@@ -13,11 +13,6 @@ use App\Features\ProfilePdfExportFeature;
 use App\Features\RegistrationFeature;
 use App\Features\ScrambleApiDocsFeature;
 use App\Features\TwoFactorAuthFeature;
-use Modules\Blog\Features\BlogFeature;
-use Modules\Changelog\Features\ChangelogFeature;
-use Modules\Contact\Features\ContactFeature;
-use Modules\Gamification\Features\GamificationFeature;
-use Modules\Help\Features\HelpFeature;
 
 return [
     /*
@@ -33,10 +28,6 @@ return [
      * Keys become the feature name in the `features` object (e.g. BlogFeature -> blog).
      */
     'inertia_features' => [
-        'blog' => BlogFeature::class,
-        'changelog' => ChangelogFeature::class,
-        'help' => HelpFeature::class,
-        'contact' => ContactFeature::class,
         'cookie_consent' => CookieConsentFeature::class,
         'profile_pdf_export' => ProfilePdfExportFeature::class,
         'onboarding' => OnboardingFeature::class,
@@ -47,7 +38,6 @@ return [
         'api_access' => ApiAccessFeature::class,
         'scramble_api_docs' => ScrambleApiDocsFeature::class,
         'appearance_settings' => AppearanceSettingsFeature::class,
-        'gamification' => GamificationFeature::class,
     ],
 
     /*
@@ -56,13 +46,8 @@ return [
      * plan_required: null = all plans; 'pro'|'enterprise' = plan-gated
      */
     'feature_metadata' => [
-        'blog' => ['delegate_to_orgs' => true,  'plan_required' => null],
-        'changelog' => ['delegate_to_orgs' => true,  'plan_required' => null],
-        'help' => ['delegate_to_orgs' => true,  'plan_required' => null],
-        'contact' => ['delegate_to_orgs' => true,  'plan_required' => null],
         'onboarding' => ['delegate_to_orgs' => true,  'plan_required' => null],
         'appearance_settings' => ['delegate_to_orgs' => true,  'plan_required' => null],
-        'gamification' => ['delegate_to_orgs' => true,  'plan_required' => 'pro'],
         'api_access' => ['delegate_to_orgs' => true,  'plan_required' => 'pro'],
         'two_factor_auth' => ['delegate_to_orgs' => false, 'plan_required' => null],
         'impersonation' => ['delegate_to_orgs' => false, 'plan_required' => null],
@@ -79,12 +64,7 @@ return [
     'route_feature_map' => [
         'api_access' => ApiAccessFeature::class,
         'appearance_settings' => AppearanceSettingsFeature::class,
-        'gamification' => GamificationFeature::class,
-        'blog' => BlogFeature::class,
-        'changelog' => ChangelogFeature::class,
-        'contact' => ContactFeature::class,
         'cookie_consent' => CookieConsentFeature::class,
-        'help' => HelpFeature::class,
         'onboarding' => OnboardingFeature::class,
         'personal_data_export' => PersonalDataExportFeature::class,
         'profile_pdf_export' => ProfilePdfExportFeature::class,
