@@ -25,8 +25,6 @@ use App\Http\Controllers\Dev\ComponentShowcaseController;
 use App\Http\Controllers\Dev\PageGalleryController;
 use App\Http\Controllers\EnterpriseInquiryController;
 use App\Http\Controllers\HealthController;
-use App\Http\Controllers\HelpCenter\HelpCenterController;
-use App\Http\Controllers\HelpCenter\RateHelpArticleController;
 use App\Http\Controllers\Internal\CaddyAskController;
 use App\Http\Controllers\InvitationAcceptController;
 use App\Http\Controllers\Notifications\ClearAllNotificationsController;
@@ -128,12 +126,6 @@ Route::prefix('blog')->name('blog.')->middleware('feature:blog')->group(function
 Route::get('changelog', [ChangelogController::class, 'index'])
     ->middleware('feature:changelog')
     ->name('changelog.index');
-
-Route::prefix('help')->name('help.')->middleware('feature:help')->group(function (): void {
-    Route::get('/', [HelpCenterController::class, 'index'])->name('index');
-    Route::get('/{helpArticle:slug}', [HelpCenterController::class, 'show'])->name('show');
-    Route::post('/{helpArticle:slug}/rate', RateHelpArticleController::class)->name('rate');
-});
 
 Route::get('pricing', [PricingController::class, 'index'])->name('pricing');
 

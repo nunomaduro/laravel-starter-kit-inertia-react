@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\HelpArticles\Schemas;
+namespace Modules\Help\Filament\Resources\HelpArticles\Schemas;
 
-use App\Models\HelpArticle;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
+use Modules\Help\Models\HelpArticle;
 
 final class HelpArticleInfolist
 {

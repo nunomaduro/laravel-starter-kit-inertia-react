@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders\Development;
+namespace Modules\Help\Database\Seeders;
 
-use App\Models\HelpArticle;
 use Database\Seeders\Concerns\LoadsJsonData;
 use Illuminate\Database\Seeder;
+use Modules\Help\Models\HelpArticle;
 use RuntimeException;
 
 final class HelpArticleSeeder extends Seeder

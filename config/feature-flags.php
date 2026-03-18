@@ -9,7 +9,6 @@ use App\Features\ChangelogFeature;
 use App\Features\ComponentShowcaseFeature;
 use App\Features\CookieConsentFeature;
 use App\Features\GamificationFeature;
-use App\Features\HelpFeature;
 use App\Features\ImpersonationFeature;
 use App\Features\OnboardingFeature;
 use App\Features\PersonalDataExportFeature;
@@ -18,6 +17,7 @@ use App\Features\RegistrationFeature;
 use App\Features\ScrambleApiDocsFeature;
 use App\Features\TwoFactorAuthFeature;
 use Modules\Contact\Features\ContactFeature;
+use Modules\Help\Features\HelpFeature;
 
 return [
     /*

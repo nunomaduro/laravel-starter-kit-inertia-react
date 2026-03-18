@@ -2,17 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\HelpArticles;
+namespace Modules\Help\Filament\Resources\HelpArticles;
 
-use App\Features\HelpFeature;
-use App\Filament\Resources\HelpArticles\Pages\CreateHelpArticle;
-use App\Filament\Resources\HelpArticles\Pages\EditHelpArticle;
-use App\Filament\Resources\HelpArticles\Pages\ListHelpArticles;
-use App\Filament\Resources\HelpArticles\Pages\ViewHelpArticle;
-use App\Filament\Resources\HelpArticles\Schemas\HelpArticleForm;
-use App\Filament\Resources\HelpArticles\Schemas\HelpArticleInfolist;
-use App\Filament\Resources\HelpArticles\Tables\HelpArticlesTable;
-use App\Models\HelpArticle;
 use App\Support\FeatureHelper;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -21,6 +12,15 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Modules\Help\Features\HelpFeature;
+use Modules\Help\Filament\Resources\HelpArticles\Pages\CreateHelpArticle;
+use Modules\Help\Filament\Resources\HelpArticles\Pages\EditHelpArticle;
+use Modules\Help\Filament\Resources\HelpArticles\Pages\ListHelpArticles;
+use Modules\Help\Filament\Resources\HelpArticles\Pages\ViewHelpArticle;
+use Modules\Help\Filament\Resources\HelpArticles\Schemas\HelpArticleForm;
+use Modules\Help\Filament\Resources\HelpArticles\Schemas\HelpArticleInfolist;
+use Modules\Help\Filament\Resources\HelpArticles\Tables\HelpArticlesTable;
+use Modules\Help\Models\HelpArticle;
 use UnitEnum;
 
 final class HelpArticleResource extends Resource

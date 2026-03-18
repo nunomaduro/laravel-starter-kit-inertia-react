@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Models\HelpArticle;
 use Illuminate\Database\Migrations\Migration;
+use Modules\Help\Models\HelpArticle;
 
 return new class extends Migration
 {

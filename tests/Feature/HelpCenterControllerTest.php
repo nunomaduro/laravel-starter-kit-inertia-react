@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\HelpArticle;
+use Modules\Help\Models\HelpArticle;
 
 it('renders help index with featured and by category', function (): void {
     HelpArticle::factory()->published()->featured()->create([

@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace Modules\Help\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
 use App\Models\Concerns\Categorizable;
-use Database\Factories\HelpArticleFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Mattiverse\Userstamps\Traits\Userstamps;
+use Modules\Help\Database\Factories\HelpArticleFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\EloquentSortable\Sortable;
@@ -122,6 +122,11 @@ final class HelpArticle extends Model implements HasMedia, Sortable
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images');
+    }
+
+    protected static function newFactory(): HelpArticleFactory
+    {
+        return HelpArticleFactory::new();
     }
 
     protected function casts(): array

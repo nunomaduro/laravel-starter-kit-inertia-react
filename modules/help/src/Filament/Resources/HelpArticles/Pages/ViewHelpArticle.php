@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\HelpArticles\Pages;
+namespace Modules\Help\Filament\Resources\HelpArticles\Pages;
 
-use App\Filament\Resources\HelpArticles\HelpArticleResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Modules\Help\Filament\Resources\HelpArticles\HelpArticleResource;
 
 final class ViewHelpArticle extends ViewRecord
 {

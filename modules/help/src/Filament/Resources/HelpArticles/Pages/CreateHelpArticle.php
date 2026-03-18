@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\HelpArticles\Pages;
+namespace Modules\Help\Filament\Resources\HelpArticles\Pages;
 
-use App\Filament\Resources\HelpArticles\HelpArticleResource;
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Help\Filament\Resources\HelpArticles\HelpArticleResource;
 
 final class CreateHelpArticle extends CreateRecord
 {

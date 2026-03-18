@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -101,13 +103,13 @@ abstract class ModuleServiceProvider extends ServiceProvider
     }
 
     /**
-     * Load routes from the module's routes directory.
+     * Load routes from the module's routes directory within the web middleware group.
      */
     protected function loadModuleRoutes(): void
     {
         $routesPath = $this->modulePath('routes/web.php');
         if (file_exists($routesPath)) {
-            $this->loadRoutesFrom($routesPath);
+            Route::middleware(SubstituteBindings::class)->group($routesPath);
         }
     }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\HelpArticles\Schemas;
+namespace Modules\Help\Filament\Resources\HelpArticles\Schemas;
 
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\TagsInput;

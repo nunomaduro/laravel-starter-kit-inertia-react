@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Modules\Help\Database\Factories;
 
-use App\Models\HelpArticle;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Modules\Help\Models\HelpArticle;
 
 /**
  * @extends Factory<HelpArticle>

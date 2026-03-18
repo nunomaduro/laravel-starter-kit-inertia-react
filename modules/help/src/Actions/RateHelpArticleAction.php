@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Actions;
+namespace Modules\Help\Actions;
 
-use App\Models\HelpArticle;
+use Modules\Help\Models\HelpArticle;
 
 final readonly class RateHelpArticleAction
 {

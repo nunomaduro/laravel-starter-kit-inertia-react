@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\HelpCenter;
+namespace Modules\Help\Http\Controllers;
 
-use App\Models\HelpArticle;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Help\Models\HelpArticle;
 
 final class HelpCenterController
 {

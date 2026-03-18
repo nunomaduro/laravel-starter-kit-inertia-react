@@ -1,0 +1,9 @@
+{
+    "name": "help",
+    "label": "Help Center",
+    "description": "Help center with articles, categories, and article ratings.",
+    "provider": "Modules\\Help\\HelpServiceProvider",
+    "seeders": [
+        "Modules\\Help\\Database\\Seeders\\HelpArticleSeeder"
+    ]
+}

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\HelpArticles\Pages;
+namespace Modules\Help\Filament\Resources\HelpArticles\Pages;
 
-use App\Filament\Resources\HelpArticles\HelpArticleResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Modules\Help\Filament\Resources\HelpArticles\HelpArticleResource;
 
 final class EditHelpArticle extends EditRecord
 {

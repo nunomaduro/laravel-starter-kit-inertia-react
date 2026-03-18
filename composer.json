@@ -130,7 +130,9 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Modules\\Contact\\": "modules/contact/src/",
-            "Modules\\Contact\\Database\\": "modules/contact/database/"
+            "Modules\\Contact\\Database\\": "modules/contact/database/",
+            "Modules\\Help\\": "modules/help/src/",
+            "Modules\\Help\\Database\\": "modules/help/database/"
         },
         "files": [
             "bootstrap/helpers.php"

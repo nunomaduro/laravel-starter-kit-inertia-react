@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Resources\HelpArticles\Tables;
+namespace Modules\Help\Filament\Resources\HelpArticles\Tables;
 
 use App\Filament\Concerns\HasStandardExports;
 use Filament\Actions\Action;
