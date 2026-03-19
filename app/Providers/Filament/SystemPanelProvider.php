@@ -76,12 +76,18 @@ final class SystemPanelProvider extends PanelProvider
                     ->navigationGroup('Settings · System')
                     ->navigationSort(110),
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            ->discoverResources(in: app_path('Filament/System/Resources'), for: 'App\Filament\System\Resources')
+            ->when(config('modules.announcements'), fn (Panel $p) => $p->discoverResources(in: base_path('modules/announcements/src/Filament/Resources'), for: 'Modules\Announcements\Filament\Resources'))
+            ->when(config('modules.blog'), fn (Panel $p) => $p->discoverResources(in: base_path('modules/blog/src/Filament/Resources'), for: 'Modules\Blog\Filament\Resources'))
+            ->when(config('modules.changelog'), fn (Panel $p) => $p->discoverResources(in: base_path('modules/changelog/src/Filament/Resources'), for: 'Modules\Changelog\Filament\Resources'))
+            ->when(config('modules.contact'), fn (Panel $p) => $p->discoverResources(in: base_path('modules/contact/src/Filament/Resources'), for: 'Modules\Contact\Filament\Resources'))
+            ->when(config('modules.help'), fn (Panel $p) => $p->discoverResources(in: base_path('modules/help/src/Filament/Resources'), for: 'Modules\Help\Filament\Resources'))
+            ->discoverPages(in: app_path('Filament/System/Pages'), for: 'App\Filament\System\Pages')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->discoverWidgets(in: app_path('Filament/System/Widgets'), for: 'App\Filament\System\Widgets')
+            ->when(config('modules.gamification'), fn (Panel $p) => $p->discoverWidgets(in: base_path('modules/gamification/src/Filament/Widgets'), for: 'Modules\Gamification\Filament\Widgets'))
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
