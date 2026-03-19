@@ -3717,14 +3717,16 @@ function DataTableInner<TData extends object>({
     // Cell range selection
     const cellRange = useCellRangeSelection(resolvedOptions.cellRangeSelection);
 
-    // Horizontal scroll shadow indicators
-    const [scrollShadow, setScrollShadow] = useState<{ left: boolean; right: boolean }>({ left: false, right: false });
+    // Horizontal scroll shadow indicators (DOM-based to avoid re-renders)
+    const scrollShadowLeftRef = useRef<HTMLDivElement>(null);
+    const scrollShadowRightRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         const el = virtualContainerRef.current;
         if (!el) return;
         const update = () => {
             const { scrollLeft: sl, scrollWidth, clientWidth } = el;
-            setScrollShadow({ left: sl > 0, right: sl + clientWidth < scrollWidth - 1 });
+            if (scrollShadowLeftRef.current) scrollShadowLeftRef.current.style.opacity = sl > 0 ? "1" : "0";
+            if (scrollShadowRightRef.current) scrollShadowRightRef.current.style.opacity = sl + clientWidth < scrollWidth - 1 ? "1" : "0";
         };
         update();
         el.addEventListener("scroll", update, { passive: true });
@@ -5000,8 +5002,8 @@ function DataTableInner<TData extends object>({
                 <div id={`dt-table-${tableName}`} className={cn("rounded-xl border shadow-sm overflow-hidden relative", className)}
                     tabIndex={resolvedOptions.keyboardNavigation ? 0 : undefined}
                     onKeyDown={resolvedOptions.keyboardNavigation ? handleTableKeyDown : undefined}>
-                    {scrollShadow.left && <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-r from-background/80 to-transparent" aria-hidden="true" />}
-                    {scrollShadow.right && <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-l from-background/80 to-transparent" aria-hidden="true" />}
+                    <div ref={scrollShadowLeftRef} className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-r from-background/80 to-transparent opacity-0 transition-opacity duration-150" aria-hidden="true" />
+                    <div ref={scrollShadowRightRef} className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-l from-background/80 to-transparent opacity-0 transition-opacity duration-150" aria-hidden="true" />
                     <div ref={virtualContainerRef} className={cn("overflow-x-auto", resolvedOptions.virtualScrolling && "max-h-[600px] overflow-y-auto")}
                         style={autoSizerDimensions ? { width: autoSizerDimensions.width, height: autoSizerDimensions.height } : undefined}>
                         <Table ref={tableElementRef} style={resolvedOptions.columnResizing ? { width: table.getCenterTotalSize() } : undefined}
