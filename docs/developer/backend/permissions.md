@@ -108,7 +108,7 @@ For “can act on *this* resource” (e.g. only the org owner can transfer/delet
 ## Filament management UI
 
 - **Roles** (`/admin/roles`): List, create, edit, view roles; assign permissions via checkbox list. **Duplicate** table action creates a new role with the same permissions (name: "Copy of …"). `App\Filament\Resources\Roles\RoleResource`.
-- **Permissions** (`/admin/permissions`): List and view permissions; **Sync from routes** header action runs `permission:sync-routes`. No create/edit (permissions come from sync or seeders). `App\Filament\Resources\Permissions\PermissionResource`.
+- **Permissions** (`/system/permissions`): List and view permissions; **Sync from routes** header action runs `permission:sync-routes`. No create/edit (permissions come from sync or seeders). `App\Filament\System\Resources\Permissions\PermissionResource`.
 - **Users**: User form and infolist include role assignment (multi-select and badges). Users table shows a Roles column.
 
 Access to the admin panel (and thus these resources) requires the `access admin panel` permission.
