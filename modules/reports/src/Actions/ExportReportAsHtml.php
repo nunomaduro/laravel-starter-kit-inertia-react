@@ -74,6 +74,7 @@ final readonly class ExportReportAsHtml
      */
     private function buildHtmlDocument(string $title, array $content): string
     {
+        $safeTitle = e($title);
         $body = '';
         foreach ($content as $block) {
             $type = $block['type'] ?? 'unknown';
@@ -107,7 +108,7 @@ final readonly class ExportReportAsHtml
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>{$title}</title>
+            <title>{$safeTitle}</title>
             <style>
                 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
                 h1, h2, h3 { margin-top: 1.5rem; }
@@ -122,7 +123,7 @@ final readonly class ExportReportAsHtml
             </style>
         </head>
         <body>
-            <h1>{$title}</h1>
+            <h1>{$safeTitle}</h1>
             <p style="color: #666; font-size: 0.875rem;">Generated on {$this->now()}</p>
             {$body}
         </body>

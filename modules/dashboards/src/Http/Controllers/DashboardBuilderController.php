@@ -20,7 +20,9 @@ final class DashboardBuilderController extends Controller
 {
     public function __construct(
         private readonly DashboardDataSourceRegistry $dataSourceRegistry,
-    ) {}
+    ) {
+        $this->authorizeResource(Dashboard::class, 'dashboard');
+    }
 
     public function index(): Response
     {
@@ -150,6 +152,8 @@ final class DashboardBuilderController extends Controller
 
     public function setDefault(Dashboard $dashboard): RedirectResponse
     {
+        $this->authorize('setDefault', $dashboard);
+
         DB::transaction(function () use ($dashboard): void {
             Dashboard::query()->where('is_default', true)->update(['is_default' => false]);
             $dashboard->update(['is_default' => true]);

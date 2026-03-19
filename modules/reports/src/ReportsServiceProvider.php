@@ -6,8 +6,11 @@ namespace Modules\Reports;
 
 use App\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Gate;
 use Modules\Reports\Console\Commands\DispatchScheduledReportsCommand;
 use Modules\Reports\Features\ReportsFeature;
+use Modules\Reports\Models\Report;
+use Modules\Reports\Policies\ReportPolicy;
 use Modules\Reports\Services\ReportDataSourceRegistry;
 
 final class ReportsServiceProvider extends ModuleServiceProvider
@@ -37,6 +40,8 @@ final class ReportsServiceProvider extends ModuleServiceProvider
 
     protected function bootModule(): void
     {
+        Gate::policy(Report::class, ReportPolicy::class);
+
         $this->commands([DispatchScheduledReportsCommand::class]);
 
         $this->app->afterResolving(Schedule::class, function (Schedule $schedule): void {

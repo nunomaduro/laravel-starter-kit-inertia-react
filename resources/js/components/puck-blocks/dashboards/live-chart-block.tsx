@@ -1,3 +1,4 @@
+import { router } from '@inertiajs/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     Bar,
@@ -55,7 +56,7 @@ export function LiveChartBlock({
     }, [data]);
 
     const refresh = useCallback(() => {
-        setLastRefreshed(new Date());
+        router.reload({ only: ['dashboard'], onFinish: () => setLastRefreshed(new Date()) });
     }, []);
 
     useEffect(() => {

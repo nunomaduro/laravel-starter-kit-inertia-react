@@ -13,5 +13,5 @@ Route::middleware(['auth', 'verified', 'tenant', 'feature:dashboards'])->group(f
     Route::get('dashboards/{dashboard}/edit', [DashboardBuilderController::class, 'edit'])->name('dashboards.edit');
     Route::put('dashboards/{dashboard}', [DashboardBuilderController::class, 'update'])->name('dashboards.update')->middleware('throttle:30,1');
     Route::delete('dashboards/{dashboard}', [DashboardBuilderController::class, 'destroy'])->name('dashboards.destroy');
-    Route::post('dashboards/{dashboard}/set-default', [DashboardBuilderController::class, 'setDefault'])->name('dashboards.set-default');
+    Route::post('dashboards/{dashboard}/set-default', [DashboardBuilderController::class, 'setDefault'])->name('dashboards.set-default')->middleware('throttle:10,1');
 });

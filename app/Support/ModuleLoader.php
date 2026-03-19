@@ -77,7 +77,13 @@ final class ModuleLoader
         /** @var array<string, mixed>|null $data */
         $data = json_decode($contents, true);
 
-        return is_array($data) ? $data : null;
+        if (! is_array($data)) {
+            Log::warning("Module [{$moduleName}] module.json contains invalid JSON.");
+
+            return null;
+        }
+
+        return $data;
     }
 
     /**
@@ -118,6 +124,6 @@ final class ModuleLoader
 
         $content = "<?php\n\ndeclare(strict_types=1);\n\nreturn [\n".implode("\n", $entries)."\n];\n";
 
-        file_put_contents($configPath, $content);
+        file_put_contents($configPath, $content, LOCK_EX);
     }
 }

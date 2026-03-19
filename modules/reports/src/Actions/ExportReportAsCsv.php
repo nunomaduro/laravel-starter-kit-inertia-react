@@ -84,8 +84,9 @@ final readonly class ExportReportAsCsv
         foreach ($allRows as $row) {
             $values = array_map(function (string $col) use ($row): string {
                 $raw = $row[$col] ?? '';
+                $value = is_string($raw) || is_int($raw) || is_float($raw) ? (string) $raw : '';
 
-                return is_string($raw) || is_int($raw) || is_float($raw) ? (string) $raw : '';
+                return $this->sanitizeCsvValue($value);
             }, $columns);
             fputcsv($handle, $values);
         }
@@ -95,5 +96,20 @@ final readonly class ExportReportAsCsv
         fclose($handle);
 
         return $csv !== false ? $csv : '';
+    }
+
+    /**
+     * Sanitize a CSV cell value to prevent formula injection (DDE attacks).
+     *
+     * Prefixes cells starting with =, +, -, @, \t, or \r with a single quote
+     * to prevent spreadsheet applications from interpreting them as formulas.
+     */
+    private function sanitizeCsvValue(string $value): string
+    {
+        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'".$value;
+        }
+
+        return $value;
     }
 }

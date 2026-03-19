@@ -32,6 +32,16 @@
       "permissions": [
         {"name": "announcements.manage", "roles": ["owner", "admin"], "org_grantable": true}
       ]
+    },
+    "org_reports": {
+      "permissions": [
+        {"name": "org.reports.manage", "roles": ["owner", "admin"], "org_grantable": true}
+      ]
+    },
+    "org_dashboards": {
+      "permissions": [
+        {"name": "org.dashboards.manage", "roles": ["owner", "admin"], "org_grantable": true}
+      ]
     }
   },
   "role_templates": [

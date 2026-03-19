@@ -43,7 +43,8 @@ export function MapBlock({ title, height, data }: MapBlockProps) {
                                 const y =
                                     ((90 - marker.lat) / 180) * 300;
                                 return (
-                                    <g key={i}>
+                                    <g key={i} role="img" aria-label={`${marker.label} at ${marker.lat.toFixed(2)}, ${marker.lng.toFixed(2)}`}>
+                                        <title>{marker.label}</title>
                                         <circle
                                             cx={x}
                                             cy={y}

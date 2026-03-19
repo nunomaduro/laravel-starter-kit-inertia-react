@@ -26,7 +26,9 @@ final class ReportController extends Controller
 {
     public function __construct(
         private readonly ReportDataSourceRegistry $dataSourceRegistry,
-    ) {}
+    ) {
+        $this->authorizeResource(Report::class, 'report');
+    }
 
     public function index(): Response
     {
@@ -119,6 +121,8 @@ final class ReportController extends Controller
 
     public function export(Request $request, Report $report): RedirectResponse
     {
+        $this->authorize('export', $report);
+
         $organization = TenantContext::get();
         abort_unless($organization !== null, 404);
 

@@ -1,3 +1,4 @@
+import { router } from '@inertiajs/react';
 import { useCallback, useEffect, useState } from 'react';
 
 export interface ActivityItem {
@@ -31,7 +32,7 @@ export function ActivityFeedBlock({
     }, [data]);
 
     const refresh = useCallback(() => {
-        setLastRefreshed(new Date());
+        router.reload({ only: ['dashboard'], onFinish: () => setLastRefreshed(new Date()) });
     }, []);
 
     useEffect(() => {

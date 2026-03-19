@@ -79,8 +79,17 @@ export function TableBlock({ title, data }: TableBlockProps) {
                                     {columns.map((col) => (
                                         <th
                                             key={col}
+                                            role="columnheader"
+                                            tabIndex={0}
+                                            aria-sort={sortColumn === col ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                                             className="cursor-pointer select-none px-3 py-2 text-left font-medium text-muted-foreground hover:text-foreground"
                                             onClick={() => handleSort(col)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    handleSort(col);
+                                                }
+                                            }}
                                         >
                                             {col}
                                             <span className="text-xs">

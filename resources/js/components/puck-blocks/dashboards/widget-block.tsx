@@ -11,7 +11,9 @@ export function WidgetBlock({
     height,
     allowFullscreen,
 }: WidgetBlockProps) {
-    if (!url) {
+    const isValidUrl = url && /^https?:\/\//i.test(url);
+
+    if (!isValidUrl) {
         return (
             <div className="rounded-lg border bg-card p-4">
                 {title && (
@@ -22,7 +24,7 @@ export function WidgetBlock({
                     style={{ height: `${height}px` }}
                 >
                     <p className="text-sm text-muted-foreground">
-                        Enter a URL to embed content.
+                        {url && !isValidUrl ? 'URL must start with http:// or https://' : 'Enter a URL to embed content.'}
                     </p>
                 </div>
             </div>
@@ -38,7 +40,7 @@ export function WidgetBlock({
                 className="w-full rounded-md border"
                 style={{ height: `${height}px` }}
                 allowFullScreen={allowFullscreen}
-                sandbox="allow-scripts allow-same-origin allow-popups"
+                sandbox="allow-scripts allow-popups allow-forms"
             />
         </div>
     );
