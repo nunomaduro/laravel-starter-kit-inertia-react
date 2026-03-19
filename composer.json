@@ -11,25 +11,25 @@
     "require": {
         "php": "^8.5.0",
         "inertiajs/inertia-laravel": "^2.0.21",
-        "laravel/fortify": "^1.35.0",
-        "laravel/framework": "^12.53.0",
+        "laravel/fortify": "^1.36.1",
+        "laravel/framework": "^12.55.1",
         "laravel/wayfinder": "^0.1.14",
         "nunomaduro/essentials": "^1.2.0"
     },
     "require-dev": {
-        "driftingly/rector-laravel": "^2.1.12",
+        "driftingly/rector-laravel": "^2.2.0",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.9.3",
-        "laravel/boost": "^1.8.11",
+        "laravel/boost": "^1.8.12",
         "laravel/pail": "^1.2.6",
-        "laravel/pint": "^1.27.1",
+        "laravel/pint": "^1.29.0",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.9.1",
-        "pestphp/pest": "^4.4.1",
+        "pestphp/pest": "^4.4.2",
         "pestphp/pest-plugin-browser": "^4.3.0",
         "pestphp/pest-plugin-laravel": "^4.1.0",
         "pestphp/pest-plugin-type-coverage": "^4.0.3",
-        "rector/rector": "^2.3.8",
+        "rector/rector": "^2.3.9",
         "roave/security-advisories": "dev-latest"
     },
     "autoload": {
