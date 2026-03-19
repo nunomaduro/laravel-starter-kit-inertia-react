@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Models\Organization;
-use App\Services\OrganizationSettingsService;
+use App\Services\OrganizationBrandingService;
 use App\Services\TenantContext;
 use App\Settings\SeoSettings;
 use App\Support\FeatureHelper;
@@ -353,7 +353,7 @@ final class HandleInertiaRequests extends Middleware
             ];
         }
 
-        return resolve(OrganizationSettingsService::class)->getBranding($organization);
+        return resolve(OrganizationBrandingService::class)->getBranding($organization);
     }
 
     /**

@@ -15,7 +15,7 @@ Route::get('/', fn (): JsonResponse => response()->json([
     'message' => 'API documentation is at /docs/api. Versioned API base is /api/v1.',
 ]))->name('api');
 
-Route::middleware('auth:sanctum')->group(function (): void {
+Route::middleware(['auth:sanctum', 'throttle:30,1'])->group(function (): void {
     Route::post('chat', ChatController::class)->name('api.chat');
     Route::get('chat/memories', ChatMemoryController::class)->name('chat.memories');
     Route::get('conversations', [ConversationController::class, 'index'])->name('conversations.index');

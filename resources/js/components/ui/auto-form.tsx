@@ -18,8 +18,7 @@ type FieldConfig = {
   description?: string
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>
   component?: React.ComponentType<{
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    field: { value: any; onChange: (v: any) => void }
+    field: { value: unknown; onChange: (v: unknown) => void }
     label?: string
   }>
 }
@@ -48,9 +47,9 @@ function AutoForm<TSchema extends AnyZodObject>({
   children,
   serverErrors,
 }: AutoFormProps<TSchema>) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const form = useForm<any>({
-    resolver: zodResolver(schema),
+  const form = useForm<FieldValues>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- zodResolver generic mismatch with useForm<FieldValues>
+    resolver: zodResolver(schema) as any,
     defaultValues: defaultValues as DefaultValues<FieldValues>,
   })
 
@@ -67,8 +66,7 @@ function AutoForm<TSchema extends AnyZodObject>({
   return (
     <form
       data-slot="auto-form"
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onSubmit={form.handleSubmit(onSubmit as (data: any) => void)}
+      onSubmit={form.handleSubmit(onSubmit as (data: FieldValues) => void)}
       className={cn("space-y-4", className)}
     >
       {Object.keys(shape).map((key) => {
@@ -88,8 +86,7 @@ function AutoForm<TSchema extends AnyZodObject>({
               <CustomComponent
                 field={{
                   value: form.watch(key),
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  onChange: (v: any) => form.setValue(key, v),
+                  onChange: (v: unknown) => form.setValue(key, v),
                 }}
                 label={label}
               />
@@ -113,7 +110,7 @@ function AutoForm<TSchema extends AnyZodObject>({
           </FormField>
         )
       })}
-      {children?.(form as UseFormReturn<z.infer<TSchema>>)}
+      {children?.(form as unknown as UseFormReturn<z.infer<TSchema>>)}
       <Button type="submit" disabled={form.formState.isSubmitting}>
         {submitLabel}
       </Button>

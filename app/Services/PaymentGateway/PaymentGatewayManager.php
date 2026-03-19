@@ -11,6 +11,7 @@ use App\Services\PaymentGateway\Gateways\ManualGateway;
 use App\Services\PaymentGateway\Gateways\PaddleGateway;
 use App\Services\PaymentGateway\Gateways\StripeGateway;
 use Illuminate\Support\Facades\Cache;
+use InvalidArgumentException;
 
 final class PaymentGatewayManager
 {
@@ -42,9 +43,11 @@ final class PaymentGatewayManager
 
     public function resolve(string $type): PaymentGatewayInterface
     {
-        $class = $this->gateways[$type] ?? StripeGateway::class;
+        if (! isset($this->gateways[$type])) {
+            throw new InvalidArgumentException("Unsupported payment gateway type: {$type}");
+        }
 
-        return resolve($class);
+        return resolve($this->gateways[$type]);
     }
 
     public function resolveFromModel(PaymentGatewayModel $model): PaymentGatewayInterface

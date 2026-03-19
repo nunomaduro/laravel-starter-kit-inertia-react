@@ -129,6 +129,7 @@ function Gallery({
               type="button"
               onClick={() => setLightboxIndex(null)}
               className="absolute right-4 top-4 z-10 rounded-full bg-black/50 p-1.5 text-white hover:bg-black/80"
+              aria-label="Close lightbox"
             >
               <XIcon className="size-4" />
             </button>

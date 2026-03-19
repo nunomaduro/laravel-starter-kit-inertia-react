@@ -203,7 +203,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 });
 
 Route::get('/api/slug-availability', SlugAvailabilityController::class)
-    ->middleware('auth')
+    ->middleware(['auth', 'throttle:10,1'])
     ->name('api.slug-availability');
 
 Route::get('/internal/caddy/ask', CaddyAskController::class)

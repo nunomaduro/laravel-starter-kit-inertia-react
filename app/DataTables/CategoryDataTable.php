@@ -185,7 +185,7 @@ final class CategoryDataTable extends AbstractDataTable
 
     public static function tableBaseQuery(): Builder
     {
-        return Category::query();
+        return Category::query()->with('parent');
     }
 
     public static function tableDefaultSort(): string

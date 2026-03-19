@@ -18,6 +18,11 @@ final class SearchController
 {
     public function __invoke(Request $request): JsonResponse
     {
+        $request->validate([
+            'q' => ['nullable', 'string', 'max:255'],
+            'type' => ['nullable', 'string', 'in:users,posts,help_articles,changelog_entries'],
+        ]);
+
         $query = mb_trim((string) $request->query('q', ''));
         $type = $request->query('type');
 

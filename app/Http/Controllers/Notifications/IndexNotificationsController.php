@@ -14,14 +14,14 @@ final class IndexNotificationsController extends Controller
 {
     public function __invoke(Request $request): Response|JsonResponse
     {
-        $notifications = $request->user()
-            ->notifications()
-            ->latest()
-            ->limit(20)
-            ->get();
-
         if ($request->wantsJson()) {
-            return response()->json(['data' => $notifications]);
+            return response()->json([
+                'data' => $request->user()
+                    ->notifications()
+                    ->latest()
+                    ->limit(20)
+                    ->get(),
+            ]);
         }
 
         return Inertia::render('notifications/index', [

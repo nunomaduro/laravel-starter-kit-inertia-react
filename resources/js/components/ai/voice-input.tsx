@@ -1,4 +1,10 @@
 import { Loader2Icon, MicIcon, MicOffIcon } from 'lucide-react';
+
+/** Web Speech API type augmentation for browsers that support it. */
+interface SpeechRecognitionWindow {
+    SpeechRecognition?: new () => SpeechRecognitionLike;
+    webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+}
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -70,9 +76,8 @@ export function VoiceInput({
             return;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const win = window as any;
-        const SpeechRecognitionClass: new () => SpeechRecognitionLike =
+        const win = window as unknown as SpeechRecognitionWindow;
+        const SpeechRecognitionClass =
             win.SpeechRecognition ?? win.webkitSpeechRecognition;
 
         if (!SpeechRecognitionClass) return;

@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\RecordAuditLog;
 use App\Actions\SuggestThemeFromLogo;
 use App\Models\Organization;
+use App\Services\OrganizationBrandingService;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
 use App\Settings\ThemeSettings;
@@ -20,6 +21,7 @@ final class OrgThemeController extends Controller
 {
     public function __construct(
         private readonly OrganizationSettingsService $organizationSettings,
+        private readonly OrganizationBrandingService $brandingService,
         private readonly RecordAuditLog $auditLog,
     ) {}
 
@@ -64,7 +66,7 @@ final class OrgThemeController extends Controller
 
             // Apply org-level per-field restrictions for non-admins
             if (! $isAdmin) {
-                $orgBranding = $this->organizationSettings->getBrandingUserControls($organization);
+                $orgBranding = $this->brandingService->getBrandingUserControls($organization);
 
                 if (! $orgBranding['user_can_change_colors']) {
                     $validated = array_diff_key($validated, array_flip(['dark', 'primary', 'light', 'skin']));

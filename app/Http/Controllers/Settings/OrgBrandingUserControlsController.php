@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Settings;
 use App\Actions\RecordAuditLog;
 use App\Http\Controllers\Controller;
 use App\Models\Organization;
+use App\Services\OrganizationBrandingService;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +17,7 @@ final class OrgBrandingUserControlsController extends Controller
 {
     public function __construct(
         private readonly OrganizationSettingsService $organizationSettings,
+        private readonly OrganizationBrandingService $brandingService,
         private readonly RecordAuditLog $auditLog,
     ) {}
 
@@ -36,7 +38,7 @@ final class OrgBrandingUserControlsController extends Controller
             'user_can_change_logo' => ['required', 'boolean'],
         ]);
 
-        $existing = $this->organizationSettings->getBrandingUserControls($organization);
+        $existing = $this->brandingService->getBrandingUserControls($organization);
 
         foreach ($validated as $name => $value) {
             $this->organizationSettings->setOverride($organization, 'branding', $name, (bool) $value);

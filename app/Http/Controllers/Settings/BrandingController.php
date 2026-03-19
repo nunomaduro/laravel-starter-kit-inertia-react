@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\UpdateBrandingRequest;
 use App\Models\Organization;
+use App\Services\OrganizationBrandingService;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,8 @@ use Inertia\Response;
 final class BrandingController extends Controller
 {
     public function __construct(
-        private readonly OrganizationSettingsService $organizationSettings
+        private readonly OrganizationSettingsService $organizationSettings,
+        private readonly OrganizationBrandingService $branding,
     ) {}
 
     public function edit(Request $request): Response|RedirectResponse
@@ -31,7 +33,7 @@ final class BrandingController extends Controller
 
         abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);
 
-        $branding = $this->organizationSettings->getBranding($organization);
+        $branding = $this->branding->getBranding($organization);
 
         return Inertia::render('settings/branding', [
             'branding' => $branding,

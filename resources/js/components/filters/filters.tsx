@@ -159,6 +159,7 @@ function FilterPill({
                 type="button"
                 data-slot="clear"
                 onClick={onClear}
+                aria-label={`Remove ${column.label} filter`}
                 className="flex h-full items-center rounded-r-2xl px-1.5 transition-colors duration-150 hover:bg-destructive hover:text-white"
             >
                 <X className="size-3.5" />
@@ -244,6 +245,7 @@ export function Filters({ columns, serverFilters }: FiltersProps) {
                         variant="outline"
                         className={cn("h-7", hasActiveFilters && "w-fit !px-2")}
                         onClick={() => setOpenPill(null)}
+                        aria-label="Filtrer"
                     >
                         <FilterIcon className="size-4" />
                         {!hasActiveFilters && <span>Filtrer</span>}

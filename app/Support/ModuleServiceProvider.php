@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Filament\Facades\Filament;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -129,46 +128,23 @@ abstract class ModuleServiceProvider extends ServiceProvider
 
     /**
      * Discover and register Filament resources from the module's Filament/Resources directory.
-     * Uses Filament::serving() so discovery only runs when Filament is serving a request.
+     * NOTE: Module Filament resources are now discovered directly by panel providers
+     * (SystemPanelProvider) to ensure routes are registered at the correct time.
+     * This method is kept as a no-op for backwards compatibility.
      */
     protected function discoverFilamentResources(): void
     {
-        $resourcesPath = $this->moduleSourcePath('Filament/Resources');
-
-        if (! is_dir($resourcesPath)) {
-            return;
-        }
-
-        $namespace = $this->moduleNamespace().'\\Filament\\Resources';
-
-        Filament::serving(function () use ($resourcesPath, $namespace): void {
-            /** @var \Filament\Panel $panel */
-            foreach (filament()->getPanels() as $panel) {
-                $panel->discoverResources(in: $resourcesPath, for: $namespace);
-            }
-        });
+        // Handled by SystemPanelProvider::panel() to ensure correct route registration timing.
     }
 
     /**
      * Discover and register Filament widgets from the module's Filament/Widgets directory.
-     * Uses Filament::serving() so discovery only runs when Filament is serving a request.
+     * NOTE: Module Filament widgets should be discovered directly by panel providers.
+     * This method is kept as a no-op for backwards compatibility.
      */
     protected function discoverFilamentWidgets(): void
     {
-        $widgetsPath = $this->moduleSourcePath('Filament/Widgets');
-
-        if (! is_dir($widgetsPath)) {
-            return;
-        }
-
-        $namespace = $this->moduleNamespace().'\\Filament\\Widgets';
-
-        Filament::serving(function () use ($widgetsPath, $namespace): void {
-            /** @var \Filament\Panel $panel */
-            foreach (filament()->getPanels() as $panel) {
-                $panel->discoverWidgets(in: $widgetsPath, for: $namespace);
-            }
-        });
+        // Handled by panel providers to ensure correct registration timing.
     }
 
     /**
