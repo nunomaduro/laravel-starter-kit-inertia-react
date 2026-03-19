@@ -122,3 +122,99 @@ it('denies non-super-admin access to system panel', function (): void {
 
     $response->assertForbidden();
 });
+
+// --- Moved resources return 404 on admin panel ---
+
+it('returns 404 for /admin/permissions (moved to system)', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/admin/permissions');
+
+    $response->assertNotFound();
+});
+
+it('returns 404 for /admin/audit-logs (moved to system)', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/admin/audit-logs');
+
+    $response->assertNotFound();
+});
+
+it('returns 404 for /admin/terms-versions (moved to system)', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/admin/terms-versions');
+
+    $response->assertNotFound();
+});
+
+it('returns 404 for /admin/organizations (moved to system)', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/admin/organizations');
+
+    $response->assertNotFound();
+});
+
+// --- Admin resources still accessible ---
+
+it('allows admin to access /admin/roles', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test);
+
+    $response = $test->get('/admin/roles');
+
+    $response->assertOk();
+});
+
+it('allows admin to access /admin/categories', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test);
+
+    $response = $test->get('/admin/categories');
+
+    $response->assertOk();
+});
+
+// --- System panel resources accessible to superadmin ---
+
+it('allows super-admin to access /system/permissions', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/system/permissions');
+
+    $response->assertOk();
+});
+
+it('allows super-admin to access /system/audit-logs', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/system/audit-logs');
+
+    $response->assertOk();
+});
+
+it('allows super-admin to access /system/terms-versions', function (): void {
+    /** @var TestCase $test */
+    $test = $this;
+    actsAsFilamentAdmin($test, 'super-admin');
+
+    $response = $test->get('/system/terms-versions');
+
+    $response->assertOk();
+});

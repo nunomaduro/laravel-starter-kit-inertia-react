@@ -20,7 +20,7 @@ beforeEach(function (): void {
 
 it('allows super-admin to open visibility demos create page', function (): void {
     /** @var TestCase $this */
-    $response = $this->get('/admin/visibility-demos/create');
+    $response = $this->get('/system/visibility-demos/create');
 
     $response->assertOk();
 });
