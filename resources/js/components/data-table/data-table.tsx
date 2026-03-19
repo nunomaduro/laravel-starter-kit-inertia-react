@@ -3643,10 +3643,24 @@ function DataTableInner<TData extends object>({
 
     // Inertia loading state
     const [isNavigating, setIsNavigating] = useState(false);
+    const isBackgroundReload = useRef(false);
     useEffect(() => {
         if (!resolvedOptions.loading) return;
-        const removeStart = router.on("start", () => setIsNavigating(true));
-        const removeFinish = router.on("finish", () => setIsNavigating(false));
+        const removeStart = router.on("start", (event) => {
+            // Don't show skeletons for background reloads (polling, real-time, prefetch)
+            const visit = (event as unknown as { detail?: { visit?: { only?: string[] } } })?.detail?.visit;
+            const isPartialOnly = visit?.only && visit.only.length > 0;
+            if (isPartialOnly) {
+                isBackgroundReload.current = true;
+                return;
+            }
+            isBackgroundReload.current = false;
+            setIsNavigating(true);
+        });
+        const removeFinish = router.on("finish", () => {
+            isBackgroundReload.current = false;
+            setIsNavigating(false);
+        });
         return () => {
             removeStart();
             removeFinish();
