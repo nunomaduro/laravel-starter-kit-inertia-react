@@ -31,6 +31,7 @@ final class MakeModelFullCommand extends Command
                             {--api : Indicates if the generated controller should be an API resource controller}
                             {--requests : Create Form Request classes for the model}
                             {--policy : Create a new policy for the model}
+                            {--panel= : Generate a Filament resource in the specified panel (admin or system)}
                             {--all : Generate a migration, factory, seeder, and resource controller}
                             {--no-ai : Skip AI generation even if available}';
 
@@ -82,6 +83,11 @@ final class MakeModelFullCommand extends Command
         // Create requests if requested
         if ($all || $this->option('requests')) {
             $this->createRequests($name);
+        }
+
+        // Create Filament resource if --panel is specified
+        if ($this->option('panel')) {
+            $this->createFilamentResource($name);
         }
 
         $this->info('Model setup complete for: '.$name);
@@ -362,6 +368,25 @@ PHP;
         ]);
 
         $this->info('✓ Form requests created');
+    }
+
+    private function createFilamentResource(string $name): void
+    {
+        $panel = mb_strtolower($this->option('panel'));
+
+        if (! in_array($panel, ['admin', 'system'], true)) {
+            $this->error("Invalid panel '{$panel}'. Use 'admin' or 'system'.");
+
+            return;
+        }
+
+        Artisan::call('make:filament-resource', [
+            'name' => $name.'Resource',
+            '--panel' => $panel,
+            '--no-interaction' => true,
+        ]);
+
+        $this->info("✓ Filament resource created in {$panel} panel");
     }
 
     private function getCategory(): SeederCategory
