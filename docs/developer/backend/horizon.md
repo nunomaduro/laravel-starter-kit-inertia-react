@@ -31,6 +31,7 @@ With Horizon running and `QUEUE_CONNECTION=redis`, visit `/horizon` (or `HORIZON
 
 ## Related
 
+- **Rate-limited jobs** — [rate-limited-jobs.md](./rate-limited-jobs.md) for spatie/laravel-rate-limited-job-middleware; limits job execution per time window (webhooks, notifications, DNS checks).
 - **Waterline** — Workflow monitoring UI at `/waterline` (admin only). Use it to inspect runs of [Durable Workflow](./durable-workflow.md) workflows. Same authorization as Horizon (`access admin panel`).
 
 ## References

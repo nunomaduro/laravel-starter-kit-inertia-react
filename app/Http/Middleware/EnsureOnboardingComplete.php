@@ -12,13 +12,13 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Redirects authenticated users who have not completed onboarding to the onboarding page.
- * When OnboardingFeature is inactive for the user, onboarding is skipped (no redirect).
+ * Redirects authenticated users who have not completed onboarding to the next unfinished step.
+ * Uses spatie/laravel-onboard; when OnboardingFeature is inactive, onboarding is skipped.
  */
 final class EnsureOnboardingComplete
 {
     /**
-     * Route names that are allowed without completing onboarding.
+     * Route names that are allowed without completing onboarding (step targets and auth).
      *
      * @var list<string>
      */
@@ -31,6 +31,8 @@ final class EnsureOnboardingComplete
         'verification.notice',
         'verification.verify',
         'verification.send',
+        'user-profile.edit',
+        'user-profile.update',
     ];
 
     /**
@@ -49,11 +51,21 @@ final class EnsureOnboardingComplete
             return $next($request);
         }
 
+        if (! $user->hasVerifiedEmail()) {
+            return $next($request);
+        }
+
         if ($user->onboarding_completed) {
             return $next($request);
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        $onboarding = $user->onboarding();
+
+        if (! $onboarding->inProgress()) {
+            if ($onboarding->finished()) {
+                $user->update(['onboarding_completed' => true]);
+            }
+
             return $next($request);
         }
 
@@ -70,6 +82,10 @@ final class EnsureOnboardingComplete
             return $next($request);
         }
 
-        return to_route('onboarding');
+        $nextStep = $onboarding->nextUnfinishedStep();
+
+        return $nextStep !== null
+            ? redirect()->to($nextStep->link)
+            : to_route('onboarding');
     }
 }

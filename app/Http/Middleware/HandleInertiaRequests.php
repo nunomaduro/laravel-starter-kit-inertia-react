@@ -92,6 +92,7 @@ final class HandleInertiaRequests extends Middleware
                 'unread_count' => $user?->unreadNotifications()->count() ?? 0,
             ],
             'announcements' => $this->resolveAnnouncements($user),
+            'onboarding' => $this->resolveOnboarding($user, $features),
         ];
     }
 
@@ -336,6 +337,52 @@ final class HandleInertiaRequests extends Middleware
             ])
             ->values()
             ->all();
+    }
+
+    /**
+     * Onboarding state for Inertia (steps, progress, next step). Only when user is present and onboarding feature is active.
+     *
+     * @param  array<string, bool>  $features
+     * @return array{steps: array<int, array{title: string, cta: string, link: string, complete: bool}>, inProgress: bool, percentageCompleted: float, nextStep: array{title: string, link: string, cta: string}|null}
+     */
+    private function resolveOnboarding(mixed $user, array $features): array
+    {
+        $default = [
+            'steps' => [],
+            'inProgress' => false,
+            'percentageCompleted' => 100.0,
+            'nextStep' => null,
+        ];
+
+        if ($user === null || ! ($features['onboarding'] ?? false)) {
+            return $default;
+        }
+
+        try {
+            $onboarding = $user->onboarding();
+            $stepsCollection = $onboarding->steps();
+            $stepCount = $stepsCollection->count();
+            $steps = $stepsCollection->map(fn ($step): array => [
+                'title' => $step->title,
+                'cta' => $step->cta,
+                'link' => $step->link,
+                'complete' => $step->complete(),
+            ])->values()->all();
+
+            $percentageCompleted = $stepCount > 0 ? $onboarding->percentageCompleted() : 100.0;
+            $nextStep = $onboarding->nextUnfinishedStep();
+
+            return [
+                'steps' => $steps,
+                'inProgress' => $onboarding->inProgress(),
+                'percentageCompleted' => $percentageCompleted,
+                'nextStep' => $nextStep !== null
+                    ? ['title' => $nextStep->title, 'link' => $nextStep->link, 'cta' => $nextStep->cta]
+                    : null,
+            ];
+        } catch (Throwable) {
+            return $default;
+        }
     }
 
     private function resolveBranding(): array

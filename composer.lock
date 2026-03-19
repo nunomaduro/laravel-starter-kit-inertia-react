@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4561e8ea577e092210cb5f8e31f73afd",
+    "content-hash": "a607f77c7a7cbd2a25e96a03786ad918",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -314,6 +314,54 @@
                 "source": "https://github.com/AnourValar/eloquent-serialize/tree/1.3.5"
             },
             "time": "2025-12-04T13:38:21+00:00"
+        },
+        {
+            "name": "artisansdk/ratelimiter",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/artisansdk/ratelimiter.git",
+                "reference": "fc46ed65622b1b1841d31be9c10a452d8fa0dac5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/artisansdk/ratelimiter/zipball/fc46ed65622b1b1841d31be9c10a452d8fa0dac5",
+                "reference": "fc46ed65622b1b1841d31be9c10a452d8fa0dac5",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "~10.0|~11.0|~12.0|~13.0",
+                "nesbot/carbon": "~2.0|~3.0",
+                "php": ">=8.1",
+                "symfony/http-kernel": "~6.0|~7.0|~8.0"
+            },
+            "require-dev": {
+                "larastan/larastan": "~2.9",
+                "laravel/pint": "~1.0",
+                "pestphp/pest": "~2.34|~3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ArtisanSdk\\RateLimiter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel LaBarge",
+                    "email": "daniel@artisanmade.io"
+                }
+            ],
+            "description": "A leaky bucket rate limiter and corresponding middleware with route-level granularity compatible with Laravel.",
+            "support": {
+                "issues": "https://github.com/artisansdk/ratelimiter/issues",
+                "source": "https://github.com/artisansdk/ratelimiter/tree/1.2.0"
+            },
+            "time": "2026-02-23T15:50:16+00:00"
         },
         {
             "name": "askedio/laravel-soft-cascade",
@@ -14466,6 +14514,76 @@
             "time": "2026-02-22T23:11:43+00:00"
         },
         {
+            "name": "spatie/laravel-onboard",
+            "version": "2.6.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-onboard.git",
+                "reference": "6c077c4931e862d93755fe103784a0c2c1390d73"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-onboard/zipball/6c077c4931e862d93755fe103784a0c2c1390d73",
+                "reference": "6c077c4931e862d93755fe103784a0c2c1390d73",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.9.2",
+                "spatie/once": "^3.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0|^11.0",
+                "pestphp/pest": "^1.21|^2.0|^3.0|^4.4",
+                "pestphp/pest-plugin-laravel": "^1.1|^2.0|^3.0|^4.1",
+                "phpstan/extension-installer": "^1.1|^2.0",
+                "phpstan/phpstan-deprecation-rules": "^1.0|^2.0",
+                "phpstan/phpstan-phpunit": "^1.0|^2.0",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Onboard": "Spatie\\Onboard\\OnboardFacade"
+                    },
+                    "providers": [
+                        "Spatie\\Onboard\\OnboardServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Onboard\\": "src",
+                    "Spatie\\Onboard\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rias Van der Veken",
+                    "email": "rias@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel package to help track user onboarding steps",
+            "homepage": "https://github.com/spatie/laravel-onboard",
+            "keywords": [
+                "laravel",
+                "laravel-onboard",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-onboard/issues",
+                "source": "https://github.com/spatie/laravel-onboard/tree/2.6.3"
+            },
+            "time": "2026-02-26T22:50:00+00:00"
+        },
+        {
             "name": "spatie/laravel-package-tools",
             "version": "1.93.0",
             "source": {
@@ -14854,6 +14972,69 @@
                 }
             ],
             "time": "2026-03-08T13:45:05+00:00"
+        },
+        {
+            "name": "spatie/laravel-rate-limited-job-middleware",
+            "version": "2.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-rate-limited-job-middleware.git",
+                "reference": "02f5d063fd24ce5c494db90c99340893a7b8ec81"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-rate-limited-job-middleware/zipball/02f5d063fd24ce5c494db90c99340893a7b8ec81",
+                "reference": "02f5d063fd24ce5c494db90c99340893a7b8ec81",
+                "shasum": ""
+            },
+            "require": {
+                "artisansdk/ratelimiter": "^1.1",
+                "illuminate/cache": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/redis": "^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.4.1",
+                "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
+                "pestphp/pest": "^2.34|^3.7|^4.0",
+                "spatie/pest-plugin-test-time": "^1.0|^2.0",
+                "symfony/var-dumper": "^6.0|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\RateLimitedMiddleware\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A middleware that can rate limit jobs",
+            "homepage": "https://github.com/spatie/laravel-rate-limited-job-middleware",
+            "keywords": [
+                "laravel-rate-limited-job-middleware",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-rate-limited-job-middleware/issues",
+                "source": "https://github.com/spatie/laravel-rate-limited-job-middleware/tree/2.9.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-02-25T10:33:17+00:00"
         },
         {
             "name": "spatie/laravel-responsecache",

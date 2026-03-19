@@ -1,6 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { edit as editProfile } from '@/routes/user-profile';
-import { send } from '@/routes/verification';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { CheckCircle2, Circle, X } from 'lucide-react';
@@ -25,45 +23,19 @@ function dismiss(userId: number): void {
 }
 
 export function OnboardingCard() {
-    const { auth } = usePage<SharedData>().props;
+    const { auth, onboarding } = usePage<SharedData>().props;
     const user = auth.user;
-    const [hidden, setHidden] = useState(() => isDismissed(user.id));
+    const [hidden, setHidden] = useState(() => (user ? isDismissed(user.id) : false));
 
-    const checklist = [
-        { label: 'Create your account', done: true },
-        {
-            label: 'Verify your email address',
-            done: user.email_verified_at !== null,
-            action:
-                user.email_verified_at === null ? (
-                    <Link
-                        href={send()}
-                        as="button"
-                        className="text-xs text-primary underline underline-offset-2 hover:opacity-80"
-                    >
-                        Resend verification
-                    </Link>
-                ) : null,
-        },
-        {
-            label: 'Complete your profile',
-            done: !!(user.name && user.avatar_profile),
-            action: !user.avatar_profile ? (
-                <Link
-                    href={editProfile()}
-                    className="text-xs text-primary underline underline-offset-2 hover:opacity-80"
-                >
-                    Edit profile
-                </Link>
-            ) : null,
-        },
-    ];
+    if (!onboarding?.inProgress || onboarding.steps.length === 0 || !user) {
+        return null;
+    }
 
-    const completedCount = checklist.filter((i) => i.done).length;
-    const allDone = completedCount === checklist.length;
-    const progress = (completedCount / checklist.length) * 100;
+    if (hidden) return null;
 
-    if (hidden || allDone) return null;
+    const completedCount = onboarding.steps.filter((s) => s.complete).length;
+    const total = onboarding.steps.length;
+    const progress = Math.round(onboarding.percentageCompleted);
 
     const handleDismiss = () => {
         dismiss(user.id);
@@ -76,7 +48,7 @@ export function OnboardingCard() {
                 <div>
                     <h3 className="font-semibold">Get started</h3>
                     <p className="mt-0.5 text-sm text-muted-foreground">
-                        {completedCount} of {checklist.length} steps completed
+                        {completedCount} of {total} steps completed
                     </p>
                 </div>
                 <Button
@@ -98,35 +70,50 @@ export function OnboardingCard() {
             </div>
 
             <ul className="space-y-2">
-                {checklist.map((item) => (
+                {onboarding.steps.map((step) => (
                     <li
-                        key={item.label}
+                        key={step.title}
                         className="flex items-center justify-between gap-3 text-sm"
                     >
                         <div className="flex items-center gap-2.5">
-                            {item.done ? (
+                            {step.complete ? (
                                 <CheckCircle2 className="size-4 shrink-0 text-emerald-500 dark:text-emerald-400" />
                             ) : (
                                 <Circle className="size-4 shrink-0 text-muted-foreground" />
                             )}
                             <span
                                 className={
-                                    item.done
+                                    step.complete
                                         ? 'text-muted-foreground line-through'
                                         : 'text-foreground'
                                 }
                             >
-                                {item.label}
+                                {step.title}
                             </span>
                         </div>
-                        {!item.done && item.action}
+                        {!step.complete && (
+                            <Link
+                                href={step.link}
+                                className="text-xs text-primary underline underline-offset-2 hover:opacity-80"
+                            >
+                                {step.cta}
+                            </Link>
+                        )}
                     </li>
                 ))}
             </ul>
 
+            {onboarding.nextStep && (
+                <Button asChild className="mt-4 w-full" size="sm">
+                    <Link href={onboarding.nextStep.link}>
+                        Next: {onboarding.nextStep.title} →
+                    </Link>
+                </Button>
+            )}
+
             <button
                 onClick={handleDismiss}
-                className="mt-4 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                className="mt-4 block w-full text-center text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
             >
                 I'll do this later
             </button>

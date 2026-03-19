@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Spatie\RateLimitedMiddleware\RateLimited;
 
 final class VerifyOrganizationDomain implements ShouldQueue
 {
@@ -20,6 +21,16 @@ final class VerifyOrganizationDomain implements ShouldQueue
     use SerializesModels;
 
     public function __construct(private readonly OrganizationDomain $domain) {}
+
+    public function middleware(): array
+    {
+        return [
+            (new RateLimited)
+                ->allow(30)
+                ->everySeconds(60)
+                ->releaseAfterSeconds(30),
+        ];
+    }
 
     public function handle(VerifyCustomDomain $action): void
     {

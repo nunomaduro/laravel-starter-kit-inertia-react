@@ -9,11 +9,22 @@ use App\Models\Billing\FailedPaymentAttempt;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
+use Spatie\RateLimitedMiddleware\RateLimited;
 use Throwable;
 
 final class ProcessDunningReminders implements ShouldQueue
 {
     use Queueable;
+
+    public function middleware(): array
+    {
+        return [
+            (new RateLimited)
+                ->allow(20)
+                ->everySeconds(60)
+                ->releaseAfterSeconds(60),
+        ];
+    }
 
     public function handle(): void
     {

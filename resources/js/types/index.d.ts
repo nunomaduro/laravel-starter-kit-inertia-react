@@ -142,6 +142,13 @@ export interface SharedData {
         body: string;
         level: string;
     }>;
+    /** Multi-step onboarding state (spatie/laravel-onboard); only when feature is active. */
+    onboarding?: {
+        steps: Array<{ title: string; cta: string; link: string; complete: boolean }>;
+        inProgress: boolean;
+        percentageCompleted: number;
+        nextStep: { title: string; link: string; cta: string } | null;
+    };
     [key: string]: unknown;
 }
 

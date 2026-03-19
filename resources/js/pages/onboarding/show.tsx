@@ -2,28 +2,38 @@ import OnboardingController from '@/actions/App/Http/Controllers/OnboardingContr
 import { Button } from '@/components/ui/button';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { SharedData } from '@/types';
-import { Form, Head, usePage } from '@inertiajs/react';
+import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { CheckCircle2, Circle, LoaderCircle } from 'lucide-react';
+
+interface OnboardingStep {
+    title: string;
+    cta: string;
+    link: string;
+    complete: boolean;
+}
 
 interface OnboardingProps {
     status?: string;
     alreadyCompleted?: boolean;
+    steps: OnboardingStep[];
+    inProgress: boolean;
+    percentageCompleted: number;
+    nextStep: { title: string; link: string; cta: string } | null;
 }
 
 export default function OnboardingShow({
     status,
     alreadyCompleted,
+    steps,
+    inProgress,
+    percentageCompleted,
+    nextStep,
 }: OnboardingProps) {
-    const { auth } = usePage<SharedData>().props;
     const name = usePage<SharedData>().props.name;
 
-    const checklist = [
-        { label: 'Account created', done: true },
-        { label: 'Email verified', done: auth.user.email_verified_at !== null },
-    ];
-
-    const completedCount = checklist.filter((i) => i.done).length;
-    const progress = (completedCount / checklist.length) * 100;
+    const progress = Math.round(percentageCompleted);
+    const showGoToDashboard =
+        !nextStep || nextStep.title === 'Get started' || steps.every((s) => s.complete);
 
     return (
         <AppSidebarLayout>
@@ -39,7 +49,7 @@ export default function OnboardingShow({
                         <p className="mt-2 text-muted-foreground">
                             {alreadyCompleted
                                 ? 'Review or run through onboarding again.'
-                                : "You're almost ready. Complete the step below to get started."}
+                                : "You're almost ready. Complete the steps below to get started."}
                         </p>
                     </div>
 
@@ -68,49 +78,57 @@ export default function OnboardingShow({
                             Getting started checklist
                         </h2>
                         <ul className="space-y-2">
-                            {checklist.map((item) => (
+                            {steps.map((step) => (
                                 <li
-                                    key={item.label}
+                                    key={step.title}
                                     className="flex items-center gap-3 text-sm"
                                 >
-                                    {item.done ? (
+                                    {step.complete ? (
                                         <CheckCircle2 className="size-4 shrink-0 text-emerald-500 dark:text-emerald-400" />
                                     ) : (
                                         <Circle className="size-4 shrink-0 text-muted-foreground" />
                                     )}
                                     <span
                                         className={
-                                            item.done
+                                            step.complete
                                                 ? 'text-foreground'
                                                 : 'text-muted-foreground'
                                         }
                                     >
-                                        {item.label}
+                                        {step.title}
                                     </span>
                                 </li>
                             ))}
                         </ul>
                     </div>
 
-                    <Form
-                        {...OnboardingController.store.form()}
-                        className="flex flex-col gap-4"
-                    >
-                        {({ processing }) => (
-                            <Button
-                                type="submit"
-                                disabled={processing}
-                                className="w-full"
-                                data-pan="onboarding-get-started"
-                            >
-                                {processing ? (
-                                    <LoaderCircle className="size-4 animate-spin" />
-                                ) : (
-                                    'Go to Dashboard →'
-                                )}
-                            </Button>
-                        )}
-                    </Form>
+                    {showGoToDashboard ? (
+                        <Form
+                            {...OnboardingController.store.form()}
+                            className="flex flex-col gap-4"
+                        >
+                            {({ processing }) => (
+                                <Button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="w-full"
+                                    data-pan="onboarding-get-started"
+                                >
+                                    {processing ? (
+                                        <LoaderCircle className="size-4 animate-spin" />
+                                    ) : (
+                                        'Go to Dashboard →'
+                                    )}
+                                </Button>
+                            )}
+                        </Form>
+                    ) : (
+                        <Button asChild className="w-full">
+                            <Link href={nextStep.link}>
+                                Next: {nextStep.title} →
+                            </Link>
+                        </Button>
+                    )}
                 </div>
             </div>
         </AppSidebarLayout>

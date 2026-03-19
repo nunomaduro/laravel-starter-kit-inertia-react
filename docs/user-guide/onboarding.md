@@ -1,10 +1,12 @@
 # Onboarding
 
-When your organisation has **Onboarding** enabled, new users may see a short **getting started** step the first time they sign in (after email verification). It is a one-time flow: once you complete it, you are not redirected to it again.
+When your organisation has **Onboarding** enabled, new users may see a short **getting started** flow the first time they sign in (after email verification). It is a one-time flow: once you complete it, you are not redirected to it again.
+
+The flow typically includes steps such as: **Verify email**, **Complete profile** (name and avatar), and **Get started**. You may be redirected to the next unfinished step until all are done.
 
 ## Completing onboarding
 
-After you verify your email and log in, you may be taken to the onboarding page. Follow the prompt (for example, click **Get started**) to complete it. You will then be taken to the dashboard. This step is not shown again on future logins.
+After you verify your email and log in, you may be taken to the next step (for example the onboarding hub or profile settings). Complete each step as prompted; when all steps are done, use **Get started** or **Go to Dashboard** on the onboarding page to finish. You will then be taken to the dashboard and this flow is not shown again on future logins.
 
 ## Opening onboarding again
 

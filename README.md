@@ -49,6 +49,8 @@ Modern PHP has evolved into a mature, type-safe language, yet many Laravel proje
 - **Schemaless attributes**: [Spatie Laravel Schemaless Attributes](https://github.com/spatie/laravel-schemaless-attributes) on Credit, Organization, Page (`extra_attributes`) — see [Search & data](docs/developer/backend/search-and-data.md)
 - **Saloon**: HTTP client for Paddle and Typesense; connectors in `App\Http\Integrations\*` — see [Saloon](docs/developer/backend/saloon.md)
 - **Pan (product analytics)**: Impressions, hovers, clicks via `data-pan`; whitelist in `AppServiceProvider::configurePan()`; `php artisan pan` — see [Pan](docs/developer/backend/pan.md)
+- **User onboarding**: [spatie/laravel-onboard](https://github.com/spatie/laravel-onboard) for multi-step onboarding (verify email, complete profile, get started); feature flag `onboarding`; middleware `EnsureOnboardingComplete` — see [Onboarding](docs/developer/backend/onboarding.md)
+- **Rate-limited jobs**: [spatie/laravel-rate-limited-job-middleware](https://github.com/spatie/laravel-rate-limited-job-middleware) to throttle queued jobs (webhooks, notifications, DNS checks); opt-in per job via `middleware()` — see [Rate-limited jobs](docs/developer/backend/rate-limited-jobs.md)
 
 This isn't just another Laravel boilerplate—it's a statement that PHP applications can and should be built with the same rigor as strongly-typed languages like Rust or TypeScript.
 

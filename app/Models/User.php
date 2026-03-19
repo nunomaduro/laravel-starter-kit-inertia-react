@@ -40,6 +40,8 @@ use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Onboard\Concerns\GetsOnboarded;
+use Spatie\Onboard\Concerns\Onboardable;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\PersonalDataExport\ExportsPersonalData;
@@ -60,7 +62,6 @@ use Thomasjohnkane\Snooze\Traits\SnoozeNotifiable;
  * @property-read string|null $two_factor_recovery_codes
  * @property-read CarbonInterface|null $two_factor_confirmed_at
  * @property bool $onboarding_completed
- * @property array<string>|null $onboarding_steps_completed
  * @property string $theme_mode
  * @property-read CarbonInterface $created_at
  * @property-read CarbonInterface $updated_at
@@ -68,10 +69,11 @@ use Thomasjohnkane\Snooze\Traits\SnoozeNotifiable;
  * @property-read string $hashId
  * @property string|null $phone
  */
-final class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasMedia, MustVerifyEmail
+final class User extends Authenticatable implements ExportsPersonalData, FilamentUser, HasMedia, MustVerifyEmail, Onboardable
 {
     use CanRedeemVouchers;
     use Categorizable;
+    use GetsOnboarded;
     use GiveExperience;
     use HasAchievements;
     use HasAffiliate;
@@ -115,7 +117,6 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
         'onboarding_completed',
-        'onboarding_steps_completed',
         'theme_mode',
         'phone',
     ];
@@ -441,7 +442,6 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'onboarding_completed' => 'boolean',
-            'onboarding_steps_completed' => 'array',
             'theme_mode' => 'string',
             'tags' => 'array',
             'position' => 'integer',

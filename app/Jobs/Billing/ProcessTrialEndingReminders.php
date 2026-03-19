@@ -12,11 +12,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Spatie\RateLimitedMiddleware\RateLimited;
 use Throwable;
 
 final class ProcessTrialEndingReminders implements ShouldQueue
 {
     use Queueable;
+
+    public function middleware(): array
+    {
+        return [
+            (new RateLimited)
+                ->allow(20)
+                ->everySeconds(60)
+                ->releaseAfterSeconds(60),
+        ];
+    }
 
     public function handle(): void
     {

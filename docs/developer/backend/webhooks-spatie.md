@@ -7,7 +7,7 @@ The application uses **spatie/laravel-webhook-server** (v3.10) and **spatie/lara
 - **Route**: `POST /webhooks/spatie` (config name: `default`)
 - **Config**: `config/webhook-client.php`
 - **Secret**: `WEBHOOK_CLIENT_SECRET` in `.env` — shared with the sending app for signature verification
-- **Job**: `App\Jobs\ProcessWebhookJob` — extend or modify to handle payloads
+- **Job**: `App\Jobs\ProcessWebhookJob` — extend or modify to handle payloads; rate-limited (10/sec) via [rate-limited-jobs.md](./rate-limited-jobs.md)
 - **Storage**: Incoming webhooks are stored in `webhook_calls`; pruned after 30 days via `model:prune`
 - **CSRF**: Excluded via `webhooks/*` in `bootstrap/app.php`
 

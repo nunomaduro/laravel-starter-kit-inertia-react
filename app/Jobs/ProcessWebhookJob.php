@@ -5,11 +5,21 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use Illuminate\Support\Facades\Log;
+use Spatie\RateLimitedMiddleware\RateLimited;
 use Spatie\WebhookClient\Jobs\ProcessWebhookJob as SpatieProcessWebhookJob;
-use Spatie\WebhookServer\WebhookCall;
 
 final class ProcessWebhookJob extends SpatieProcessWebhookJob
 {
+    public function middleware(): array
+    {
+        return [
+            (new RateLimited)
+                ->allow(10)
+                ->everySeconds(1)
+                ->releaseAfterSeconds(5),
+        ];
+    }
+
     public function handle(): void
     {
         $payload = $this->webhookCall->payload;

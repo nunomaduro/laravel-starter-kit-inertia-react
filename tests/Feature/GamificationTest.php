@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Actions\CompleteOnboardingAction;
 use App\Events\User\UserCreated;
 use App\Models\User;
+use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\Event;
 use LevelUp\Experience\Models\Achievement;
 use LevelUp\Experience\Models\Level;
@@ -30,9 +31,11 @@ it('awards signup XP when user is created and gamification is active', function 
 });
 
 it('grants Profile Completed achievement when onboarding is completed', function (): void {
-    $user = User::factory()->create([
+    $this->seed(RolesAndPermissionsSeeder::class);
+    $user = User::withoutEvents(fn (): User => User::factory()->withoutTwoFactor()->create([
         'onboarding_completed' => false,
-    ]);
+    ]));
+    assignRoleForTestUser($user, 'user');
 
     expect($user->getUserAchievements()->pluck('name'))->not->toContain('Profile Completed');
 

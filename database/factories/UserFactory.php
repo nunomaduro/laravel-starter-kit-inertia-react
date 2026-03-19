@@ -37,7 +37,6 @@ final class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'onboarding_completed' => false,
-            'onboarding_steps_completed' => null,
         ]);
     }
 
