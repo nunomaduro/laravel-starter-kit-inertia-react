@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\System\Pages;
 
-use App\Filament\Widgets\ProductAnalyticsOverviewWidget;
+use App\Filament\System\Widgets\ProductAnalyticsOverviewWidget;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;

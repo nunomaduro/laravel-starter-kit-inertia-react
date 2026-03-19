@@ -59,7 +59,7 @@ Add more URLs in `App\Console\Commands\GenerateSitemap` (e.g. dynamic models imp
 - **Config**: `config/analytics.php`
 - **Env**: `ANALYTICS_PROPERTY_ID`, `GOOGLE_ANALYTICS_CREDENTIALS_PATH` (default: `storage_path('app/analytics/service-account-credentials.json')`)
 - Use `Spatie\Analytics\Facades\Analytics` for server-side queries (see package docs).
-- **Filament**: `App\Filament\Widgets\Ga4OverviewWidget` shows a 7-day visitors/page views summary on the Billing Analytics (Revenue) dashboard when GA4 is configured; otherwise shows a "Not configured" card.
+- **Filament**: `App\Filament\System\Widgets\Ga4OverviewWidget` shows a 7-day visitors/page views summary on the Billing Analytics (Revenue) dashboard when GA4 is configured; otherwise shows a "Not configured" card.
 
 ## Slack notifications
 

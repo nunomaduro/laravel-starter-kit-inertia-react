@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Widgets\Billing;
+namespace App\Filament\System\Widgets\Billing;
 
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;

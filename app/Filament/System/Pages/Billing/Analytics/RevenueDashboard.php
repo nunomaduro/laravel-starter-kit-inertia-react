@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\System\Pages\Billing\Analytics;
 
-use App\Filament\Widgets\Billing\RevenueOverviewStats;
-use App\Filament\Widgets\Ga4OverviewWidget;
+use App\Filament\System\Widgets\Billing\RevenueOverviewStats;
+use App\Filament\System\Widgets\Ga4OverviewWidget;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;

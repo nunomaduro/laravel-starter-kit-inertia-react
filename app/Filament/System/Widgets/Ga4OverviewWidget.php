@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Widgets;
+namespace App\Filament\System\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -16,6 +16,11 @@ final class Ga4OverviewWidget extends StatsOverviewWidget
     protected static ?int $sort = 2;
 
     protected int|string|array $columnSpan = 'full';
+
+    public static function canView(): bool
+    {
+        return ! empty(config('analytics.property_id'));
+    }
 
     protected function getStats(): array
     {

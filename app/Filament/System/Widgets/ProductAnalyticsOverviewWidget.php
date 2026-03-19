@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Filament\Widgets;
+namespace App\Filament\System\Widgets;
 
 use App\Filament\System\Pages\ProductAnalytics;
 use Filament\Widgets\StatsOverviewWidget;
@@ -13,6 +13,23 @@ use Illuminate\Support\Facades\Schema;
 final class ProductAnalyticsOverviewWidget extends StatsOverviewWidget
 {
     protected static ?int $sort = 1;
+
+    public static function canView(): bool
+    {
+        if (! Schema::hasTable('pan_analytics')) {
+            return false;
+        }
+
+        $totals = DB::table('pan_analytics')
+            ->selectRaw('COALESCE(SUM(impressions), 0) as impressions, COALESCE(SUM(hovers), 0) as hovers, COALESCE(SUM(clicks), 0) as clicks')
+            ->first();
+
+        if (! $totals) {
+            return false;
+        }
+
+        return ((int) $totals->impressions + (int) $totals->hovers + (int) $totals->clicks) > 0;
+    }
 
     protected function getStats(): array
     {
