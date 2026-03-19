@@ -3717,6 +3717,22 @@ function DataTableInner<TData extends object>({
     // Cell range selection
     const cellRange = useCellRangeSelection(resolvedOptions.cellRangeSelection);
 
+    // Horizontal scroll shadow indicators
+    const [scrollShadow, setScrollShadow] = useState<{ left: boolean; right: boolean }>({ left: false, right: false });
+    useEffect(() => {
+        const el = virtualContainerRef.current;
+        if (!el) return;
+        const update = () => {
+            const { scrollLeft: sl, scrollWidth, clientWidth } = el;
+            setScrollShadow({ left: sl > 0, right: sl + clientWidth < scrollWidth - 1 });
+        };
+        update();
+        el.addEventListener("scroll", update, { passive: true });
+        const ro = new ResizeObserver(update);
+        ro.observe(el);
+        return () => { el.removeEventListener("scroll", update); ro.disconnect(); };
+    }, []);
+
     // Header filter state
     const [headerFilterValues, setHeaderFilterValues] = useState<Record<string, string>>({});
 
@@ -3994,8 +4010,17 @@ function DataTableInner<TData extends object>({
     // Merge enum options into columns
     const mergedColumns = useMemo(() => {
         if (!tableData.enumOptions) return tableData.columns;
-        return tableData.columns.map((col) =>
-            tableData.enumOptions?.[col.id] ? { ...col, options: tableData.enumOptions[col.id] } : col);
+        return tableData.columns.map((col) => {
+            const enumOpts = tableData.enumOptions?.[col.id];
+            if (!enumOpts) return col;
+            // Merge enum options with original options to preserve variants/extra fields
+            const originalOptions = col.options ?? [];
+            const merged = enumOpts.map((eo) => {
+                const original = originalOptions.find((o) => o.value === eo.value);
+                return original ? { ...original, ...eo } : eo;
+            });
+            return { ...col, options: merged };
+        });
     }, [tableData.columns, tableData.enumOptions]);
 
     const numericCols = useMemo(() => mergedColumns.filter(c => c.type === "number" || c.type === "currency" || c.type === "percentage"), [mergedColumns]);
@@ -4102,7 +4127,7 @@ function DataTableInner<TData extends object>({
                                 {avatarUrl ? (
                                     <img src={String(avatarUrl)} alt={displayValue} className="h-8 w-8 shrink-0 rounded-full object-cover ring-1 ring-border/50" />
                                 ) : (
-                                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground ring-1 ring-border/50">{displayValue.charAt(0).toUpperCase()}</span>
+                                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground ring-1 ring-border/50" role="img" aria-label={displayValue}>{displayValue.charAt(0).toUpperCase()}</span>
                                 )}
                                 <span className="truncate font-medium">{displayValue}</span>
                             </div>
@@ -4972,9 +4997,11 @@ function DataTableInner<TData extends object>({
 
             {/* ── Table ── */}
             {!isMobile && layoutMode === "table" && (!config?.deferLoading || deferLoaded) && (
-                <div id={`dt-table-${tableName}`} className={cn("rounded-xl border shadow-sm overflow-hidden", className)}
+                <div id={`dt-table-${tableName}`} className={cn("rounded-xl border shadow-sm overflow-hidden relative", className)}
                     tabIndex={resolvedOptions.keyboardNavigation ? 0 : undefined}
                     onKeyDown={resolvedOptions.keyboardNavigation ? handleTableKeyDown : undefined}>
+                    {scrollShadow.left && <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-r from-background/80 to-transparent" aria-hidden="true" />}
+                    {scrollShadow.right && <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-l from-background/80 to-transparent" aria-hidden="true" />}
                     <div ref={virtualContainerRef} className={cn("overflow-x-auto", resolvedOptions.virtualScrolling && "max-h-[600px] overflow-y-auto")}
                         style={autoSizerDimensions ? { width: autoSizerDimensions.width, height: autoSizerDimensions.height } : undefined}>
                         <Table ref={tableElementRef} style={resolvedOptions.columnResizing ? { width: table.getCenterTotalSize() } : undefined}
@@ -4991,7 +5018,7 @@ function DataTableInner<TData extends object>({
                                                     return (
                                                         <TableHead key={header.id} colSpan={header.colSpan} style={pin.style}
                                                             className={cn("h-8",
-                                                                isActualGroup && "text-center text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/80 bg-muted/50 border-b border-border/60",
+                                                                isActualGroup && "text-center text-[11px] font-semibold uppercase tracking-widest text-muted-foreground bg-muted/50 border-b border-border/60",
                                                                 isActualGroup && groupClassName?.[header.column.columnDef.header as string],
                                                                 pin.className)}>
                                                             {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
@@ -5020,7 +5047,7 @@ function DataTableInner<TData extends object>({
                                                                             columnType={colDef.type} data={tableData.data as Record<string, unknown>[]} t={t} />
                                                                     )}
                                                                 </div>
-                                                                {colDef.description && <span className="text-[10px] font-normal text-muted-foreground/70 leading-tight">{colDef.description}</span>}
+                                                                {colDef.description && <span className="text-[10px] font-normal text-muted-foreground/70 leading-tight line-clamp-1" title={colDef.description}>{colDef.description}</span>}
                                                             </div>
                                                         ) : (
                                                             <div className="flex flex-col">
@@ -5083,6 +5110,7 @@ function DataTableInner<TData extends object>({
                                                             value={headerFilterValues[col.id] ?? ""}
                                                             onChange={(e) => handleHeaderFilterChange(col.id, e.target.value)}
                                                             data-header-filter={col.id}
+                                                            aria-label={`${t.filter} ${colDef?.label ?? col.id}`}
                                                         />
                                                     ) : null}
                                                 </TableHead>
@@ -5094,13 +5122,22 @@ function DataTableInner<TData extends object>({
                             <TableBody ref={tableBodyRef} role="rowgroup">
                                 {/* Pinned top rows */}
                                 {tableData.pinnedTopRows?.map((pinnedRow, pIdx) => (
-                                    <TableRow key={`pinned-top-${pIdx}`} className="bg-primary/5 border-b border-primary/20 font-medium">
+                                    <TableRow key={`pinned-top-${pIdx}`} className="bg-primary/5 border-b-2 border-primary/30 font-medium"
+                                        aria-label={t.pinnedRow}>
                                         {visibleLeafColumns.map((col) => {
                                             const val = (pinnedRow as Record<string, unknown>)[col.id];
+                                            const colDef = mergedColumns.find((c) => c.id === col.id);
                                             const pin = getColumnPinningProps(col);
+                                            let rendered: React.ReactNode = val != null ? String(val) : "";
+                                            if (colDef?.type === "boolean" && typeof val === "boolean") {
+                                                rendered = <Switch checked={val} disabled className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-muted-foreground/20" aria-label={`${colDef.label}: ${val ? t.yes : t.no}`} />;
+                                            } else if (colDef?.type === "badge" && val != null) {
+                                                const badgeVal = String(val);
+                                                rendered = <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium">{badgeVal}</span>;
+                                            }
                                             return (
                                                 <TableCell key={col.id} style={pin.style} className={cn("whitespace-nowrap", densityClasses.cell, pin.className)}>
-                                                    {val != null ? String(val) : ""}
+                                                    {rendered}
                                                 </TableCell>
                                             );
                                         })}

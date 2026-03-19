@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9531b7274aabd06138a22beb7ffd29ab",
+    "content-hash": "a5d185b2ef1aa5703dbbfa918b9269dc",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -8094,16 +8094,10 @@
         {
             "name": "machour/laravel-data-table",
             "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/coding-sunshine/laravel-data-table.git",
-                "reference": "87d298491a70b33741ab61e22b29e547fd15455d"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/coding-sunshine/laravel-data-table/zipball/87d298491a70b33741ab61e22b29e547fd15455d",
-                "reference": "87d298491a70b33741ab61e22b29e547fd15455d",
-                "shasum": ""
+                "type": "path",
+                "url": "../laravel-data-table",
+                "reference": "87d298491a70b33741ab61e22b29e547fd15455d"
             },
             "require": {
                 "illuminate/database": "^11.0 || ^12.0",
@@ -8125,7 +8119,6 @@
                 "spatie/laravel-pdf": "Required for PDF export functionality (^1.0)",
                 "spatie/laravel-typescript-transformer": "Generate TypeScript types from the PHP DTOs (^2.5)"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -8156,10 +8149,10 @@
                 "spatie",
                 "tanstack-table"
             ],
-            "support": {
-                "source": "https://github.com/coding-sunshine/laravel-data-table/tree/main"
-            },
-            "time": "2026-03-14T06:40:01+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "maennchen/zipstream-php",

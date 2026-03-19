@@ -276,12 +276,11 @@ export default function UsersTablePage({
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Users</h1>
                     {tableData && <p className="text-muted-foreground">{tableData.meta.total} results</p>}
-                    <p className="mt-1 text-xs text-muted-foreground">
-                        Quick views = &quot;All&quot; dropdown. Columns = Colonnes. Export = Exporter.
-                        {!dataTableAi?.aiBaseUrl && !dataTableAi?.thesysEnabled && (
-                            <> To enable AI and Thesys Visualize: set <code className="rounded bg-muted px-1 py-0.5 text-[11px]">THESYS_API_KEY</code> and an AI provider in .env or Filament → Settings · Integrations → AI.</>
-                        )}
-                    </p>
+                    {!dataTableAi?.aiBaseUrl && !dataTableAi?.thesysEnabled && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            To enable AI features: set <code className="rounded bg-muted px-1 py-0.5 text-[11px]">THESYS_API_KEY</code> and an AI provider in .env or Filament → Settings · Integrations → AI.
+                        </p>
+                    )}
                 </div>
                 <DataTable<UsersTableRow>
                     tableData={tableData}

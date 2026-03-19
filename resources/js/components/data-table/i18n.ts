@@ -1132,3 +1132,14 @@ export const frTranslations: DataTableTranslations = {
     findCaseSensitive: "Respecter la casse",
     replaceSuccess: (count) => `${count} remplacement${count !== 1 ? "s" : ""} effectué${count !== 1 ? "s" : ""}`,
 };
+
+/**
+ * Get translations for a given locale code.
+ * Falls back to English if the locale is not supported.
+ */
+export function getTranslationsForLocale(locale?: string | null): DataTableTranslations {
+    if (!locale) return defaultTranslations;
+    const lang = locale.split("-")[0].toLowerCase();
+    if (lang === "fr") return frTranslations;
+    return defaultTranslations;
+}
