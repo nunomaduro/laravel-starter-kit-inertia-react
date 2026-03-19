@@ -34,4 +34,4 @@ On platforms without cron, run this command as a separate process (e.g. a second
 
 ## Existing scheduled tasks
 
-All tasks defined in `routes/console.php` (backup, billing metrics, dunning reminders, sitemap, permission sync, telescope prune, model prune, etc.) are executed by the scheduler when it runs. No code changes are required; only how the scheduler is invoked (cron vs cronless) changes.
+All tasks defined in `routes/console.php` (backup, billing metrics, dunning reminders, sitemap, permission sync, health checks, model prune, etc.) are executed by the scheduler when it runs. No code changes are required; only how the scheduler is invoked (cron vs cronless) changes.

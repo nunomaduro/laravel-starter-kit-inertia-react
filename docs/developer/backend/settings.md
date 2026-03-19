@@ -51,7 +51,7 @@ Infrastructure needed before the DB is available: `APP_KEY`, `APP_ENV`, `APP_DEB
 | `SecuritySettings` | security | `csp.*`, `honeypot.*`, `app.ip_whitelist` | No | Settings > Security |
 | `CookieConsentSettings` | cookie-consent | `cookie-consent.*` | No | Settings > Cookie Consent |
 | `PerformanceSettings` | performance | `responsecache.*` | No | Settings > Performance |
-| `MonitoringSettings` | monitoring | `sentry.*`, `telescope.*` | No | Settings > Monitoring |
+| `MonitoringSettings` | monitoring | `sentry.*` | No | Settings > Monitoring |
 | `FeatureFlagSettings` | feature-flags | `feature-flags.*` | No | Settings > Feature Flags |
 | `FilesystemSettings` | filesystem | `filesystems.*` | No | Settings > Filesystem |
 | `BroadcastingSettings` | broadcasting | `broadcasting.connections.reverb.*` | No | Settings > Broadcasting |

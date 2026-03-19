@@ -288,7 +288,6 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
                 'sentry_dsn' => 'sentry.dsn',
                 'sentry_sample_rate' => 'sentry.sample_rate',
                 'sentry_traces_sample_rate' => 'sentry.traces_sample_rate',
-                'telescope_enabled' => 'telescope.enabled',
             ],
             'orgOverridable' => false,
         ],

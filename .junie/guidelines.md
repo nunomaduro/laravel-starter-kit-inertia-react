@@ -307,7 +307,8 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - laravel/boost (BOOST) - v2
 - laravel/pail (PAIL) - v1
 - laravel/pint (PINT) - v1
-- laravel/telescope (TELESCOPE) - v5
+- laravel/pulse (PULSE) - v1
+- spatie/laravel-health (HEALTH) - v1
 - pestphp/pest (PEST) - v4
 - phpunit/phpunit (PHPUNIT) - v12
 - rector/rector (RECTOR) - v2
@@ -339,7 +340,8 @@ This project has domain-specific skills available. You MUST activate the relevan
 - `laravel-excel` — Laravel Excel and Filament Excel exports (maatwebsite/excel, pxlrbt/filament-excel). Activates when adding or editing exports, imports, Filament table exports, DataTable exports, or when the user mentions Laravel Excel, Excel export, import, maatwebsite/excel, or filament-excel.
 - `pan-product-analytics` — Product analytics with Pan (panphp/pan). Activates when adding or changing tabs, CTAs, nav links, buttons, or key UI that should be tracked for impressions, hovers, and clicks; or when the user mentions analytics, tracking, Pan, data-pan, or product analytics.
 - `taylor-otwell-style` — Code PHP and Laravel applications in the style of Taylor Otwell — the creator of Laravel. Use this skill whenever the user asks to write PHP code, Laravel applications, packages,  APIs, services, or any backend code and wants it to follow Laravel conventions, Taylor  Otwell&#039;s coding philosophy, or &quot;elegant PHP.&quot; Trigger on: Laravel development, PHP package  creation, API design, service classes, Eloquent models, migrations, controllers, middleware, artisan commands, service providers, fluent interfaces, collection pipelines, or any  request mentioning &quot;Laravel-style,&quot; &quot;expressive syntax,&quot; &quot;Taylor Otwell,&quot; or &quot;code like  Laravel.&quot; Also trigger when the user wants to refactor messy PHP into clean, idiomatic  Laravel code. Even if the user just says &quot;write this in PHP&quot; — if you can apply Laravel  patterns to make it better, consult this skill.
-- `telescope` — Laravel Telescope debug dashboard (laravel/telescope v5). Activates when configuring or debugging with Telescope; working with watchers, pruning, gates, or when the user mentions Telescope, debug dashboard, requests, queries, jobs, mail monitoring.
+- `pulse-development` — Laravel Pulse: real-time monitoring at `/pulse` (admin only); gate `viewPulse`; config `config/pulse.php`; storage DB/Redis. Use when configuring Pulse, recorders, or dashboard.
+- `health-development` — Spatie Laravel Health: `health:check`, `HealthServiceProvider`, `config/health.php`, checks, scheduling, notifications. Use when adding or tuning health checks.
 - `visibility-sharing` — Visibility and cross-organization sharing with HasVisibility. Activates when working with HasVisibility trait, VisibilityEnum, Shareable, VisibilityScope, shareItem policy, or copy-on-write cloning.
 
 ## Conventions

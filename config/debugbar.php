@@ -19,7 +19,6 @@ return [
     'enabled' => env('DEBUGBAR_ENABLED', true),
     'collect_jobs' => env('DEBUGBAR_COLLECT_JOBS', false),
     'except' => [
-        'telescope*',
         'horizon*',
         '_boost/browser-logs',
         'livewire-*/livewire.js',

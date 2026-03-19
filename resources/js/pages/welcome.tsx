@@ -293,7 +293,7 @@ const featureGroups: FeatureGroup[] = [
                 icon: BarChart3,
                 title: 'Analytics & Monitoring',
                 description:
-                    'Pan product analytics (impressions, hovers, clicks), GA4 widget on Filament dashboard, Laravel Telescope for request/query debugging, and Horizon for queue monitoring.',
+                    'Pan product analytics (impressions, hovers, clicks), GA4 widget on Filament dashboard, Laravel Pulse for real-time monitoring, Spatie Health for checks and alerts, and Horizon for queue monitoring.',
                 dataPan: 'welcome-feature-analytics',
             },
             {

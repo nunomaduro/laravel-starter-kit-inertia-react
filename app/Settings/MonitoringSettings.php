@@ -14,8 +14,6 @@ final class MonitoringSettings extends Settings
 
     public ?float $sentry_traces_sample_rate = null;
 
-    public bool $telescope_enabled = true;
-
     public static function group(): string
     {
         return 'monitoring';

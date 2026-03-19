@@ -70,6 +70,11 @@ Add more URLs in `App\Console\Commands\GenerateSitemap` (e.g. dynamic models imp
 
 To send ad hoc: `(new SlackWebhookRecipient)->notify(new SlackCriticalAlertNotification('Title', 'Body', 'error'));`
 
+## Pulse and Health
+
+- **Pulse** (laravel/pulse): Real-time monitoring dashboard at `/pulse` (admin only). Shows requests, jobs, queue, server stats, exceptions. Replaces Telescope for observability. See [Pulse](./pulse.md).
+- **Health** (spatie/laravel-health): Scheduled health checks (DB, cache, disk, Horizon, Redis, queue, backups, schedule) with notifications when checks fail (mail by default; Slack optional — see [Health](./health.md)).
+
 ## For agents
 
 - New public routes (e.g. legal, sitemap) must be added to `GenerateSitemap` if they should be in the sitemap.

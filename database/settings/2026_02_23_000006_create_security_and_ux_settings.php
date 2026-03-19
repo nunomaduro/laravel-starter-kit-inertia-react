@@ -28,7 +28,6 @@ return new class extends SettingsMigration
         $this->migrator->addEncrypted('monitoring.sentry_dsn', config('sentry.dsn'));
         $this->migrator->add('monitoring.sentry_sample_rate', (float) config('sentry.sample_rate', 1.0));
         $this->migrator->add('monitoring.sentry_traces_sample_rate', config('sentry.traces_sample_rate'));
-        $this->migrator->add('monitoring.telescope_enabled', (bool) config('telescope.enabled', true));
 
         // Feature Flags
         $this->migrator->add('feature-flags.globally_disabled_modules', config('feature-flags.globally_disabled', []));

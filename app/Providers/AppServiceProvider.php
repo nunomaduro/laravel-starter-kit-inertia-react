@@ -73,11 +73,6 @@ final class AppServiceProvider extends ServiceProvider
             class_alias(\Machour\DataTable\Columns\ColumnBuilder::class, \Machour\DataTable\ColumnBuilder::class);
         }
 
-        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-            $this->app->register(TelescopeServiceProvider::class);
-        }
-
         $this->app->singleton(PrismService::class, fn (): PrismService => new PrismService);
 
         if (class_exists(\Essa\APIToolKit\Exceptions\Handler::class)) {
@@ -106,6 +101,8 @@ final class AppServiceProvider extends ServiceProvider
         $this->registerActivityLogImpersonationCauser();
 
         Gate::policy(Shareable::class, ShareablePolicy::class);
+
+        Gate::define('viewPulse', fn (?User $user = null): bool => $user instanceof User && $user->can('access admin panel'));
 
         Gate::before(function ($user, string $ability, array $arguments): ?bool {
             if (! $user) {
@@ -330,7 +327,7 @@ final class AppServiceProvider extends ServiceProvider
             'dashboard-quick-product-analytics',
             'dashboard-quick-horizon',
             'dashboard-quick-waterline',
-            'dashboard-quick-telescope',
+            'dashboard-quick-pulse',
             'dashboard-card-view-analytics',
             'dashboard-admin-users',
             'dashboard-admin-orgs',

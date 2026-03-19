@@ -11,9 +11,9 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import {
     Activity,
     BarChart3,
-    Bug,
     FileText,
     GitBranch,
+    Heart,
     LifeBuoy,
     Mail,
     UserPen,
@@ -294,10 +294,10 @@ function SuperAdminDashboard({
                             dataPan: 'dashboard-quick-waterline',
                         },
                         {
-                            label: 'Telescope (debug)',
-                            href: '/telescope',
-                            icon: Bug,
-                            dataPan: 'dashboard-quick-telescope',
+                            label: 'Pulse (monitoring)',
+                            href: '/pulse',
+                            icon: Heart,
+                            dataPan: 'dashboard-quick-pulse',
                         },
                         {
                             label: 'Email templates',

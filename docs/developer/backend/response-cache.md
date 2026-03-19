@@ -10,7 +10,7 @@
 - **Profile**: `App\Http\Middleware\CacheProfiles\PublicContentCacheProfile`
   - Caches only **GET** requests
   - Skips when `auth()->check()`
-  - Skips paths: `admin/*`, `api/*`, `telescope/*`, `horizon/*`, `pulse/*`, `login`, `register`, `forgot-password`, `reset-password*`, `verify-email*`, `favicon.ico`
+  - Skips paths: `admin/*`, `api/*`, `horizon/*`, `pulse/*`, `waterline/*`, `login`, `register`, `forgot-password`, `reset-password*`, `verify-email*`, `favicon.ico`
   - Caches only successful responses (2xx)
 - **Middleware**: `Spatie\ResponseCache\Middlewares\CacheResponse` is appended to the web stack in `bootstrap/app.php`
 

@@ -23,6 +23,8 @@
         "configuring-horizon",
         "mcp-development",
         "pennant-development",
+        "pulse-development",
+        "health-development",
         "scout-development",
         "socialite-development",
         "wayfinder-development",
@@ -42,7 +44,6 @@
         "laravel-excel",
         "pan-product-analytics",
         "taylor-otwell-style",
-        "telescope",
         "visibility-sharing"
     ]
 }

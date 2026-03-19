@@ -1,0 +1,15 @@
+---
+description: Laravel Pulse real-time monitoring (dashboard, gate, config, storage)
+globs: app/Providers/AppServiceProvider.php, config/pulse.php, resources/views/vendor/pulse/**
+---
+
+# Laravel Pulse
+
+- **Package**: [laravel/pulse](https://laravel.com/docs/12.x/pulse). Real-time monitoring dashboard at `/pulse` (admin only).
+- **Gate**: `viewPulse` in `AppServiceProvider::boot()` — allows users who `can('access admin panel')` (same as Horizon).
+- **Config**: `config/pulse.php` — storage (database/Redis), ingest, middleware, recording.
+- **Storage**: Default driver is database; Pulse migrations create the required tables.
+- **Response cache**: `pulse/*` is excluded in `PublicContentCacheProfile`.
+- **Pan**: Dashboard quick link uses `dashboard-quick-pulse` (whitelisted in `configurePan()`).
+
+See **docs/developer/backend/pulse.md** for full documentation.

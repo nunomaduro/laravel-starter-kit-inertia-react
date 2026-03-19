@@ -7,7 +7,6 @@ namespace App\Filament\System\Pages;
 use App\Settings\MonitoringSettings;
 use BackedEnum;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -49,11 +48,6 @@ final class ManageMonitoring extends SettingsPage
                             ->label('Sentry traces sample rate')
                             ->numeric()
                             ->step(0.01),
-                    ]),
-                Section::make('Telescope')
-                    ->schema([
-                        Toggle::make('telescope_enabled')
-                            ->label('Telescope enabled'),
                     ]),
             ]);
     }
