@@ -27,7 +27,9 @@ final readonly class UserTwoFactorAuthenticationController implements HasMiddlew
         $request->ensureStateIsValid();
 
         return Inertia::render('user-two-factor-authentication/show', [
+            'canManageTwoFactor' => Features::canManageTwoFactorAuthentication(),
             'twoFactorEnabled' => $user->hasEnabledTwoFactorAuthentication(),
+            'requiresConfirmation' => Features::optionEnabled(Features::twoFactorAuthentication(), 'confirm'),
         ]);
     }
 }

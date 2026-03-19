@@ -10,9 +10,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.5.0",
-        "inertiajs/inertia-laravel": "^2.0.21",
+        "inertiajs/inertia-laravel": "^3.0.0-beta",
         "laravel/fortify": "^1.36.1",
-        "laravel/framework": "^12.55.1",
+        "laravel/framework": "^13.1.1",
         "laravel/wayfinder": "^0.1.14",
         "nunomaduro/essentials": "^1.2.0"
     },
@@ -20,7 +20,7 @@
         "driftingly/rector-laravel": "^2.2.0",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.9.3",
-        "laravel/boost": "^1.8.12",
+        "laravel/boost": "^v2.3.4",
         "laravel/pail": "^1.2.6",
         "laravel/pint": "^1.29.0",
         "mockery/mockery": "^1.6.12",

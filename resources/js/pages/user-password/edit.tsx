@@ -1,17 +1,16 @@
 import UserPasswordController from '@/actions/App/Http/Controllers/UserPasswordController';
+import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import PasswordInput from '@/components/password-input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import { type BreadcrumbItem } from '@/types';
+import { edit } from '@/routes/password';
+import type { BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
 import { Form, Head } from '@inertiajs/react';
 import { useRef } from 'react';
-
-import HeadingSmall from '@/components/heading-small';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { edit } from '@/routes/password';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,7 +29,8 @@ export default function Password() {
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall
+                    <Heading
+                        variant="small"
                         title="Update password"
                         description="Ensure your account is using a long, random password to stay secure"
                     />
@@ -64,11 +64,10 @@ export default function Password() {
                                         Current password
                                     </Label>
 
-                                    <Input
+                                    <PasswordInput
                                         id="current_password"
                                         ref={currentPasswordInput}
                                         name="current_password"
-                                        type="password"
                                         className="mt-1 block w-full"
                                         autoComplete="current-password"
                                         placeholder="Current password"
@@ -84,11 +83,10 @@ export default function Password() {
                                         New password
                                     </Label>
 
-                                    <Input
+                                    <PasswordInput
                                         id="password"
                                         ref={passwordInput}
                                         name="password"
-                                        type="password"
                                         className="mt-1 block w-full"
                                         autoComplete="new-password"
                                         placeholder="New password"
@@ -102,10 +100,9 @@ export default function Password() {
                                         Confirm password
                                     </Label>
 
-                                    <Input
+                                    <PasswordInput
                                         id="password_confirmation"
                                         name="password_confirmation"
-                                        type="password"
                                         className="mt-1 block w-full"
                                         autoComplete="new-password"
                                         placeholder="Confirm password"

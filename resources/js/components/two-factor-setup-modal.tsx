@@ -1,3 +1,4 @@
+import AlertError from '@/components/alert-error';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,14 +13,15 @@ import {
     InputOTPGroup,
     InputOTPSlot,
 } from '@/components/ui/input-otp';
+import { Spinner } from '@/components/ui/spinner';
+import { useAppearance } from '@/hooks/use-appearance';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
 import { confirm } from '@/routes/two-factor';
 import { Form } from '@inertiajs/react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { Check, Copy, Loader2, ScanLine } from 'lucide-react';
+import { Check, Copy, ScanLine } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import AlertError from './alert-error';
 
 function GridScanIcon() {
     return (
@@ -60,6 +62,7 @@ function TwoFactorSetupStep({
     onNextStep: () => void;
     errors: string[];
 }) {
+    const { resolvedAppearance } = useAppearance();
     const [copiedText, copy] = useClipboard();
     const IconComponent = copiedText === manualSetupKey ? Check : Copy;
 
@@ -74,12 +77,19 @@ function TwoFactorSetupStep({
                             <div className="z-10 flex h-full w-full items-center justify-center p-5">
                                 {qrCodeSvg ? (
                                     <div
+                                        className="aspect-square w-full rounded-lg bg-white p-2 [&_svg]:size-full"
                                         dangerouslySetInnerHTML={{
                                             __html: qrCodeSvg,
                                         }}
+                                        style={{
+                                            filter:
+                                                resolvedAppearance === 'dark'
+                                                    ? 'invert(1) brightness(1.5)'
+                                                    : undefined,
+                                        }}
                                     />
                                 ) : (
-                                    <Loader2 className="flex size-4 animate-spin" />
+                                    <Spinner />
                                 )}
                             </div>
                         </div>
@@ -102,7 +112,7 @@ function TwoFactorSetupStep({
                         <div className="flex w-full items-stretch overflow-hidden rounded-xl border border-border">
                             {!manualSetupKey ? (
                                 <div className="flex h-full w-full items-center justify-center bg-muted p-3">
-                                    <Loader2 className="size-4 animate-spin" />
+                                    <Spinner />
                                 </div>
                             ) : (
                                 <>
@@ -218,27 +228,29 @@ function TwoFactorVerificationStep({
     );
 }
 
-interface TwoFactorSetupModalProps {
+type Props = {
     isOpen: boolean;
     onClose: () => void;
+    requiresConfirmation: boolean;
     twoFactorEnabled: boolean;
     qrCodeSvg: string | null;
     manualSetupKey: string | null;
     clearSetupData: () => void;
     fetchSetupData: () => Promise<void>;
     errors: string[];
-}
+};
 
 export default function TwoFactorSetupModal({
     isOpen,
     onClose,
+    requiresConfirmation,
     twoFactorEnabled,
     qrCodeSvg,
     manualSetupKey,
     clearSetupData,
     fetchSetupData,
     errors,
-}: TwoFactorSetupModalProps) {
+}: Props) {
     const [showVerificationStep, setShowVerificationStep] =
         useState<boolean>(false);
 
@@ -249,7 +261,7 @@ export default function TwoFactorSetupModal({
     }>(() => {
         if (twoFactorEnabled) {
             return {
-                title: 'Two-Factor Authentication Enabled',
+                title: 'Two-factor authentication enabled',
                 description:
                     'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
                 buttonText: 'Close',
@@ -258,7 +270,7 @@ export default function TwoFactorSetupModal({
 
         if (showVerificationStep) {
             return {
-                title: 'Verify Authentication Code',
+                title: 'Verify authentication code',
                 description:
                     'Enter the 6-digit code from your authenticator app',
                 buttonText: 'Continue',
@@ -266,7 +278,7 @@ export default function TwoFactorSetupModal({
         }
 
         return {
-            title: 'Enable Two-Factor Authentication',
+            title: 'Enable two-factor authentication',
             description:
                 'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
             buttonText: 'Continue',
@@ -274,30 +286,36 @@ export default function TwoFactorSetupModal({
     }, [twoFactorEnabled, showVerificationStep]);
 
     const handleModalNextStep = useCallback(() => {
-        setShowVerificationStep(true);
-    }, []);
+        if (requiresConfirmation) {
+            setShowVerificationStep(true);
+            return;
+        }
+
+        clearSetupData();
+        onClose();
+    }, [requiresConfirmation, clearSetupData, onClose]);
 
     const resetModalState = useCallback(() => {
         setShowVerificationStep(false);
+
         if (twoFactorEnabled) {
             clearSetupData();
         }
     }, [twoFactorEnabled, clearSetupData]);
 
     useEffect(() => {
-        if (!isOpen) {
-            resetModalState();
-
-            return;
-        }
-
-        if (!qrCodeSvg) {
+        if (isOpen && !qrCodeSvg) {
             fetchSetupData();
         }
-    }, [isOpen, qrCodeSvg, fetchSetupData, resetModalState]);
+    }, [isOpen, qrCodeSvg, fetchSetupData]);
+
+    const handleClose = useCallback(() => {
+        resetModalState();
+        onClose();
+    }, [onClose, resetModalState]);
 
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+        <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader className="flex items-center justify-center">
                     <GridScanIcon />

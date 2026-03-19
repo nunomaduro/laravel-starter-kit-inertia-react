@@ -50,24 +50,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.5.2
-- inertiajs/inertia-laravel (INERTIA) - v3
-- laravel/fortify (FORTIFY) - v1
-- laravel/framework (LARAVEL) - v12
-- laravel/prompts (PROMPTS) - v0
-- laravel/wayfinder (WAYFINDER) - v0
-- larastan/larastan (LARASTAN) - v3
-- laravel/mcp (MCP) - v0
-- laravel/pint (PINT) - v1
-- pestphp/pest (PEST) - v4
-- phpunit/phpunit (PHPUNIT) - v12
-- rector/rector (RECTOR) - v2
-- @inertiajs/vue3 (INERTIA) - v3
-- tailwindcss (TAILWINDCSS) - v4
-- vue (VUE) - v3
-- @laravel/vite-plugin-wayfinder (WAYFINDER) - v0
-- oxlint (Oxlint) - v1
-- prettier (PRETTIER) - v3
+- php - 8.5
 
 ## Skills Activation
 
@@ -92,7 +75,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 ## Frontend Bundling
 
-- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `bun run build`, `bun run dev`, or `composer run dev`. Ask them.
+- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
 
 ## Documentation Files
 
