@@ -12,7 +12,7 @@
   "devDependencies": {
     "@laravel/vite-plugin-wayfinder": "^0.1.7",
     "@types/node": "^25.5.0",
-    "npm-check-updates": "^19.6.3",
+    "npm-check-updates": "^19.6.5",
     "playwright": "^1.58.2",
     "vite-plus": "latest"
   },
@@ -32,7 +32,7 @@
     "@radix-ui/react-toggle": "^1.1.10",
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "@tailwindcss/vite": "^4.2.1",
+    "@tailwindcss/vite": "^4.2.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
@@ -40,19 +40,19 @@
     "clsx": "^2.1.1",
     "concurrently": "^9.2.1",
     "input-otp": "^1.4.2",
-    "laravel-vite-plugin": "^2.1.0",
+    "laravel-vite-plugin": "^3.0.0",
     "lucide-react": "^0.577.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss": "^4.2.1",
+    "tailwindcss": "^4.2.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.9.3",
     "vite": "npm:@voidzero-dev/vite-plus-core@latest"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.59.0",
-    "@tailwindcss/oxide-linux-x64-gnu": "^4.2.1",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
     "lightningcss-linux-x64-gnu": "^1.32.0"
   },
   "overrides": {
