@@ -48,6 +48,31 @@ final class Page extends Model
         'meta_image',
     ];
 
+    /**
+     * Generate a unique slug, appending -N suffix if needed.
+     */
+    public static function generateUniqueSlug(string $base, ?int $excludeId = null): string
+    {
+        $slug = $base;
+        $n = 1;
+        $query = self::query()->where('slug', $slug);
+
+        if ($excludeId !== null) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        while ($query->exists()) {
+            $slug = $base.'-'.($n++);
+            $query = self::query()->where('slug', $slug);
+
+            if ($excludeId !== null) {
+                $query->where('id', '!=', $excludeId);
+            }
+        }
+
+        return $slug;
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

@@ -102,17 +102,9 @@ final class PageController extends Controller
 
         $copy = $page->replicate();
         $copy->name = 'Copy of '.$page->name;
-        $copy->slug = Str::slug($copy->name);
+        $copy->slug = Page::generateUniqueSlug(Str::slug($copy->name));
         $copy->is_published = false;
         $copy->save();
-
-        $uniqueSlug = $copy->slug;
-        $n = 1;
-        while (Page::query()->where('slug', $uniqueSlug)->where('id', '!=', $copy->id)->exists()) {
-            $uniqueSlug = $copy->slug.'-'.($n++);
-        }
-
-        $copy->update(['slug' => $uniqueSlug]);
 
         return to_route('pages.edit', $copy)->with('flash', ['status' => 'success', 'message' => 'Page duplicated.']);
     }

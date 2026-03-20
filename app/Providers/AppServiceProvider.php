@@ -193,24 +193,16 @@ final class AppServiceProvider extends ServiceProvider
     private function registerSeoViewComposer(): void
     {
         View::composer('app', function ($view): void {
-            try {
-                $settings = resolve(SeoSettings::class);
-                $seo = [
-                    'meta_title' => $settings->meta_title ?: config('app.name'),
-                    'meta_description' => $settings->meta_description ?? '',
-                    'og_image' => $settings->og_image,
-                    'app_url' => mb_rtrim(config('app.url'), '/'),
-                ];
-            } catch (Throwable) {
-                $seo = [
-                    'meta_title' => config('app.name'),
-                    'meta_description' => '',
-                    'og_image' => null,
-                    'app_url' => mb_rtrim(config('app.url'), '/'),
-                ];
-            }
+            $settings = rescue(fn () => resolve(SeoSettings::class));
 
-            $seo['current_url'] = request()->url();
+            $seo = [
+                'meta_title' => $settings?->meta_title ?: config('app.name'),
+                'meta_description' => $settings?->meta_description ?? '',
+                'og_image' => $settings?->og_image,
+                'app_url' => mb_rtrim(config('app.url'), '/'),
+                'current_url' => request()->url(),
+            ];
+
             $view->with('seo', $seo);
         });
     }

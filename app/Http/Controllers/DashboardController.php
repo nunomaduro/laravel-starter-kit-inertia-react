@@ -18,12 +18,9 @@ final class DashboardController
     {
         $user = $request->user();
 
-        $props = [];
-
-        if ($user->hasRole('super-admin')) {
-            $props = array_merge($props, $this->metrics->superAdminProps());
-            $props['contactSubmissionsCount'] = ContactSubmission::query()->count();
-        }
+        $props = $user->hasRole('super-admin')
+            ? [...$this->metrics->superAdminProps(), 'contactSubmissionsCount' => ContactSubmission::query()->count()]
+            : [];
 
         $props['weeklyStats'] = Inertia::defer(fn (): array => $this->metrics->weeklySignupStats());
 

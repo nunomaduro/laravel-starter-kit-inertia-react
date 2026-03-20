@@ -228,12 +228,12 @@ final class EnhancedRelationshipAnalyzer
         // Remove common prefixes
         $name = $methodName;
 
-        if (Str::startsWith($name, 'belongsTo')) {
-            $name = Str::after($name, 'belongsTo');
-        } elseif (Str::startsWith($name, 'hasMany')) {
-            $name = Str::after($name, 'hasMany');
-        } elseif (Str::startsWith($name, 'hasOne')) {
-            $name = Str::after($name, 'hasOne');
+        foreach (['belongsTo', 'hasMany', 'hasOne'] as $prefix) {
+            if (Str::startsWith($name, $prefix)) {
+                $name = Str::after($name, $prefix);
+
+                break;
+            }
         }
 
         // Convert to model name (e.g., "posts" -> "Post", "userProfile" -> "UserProfile")

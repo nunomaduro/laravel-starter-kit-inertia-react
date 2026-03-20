@@ -10,6 +10,7 @@ use App\Services\TenantContext;
 use App\Settings\SeoSettings;
 use App\Support\FeatureHelper;
 use App\Support\ModuleFeatureRegistry;
+use Closure;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -111,63 +112,65 @@ final class HandleInertiaRequests extends Middleware
     private function resolveAuthAndFeaturesForInertia(mixed $user): array
     {
         if (! $user) {
-            $features = [];
-            foreach (array_keys(ModuleFeatureRegistry::allInertiaFeatures()) as $name) {
-                $features[$name] = false;
-            }
-
             return [
-                [
-                    'user' => null,
-                    'permissions' => [],
-                    'roles' => [],
-                    'can_bypass' => false,
-                ],
-                $features,
+                ['user' => null, 'permissions' => [], 'roles' => [], 'can_bypass' => false],
+                $this->buildFeatureMap(forceAll: false, user: null),
             ];
         }
 
-        // Detect super-admin in global team 0 only (org context would hide it otherwise).
-        $previousTeamId = getPermissionsTeamId();
-        setPermissionsTeamId(0);
-        try {
-            $isSuperAdmin = $user->hasRole('super-admin');
-        } finally {
-            setPermissionsTeamId($previousTeamId);
-        }
+        $isSuperAdmin = $this->withGlobalTeam(fn () => $user->hasRole('super-admin'));
 
         if ($isSuperAdmin) {
-            setPermissionsTeamId(0);
-            try {
-                $canBypass = true;
-                $permissions = $user->getAllPermissions()->pluck('name')->all();
-                $roles = $user->getRoleNames()->all();
-            } finally {
-                setPermissionsTeamId($previousTeamId);
-            }
-            $features = [];
-            foreach (array_keys(ModuleFeatureRegistry::allInertiaFeatures()) as $name) {
-                $features[$name] = true;
-            }
-        } else {
-            $permissions = $user->getAllPermissions()->pluck('name')->all();
-            $roles = $user->getRoleNames()->all();
-            $canBypass = $user->can('bypass-permissions') || $user->hasRole('super-admin');
-            $features = [];
-            foreach (ModuleFeatureRegistry::allInertiaFeatures() as $name => $featureClass) {
-                $features[$name] = FeatureHelper::isActiveForKey($name, $user);
-            }
+            [$permissions, $roles] = $this->withGlobalTeam(fn () => [
+                $user->getAllPermissions()->pluck('name')->all(),
+                $user->getRoleNames()->all(),
+            ]);
+
+            return [
+                ['user' => $user, 'permissions' => $permissions, 'roles' => $roles, 'can_bypass' => true],
+                $this->buildFeatureMap(forceAll: true, user: $user),
+            ];
         }
 
         return [
             [
                 'user' => $user,
-                'permissions' => $permissions,
-                'roles' => $roles,
-                'can_bypass' => $canBypass,
+                'permissions' => $user->getAllPermissions()->pluck('name')->all(),
+                'roles' => $user->getRoleNames()->all(),
+                'can_bypass' => $user->can('bypass-permissions'),
             ],
-            $features,
+            $this->buildFeatureMap(forceAll: false, user: $user),
         ];
+    }
+
+    /**
+     * Build the shared feature map for Inertia.
+     *
+     * @return array<string, bool>
+     */
+    private function buildFeatureMap(bool $forceAll, mixed $user): array
+    {
+        $features = [];
+        foreach (ModuleFeatureRegistry::allInertiaFeatures() as $name => $featureClass) {
+            $features[$name] = $forceAll || ($user !== null && FeatureHelper::isActiveForKey($name, $user));
+        }
+
+        return $features;
+    }
+
+    /**
+     * Execute a callback with the permissions team scoped to the global team (0).
+     */
+    private function withGlobalTeam(Closure $callback): mixed
+    {
+        $previousTeamId = getPermissionsTeamId();
+        setPermissionsTeamId(0);
+
+        try {
+            return $callback();
+        } finally {
+            setPermissionsTeamId($previousTeamId);
+        }
     }
 
     /**
@@ -408,22 +411,13 @@ final class HandleInertiaRequests extends Middleware
      */
     private function seoSharedData(): array
     {
-        try {
-            $settings = resolve(SeoSettings::class);
+        $settings = rescue(fn () => resolve(SeoSettings::class));
 
-            return [
-                'meta_title' => $settings->meta_title ?: config('app.name'),
-                'meta_description' => $settings->meta_description ?? '',
-                'og_image' => $settings->og_image,
-                'app_url' => mb_rtrim(config('app.url'), '/'),
-            ];
-        } catch (Throwable) {
-            return [
-                'meta_title' => config('app.name'),
-                'meta_description' => '',
-                'og_image' => null,
-                'app_url' => mb_rtrim(config('app.url'), '/'),
-            ];
-        }
+        return [
+            'meta_title' => $settings?->meta_title ?: config('app.name'),
+            'meta_description' => $settings?->meta_description ?? '',
+            'og_image' => $settings?->og_image,
+            'app_url' => mb_rtrim(config('app.url'), '/'),
+        ];
     }
 }

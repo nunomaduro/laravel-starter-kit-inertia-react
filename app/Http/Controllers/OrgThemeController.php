@@ -223,27 +223,23 @@ final class OrgThemeController extends Controller
 
     private function authorizeCustomize(Request $request): void
     {
-        $settings = resolve(ThemeSettings::class);
-        $user = $request->user();
-
-        $canCustomize = $user !== null && (
-            $user->isOrganizationAdmin()
-            || (bool) $settings->allow_user_theme_customization
-        );
-
-        abort_unless($canCustomize, 403);
+        $this->authorizeAccess($request, requireSuper: false);
     }
 
     private function authorizeGlobal(Request $request): void
     {
-        $settings = resolve(ThemeSettings::class);
+        $this->authorizeAccess($request, requireSuper: true);
+    }
+
+    private function authorizeAccess(Request $request, bool $requireSuper): void
+    {
         $user = $request->user();
 
-        $canCustomize = $user !== null && (
-            $user->isSuperAdmin()
-            || (bool) $settings->allow_user_theme_customization
+        $canAccess = $user !== null && (
+            ($requireSuper ? $user->isSuperAdmin() : $user->isOrganizationAdmin())
+            || (bool) resolve(ThemeSettings::class)->allow_user_theme_customization
         );
 
-        abort_unless($canCustomize, 403);
+        abort_unless($canAccess, 403);
     }
 }
