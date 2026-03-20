@@ -27,6 +27,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use Illuminate\Support\Facades\Route;
 use MartinPetricko\LaravelDatabaseMail\Exceptions\DatabaseMailException;
 use MartinPetricko\LaravelDatabaseMail\Facades\LaravelDatabaseMail;
 use Spatie\Csp\AddCspHeaders;
@@ -42,6 +43,10 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         then: function (): void {
+            Route::middleware('web')
+                ->group(base_path('routes/auth.php'));
+            Route::middleware('web')
+                ->group(base_path('routes/settings.php'));
             require base_path('routes/ai.php');
         },
     )

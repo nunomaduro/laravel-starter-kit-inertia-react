@@ -83,12 +83,8 @@ final class EnforceTwoFactor
         return array_any(self::EXEMPT_ROUTES, fn ($routeName) => $request->routeIs($routeName));
     }
 
-    private function userHasTwoFactorEnabled(object $user): bool
+    private function userHasTwoFactorEnabled(\App\Models\User $user): bool
     {
-        if (! method_exists($user, 'hasEnabledTwoFactorAuthentication')) {
-            return false;
-        }
-
         return $user->hasEnabledTwoFactorAuthentication();
     }
 }

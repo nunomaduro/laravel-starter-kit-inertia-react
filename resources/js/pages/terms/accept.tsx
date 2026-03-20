@@ -2,6 +2,7 @@ import TermsAcceptController from '@/actions/App/Http/Controllers/TermsAcceptCon
 import AppLogoIcon from '@/components/app-logo-icon';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { sanitizeHtml } from '@/lib/sanitize-html';
 import { home } from '@/routes';
 import { Form, Head, Link } from '@inertiajs/react';
 import { useCallback, useState } from 'react';
@@ -110,7 +111,7 @@ export default function TermsAccept({
                                         <div
                                             className="prose prose-sm dark:prose-invert mt-2 max-h-48 overflow-y-auto [&_a]:text-primary"
                                             dangerouslySetInnerHTML={{
-                                                __html: version.body_html,
+                                                __html: sanitizeHtml(version.body_html),
                                             }}
                                         />
                                     </div>

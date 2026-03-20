@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\DataTables\CategoryDataTable;
-use App\DataTables\OrganizationDataTable;
-use App\DataTables\UserDataTable;
 use App\Events\OrganizationMemberAdded;
 use App\Events\OrganizationMemberRemoved;
 use App\Events\User\UserCreated;
@@ -41,17 +38,6 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use LemonSqueezy\Laravel\Events\OrderCreated;
-use Machour\DataTable\Http\Controllers\DataTableAiController;
-use Machour\DataTable\Http\Controllers\DataTableAsyncFilterController;
-use Machour\DataTable\Http\Controllers\DataTableCascadingFilterController;
-use Machour\DataTable\Http\Controllers\DataTableDetailRowController;
-use Machour\DataTable\Http\Controllers\DataTableExportController;
-use Machour\DataTable\Http\Controllers\DataTableImportController;
-use Machour\DataTable\Http\Controllers\DataTableInlineEditController;
-use Machour\DataTable\Http\Controllers\DataTableReorderController;
-use Machour\DataTable\Http\Controllers\DataTableSelectAllController;
-use Machour\DataTable\Http\Controllers\DataTableToggleController;
-use Pan\PanConfiguration;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\Activitylog\CauserResolver as ActivitylogCauserResolver;
 use Spatie\Permission\Models\Permission;
@@ -94,7 +80,6 @@ final class AppServiceProvider extends ServiceProvider
         $this->runMigrationsIfNeededForInstaller();
 
         $this->configurePasswordDefaults();
-        $this->configurePan();
 
         $this->registerSeoViewComposer();
         $this->registerActivityLogTaps();
@@ -138,31 +123,6 @@ final class AppServiceProvider extends ServiceProvider
         });
 
         User::observe(UserObserver::class);
-
-        foreach ([
-            DataTableAiController::class,
-            DataTableExportController::class,
-            DataTableAsyncFilterController::class,
-            DataTableCascadingFilterController::class,
-            DataTableInlineEditController::class,
-            DataTableToggleController::class,
-            DataTableSelectAllController::class,
-            DataTableDetailRowController::class,
-            DataTableImportController::class,
-            DataTableReorderController::class,
-        ] as $controller) {
-            $controller::register('users', UserDataTable::class);
-        }
-
-        DataTableExportController::register('organizations', OrganizationDataTable::class);
-
-        foreach ([
-            DataTableExportController::class,
-            DataTableAsyncFilterController::class,
-            DataTableCascadingFilterController::class,
-        ] as $controller) {
-            $controller::register('categories', CategoryDataTable::class);
-        }
     }
 
     private function userHasBypassPermissions(object $user): bool
@@ -228,144 +188,6 @@ final class AppServiceProvider extends ServiceProvider
                 return Password::min(8);
             }
         });
-    }
-
-    private function configurePan(): void
-    {
-        PanConfiguration::allowedAnalytics([
-            'announcements-banner',
-            'settings-nav-profile',
-            'settings-nav-password',
-            'settings-nav-two-factor',
-            'settings-nav-appearance',
-            'settings-nav-branding',
-            'settings-nav-features',
-            'settings-nav-roles',
-            'settings-nav-audit-log',
-            'settings-nav-notifications',
-            'settings-nav-data-export',
-            'settings-nav-achievements',
-            'settings-nav-onboarding',
-            'appearance-tab-light',
-            'appearance-tab-dark',
-            'appearance-tab-system',
-            'appearance-theme-default',
-            'appearance-theme-vega',
-            'appearance-theme-nova',
-            'auth-login-button',
-            'auth-google-login',
-            'auth-github-login',
-            'auth-sign-up-link',
-            'auth-register-button',
-            'auth-log-in-link',
-            'auth-forgot-password-button',
-            'welcome-dashboard',
-            'welcome-log-in',
-            'welcome-register',
-            'welcome-blog',
-            'welcome-changelog',
-            'welcome-help',
-            'welcome-contact',
-            'welcome-feature-orgs',
-            'welcome-feature-billing',
-            'welcome-feature-ai',
-            'welcome-feature-rbac',
-            'welcome-feature-2fa',
-            'welcome-feature-analytics',
-            'welcome-feature-audit-log',
-            'welcome-feature-flags',
-            'welcome-feature-custom-roles',
-            'welcome-feature-credits',
-            'welcome-feature-mcp',
-            'welcome-feature-workflows',
-            'welcome-feature-email-templates',
-            'welcome-feature-blog',
-            'welcome-feature-help',
-            'welcome-feature-search',
-            'welcome-feature-theming',
-            'welcome-feature-page-builder',
-            'welcome-feature-gamification',
-            'welcome-feature-datatables',
-            'welcome-feature-api',
-            'welcome-feature-data-export',
-            'welcome-feature-domains',
-            'welcome-feature-social-login',
-            'welcome-feature-notifications',
-            'welcome-feature-announcements',
-            'welcome-feature-contact',
-            'welcome-feature-broadcasting',
-            'welcome-feature-org-branding',
-            'welcome-feature-impersonation',
-            'welcome-feature-visibility-sharing',
-            'welcome-feature-backups',
-            'welcome-feature-installer',
-            'welcome-feature-invoice-pdf',
-            'welcome-feature-ga4',
-            'welcome-feature-cronless',
-            'welcome-feature-model-states-flags',
-            'welcome-feature-schemaless',
-            'welcome-feature-saloon',
-            'nav-dashboard',
-            'nav-announcements',
-            'nav-posts',
-            'nav-organizations',
-            'nav-organizations-table',
-            'nav-categories',
-            'nav-billing',
-            'nav-blog',
-            'nav-changelog',
-            'nav-help',
-            'nav-contact',
-            'nav-api-docs',
-            'nav-repository',
-            'nav-documentation',
-            'dashboard-quick-edit-profile',
-            'dashboard-quick-settings',
-            'dashboard-quick-export-pdf',
-            'dashboard-quick-contact',
-            'dashboard-quick-email-templates',
-            'dashboard-quick-product-analytics',
-            'dashboard-quick-horizon',
-            'dashboard-quick-waterline',
-            'dashboard-quick-pulse',
-            'dashboard-card-view-analytics',
-            'dashboard-admin-users',
-            'dashboard-admin-orgs',
-            'dashboard-admin-contact',
-            'onboarding-get-started',
-            'command-palette',
-            'global-search',
-            'nav-chat',
-            'nav-users',
-            'chat-conversation-list',
-            'chat-new-conversation',
-            'chat-delete-conversation',
-            'chat-rename-conversation',
-            'chat-copy-message',
-            'chat-copy-code',
-            'chat-mobile-menu',
-            'chat-send-message',
-            'dashboard-chart',
-            'admin-org-switcher',
-            'users-table',
-            'announcements-table',
-            'posts-table',
-            'organizations-table',
-            'categories-table',
-            'pages-index',
-            'pages-create',
-            'pages-edit-preview',
-            'pages-edit-save',
-            'pages-duplicate',
-            'pages-delete',
-            'settings-nav-domains',
-            'nav-admin-panel',
-            'nav-pages',
-            'settings-nav-admin-panel',
-            'mode-toggle-light',
-            'mode-toggle-dark',
-            'mode-toggle-system',
-        ]);
     }
 
     private function registerSeoViewComposer(): void

@@ -19,6 +19,7 @@ use Deligoez\LaravelModelHashId\Traits\HasHashIdRouting;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -451,24 +452,16 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
     /**
      * Avatar URL (thumb conversion) for nav/header, or null when no avatar.
      */
-    protected function avatar(): \Illuminate\Database\Eloquent\Casts\Attribute
+    protected function avatar(): Attribute
     {
-        return \Illuminate\Database\Eloquent\Casts\Attribute::make(get: function () {
-            $url = $this->getFirstMediaUrl('avatar', 'thumb');
-
-            return $url !== '' ? $url : null;
-        });
+        return Attribute::get(fn () => $this->getFirstMediaUrl('avatar', 'thumb') ?: null);
     }
 
     /**
      * Avatar URL (profile conversion) for profile/settings preview, or null when no avatar.
      */
-    protected function avatarProfile(): \Illuminate\Database\Eloquent\Casts\Attribute
+    protected function avatarProfile(): Attribute
     {
-        return \Illuminate\Database\Eloquent\Casts\Attribute::make(get: function () {
-            $url = $this->getFirstMediaUrl('avatar', 'profile');
-
-            return $url !== '' ? $url : null;
-        });
+        return Attribute::get(fn () => $this->getFirstMediaUrl('avatar', 'profile') ?: null);
     }
 }

@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\RecordAuditLog;
 use App\Actions\SuggestThemeFromLogo;
+use App\Http\Requests\AnalyzeLogoRequest;
+use App\Http\Requests\SaveThemeRequest;
 use App\Models\Organization;
 use App\Services\OrganizationBrandingService;
 use App\Services\OrganizationSettingsService;
@@ -25,21 +27,11 @@ final class OrgThemeController extends Controller
         private readonly RecordAuditLog $auditLog,
     ) {}
 
-    public function save(Request $request): RedirectResponse
+    public function save(SaveThemeRequest $request): RedirectResponse
     {
         $organization = TenantContext::get();
 
-        $validated = $request->validate([
-            'dark' => ['required', 'string', 'in:navy,mirage,mint,black,cinder'],
-            'primary' => ['required', 'string', 'in:indigo,blue,green,amber,purple,rose'],
-            'light' => ['required', 'string', 'in:slate,gray,neutral'],
-            'skin' => ['required', 'string', 'in:shadow,bordered,flat,elevated'],
-            'radius' => ['required', 'string', 'in:none,sm,default,md,lg,full'],
-            'layout' => ['sometimes', 'string', 'in:main,sideblock'],
-            'font' => ['sometimes', 'string', 'in:inter,geist-sans,poppins,outfit,plus-jakarta-sans,instrument-sans'],
-            'menuColor' => ['sometimes', 'string', 'in:default,primary,muted'],
-            'menuAccent' => ['sometimes', 'string', 'in:subtle,strong,bordered'],
-        ]);
+        $validated = $request->validated();
 
         if ($organization instanceof Organization) {
             $this->authorizeCustomize($request);
@@ -112,26 +104,22 @@ final class OrgThemeController extends Controller
         $this->authorizeGlobal($request);
 
         $settings = resolve(ThemeSettings::class);
-        $settings->dark_color_scheme = $validated['dark'];
-        $settings->primary_color = $validated['primary'];
-        $settings->light_color_scheme = $validated['light'];
-        $settings->card_skin = $validated['skin'];
-        $settings->border_radius = $validated['radius'];
+        $globalMap = [
+            'dark' => 'dark_color_scheme',
+            'primary' => 'primary_color',
+            'light' => 'light_color_scheme',
+            'skin' => 'card_skin',
+            'radius' => 'border_radius',
+            'layout' => 'sidebar_layout',
+            'font' => 'font',
+            'menuColor' => 'menu_color',
+            'menuAccent' => 'menu_accent',
+        ];
 
-        if (isset($validated['layout'])) {
-            $settings->sidebar_layout = $validated['layout'];
-        }
-
-        if (isset($validated['font'])) {
-            $settings->font = $validated['font'];
-        }
-
-        if (isset($validated['menuColor'])) {
-            $settings->menu_color = $validated['menuColor'];
-        }
-
-        if (isset($validated['menuAccent'])) {
-            $settings->menu_accent = $validated['menuAccent'];
+        foreach ($globalMap as $inputKey => $property) {
+            if (isset($validated[$inputKey])) {
+                $settings->{$property} = $validated[$inputKey];
+            }
         }
 
         $settings->save();
@@ -178,7 +166,7 @@ final class OrgThemeController extends Controller
         return back()->with('flash', ['success' => 'Theme reset to defaults.']);
     }
 
-    public function analyzeLogo(Request $request, SuggestThemeFromLogo $action): JsonResponse
+    public function analyzeLogo(AnalyzeLogoRequest $request, SuggestThemeFromLogo $action): JsonResponse
     {
         $organization = TenantContext::get();
 
@@ -199,10 +187,6 @@ final class OrgThemeController extends Controller
         );
 
         abort_unless($canUpload, 403);
-
-        $request->validate([
-            'logo' => ['required', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
-        ]);
 
         $oldRow = DB::table('organization_settings')
             ->where('organization_id', $organization->id)

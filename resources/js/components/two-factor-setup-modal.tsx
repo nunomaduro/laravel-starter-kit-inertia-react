@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/input-otp';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
+import { sanitizeHtml } from '@/lib/sanitize-html';
 import { confirm } from '@/routes/two-factor';
 import { Form } from '@inertiajs/react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
@@ -75,7 +76,7 @@ function TwoFactorSetupStep({
                                 {qrCodeSvg ? (
                                     <div
                                         dangerouslySetInnerHTML={{
-                                            __html: qrCodeSvg,
+                                            __html: sanitizeHtml(qrCodeSvg),
                                         }}
                                     />
                                 ) : (

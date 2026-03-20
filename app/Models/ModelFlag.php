@@ -15,6 +15,13 @@ final class ModelFlag extends BaseFlag
 
     protected $table = 'model_flags';
 
+    /** @var list<string> */
+    protected $fillable = [
+        'name',
+        'flaggable_type',
+        'flaggable_id',
+    ];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

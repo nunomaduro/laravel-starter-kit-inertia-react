@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -67,20 +68,7 @@ final class AutoPermissionMiddleware
 
     private function shouldSkipRoute(string $routeName): bool
     {
-        $patterns = config('permission.route_skip_patterns', []);
-
-        foreach ($patterns as $pattern) {
-            if (str_contains((string) $pattern, '*')) {
-                $regex = '/^'.str_replace('\*', '.*', preg_quote((string) $pattern, '/')).'$/';
-                if (preg_match($regex, $routeName) === 1) {
-                    return true;
-                }
-            } elseif ($routeName === $pattern) {
-                return true;
-            }
-        }
-
-        return false;
+        return Str::is(config('permission.route_skip_patterns', []), $routeName);
     }
 
     private function isApplicationRoute(Route $route): bool
@@ -106,15 +94,8 @@ final class AutoPermissionMiddleware
 
     private function hasExplicitPermissionMiddleware(Route $route): bool
     {
-        foreach ($route->middleware() as $middleware) {
-            $name = is_string($middleware) ? $middleware : '';
-            if (str_starts_with($name, 'permission:') ||
-                str_starts_with($name, 'role:') ||
-                str_starts_with($name, 'role_or_permission:')) {
-                return true;
-            }
-        }
-
-        return false;
+        return collect($route->middleware())
+            ->filter(fn ($m) => is_string($m))
+            ->contains(fn (string $m) => Str::startsWith($m, ['permission:', 'role:', 'role_or_permission:']));
     }
 }

@@ -24,42 +24,18 @@ use App\Http\Controllers\EnterpriseInquiryController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Internal\CaddyAskController;
 use App\Http\Controllers\InvitationAcceptController;
-use App\Http\Controllers\Notifications\ClearAllNotificationsController;
-use App\Http\Controllers\Notifications\DeleteNotificationController;
-use App\Http\Controllers\Notifications\IndexNotificationsController;
-use App\Http\Controllers\Notifications\MarkAllNotificationsReadController;
-use App\Http\Controllers\Notifications\MarkNotificationReadController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationInvitationController;
 use App\Http\Controllers\OrganizationMemberController;
 use App\Http\Controllers\OrganizationsTableController;
 use App\Http\Controllers\OrganizationSwitchController;
-use App\Http\Controllers\OrgThemeController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PageViewController;
-use App\Http\Controllers\PersonalDataExportController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\SessionController;
-use App\Http\Controllers\Settings\AuditLogController;
-use App\Http\Controllers\Settings\BrandingController;
-use App\Http\Controllers\Settings\NotificationPreferencesController;
-use App\Http\Controllers\Settings\OrgBrandingUserControlsController;
-use App\Http\Controllers\Settings\OrgDomainsController;
-use App\Http\Controllers\Settings\OrgFeaturesController;
-use App\Http\Controllers\Settings\OrgRolesController;
-use App\Http\Controllers\Settings\OrgSlugController;
-use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\TermsAcceptController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserEmailResetNotificationController;
-use App\Http\Controllers\UserEmailVerificationController;
-use App\Http\Controllers\UserEmailVerificationNotificationController;
-use App\Http\Controllers\UserPasswordController;
-use App\Http\Controllers\UserPreferencesController;
-use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\UsersTableController;
-use App\Http\Controllers\UserTwoFactorAuthenticationController;
 use App\Http\Middleware\InternalRequestMiddleware;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\RedirectResponse;
@@ -164,27 +140,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::get('billing/invoices/{invoice}', [InvoiceController::class, 'download'])->name('billing.invoices.download');
     });
 
-    Route::middleware(['tenant', 'permission:org.settings.manage'])->group(function (): void {
-        Route::get('settings/branding', [BrandingController::class, 'edit'])->name('settings.branding.edit');
-        Route::put('settings/branding', [BrandingController::class, 'update'])->name('settings.branding.update');
-        Route::post('settings/branding/user-controls', OrgBrandingUserControlsController::class)->name('settings.branding.user-controls');
-        Route::get('settings/audit-log', AuditLogController::class)->name('settings.audit-log');
-
-        Route::get('settings/features', [OrgFeaturesController::class, 'show'])->name('settings.features.show');
-        Route::post('settings/features', [OrgFeaturesController::class, 'update'])->name('settings.features.update');
-
-        Route::get('settings/roles', [OrgRolesController::class, 'index'])->name('settings.roles.index');
-        Route::post('settings/roles', [OrgRolesController::class, 'store'])->name('settings.roles.store');
-        Route::delete('settings/roles/{role}', [OrgRolesController::class, 'destroy'])->name('settings.roles.destroy');
-
-        Route::get('settings/general', [OrgSlugController::class, 'show'])->name('settings.general.show');
-        Route::patch('settings/general/slug', [OrgSlugController::class, 'update'])->name('settings.general.slug.update');
-        Route::get('settings/domains', [OrgDomainsController::class, 'show'])->name('settings.domains.show');
-        Route::post('settings/domains', [OrgDomainsController::class, 'store'])->name('settings.domains.store');
-        Route::delete('settings/domains/{domain}', [OrgDomainsController::class, 'destroy'])->name('settings.domains.destroy');
-        Route::post('settings/domains/{domain}/verify', [OrgDomainsController::class, 'verify'])->name('settings.domains.verify');
-    });
-
     Route::middleware('tenant')->group(function (): void {
         Route::get('pages', [PageController::class, 'index'])->name('pages.index');
         Route::get('pages/create', [PageController::class, 'create'])->name('pages.create');
@@ -226,89 +181,4 @@ Route::middleware('auth')->group(function (): void {
         ->name('personal-data-exports');
 
     Route::delete('user', [UserController::class, 'destroy'])->name('user.destroy');
-
-    Route::patch('user/preferences', [UserPreferencesController::class, 'update'])->name('user.preferences.update');
-
-    Route::post('org/theme', [OrgThemeController::class, 'save'])->name('org.theme.save');
-    Route::delete('org/theme', [OrgThemeController::class, 'reset'])->name('org.theme.reset');
-    Route::post('org/theme/analyze-logo', [OrgThemeController::class, 'analyzeLogo'])->name('org.theme.analyze-logo');
-
-    Route::redirect('settings', '/settings/profile')->name('settings');
-    Route::get('settings/profile', [UserProfileController::class, 'edit'])->name('user-profile.edit');
-    Route::patch('settings/profile', [UserProfileController::class, 'update'])->name('user-profile.update');
-
-    Route::get('settings/password', [UserPasswordController::class, 'edit'])->name('password.edit');
-    Route::put('settings/password', [UserPasswordController::class, 'update'])
-        ->middleware('throttle:6,1')
-        ->name('password.update');
-
-    Route::get('settings/appearance', fn () => Inertia::render('appearance/update'))
-        ->middleware('feature:appearance_settings')
-        ->name('appearance.edit');
-
-    Route::get('settings/personal-data-export', fn () => Inertia::render('settings/personal-data-export'))
-        ->middleware('feature:personal_data_export')
-        ->name('personal-data-export.edit');
-    Route::post('settings/personal-data-export', PersonalDataExportController::class)
-        ->middleware(['feature:personal_data_export', 'throttle:3,1'])
-        ->name('personal-data-export.store');
-
-    Route::get('settings/two-factor', [UserTwoFactorAuthenticationController::class, 'show'])
-        ->middleware('feature:two_factor_auth')
-        ->name('two-factor.show');
-
-    Route::get('settings/notifications', [NotificationPreferencesController::class, 'show'])->name('settings.notifications.show');
-    Route::patch('settings/notifications', [NotificationPreferencesController::class, 'update'])->name('settings.notifications.update');
-
-    Route::prefix('notifications')->name('notifications.')->group(function (): void {
-        Route::get('/', IndexNotificationsController::class)->name('index');
-        Route::post('{notification}/read', MarkNotificationReadController::class)->name('read');
-        Route::post('read-all', MarkAllNotificationsReadController::class)->name('read-all');
-        Route::delete('{notification}', DeleteNotificationController::class)->name('delete');
-        Route::delete('/', ClearAllNotificationsController::class)->name('clear');
-    });
-});
-
-Route::middleware('guest')->group(function (): void {
-    Route::get('register', [UserController::class, 'create'])
-        ->middleware('registration.enabled')
-        ->name('register');
-    Route::post('register', [UserController::class, 'store'])
-        ->middleware(['registration.enabled', ProtectAgainstSpam::class, 'throttle:registration'])
-        ->name('register.store');
-
-    Route::get('reset-password/{token}', [UserPasswordController::class, 'create'])
-        ->name('password.reset');
-    Route::post('reset-password', [UserPasswordController::class, 'store'])
-        ->middleware('throttle:password-reset-submit')
-        ->name('password.store');
-
-    Route::get('forgot-password', [UserEmailResetNotificationController::class, 'create'])
-        ->name('password.request');
-    Route::post('forgot-password', [UserEmailResetNotificationController::class, 'store'])
-        ->middleware('throttle:password-reset-request')
-        ->name('password.email');
-
-    Route::get('login', [SessionController::class, 'create'])
-        ->name('login');
-    Route::post('login', [SessionController::class, 'store'])
-        ->middleware('throttle:login')
-        ->name('login.store');
-});
-
-Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('auth.social.redirect');
-Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('auth.social.callback');
-
-Route::middleware('auth')->group(function (): void {
-    Route::get('verify-email', [UserEmailVerificationNotificationController::class, 'create'])
-        ->name('verification.notice');
-    Route::post('email/verification-notification', [UserEmailVerificationNotificationController::class, 'store'])
-        ->middleware('throttle:6,1')
-        ->name('verification.send');
-    Route::get('verify-email/{id}/{hash}', [UserEmailVerificationController::class, 'update'])
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
-
-    Route::post('logout', [SessionController::class, 'destroy'])
-        ->name('logout');
 });

@@ -317,7 +317,7 @@ export default function UsersTablePage({
                             .map((rowData, i) => ({ rowIdx: startRowIdx + i, value: rowData[0] }))
                             .filter((p) => p.value !== undefined);
                         if (patches.length === 0) return;
-                        console.debug('[users-table] clipboard paste', startColId, patches);
+                        // clipboard paste handled
                     }}
                     onDragToFill={async (columnId, value, targetRowIds) => {
                         const editableCols = ['name', 'email', 'onboarding_completed'];
@@ -406,7 +406,7 @@ export default function UsersTablePage({
                     onGroupByChange={(columnId) => {
                         // group-by change callback
                         if (columnId) {
-                            console.debug('[users-table] group-by changed to:', columnId);
+                            // group-by changed
                         }
                     }}
                     renderFooterCell={(columnId, value) => {

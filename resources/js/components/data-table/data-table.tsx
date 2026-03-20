@@ -8,6 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import DOMPurify from "dompurify";
 import {
     Dialog,
     DialogContent,
@@ -128,21 +129,9 @@ import { Label } from "@/components/ui/label";
 
 // ─── HTML sanitization ──────────────────────────────────────────────────────
 
-/** Strip dangerous HTML tags/attributes. Uses DOMPurify if available, falls back to tag stripping. */
+/** Strip dangerous HTML tags/attributes using DOMPurify. */
 function sanitizeHtml(html: string): string {
-    // Use DOMPurify if available (recommended: npm install dompurify)
-    if (typeof window !== "undefined" && (window as unknown as Record<string, unknown>).DOMPurify) {
-        return ((window as unknown as Record<string, { sanitize: (html: string) => string }>).DOMPurify).sanitize(html);
-    }
-    // Fallback: strip <script>, <iframe>, <object>, <embed>, on* attributes
-    return html
-        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-        .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
-        .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, "")
-        .replace(/<embed\b[^>]*\/?>/gi, "")
-        .replace(/\bon\w+\s*=\s*"[^"]*"/gi, "")
-        .replace(/\bon\w+\s*=\s*'[^']*'/gi, "")
-        .replace(/javascript\s*:/gi, "");
+    return DOMPurify.sanitize(html);
 }
 
 // ─── Toast notification helper ──────────────────────────────────────────────

@@ -1,5 +1,6 @@
 import TextLink from '@/components/text-link';
 import AppLayout from '@/layouts/app-layout';
+import { sanitizeHtml } from '@/lib/sanitize-html';
 import { dashboard } from '@/routes';
 import {
     index as helpIndex,
@@ -60,7 +61,7 @@ export default function HelpShow({ article, related }: Props) {
                     <div
                         className="prose prose-neutral dark:prose-invert max-w-none"
                         dangerouslySetInnerHTML={{
-                            __html: article.content,
+                            __html: sanitizeHtml(article.content),
                         }}
                     />
                 </article>

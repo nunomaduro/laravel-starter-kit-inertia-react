@@ -447,9 +447,7 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
 
         // Avoid instantiating Reverb with null credentials (e.g. package:discover, composer install)
         if (config('broadcasting.default') === 'reverb') {
-            $key = config('broadcasting.connections.reverb.key');
-            $appId = config('broadcasting.connections.reverb.app_id');
-            if ($key === null || $key === '' || $appId === null || $appId === '') {
+            if (blank(config('broadcasting.connections.reverb.key')) || blank(config('broadcasting.connections.reverb.app_id'))) {
                 config()->set('broadcasting.default', 'log');
             }
         }

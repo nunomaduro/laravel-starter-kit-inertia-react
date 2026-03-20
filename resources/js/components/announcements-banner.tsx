@@ -1,5 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { sanitizeHtml } from '@/lib/sanitize-html';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { AlertTriangle, Info, Wrench, X } from 'lucide-react';
@@ -50,7 +51,7 @@ export function AnnouncementsBanner() {
                                 <span
                                     className="break-words whitespace-pre-wrap"
                                     dangerouslySetInnerHTML={{
-                                        __html: announcement.body,
+                                        __html: sanitizeHtml(announcement.body),
                                     }}
                                 />
                             </AlertDescription>

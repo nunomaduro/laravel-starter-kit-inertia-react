@@ -79,7 +79,7 @@ function ImageUpload({
           disabled && "cursor-not-allowed opacity-50",
           !disabled && "cursor-pointer"
         )}
-        style={{ minHeight: 160 }}
+        style={{ minHeight: '10rem' }}
       >
         <input {...getInputProps()} />
         {preview ? (
@@ -88,7 +88,7 @@ function ImageUpload({
               src={preview}
               alt="Upload preview"
               className="h-full w-full rounded-md object-contain p-2"
-              style={{ maxHeight: 240 }}
+              style={{ maxHeight: '15rem' }}
             />
             {!disabled && (
               <Button

@@ -1,5 +1,6 @@
 import TextLink from '@/components/text-link';
 import AppLayout from '@/layouts/app-layout';
+import { sanitizeHtml } from '@/lib/sanitize-html';
 import { dashboard } from '@/routes';
 import { index as blogIndex, show as blogShow } from '@/routes/blog';
 import { type BreadcrumbItem } from '@/types';
@@ -58,7 +59,7 @@ export default function BlogShow({ post }: Props) {
                     <div
                         className="prose prose-neutral dark:prose-invert max-w-none"
                         dangerouslySetInnerHTML={{
-                            __html: post.content,
+                            __html: sanitizeHtml(post.content),
                         }}
                     />
                 </article>
