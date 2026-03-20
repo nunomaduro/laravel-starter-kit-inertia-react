@@ -1,6 +1,7 @@
 export interface DataTableTranslations {
     // Pagination
     totalResults: (count: number) => string;
+    showingRange: (from: number, to: number, total: number) => string;
     rowsPerPage: string;
     pageOf: (current: number, last: number) => string;
 
@@ -389,6 +390,7 @@ export interface DataTableTranslations {
 export const defaultTranslations: DataTableTranslations = {
     // Pagination
     totalResults: (count) => `${count} result${count !== 1 ? "s" : ""}`,
+    showingRange: (from, to, total) => `Showing ${from}\u2013${to} of ${total}`,
     rowsPerPage: "Rows per page",
     pageOf: (current, last) => `Page ${current} / ${last}`,
 
@@ -776,6 +778,7 @@ export const defaultTranslations: DataTableTranslations = {
 
 export const frTranslations: DataTableTranslations = {
     totalResults: (count) => `${count} résultat${count !== 1 ? "s" : ""}`,
+    showingRange: (from, to, total) => `Affichage ${from}\u2013${to} sur ${total}`,
     rowsPerPage: "Lignes par page",
     pageOf: (current, last) => `Page ${current} / ${last}`,
     columns: "Colonnes",

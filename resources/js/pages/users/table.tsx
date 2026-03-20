@@ -36,12 +36,6 @@ export interface UsersTableRow {
     onboarding_completed: boolean;
     organizations_count: number;
     first_organization_name: string | null;
-    account_age_days: number;
-    profile_score: number;
-    account_label: string | null;
-    plan_tier: string;
-    lifetime_value: number;
-    theme_mode: string | null;
     created_at: string | null;
     updated_at: string | null;
 }
@@ -275,7 +269,6 @@ export default function UsersTablePage({
             >
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Users</h1>
-                    {tableData && <p className="text-muted-foreground">{tableData.meta.total} results</p>}
                     {!dataTableAi?.aiBaseUrl && !dataTableAi?.thesysEnabled && (
                         <p className="mt-1 text-xs text-muted-foreground">
                             To enable AI features: set <code className="rounded bg-muted px-1 py-0.5 text-[11px]">THESYS_API_KEY</code> and an AI provider in .env or Filament → Settings · Integrations → AI.
@@ -309,31 +302,6 @@ export default function UsersTablePage({
                         'data-status': row.status,
                         'data-onboarded': String(row.onboarding_completed),
                     })}
-                    renderCell={(columnId, value) => {
-                        if (columnId === 'profile_score' && typeof value === 'number') {
-                            const pct = Math.min(100, Math.max(0, value));
-                            const color =
-                                pct >= 100
-                                    ? 'bg-emerald-500'
-                                    : pct >= 67
-                                      ? 'bg-blue-500'
-                                      : pct >= 34
-                                        ? 'bg-amber-500'
-                                        : 'bg-red-400';
-                            return (
-                                <div className="flex items-center gap-2">
-                                    <div className="h-1.5 w-14 overflow-hidden rounded-full bg-muted">
-                                        <div
-                                            className={`h-full rounded-full ${color}`}
-                                            style={{ width: `${pct}%` }}
-                                        />
-                                    </div>
-                                    <span className="text-xs tabular-nums">{pct}%</span>
-                                </div>
-                            );
-                        }
-                        return undefined;
-                    }}
                     renderHeader={{
                         organizations_count: (
                             <span className="flex items-center gap-1">
@@ -343,20 +311,15 @@ export default function UsersTablePage({
                         ),
                     }}
                     onClipboardPaste={async (startRowIdx, startColId, data) => {
-                        // Showcases clipboard paste handler — applies pasted data to editable cells
                         const editableCols = ['name', 'email'];
                         if (!editableCols.includes(startColId)) return;
                         const patches = data
-                            .map((rowData, i) => ({
-                                rowIdx: startRowIdx + i,
-                                value: rowData[0],
-                            }))
+                            .map((rowData, i) => ({ rowIdx: startRowIdx + i, value: rowData[0] }))
                             .filter((p) => p.value !== undefined);
                         if (patches.length === 0) return;
                         console.debug('[users-table] clipboard paste', startColId, patches);
                     }}
                     onDragToFill={async (columnId, value, targetRowIds) => {
-                        // Showcases drag-to-fill — fills editable column down selected rows
                         const editableCols = ['name', 'email', 'onboarding_completed'];
                         if (!editableCols.includes(columnId)) return;
                         await router.patch('/users/batch-update', {
@@ -366,15 +329,11 @@ export default function UsersTablePage({
                         });
                     }}
                     onFindReplace={async (rowId, columnId, _oldValue, newValue) => {
-                        // Showcases find & replace — applies replacement to a single cell
                         await router.patch('/users/batch-update', {
                             ids: [Number(rowId)],
                             column: columnId,
                             value: String(newValue),
                         });
-                    }}
-                    onCellRangeSelect={(startRow, startCol, endRow, endCol) => {
-                        console.debug('[users-table] range', startRow, startCol, '→', endRow, endCol);
                     }}
                     emptyState={
                         <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
@@ -490,13 +449,9 @@ export default function UsersTablePage({
                         columnResizing: true,
                         loading: true,
                         keyboardNavigation: true,
-                        printable: true,
                         density: true,
                         copyCell: true,
                         contextMenu: true,
-                        rowGrouping: true,
-                        rowReorder: true,
-                        batchEdit: true,
                         searchHighlight: true,
                         undoRedo: true,
                         columnPinning: true,
@@ -504,31 +459,37 @@ export default function UsersTablePage({
                         shortcutsOverlay: true,
                         exportProgress: true,
                         emptyStateIllustration: true,
-                        cellFlashing: true,
-                        statusBar: true,
-                        clipboardPaste: true,
-                        dragToFill: true,
-                        headerFilters: true,
-                        infiniteScroll: false,
                         columnAutoSize: true,
                         columnVirtualization: true,
-                        cellRangeSelection: true,
                         autoSizer: true,
                         cellMeasurer: true,
                         scrollAwareRendering: true,
-                        windowScroller: false,
                         directionalOverscan: true,
                         layoutSwitcher: true,
-                        columnStatistics: true,
-                        conditionalFormatting: true,
                         facetedFilters: true,
                         presence: true,
-                        spreadsheetMode: true,
                         kanbanView: true,
-                        masterDetail: false,
                         integratedCharts: true,
+                        virtualScrolling: false,
+                        rowGrouping: true,
+                        batchEdit: true,
                         findReplace: true,
-                        virtualScrolling: true,
+                        printable: true,
+                        rowReorder: true,
+                        columnStatistics: true,
+                        conditionalFormatting: true,
+                        statusBar: true,
+                        cellRangeSelection: true,
+                        cellFlashing: true,
+                        clipboardPaste: true,
+                        dragToFill: true,
+                        headerFilters: true,
+                        masterDetail: true,
+                        stickyHeader: true,
+                        // Disabled features
+                        spreadsheetMode: false,
+                        infiniteScroll: false,
+                        windowScroller: false,
                     }}
                     realtimeChannel={realtimeChannel}
                     realtimeEvent=".user.updated"

@@ -104,8 +104,8 @@ final class UserDataTable extends AbstractDataTable
             lifetime_value: round(self::computeProfileScore($model, $status) * 9.99, 2),
             theme_mode: $model->theme_mode,
             position: $model->position,
-            created_at: $model->created_at?->format('Y-m-d H:i'),
-            updated_at: $model->updated_at?->format('Y-m-d H:i'),
+            created_at: $model->created_at?->toIso8601String(),
+            updated_at: $model->updated_at?->toIso8601String(),
         );
     }
 
@@ -152,28 +152,11 @@ final class UserDataTable extends AbstractDataTable
                 ->headerFilter()
                 ->tooltip('Contact email')
                 ->build(),
-            // phone: phone type column — showcases phone()
-            ColumnBuilder::make('phone', 'Phone')
-                ->phone()
-                ->editable()
-                ->visible(false)
-                ->description('Phone number (showcases phone() type)')
-
-                ->build(),
             // profile_url: link type — shows the user's profile page URL (hidden by default)
             ColumnBuilder::make('profile_url', 'Profile link')
                 ->link()
                 ->visible(false)
                 ->description('Direct link to user profile')
-
-                ->build(),
-            // user_profile: stacked name+email with avatar (composite display, hidden by default)
-            ColumnBuilder::make('user_profile', 'Profile (stacked)')
-                ->text()
-                ->stacked(['name', 'email'])
-                ->avatar('avatar')
-                ->visible(false)
-                ->description('Name + email stacked with avatar')
 
                 ->build(),
 
@@ -185,34 +168,6 @@ final class UserDataTable extends AbstractDataTable
                     ['label' => 'Deleted', 'value' => 'deleted', 'variant' => 'danger'],
                 ])
                 ->filterable()
-                ->build(),
-            // color: color type column — showcases color() swatch display
-            ColumnBuilder::make('color', 'Color label')
-                ->color()
-                ->editable()
-                ->visible(false)
-                ->description('User color label — hex swatch (showcases color() type)')
-
-                ->build(),
-            // tags: multiOption type — showcases multi-value display
-            ColumnBuilder::make('tags', 'Tags')
-                ->multiOption(['admin', 'beta-tester', 'power-user', 'early-adopter', 'trial', 'paid', 'enterprise', 'vip', 'support', 'dev'])
-                ->editable()
-                ->visible(false)
-                ->description('User tags — multi-value display (showcases multiOption())')
-
-                ->build(),
-            // status_icon: icon type using valueGetter from 'status' (hidden by default)
-            ColumnBuilder::make('status_icon', 'Status icon')
-                ->iconColumn([
-                    'active' => 'check-circle',
-                    'pending' => 'clock',
-                    'deleted' => 'trash-2',
-                ])
-                ->valueGetter('status')
-                ->visible(false)
-                ->description('Icon representation of status')
-
                 ->build(),
             ColumnBuilder::make('onboarding_completed', 'Onboarding done')
                 ->boolean()
@@ -226,104 +181,16 @@ final class UserDataTable extends AbstractDataTable
                 ->suffix(fn (mixed $v): string => $v === 1 ? ' org' : ' orgs')
                 ->range(0, 50)
                 ->build(),
-            // profile_score: percentage type — showcases percentage column
-            ColumnBuilder::make('profile_score', 'Profile score')
-                ->percentage()
-                ->sortable()
-                ->description('Profile completeness: name (34%) + email verified (33%) + onboarding (33%)')
-                ->visible(false)
-
-                ->build(),
-            // account_label: computed column — derives value from status + onboarding_completed at query time
-            ColumnBuilder::make('account_label', 'Account label')
-                ->text()
-                ->computed(['status', 'onboarding_completed'], function (array $row): string {
-                    $s = $row['status'] ?? 'unknown';
-                    $ob = (bool) ($row['onboarding_completed'] ?? false);
-
-                    return match ($s) {
-                        'active' => $ob ? 'Active & Onboarded' : 'Active (pending onboarding)',
-                        'pending' => 'Pending verification',
-                        'deleted' => 'Deleted account',
-                        default => 'Unknown',
-                    };
-                })
-                ->colorMap([
-                    'Active & Onboarded' => 'text-emerald-600',
-                    'Active (pending onboarding)' => 'text-blue-600',
-                    'Pending verification' => 'text-amber-600',
-                    'Deleted account' => 'text-red-600',
-                ])
-                ->visible(false)
-                ->description('Computed label from status + onboarding (showcases computed() + colorMap())')
-
-                ->build(),
             ColumnBuilder::make('first_organization_name', 'Primary org')
                 ->text()
                 ->filterable()
                 ->build(),
-            // plan_tier: text + valueFormatter — showcases JS function expression valueFormatter
-            ColumnBuilder::make('plan_tier', 'Plan tier')
-                ->text()
-                ->valueFormatter('(value) => "⭐ " + value.charAt(0).toUpperCase() + value.slice(1)')
-                ->visible(false)
-                ->description('Computed plan (free/pro/enterprise) — showcases valueFormatter()')
 
-                ->build(),
-            // lifetime_value: currency type — showcases currency() + locale()
-            ColumnBuilder::make('lifetime_value', 'Lifetime value')
-                ->currency('USD')
-                ->locale('en-US')
-                ->sortable()
-                ->summary('sum')
-                ->visible(false)
-                ->description('Synthetic USD value — showcases currency() type with locale')
-
-                ->build(),
-
-            // ── Preferences ──────────────────────────────────────────────────────
-            // theme_mode: select type — showcases inline editable dropdown (select())
-            ColumnBuilder::make('theme_mode', 'Theme')
-                ->select([
-                    ['label' => 'Light', 'value' => 'light'],
-                    ['label' => 'Dark', 'value' => 'dark'],
-                    ['label' => 'System', 'value' => 'system'],
-                ])
-                ->visible(false)
-                ->description('User theme preference — showcases select() inline editable dropdown')
-
-                ->build(),
-            // theme_label: option type — showcases display-only label mapping (option())
-            ColumnBuilder::make('theme_label', 'Theme (display)')
-                ->option([
-                    ['label' => '☀ Light mode', 'value' => 'light'],
-                    ['label' => '🌙 Dark mode', 'value' => 'dark'],
-                    ['label' => '🖥 System', 'value' => 'system'],
-                ])
-                ->valueGetter('theme_mode')
-                ->visible(false)
-                ->description('Display-only label mapping — showcases option() type')
-
-                ->build(),
-
-            // ── Dates ────────────────────────────────────────────────────────────
-            // position: number column for drag-to-reorder (HasReorder)
+            // ── Reorder & Dates ─────────────────────────────────────────────────
             ColumnBuilder::make('position', 'Order')
                 ->number()
                 ->sortable()
                 ->visible(false)
-                ->description('Drag-to-reorder position (showcases HasReorder)')
-
-                ->build(),
-            // account_age_days: number + sparkline('bar') — showcases suffix(Closure) + sparkline
-            ColumnBuilder::make('account_age_days', 'Account age')
-                ->number()
-                ->sortable()
-                ->suffix(fn (mixed $v): string => $v === 1 ? ' day' : ' days')
-                ->sparkline('bar')
-                ->description('Days since creation (showcases suffix Closure + sparkline bar)')
-                ->visible(false)
-
                 ->build(),
             ColumnBuilder::make('created_at', 'Created at')
                 ->date()
@@ -337,6 +204,7 @@ final class UserDataTable extends AbstractDataTable
                 ->filterable()
                 ->locale('en')
                 ->responsivePriority(2)
+                ->visible(false)
                 ->build(),
         ];
     }
@@ -846,12 +714,7 @@ TEXT;
      */
     public static function tableAdditionalSorts(): array
     {
-        return [
-            // account_age_days is computed from created_at — map to the real DB column
-            AllowedSort::field('account_age_days', 'created_at'),
-            // lifetime_value is computed from profile_score — map to the real DB column
-            AllowedSort::field('lifetime_value', 'profile_score'),
-        ];
+        return [];
     }
 
     // ─── HasExport ───────────────────────────────────────────

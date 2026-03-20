@@ -8097,7 +8097,7 @@
             "dist": {
                 "type": "path",
                 "url": "../laravel-data-table",
-                "reference": "87d298491a70b33741ab61e22b29e547fd15455d"
+                "reference": "ed5bc6e3e45b5afa7a2f587d94b7e0f0b9ff10c1"
             },
             "require": {
                 "illuminate/database": "^11.0 || ^12.0",

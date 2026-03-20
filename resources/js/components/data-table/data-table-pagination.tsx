@@ -77,9 +77,13 @@ export function DataTablePagination({
     );
 
     return (
-        <div className="flex items-center justify-between px-2 py-4">
+        <div className="flex items-center justify-between px-3 py-2">
             <div className="text-sm text-muted-foreground">
-                {!isCursor && !isSimple && t.totalResults(meta.total)}
+                {!isCursor && !isSimple && (() => {
+                    const from = (meta.currentPage - 1) * meta.perPage + 1;
+                    const to = Math.min(meta.currentPage * meta.perPage, meta.total);
+                    return t.showingRange ? t.showingRange(from, to, meta.total) : t.totalResults(meta.total);
+                })()}
             </div>
             <div className="flex items-center gap-6 lg:gap-8">
                 <div className="flex items-center gap-2">

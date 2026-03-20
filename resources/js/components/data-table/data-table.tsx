@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
 import {
     Sheet,
     SheetContent,
@@ -222,12 +221,16 @@ function useAutoSizer(enabled: boolean, containerRef: React.RefObject<HTMLElemen
     useEffect(() => {
         if (!enabled || !containerRef.current) return;
         const el = containerRef.current;
+        const parent = el.parentElement;
         const updateDimensions = () => {
-            setDimensions({ width: el.clientWidth, height: el.clientHeight });
+            // Use parent's width to avoid exceeding overflow-hidden container bounds
+            const width = parent ? parent.clientWidth : el.clientWidth;
+            setDimensions({ width, height: el.clientHeight });
         };
         updateDimensions();
         const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(updateDimensions) : null;
-        ro?.observe(el);
+        // Observe the parent so we resize when the container changes, not when the scroll area changes
+        if (parent) ro?.observe(parent); else ro?.observe(el);
         return () => { ro?.disconnect(); };
     }, [enabled, containerRef]);
 
@@ -468,13 +471,13 @@ function AnalyticsCard({ card, t }: { card: DataTableAnalytic; t: DataTableTrans
         : null;
 
     return (
-        <div className="flex flex-col gap-1 rounded-lg border bg-card p-4 shadow-sm">
+        <div className="flex flex-col gap-1 rounded-md border border-border/50 p-3">
             <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-muted-foreground">{card.label}</span>
                 {card.icon && <span className="text-lg text-muted-foreground/60">{card.icon}</span>}
             </div>
             <div className="flex items-baseline gap-2">
-                <span className={cn("text-2xl font-bold tracking-tight", card.color)}>
+                <span className={cn("text-xl font-semibold tracking-tight", card.color)}>
                     {card.format !== "currency" && card.prefix}{formattedValue}{card.suffix}
                 </span>
                 {card.change != null && (
@@ -1269,7 +1272,7 @@ function InlineEditCell({ value: initialValue, columnId, columnType, onSave, t }
                 onDoubleClick={() => { setEditValue(String(initialValue ?? "")); setEditing(true); }}
                 title="Double-click to edit">
                 {initialValue === null || initialValue === undefined
-                    ? <span className="text-muted-foreground italic text-xs">empty</span> : String(initialValue)}
+                    ? <span className="text-muted-foreground/50 text-xs">&mdash;</span> : String(initialValue)}
             </span>
         );
     }
@@ -1310,9 +1313,9 @@ function ToggleCell({ value, row, columnId, toggleUrl }: {
         });
     }, [row.id, toggleUrl, columnId]);
 
-    return <Switch checked={checked} onCheckedChange={handleToggle} disabled={saving}
-        className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-muted-foreground/20"
-        aria-label={`Toggle ${columnId}`} role="switch" aria-checked={checked} />;
+    return <Checkbox checked={checked} onCheckedChange={handleToggle} disabled={saving}
+        className="data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+        aria-label={`Toggle ${columnId}`} />;
 }
 
 function DensityToggle({ density, onChange, t }: {
@@ -1646,14 +1649,13 @@ function LayoutSwitcher({ layout, onLayoutChange, showKanban, t }: {
         ...(showKanban ? [{ mode: "kanban" as const, icon: <Kanban className="h-3.5 w-3.5" />, label: t.layoutKanban }] : []),
     ];
     return (
-        <div className="inline-flex items-center rounded-lg border bg-muted/30 p-0.5">
+        <div className="inline-flex items-center rounded-md border bg-muted/30 p-0.5">
             {modes.map(({ mode, icon, label }) => (
                 <button key={mode} type="button" title={label}
-                    className={cn("inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-all",
+                    className={cn("inline-flex items-center rounded-md px-1.5 py-1 text-xs font-medium transition-all",
                         layout === mode ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
                     onClick={() => onLayoutChange(mode)}>
                     {icon}
-                    <span className="hidden sm:inline">{label}</span>
                 </button>
             ))}
         </div>
@@ -4290,6 +4292,23 @@ function DataTableInner<TData extends object>({
                         );
                     }
 
+                    if (col.type === "date" && typeof value === "string" && value) {
+                        const d = new Date(value);
+                        if (!isNaN(d.getTime())) {
+                            const now = new Date();
+                            const diffDays = Math.floor((now.getTime() - d.getTime()) / 86400000);
+                            let display: string;
+                            if (diffDays === 0) display = "Today";
+                            else if (diffDays === 1) display = "Yesterday";
+                            else if (diffDays < 7) display = `${diffDays}d ago`;
+                            else display = d.toLocaleDateString(col.locale ?? undefined, {
+                                month: "short", day: "numeric",
+                                ...(d.getFullYear() !== now.getFullYear() ? { year: "numeric" } : {}),
+                            });
+                            return wrapCell(<span className="tabular-nums text-muted-foreground" title={value}>{display}</span>);
+                        }
+                    }
+
                     if (col.type === "number" && typeof value === "number") return wrapCell(<span className="tabular-nums">{value.toLocaleString()}</span>);
 
                     // valueFormatter: apply format string (e.g., '{value} USD') or JS expression (e.g., '(value, row) => ...')
@@ -4423,8 +4442,10 @@ function DataTableInner<TData extends object>({
                         ? actions.filter((a) => checkActionRule(a.id, a.label, row.original as Record<string, unknown>))
                         : actions;
                     return filteredActions.length > 0 ? (
-                        <DataTableRowActions row={row.original} actions={filteredActions} t={t}
-                            onFormAction={(action, r) => setFormAction({ action, row: r })} />
+                        <div className={cn("opacity-0 group-hover/row:opacity-100 focus-within:opacity-100 transition-opacity", row.getIsSelected() && "opacity-100")}>
+                            <DataTableRowActions row={row.original} actions={filteredActions} t={t}
+                                onFormAction={(action, r) => setFormAction({ action, row: r })} />
+                        </div>
                     ) : null;
                 } });
         }
@@ -5013,13 +5034,13 @@ function DataTableInner<TData extends object>({
 
             {/* ── Table ── */}
             {!isMobile && layoutMode === "table" && (!config?.deferLoading || deferLoaded) && (
-                <div id={`dt-table-${tableName}`} className={cn("rounded-xl border shadow-sm overflow-hidden relative", className)}
+                <div id={`dt-table-${tableName}`} className={cn("rounded-lg border overflow-hidden relative", className)}
                     tabIndex={resolvedOptions.keyboardNavigation ? 0 : undefined}
                     onKeyDown={resolvedOptions.keyboardNavigation ? handleTableKeyDown : undefined}>
                     <div ref={scrollShadowLeftRef} className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-r from-background/80 to-transparent opacity-0 transition-opacity duration-150" aria-hidden="true" />
                     <div ref={scrollShadowRightRef} className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-l from-background/80 to-transparent opacity-0 transition-opacity duration-150" aria-hidden="true" />
                     <div ref={virtualContainerRef} className={cn("overflow-x-auto", resolvedOptions.virtualScrolling && "max-h-[600px] overflow-y-auto")}
-                        style={autoSizerDimensions && autoSizerDimensions.width > 0 && autoSizerDimensions.height > 0 ? { width: autoSizerDimensions.width, height: autoSizerDimensions.height } : undefined}>
+                        style={resolvedOptions.virtualScrolling && autoSizerDimensions && autoSizerDimensions.height > 0 ? { height: autoSizerDimensions.height } : undefined}>
                         <Table ref={tableElementRef} style={resolvedOptions.columnResizing ? { width: table.getCenterTotalSize() } : undefined}
                             role="grid" aria-rowcount={meta.total} aria-colcount={table.getVisibleLeafColumns().length}>
                             <TableHeader className={cn(resolvedOptions.stickyHeader && "sticky top-0 z-10 bg-background shadow-[0_1px_3px_-1px_rgba(0,0,0,0.1)]")}>
@@ -5092,7 +5113,7 @@ function DataTableInner<TData extends object>({
                                                 return (
                                                     <TableHead key={header.id} colSpan={header.colSpan}
                                                         style={{ ...pin.style, ...(resolvedOptions.columnResizing ? { width: header.getSize() } : {}) }}
-                                                        className={cn("h-10 text-xs font-semibold text-muted-foreground bg-muted/20 border-b-2 border-border/60", isNumber && "text-right",
+                                                        className={cn("h-9 text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70 border-b border-border/40", isNumber && "text-right",
                                                             leafGroup && groupClassName?.[leafGroup],
                                                             pin.className, "relative")}
                                                         aria-sort={ariaSort} role="columnheader">
@@ -5113,7 +5134,7 @@ function DataTableInner<TData extends object>({
                                 })}
                                 {/* Header filters row */}
                                 {resolvedOptions.headerFilters && (
-                                    <TableRow className="bg-muted/30 border-b">
+                                    <TableRow className="border-b border-border/30">
                                         {table.getVisibleLeafColumns().map((col) => {
                                             const colDef = tableData.columns.find(c => c.id === col.id);
                                             const isFilterable = colDef?.filterable || colDef?.headerFilter;
@@ -5146,7 +5167,7 @@ function DataTableInner<TData extends object>({
                                             const pin = getColumnPinningProps(col);
                                             let rendered: React.ReactNode = val != null ? String(val) : "";
                                             if (colDef?.type === "boolean" && typeof val === "boolean") {
-                                                rendered = <Switch checked={val} disabled className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-muted-foreground/20" aria-label={`${colDef.label}: ${val ? t.yes : t.no}`} />;
+                                                rendered = <Checkbox checked={val} disabled className="data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500" aria-label={`${colDef.label}: ${val ? t.yes : t.no}`} />;
                                             } else if (colDef?.type === "badge" && val != null) {
                                                 const badgeVal = String(val);
                                                 rendered = <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium">{badgeVal}</span>;
@@ -5187,9 +5208,8 @@ function DataTableInner<TData extends object>({
                                                         role="row" aria-rowindex={(meta.currentPage - 1) * meta.perPage + index + 1}
                                                         aria-selected={row.getIsSelected() || undefined}
                                                         className={cn(
-                                                            "transition-colors border-b border-border/40",
+                                                            "group/row transition-colors border-b border-border/20",
                                                             densityClasses.row,
-                                                            index % 2 === 1 && "bg-muted/30",
                                                             "hover:bg-muted/50",
                                                             row.getIsSelected() && "bg-primary/8 hover:bg-primary/12",
                                                             isClickable && "cursor-pointer",
@@ -5474,25 +5494,24 @@ function DataTableInner<TData extends object>({
                             )}
                         </Table>
                     </div>
+                    {/* ── Pagination + Auto-refresh ── */}
+                    <div className="flex items-center justify-between border-t print:hidden">
+                        <div className="flex-1">
+                            {(config?.pollingInterval ?? 0) > 0 && (
+                                <div className="flex items-center gap-1.5 px-3 text-xs text-muted-foreground">
+                                    <RefreshCw className="h-3 w-3 animate-spin" style={{ animationDuration: "3s" }} />
+                                    {t.autoRefresh} ({config!.pollingInterval}s)
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex-1">
+                            {slots?.pagination ?? (
+                                <DataTablePagination meta={meta} onPageChange={handlePageChange} onPerPageChange={handlePerPageChange} onCursorChange={handleCursorChange} t={t} prefix={prefix} partialReloadKey={partialReloadKey} />
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
-
-            {/* ── Pagination + Auto-refresh ── */}
-            <div className="flex items-center justify-between pt-1 print:hidden">
-                <div className="flex-1">
-                    {(config?.pollingInterval ?? 0) > 0 && (
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <RefreshCw className="h-3 w-3 animate-spin" style={{ animationDuration: "3s" }} />
-                            {t.autoRefresh} ({config!.pollingInterval}s)
-                        </div>
-                    )}
-                </div>
-                <div className="flex-1">
-                    {slots?.pagination ?? (
-                        <DataTablePagination meta={meta} onPageChange={handlePageChange} onPerPageChange={handlePerPageChange} onCursorChange={handleCursorChange} t={t} prefix={prefix} partialReloadKey={partialReloadKey} />
-                    )}
-                </div>
-            </div>
 
             {/* ── Status bar ── */}
             {resolvedOptions.statusBar && selectedRows.length > 0 && (
