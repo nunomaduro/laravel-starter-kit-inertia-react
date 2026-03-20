@@ -564,11 +564,11 @@ final class UserDataTable extends AbstractDataTable
 
     /**
      * @param  Collection<int, self>  $items
-     * @return array<string, mixed>|null
+     * @return array<string, mixed>
      */
-    public static function tableFooter(Collection $items): ?array
+    public static function tableFooter(Collection $items): array
     {
-        return null;
+        return [];
     }
 
     /**
