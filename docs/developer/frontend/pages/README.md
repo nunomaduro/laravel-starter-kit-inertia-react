@@ -19,14 +19,14 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 
 | Page | Route | Documented |
 |------|-------|------------|
-| [appearance/update](./appearance-update.md) | mails.webhook, filament.exports.download | ✅ |
+| [appearance/update](./appearance-update.md) | N/A | ✅ |
 | [dashboard](./dashboard.md) | dashboard | ✅ |
 | [session/create](./session-create.md) | login, login.store | ✅ |
 | [user-email-reset-notification/create](./user-email-reset-notification-create.md) | password.request, password.email | ✅ |
 | [user-email-verification-notification/create](./user-email-verification-notification-create.md) | verification.notice, verification.send | ✅ |
 | [user-password-confirmation/create](./user-password-confirmation-create.md) | N/A | ✅ |
-| [user-password/create](./user-password-create.md) | password.edit, password.update | ✅ |
-| [user-password/edit](./user-password-edit.md) | password.edit, password.update | ✅ |
+| [user-password/create](./user-password-create.md) | password.reset, password.store | ✅ |
+| [user-password/edit](./user-password-edit.md) | password.reset, password.store | ✅ |
 | [user-profile/edit](./user-profile-edit.md) | user-profile.edit, user-profile.update | ✅ |
 | [user-two-factor-authentication-challenge/show](./user-two-factor-authentication-challenge-show.md) | N/A | ✅ |
 | [user-two-factor-authentication/show](./user-two-factor-authentication-show.md) | two-factor.show | ✅ |
@@ -38,7 +38,7 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [changelog/index](./changelog-index.md) | changelog.index | ✅ |
 | [help/index](./help-index.md) | help.index, help.show | ✅ |
 | [help/show](./help-show.md) | help.index, help.show | ✅ |
-| [settings/personal-data-export](./settings-personal-data-export.md) | mails.webhook, filament.exports.download | ✅ |
+| [settings/personal-data-export](./settings-personal-data-export.md) | N/A | ✅ |
 | [onboarding/show](./onboarding-show.md) | onboarding, onboarding.store | ✅ |
 | [legal/privacy](./legal-privacy.md) | mails.webhook, filament.exports.download | ✅ |
 | [legal/terms](./legal-terms.md) | mails.webhook, filament.exports.download | ✅ |
