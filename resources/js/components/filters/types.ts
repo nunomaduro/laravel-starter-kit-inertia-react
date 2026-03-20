@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import type { DataTableTranslations } from "../data-table/i18n";
 
 export type FilterType = "text" | "number" | "date" | "option" | "boolean";
 
@@ -20,36 +21,36 @@ export type ActiveFilters = Record<string, FilterValue>;
 
 export interface OperatorDef {
     value: string;
-    label: string;
+    labelKey: keyof DataTableTranslations;
     multi: boolean;
 }
 
 export const OPERATORS: Record<FilterType, OperatorDef[]> = {
     text: [
-        { value: "contains", label: "contient", multi: false },
-        { value: "eq", label: "est exactement", multi: false },
+        { value: "contains", labelKey: "opContains", multi: false },
+        { value: "eq", labelKey: "opExact", multi: false },
     ],
     number: [
-        { value: "eq", label: "=", multi: false },
-        { value: "neq", label: "≠", multi: false },
-        { value: "gt", label: ">", multi: false },
-        { value: "gte", label: "≥", multi: false },
-        { value: "lt", label: "<", multi: false },
-        { value: "lte", label: "≤", multi: false },
-        { value: "between", label: "entre", multi: true },
+        { value: "eq", labelKey: "opEquals", multi: false },
+        { value: "neq", labelKey: "opNotEquals", multi: false },
+        { value: "gt", labelKey: "opGreaterThan", multi: false },
+        { value: "gte", labelKey: "opGreaterOrEqual", multi: false },
+        { value: "lt", labelKey: "opLessThan", multi: false },
+        { value: "lte", labelKey: "opLessOrEqual", multi: false },
+        { value: "between", labelKey: "opBetween", multi: true },
     ],
     date: [
-        { value: "eq", label: "est le", multi: false },
-        { value: "before", label: "avant le", multi: false },
-        { value: "after", label: "après le", multi: false },
-        { value: "between", label: "entre", multi: true },
+        { value: "eq", labelKey: "opOnDate", multi: false },
+        { value: "before", labelKey: "opBefore", multi: false },
+        { value: "after", labelKey: "opAfter", multi: false },
+        { value: "between", labelKey: "opBetween", multi: true },
     ],
     option: [
-        { value: "in", label: "est", multi: false },
-        { value: "not_in", label: "n'est pas", multi: false },
+        { value: "in", labelKey: "opIs", multi: false },
+        { value: "not_in", labelKey: "opIsNot", multi: false },
     ],
     boolean: [
-        { value: "eq", label: "est", multi: false },
+        { value: "eq", labelKey: "opIs", multi: false },
     ],
 };
 

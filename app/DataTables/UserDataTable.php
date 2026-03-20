@@ -116,25 +116,23 @@ final class UserDataTable extends AbstractDataTable
             ColumnBuilder::make('_index', '#')
                 ->rowIndex()
                 ->visible(false)
-                ->group('Identity')
+
                 ->build(),
             ColumnBuilder::make('id', 'ID')
                 ->number()
                 ->sortable()
                 ->prefix('#')
-                ->description('Primary key')
-                ->group('Identity')
                 ->build(),
             ColumnBuilder::make('hash_id', 'Hash ID')
                 ->text()
                 ->visible(false)
                 ->description('Public-safe hash identifier')
-                ->group('Identity')
+
                 ->build(),
             ColumnBuilder::make('avatar', 'Avatar')
                 ->image()
                 ->visible(false)
-                ->group('Identity')
+
                 ->build(),
             ColumnBuilder::make('name', 'Name')
                 ->text()
@@ -145,8 +143,6 @@ final class UserDataTable extends AbstractDataTable
                 ->avatar('avatar')
                 ->headerFilter()
                 ->autoHeight()
-                ->description('Display name with avatar')
-                ->group('Identity')
                 ->build(),
             ColumnBuilder::make('email', 'Email')
                 ->email()
@@ -155,7 +151,6 @@ final class UserDataTable extends AbstractDataTable
                 ->editable()
                 ->headerFilter()
                 ->tooltip('Contact email')
-                ->group('Identity')
                 ->build(),
             // phone: phone type column — showcases phone()
             ColumnBuilder::make('phone', 'Phone')
@@ -163,14 +158,14 @@ final class UserDataTable extends AbstractDataTable
                 ->editable()
                 ->visible(false)
                 ->description('Phone number (showcases phone() type)')
-                ->group('Identity')
+
                 ->build(),
             // profile_url: link type — shows the user's profile page URL (hidden by default)
             ColumnBuilder::make('profile_url', 'Profile link')
                 ->link()
                 ->visible(false)
                 ->description('Direct link to user profile')
-                ->group('Identity')
+
                 ->build(),
             // user_profile: stacked name+email with avatar (composite display, hidden by default)
             ColumnBuilder::make('user_profile', 'Profile (stacked)')
@@ -179,7 +174,7 @@ final class UserDataTable extends AbstractDataTable
                 ->avatar('avatar')
                 ->visible(false)
                 ->description('Name + email stacked with avatar')
-                ->group('Identity')
+
                 ->build(),
 
             // ── Status ───────────────────────────────────────────────────────────
@@ -190,8 +185,6 @@ final class UserDataTable extends AbstractDataTable
                     ['label' => 'Deleted', 'value' => 'deleted', 'variant' => 'danger'],
                 ])
                 ->filterable()
-                ->description('Active, pending, or deleted (soft-delete)')
-                ->group('Status')
                 ->build(),
             // color: color type column — showcases color() swatch display
             ColumnBuilder::make('color', 'Color label')
@@ -199,7 +192,7 @@ final class UserDataTable extends AbstractDataTable
                 ->editable()
                 ->visible(false)
                 ->description('User color label — hex swatch (showcases color() type)')
-                ->group('Identity')
+
                 ->build(),
             // tags: multiOption type — showcases multi-value display
             ColumnBuilder::make('tags', 'Tags')
@@ -207,7 +200,7 @@ final class UserDataTable extends AbstractDataTable
                 ->editable()
                 ->visible(false)
                 ->description('User tags — multi-value display (showcases multiOption())')
-                ->group('Identity')
+
                 ->build(),
             // status_icon: icon type using valueGetter from 'status' (hidden by default)
             ColumnBuilder::make('status_icon', 'Status icon')
@@ -219,23 +212,19 @@ final class UserDataTable extends AbstractDataTable
                 ->valueGetter('status')
                 ->visible(false)
                 ->description('Icon representation of status')
-                ->group('Status')
+
                 ->build(),
             ColumnBuilder::make('onboarding_completed', 'Onboarding done')
                 ->boolean()
                 ->toggleable()
                 ->sortable()
                 ->filterable()
-                ->description('Has completed onboarding flow')
-                ->group('Status')
                 ->build(),
             ColumnBuilder::make('organizations_count', 'Orgs')
                 ->number()
                 ->summary('sum')
                 ->suffix(fn (mixed $v): string => $v === 1 ? ' org' : ' orgs')
                 ->range(0, 50)
-                ->description('Number of organizations')
-                ->group('Status')
                 ->build(),
             // profile_score: percentage type — showcases percentage column
             ColumnBuilder::make('profile_score', 'Profile score')
@@ -243,7 +232,7 @@ final class UserDataTable extends AbstractDataTable
                 ->sortable()
                 ->description('Profile completeness: name (34%) + email verified (33%) + onboarding (33%)')
                 ->visible(false)
-                ->group('Status')
+
                 ->build(),
             // account_label: computed column — derives value from status + onboarding_completed at query time
             ColumnBuilder::make('account_label', 'Account label')
@@ -267,13 +256,11 @@ final class UserDataTable extends AbstractDataTable
                 ])
                 ->visible(false)
                 ->description('Computed label from status + onboarding (showcases computed() + colorMap())')
-                ->group('Status')
+
                 ->build(),
             ColumnBuilder::make('first_organization_name', 'Primary org')
                 ->text()
                 ->filterable()
-                ->description('First/primary organization name')
-                ->group('Status')
                 ->build(),
             // plan_tier: text + valueFormatter — showcases JS function expression valueFormatter
             ColumnBuilder::make('plan_tier', 'Plan tier')
@@ -281,7 +268,7 @@ final class UserDataTable extends AbstractDataTable
                 ->valueFormatter('(value) => "⭐ " + value.charAt(0).toUpperCase() + value.slice(1)')
                 ->visible(false)
                 ->description('Computed plan (free/pro/enterprise) — showcases valueFormatter()')
-                ->group('Status')
+
                 ->build(),
             // lifetime_value: currency type — showcases currency() + locale()
             ColumnBuilder::make('lifetime_value', 'Lifetime value')
@@ -291,7 +278,7 @@ final class UserDataTable extends AbstractDataTable
                 ->summary('sum')
                 ->visible(false)
                 ->description('Synthetic USD value — showcases currency() type with locale')
-                ->group('Status')
+
                 ->build(),
 
             // ── Preferences ──────────────────────────────────────────────────────
@@ -304,7 +291,7 @@ final class UserDataTable extends AbstractDataTable
                 ])
                 ->visible(false)
                 ->description('User theme preference — showcases select() inline editable dropdown')
-                ->group('Preferences')
+
                 ->build(),
             // theme_label: option type — showcases display-only label mapping (option())
             ColumnBuilder::make('theme_label', 'Theme (display)')
@@ -316,7 +303,7 @@ final class UserDataTable extends AbstractDataTable
                 ->valueGetter('theme_mode')
                 ->visible(false)
                 ->description('Display-only label mapping — showcases option() type')
-                ->group('Preferences')
+
                 ->build(),
 
             // ── Dates ────────────────────────────────────────────────────────────
@@ -326,7 +313,7 @@ final class UserDataTable extends AbstractDataTable
                 ->sortable()
                 ->visible(false)
                 ->description('Drag-to-reorder position (showcases HasReorder)')
-                ->group('Dates')
+
                 ->build(),
             // account_age_days: number + sparkline('bar') — showcases suffix(Closure) + sparkline
             ColumnBuilder::make('account_age_days', 'Account age')
@@ -336,15 +323,13 @@ final class UserDataTable extends AbstractDataTable
                 ->sparkline('bar')
                 ->description('Days since creation (showcases suffix Closure + sparkline bar)')
                 ->visible(false)
-                ->group('Dates')
+
                 ->build(),
             ColumnBuilder::make('created_at', 'Created at')
                 ->date()
                 ->sortable()
                 ->filterable()
                 ->locale('en')
-                ->description('First seen')
-                ->group('Dates')
                 ->build(),
             ColumnBuilder::make('updated_at', 'Updated at')
                 ->date()
@@ -352,7 +337,6 @@ final class UserDataTable extends AbstractDataTable
                 ->filterable()
                 ->locale('en')
                 ->responsivePriority(2)
-                ->group('Dates')
                 ->build(),
         ];
     }
@@ -640,20 +624,7 @@ final class UserDataTable extends AbstractDataTable
      */
     public static function tableRules(): array
     {
-        return [
-            [
-                'column' => 'onboarding_completed',
-                'operator' => 'eq',
-                'value' => true,
-                'row' => ['class' => 'bg-emerald-50 dark:bg-emerald-950/30'],
-            ],
-            [
-                'column' => 'onboarding_completed',
-                'operator' => 'eq',
-                'value' => false,
-                'row' => ['class' => 'bg-amber-50 dark:bg-amber-950/20'],
-            ],
-        ];
+        return [];
     }
 
     public static function tableDetailRowEnabled(): bool
@@ -668,7 +639,7 @@ final class UserDataTable extends AbstractDataTable
 
     public static function tablePollingInterval(): int
     {
-        return 60;
+        return 0;
     }
 
     public static function tableSoftDeletesEnabled(): bool
@@ -793,10 +764,10 @@ final class UserDataTable extends AbstractDataTable
         return '-id';
     }
 
-    /** Group rows by this column (e.g. onboarding status). Full usage example. */
-    public static function tableGroupByColumn(): string
+    /** Group rows by this column (e.g. onboarding status). Disabled — breaks scroll UX. */
+    public static function tableGroupByColumn(): ?string
     {
-        return 'onboarding_completed';
+        return null;
     }
 
     /** Authorize table actions (including AI). Showcase: allow any authenticated user. */

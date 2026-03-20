@@ -14,6 +14,9 @@ if [[ ! -d "$VENDOR" ]]; then
   exit 1
 fi
 
+FILTERS="$REPO_ROOT/vendor/machour/laravel-data-table/react/src/filters"
+FILTERS_DEST="$REPO_ROOT/resources/js/components/filters"
+
 echo "→ Syncing DataTable files from vendor to $DEST"
 cp "$VENDOR/data-table.tsx" "$DEST/"
 cp "$VENDOR/data-table-column.tsx" "$DEST/"
@@ -23,4 +26,11 @@ cp "$VENDOR/data-table-row-actions.tsx" "$DEST/"
 cp "$VENDOR/data-table-quick-views.tsx" "$DEST/"
 cp "$VENDOR/i18n.ts" "$DEST/"
 cp "$VENDOR/types.ts" "$DEST/"
-echo "  ✓ All DataTable component files synced."
+
+echo "→ Syncing filter files from vendor to $FILTERS_DEST"
+cp "$FILTERS/filters.tsx" "$FILTERS_DEST/"
+cp "$FILTERS/filter-controls.tsx" "$FILTERS_DEST/"
+cp "$FILTERS/types.ts" "$FILTERS_DEST/"
+cp "$FILTERS/use-filters.ts" "$FILTERS_DEST/"
+
+echo "  ✓ All DataTable and filter component files synced."

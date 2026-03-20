@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/select";
 import { isEqual } from "date-fns";
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
+import type { DataTableTranslations } from "../data-table/i18n";
 import { DEFAULT_OPERATOR, OPERATORS, type FilterColumn, type FilterValue } from "./types";
 
 interface FilterControlProps {
@@ -19,16 +20,19 @@ interface FilterControlProps {
     value?: FilterValue;
     onSubmit: (operator: string, values: string[]) => void;
     hideOperator?: boolean;
+    t: DataTableTranslations;
 }
 
 function OperatorSelect({
     type,
     value,
     onChange,
+    t,
 }: {
     type: FilterColumn["type"];
     value: string;
     onChange: (op: string) => void;
+    t: DataTableTranslations;
 }) {
     const ops = OPERATORS[type];
     if (ops.length <= 1) return null;
@@ -41,7 +45,7 @@ function OperatorSelect({
             <SelectContent>
                 {ops.map((op) => (
                     <SelectItem key={op.value} value={op.value}>
-                        {op.label}
+                        {String(t[op.labelKey])}
                     </SelectItem>
                 ))}
             </SelectContent>
@@ -49,7 +53,7 @@ function OperatorSelect({
     );
 }
 
-export function OptionFilter({ column, value, onSubmit, hideOperator }: FilterControlProps) {
+export function OptionFilter({ column, value, onSubmit, hideOperator, t }: FilterControlProps) {
     const [search, setSearch] = useState("");
     const [operator, setOperator] = useState(value?.operator || DEFAULT_OPERATOR.option);
     const selected = new Set(value?.values ?? []);
@@ -80,14 +84,14 @@ export function OptionFilter({ column, value, onSubmit, hideOperator }: FilterCo
 
     return (
         <div className="flex flex-col gap-2 p-2 w-[260px]">
-            {!hideOperator && <OperatorSelect type="option" value={operator} onChange={handleOperatorChange} />}
+            {!hideOperator && <OperatorSelect type="option" value={operator} onChange={handleOperatorChange} t={t} />}
             {showSearch && (
                 <div className="relative">
                     <Search className="absolute left-2 top-2 h-4 w-4 text-muted-foreground" />
                     <Input
-                        placeholder="Rechercher..."
+                        placeholder={t.search}
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                         className="h-8 pl-8 text-sm"
                     />
                 </div>
@@ -106,14 +110,14 @@ export function OptionFilter({ column, value, onSubmit, hideOperator }: FilterCo
                     </label>
                 ))}
                 {filteredOptions.length === 0 && (
-                    <p className="text-sm text-muted-foreground px-2 py-1">Aucun résultat.</p>
+                    <p className="text-sm text-muted-foreground px-2 py-1">{t.noResults}</p>
                 )}
             </div>
         </div>
     );
 }
 
-export function NumberFilter({ value, onSubmit, hideOperator }: FilterControlProps) {
+export function NumberFilter({ value, onSubmit, hideOperator, t }: FilterControlProps) {
     const [operator, setOperator] = useState(value?.operator || DEFAULT_OPERATOR.number);
     const [val1, setVal1] = useState(value?.values[0] ?? "");
     const [val2, setVal2] = useState(value?.values[1] ?? "");
@@ -140,13 +144,13 @@ export function NumberFilter({ value, onSubmit, hideOperator }: FilterControlPro
 
     return (
         <div className="flex flex-col gap-2 p-2 w-[260px]">
-            {!hideOperator && <OperatorSelect type="number" value={operator} onChange={handleOperatorChange} />}
+            {!hideOperator && <OperatorSelect type="number" value={operator} onChange={handleOperatorChange} t={t} />}
             <div className={isRange ? "grid grid-cols-2 gap-2" : ""}>
                 <Input
                     type="number"
-                    placeholder={isRange ? "Min" : "Valeur"}
+                    placeholder={isRange ? t.min : t.value}
                     value={val1}
-                    onChange={(e) => setVal1(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVal1(e.target.value)}
                     onKeyDown={handleKeyDown}
                     autoFocus
                     className="h-8 text-sm"
@@ -154,20 +158,20 @@ export function NumberFilter({ value, onSubmit, hideOperator }: FilterControlPro
                 {isRange && (
                     <Input
                         type="number"
-                        placeholder="Max"
+                        placeholder={t.max}
                         value={val2}
-                        onChange={(e) => setVal2(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVal2(e.target.value)}
                         onKeyDown={handleKeyDown}
                         className="h-8 text-sm"
                     />
                 )}
             </div>
-            <p className="text-xs text-muted-foreground">Appuyez sur Entrée pour filtrer</p>
+            <p className="text-xs text-muted-foreground">{t.pressEnterToFilter}</p>
         </div>
     );
 }
 
-export function DateFilter({ value, onSubmit, hideOperator }: FilterControlProps) {
+export function DateFilter({ value, onSubmit, hideOperator, t }: FilterControlProps) {
     const [operator, setOperator] = useState(value?.operator || DEFAULT_OPERATOR.date);
     const isRange = OPERATORS.date.find((o) => o.value === operator)?.multi ?? false;
 
@@ -210,7 +214,7 @@ export function DateFilter({ value, onSubmit, hideOperator }: FilterControlProps
 
     return (
         <div className="flex flex-col gap-2 p-2">
-            {!hideOperator && <OperatorSelect type="date" value={operator} onChange={handleOperatorChange} />}
+            {!hideOperator && <OperatorSelect type="date" value={operator} onChange={handleOperatorChange} t={t} />}
             <Calendar
                 mode="range"
                 selected={date}
@@ -222,7 +226,7 @@ export function DateFilter({ value, onSubmit, hideOperator }: FilterControlProps
     );
 }
 
-export function TextFilter({ value, onSubmit, hideOperator }: FilterControlProps) {
+export function TextFilter({ value, onSubmit, hideOperator, t }: FilterControlProps) {
     const [operator, setOperator] = useState(value?.operator || DEFAULT_OPERATOR.text);
     const [text, setText] = useState(value?.values[0] ?? "");
 
@@ -242,44 +246,50 @@ export function TextFilter({ value, onSubmit, hideOperator }: FilterControlProps
 
     return (
         <div className="flex flex-col gap-2 p-2 w-[260px]">
-            {!hideOperator && <OperatorSelect type="text" value={operator} onChange={handleOperatorChange} />}
+            {!hideOperator && <OperatorSelect type="text" value={operator} onChange={handleOperatorChange} t={t} />}
             <Input
-                placeholder="Rechercher..."
+                placeholder={t.search}
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setText(e.target.value)}
                 onKeyDown={handleKeyDown}
                 autoFocus
                 className="h-8 text-sm"
             />
-            <p className="text-xs text-muted-foreground">Appuyez sur Entrée pour filtrer</p>
+            <p className="text-xs text-muted-foreground">{t.pressEnterToFilter}</p>
         </div>
     );
 }
 
-const BOOL_OPTIONS = [
-    { label: "Oui", value: "1" },
-    { label: "Non", value: "0" },
-];
+const BOOL_OPTIONS_KEYS = {
+    yes: "1",
+    no: "0",
+};
 
-export function FilterControl({ column, value, onSubmit, hideOperator }: FilterControlProps) {
+export function FilterControl({ column, value, onSubmit, hideOperator, t }: FilterControlProps) {
+    const boolOptions = [
+        { label: t.yes, value: BOOL_OPTIONS_KEYS.yes },
+        { label: t.no, value: BOOL_OPTIONS_KEYS.no },
+    ];
+
     switch (column.type) {
         case "boolean":
             return (
                 <OptionFilter
-                    column={{ ...column, type: "option", options: BOOL_OPTIONS, searchThreshold: 999 }}
+                    column={{ ...column, type: "option", options: boolOptions, searchThreshold: 999 }}
                     value={value}
                     onSubmit={onSubmit}
                     hideOperator
+                    t={t}
                 />
             );
         case "option":
-            return <OptionFilter column={column} value={value} onSubmit={onSubmit} hideOperator={hideOperator} />;
+            return <OptionFilter column={column} value={value} onSubmit={onSubmit} hideOperator={hideOperator} t={t} />;
         case "number":
-            return <NumberFilter column={column} value={value} onSubmit={onSubmit} hideOperator={hideOperator} />;
+            return <NumberFilter column={column} value={value} onSubmit={onSubmit} hideOperator={hideOperator} t={t} />;
         case "date":
-            return <DateFilter column={column} value={value} onSubmit={onSubmit} hideOperator={hideOperator} />;
+            return <DateFilter column={column} value={value} onSubmit={onSubmit} hideOperator={hideOperator} t={t} />;
         case "text":
-            return <TextFilter column={column} value={value} onSubmit={onSubmit} hideOperator={hideOperator} />;
+            return <TextFilter column={column} value={value} onSubmit={onSubmit} hideOperator={hideOperator} t={t} />;
         default:
             return null;
     }
