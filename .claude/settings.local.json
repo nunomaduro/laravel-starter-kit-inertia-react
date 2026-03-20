@@ -264,7 +264,8 @@
       "Bash(php /Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/artisan make:class \"Services/DashboardMetricsService\" --no-interaction)",
       "Bash(php:*)",
       "Bash(git stash:*)",
-      "Bash(vendor/bin/pint app/Providers/Filament/SystemPanelProvider.php app/Support/ModuleServiceProvider.php --format agent 2>&1)"
+      "Bash(vendor/bin/pint app/Providers/Filament/SystemPanelProvider.php app/Support/ModuleServiceProvider.php --format agent 2>&1)",
+      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index"
     ]
   },
   "enableAllProjectMcpServers": true,
