@@ -342,24 +342,11 @@ final class UserDataTable extends AbstractDataTable
     }
 
     /**
-     * Full-dataset summary for showcase (total count, sum of orgs).
-     *
      * @return array<string, mixed>
      */
     public static function tableSummary(QueryBuilder $query): array
     {
-        $builder = $query->getEloquentBuilder();
-
-        $userIds = (clone $builder)->select('id')->pluck('id');
-
-        $organizationsSum = $userIds->isEmpty()
-            ? 0
-            : (int) DB::table('organization_user')->whereIn('user_id', $userIds)->count();
-
-        return [
-            'id' => $builder->count(),
-            'organizations_count' => $organizationsSum,
-        ];
+        return [];
     }
 
     /**
@@ -576,47 +563,12 @@ final class UserDataTable extends AbstractDataTable
     }
 
     /**
-     * Single footer row: page count, created-at range (this page), and org-count sum.
-     * Summary row is disabled so this is the only footer line.
-     *
      * @param  Collection<int, self>  $items
-     * @return array<string, mixed>
+     * @return array<string, mixed>|null
      */
-    public static function tableFooter(Collection $items): array
+    public static function tableFooter(Collection $items): ?array
     {
-        $n = $items->count();
-        $createdRange = $items->isEmpty()
-            ? null
-            : $items->min('created_at').' – '.$items->max('created_at');
-
-        return [
-            '_index' => null,
-            'id' => $n.' user'.($n !== 1 ? 's' : '').' on this page',
-            'hash_id' => null,
-            'avatar' => null,
-            'name' => null,
-            'email' => null,
-            'phone' => null,
-            'color' => null,
-            'tags' => null,
-            'profile_url' => null,
-            'user_profile' => null,
-            'status' => null,
-            'status_icon' => null,
-            'onboarding_completed' => null,
-            'organizations_count' => $items->sum('organizations_count'),
-            'profile_score' => $items->isEmpty() ? null : (int) $items->avg('profile_score'),
-            'account_label' => null,
-            'first_organization_name' => null,
-            'plan_tier' => null,
-            'lifetime_value' => $items->isEmpty() ? null : round((float) $items->sum('lifetime_value'), 2),
-            'theme_mode' => null,
-            'theme_label' => null,
-            'position' => null,
-            'account_age_days' => $items->isEmpty() ? null : (int) $items->avg('account_age_days'),
-            'created_at' => $createdRange,
-            'updated_at' => null,
-        ];
+        return null;
     }
 
     /**
@@ -853,47 +805,11 @@ TEXT;
     }
 
     /**
-     * Pin a synthetic "platform totals" row at the bottom.
-     *
      * @return array<int, self>
      */
     public static function tablePinnedBottomRows(): array
     {
-        try {
-            $total = User::query()->count();
-            $totalOrgs = DB::table('organization_user')->count();
-
-            $row = new self(
-                id: 0,
-                hash_id: '',
-                name: '— Platform totals —',
-                email: '',
-                phone: null,
-                avatar: null,
-                color: null,
-                tags: [],
-                status: 'active',
-                onboarding_completed: false,
-                organizations_count: $totalOrgs,
-                first_organization_name: null,
-                profile_url: null,
-                account_age_days: 0,
-                profile_score: 0,
-                plan_tier: 'free',
-                lifetime_value: 0.0,
-                theme_mode: null,
-                position: null,
-                created_at: null,
-                updated_at: null,
-            );
-
-            // Annotate the name with total count for display
-            $row->name = "— {$total} users platform-wide —";
-
-            return [$row];
-        } catch (Throwable) {
-            return [];
-        }
+        return [];
     }
 
     /** Default layout: 'table', 'grid', 'cards', or 'kanban'. */
