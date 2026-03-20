@@ -37,8 +37,8 @@ Backend components, services, and patterns for developers.
 - [Gamification](./gamification.md) - XP, levels, achievements (cjmellor/level-up); feature-gated
 - [Media Library (User avatar)](./media-library.md) - Spatie Media Library and user avatar (conversions, profile)
 - [Permissions and RBAC](./permissions.md) - Route-based permissions, permission categories, role hierarchy
-- [Prism AI Integration](./prism.md) - AI integration with Prism and OpenRouter
-- [Laravel AI SDK](./ai-sdk.md) - Agents, embeddings, images, and when to use vs Prism
+- [Laravel AI SDK](./ai-sdk.md) - Primary AI layer: agents, structured output, images, embeddings, tools
+- [Prism / Relay](./prism.md) - MCP tool bridge (Relay) and availability checks only
 - [Laravel AI Memory](./ai-memory.md) - Semantic memory for agents (eznix86/laravel-ai-memory; store/recall, WithMemory)
 - [PostgreSQL + pgvector](./pgvector.md) - Vector embeddings with pgvector (optional)
 - [Response Cache](./response-cache.md) - Guest GET response caching (exclude auth/admin)
@@ -84,8 +84,8 @@ Backend components, services, and patterns for developers.
 - [Settings](./settings.md) - DB-backed settings; `App\Settings\*`; Filament Settings group
 - [Userstamps](./userstamps.md) - created_by/updated_by with wildside/userstamps
 - [Seeder System](./database/seeders.md) - Automated seeder system
-- [Prism AI Integration](./prism.md) - AI-powered features with Prism (OpenRouter, commands)
-- [Laravel AI SDK](./ai-sdk.md) - Agents, embeddings, media; use with Prism as needed
+- [Laravel AI SDK](./ai-sdk.md) - Primary AI layer: agents, structured output, images, embeddings, tools
+- [Prism / Relay](./prism.md) - MCP tool bridge (Relay) and availability checks only
 - [Laravel AI Memory](./ai-memory.md) - Semantic memory for agents (store/recall, WithMemory)
 - [PostgreSQL + pgvector](./pgvector.md) - Vector embeddings (optional)
 - [Scramble OpenAPI Docs](./scramble.md) - API documentation at `/docs/api`

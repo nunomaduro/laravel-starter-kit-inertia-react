@@ -18,6 +18,6 @@ From the project root: `php artisan app:health && composer test` (health check +
 
 - [Actions Documentation](./backend/actions/README.md) - All Action classes
 - [Seeder System](./backend/database/seeders.md) - Automated seeder system
-- [Prism AI Integration](./backend/prism.md) - AI-powered features with Prism
-- [Laravel AI SDK](./backend/ai-sdk.md) - Agents, embeddings, images; when to use vs Prism
+- [Laravel AI SDK](./backend/ai-sdk.md) - Primary AI layer: agents, structured output, images, embeddings, tools
+- [Prism / Relay](./backend/prism.md) - MCP tool bridge (Relay) and availability checks only
 - [API Reference](./api-reference/README.md) - Routes and endpoints

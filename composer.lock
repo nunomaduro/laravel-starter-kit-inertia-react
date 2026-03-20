@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8df98cfc647bf90f4da95400bb375789",
+    "content-hash": "0fb7e4b35c123033f762b39d6f49b015",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -6705,33 +6705,33 @@
         },
         {
             "name": "laravel/tinker",
-            "version": "v2.11.1",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/tinker.git",
-                "reference": "c9f80cc835649b5c1842898fb043f8cc098dd741"
+                "reference": "cc74081282ba2e3dae1f0068ccb330370d24634e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/tinker/zipball/c9f80cc835649b5c1842898fb043f8cc098dd741",
-                "reference": "c9f80cc835649b5c1842898fb043f8cc098dd741",
+                "url": "https://api.github.com/repos/laravel/tinker/zipball/cc74081282ba2e3dae1f0068ccb330370d24634e",
+                "reference": "cc74081282ba2e3dae1f0068ccb330370d24634e",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/contracts": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-                "php": "^7.2.5|^8.0",
-                "psy/psysh": "^0.11.1|^0.12.0",
-                "symfony/var-dumper": "^4.3.4|^5.0|^6.0|^7.0|^8.0"
+                "illuminate/console": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.1",
+                "psy/psysh": "^0.12.0",
+                "symfony/var-dumper": "^5.4|^6.0|^7.0|^8.0"
             },
             "require-dev": {
                 "mockery/mockery": "~1.3.3|^1.4.2",
                 "phpstan/phpstan": "^1.10",
-                "phpunit/phpunit": "^8.5.8|^9.3.3|^10.0"
+                "phpunit/phpunit": "^10.5|^11.5"
             },
             "suggest": {
-                "illuminate/database": "The Illuminate Database package (^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0)."
+                "illuminate/database": "The Illuminate Database package (^8.0|^9.0|^10.0|^11.0|^12.0|^13.0)."
             },
             "type": "library",
             "extra": {
@@ -6739,6 +6739,9 @@
                     "providers": [
                         "Laravel\\Tinker\\TinkerServiceProvider"
                     ]
+                },
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
                 }
             },
             "autoload": {
@@ -6765,9 +6768,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/tinker/issues",
-                "source": "https://github.com/laravel/tinker/tree/v2.11.1"
+                "source": "https://github.com/laravel/tinker/tree/v3.0.0"
             },
-            "time": "2026-02-06T14:12:35+00:00"
+            "time": "2026-03-17T14:53:17+00:00"
         },
         {
             "name": "laravel/wayfinder",
@@ -8098,15 +8101,15 @@
             "dist": {
                 "type": "path",
                 "url": "../laravel-data-table",
-                "reference": "ed5bc6e3e45b5afa7a2f587d94b7e0f0b9ff10c1"
+                "reference": "2321c2104d749970f069cdc6900e15601bb77021"
             },
             "require": {
-                "illuminate/database": "^11.0 || ^12.0",
-                "illuminate/http": "^11.0 || ^12.0",
-                "illuminate/support": "^11.0 || ^12.0",
-                "php": "^8.2",
+                "illuminate/database": "^12.0 || ^13.0",
+                "illuminate/http": "^12.0 || ^13.0",
+                "illuminate/support": "^12.0 || ^13.0",
+                "php": "^8.3",
                 "spatie/laravel-data": "^4.14",
-                "spatie/laravel-query-builder": "^6.0"
+                "spatie/laravel-query-builder": "^7.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.6",
@@ -15206,32 +15209,32 @@
         },
         {
             "name": "spatie/laravel-query-builder",
-            "version": "6.4.4",
+            "version": "7.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-query-builder.git",
-                "reference": "ab9c4c369fc913d6c020a0f6776f3c82f3e523fb"
+                "reference": "8ec7246a4c162499381a6e1ddb58a6f0debd8926"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-query-builder/zipball/ab9c4c369fc913d6c020a0f6776f3c82f3e523fb",
-                "reference": "ab9c4c369fc913d6c020a0f6776f3c82f3e523fb",
+                "url": "https://api.github.com/repos/spatie/laravel-query-builder/zipball/8ec7246a4c162499381a6e1ddb58a6f0debd8926",
+                "reference": "8ec7246a4c162499381a6e1ddb58a6f0debd8926",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/http": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
-                "php": "^8.2",
+                "illuminate/database": "^12.0|^13.0",
+                "illuminate/http": "^12.0|^13.0",
+                "illuminate/support": "^12.0|^13.0",
+                "php": "^8.3",
                 "spatie/laravel-package-tools": "^1.11"
             },
             "require-dev": {
                 "ext-json": "*",
-                "larastan/larastan": "^2.7 || ^3.3",
+                "larastan/larastan": "^3.3",
                 "mockery/mockery": "^1.4",
-                "orchestra/testbench": "^7.0|^8.0|^10.0|^11.0",
-                "pestphp/pest": "^2.0|^3.7|^4.0",
-                "phpunit/phpunit": "^10.0|^11.5.3|^12.0",
+                "orchestra/testbench": "^10.0|^11.0",
+                "pestphp/pest": "^4.0",
+                "phpunit/phpunit": "^12.0",
                 "spatie/invade": "^2.0"
             },
             "type": "library",
@@ -15276,7 +15279,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-03-08T13:45:05+00:00"
+            "time": "2026-03-16T10:22:07+00:00"
         },
         {
             "name": "spatie/laravel-rate-limited-job-middleware",
@@ -20392,27 +20395,27 @@
         },
         {
             "name": "wildside/userstamps",
-            "version": "3.1.1",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mattiverse/Laravel-Userstamps.git",
-                "reference": "51718676915010e10b246cb9d3d40c8982390c28"
+                "reference": "c8481e12b07d5fefa833521153ba9517521de016"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mattiverse/Laravel-Userstamps/zipball/51718676915010e10b246cb9d3d40c8982390c28",
-                "reference": "51718676915010e10b246cb9d3d40c8982390c28",
+                "url": "https://api.github.com/repos/mattiverse/Laravel-Userstamps/zipball/c8481e12b07d5fefa833521153ba9517521de016",
+                "reference": "c8481e12b07d5fefa833521153ba9517521de016",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
                 "php": "^8.2"
             },
             "require-dev": {
-                "illuminate/database": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
                 "laravel/pint": "^1.21",
-                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
-                "phpunit/phpunit": "^9.0|^10.0|^11.0|^12.0"
+                "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
+                "phpunit/phpunit": "^10.0|^11.0|^12.0|^13.0"
             },
             "type": "library",
             "extra": {
@@ -20448,9 +20451,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mattiverse/Laravel-Userstamps/issues",
-                "source": "https://github.com/mattiverse/Laravel-Userstamps/tree/3.1.1"
+                "source": "https://github.com/mattiverse/Laravel-Userstamps/tree/4.0.0"
             },
-            "time": "2025-11-19T16:19:04+00:00"
+            "time": "2026-03-19T16:07:28+00:00"
         }
     ],
     "packages-dev": [

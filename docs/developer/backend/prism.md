@@ -1,426 +1,155 @@
-# Prism AI Integration
+# Prism / Relay Integration
 
-This starter kit includes [Prism PHP](https://prismphp.com/) configured with OpenRouter for AI-powered features, along with [Prism Relay](https://github.com/prism-php/relay) for MCP (Model Context Protocol) server integration. The project also includes the [Laravel AI SDK](./ai-sdk.md); see that doc for **when to use Prism vs Laravel AI** (e.g. agents and embeddings use the SDK; OpenRouter and existing seed/docs commands use Prism).
+This starter kit keeps [Prism PHP](https://prismphp.com/) and [Prism Relay](https://github.com/prism-php/relay) as direct dependencies, but their role is intentionally narrow.
 
-## Overview
+> **Single rule:** Use `laravel/ai` Agent classes for all AI work. The only exception is `PrismService::withTools()`, which bridges [Relay](https://github.com/prism-php/relay) MCP tools into a Prism request — Relay has no `laravel/ai` equivalent.
 
-The Prism integration provides:
+See [ai-sdk.md](./ai-sdk.md) for agents, structured output, text generation, images, audio, and embeddings.
 
-- **Multiple Provider Support**: OpenRouter, OpenAI, Anthropic, and more
-- **Helper Function**: Simple `ai()` helper for quick access
-- **Service Wrapper**: `PrismService` for dependency injection
-- **MCP Integration**: Relay support for external tools and APIs
-- **Structured Output**: Transform AI responses into strongly-typed data
-- **Tool Calling**: Empower AI with custom tools via MCP servers
-- **Streaming**: Real-time response streaming
-- **Multi-Modal**: Support for text, images, and audio
-- **Document Support**: Send PDFs and documents to compatible models
+---
+
+## Why Prism is Still Here
+
+`laravel/ai` depends on `prism-php/prism` internally, so Prism is always in vendor. We keep it as a direct dependency for two reasons:
+
+1. **Relay** — `prism-php/relay` connects to external MCP servers and exposes their tools as Prism tool objects. There is no `laravel/ai` client-side MCP equivalent.
+2. **Availability check** — `PrismService::isAvailable()` reads the provider config to let optional AI features degrade gracefully when API keys are missing.
+
+---
+
+## PrismService
+
+`App\Services\PrismService` is a thin wrapper with two methods:
+
+### `isAvailable(?Provider $provider = null): bool`
+
+Returns `true` when the given provider (defaults to `config('prism.defaults.provider')`) has an API key configured. Use this before optional AI calls so the app degrades gracefully:
+
+```php
+use App\Services\PrismService;
+
+if (app(PrismService::class)->isAvailable()) {
+    // safe to call AI
+}
+```
+
+### `withTools(string|array $servers, ?string $model = null): PendingRequest`
+
+Fetches tools from one or more MCP servers via Relay and returns a Prism `PendingRequest` pre-loaded with those tools. This is the **only** place in the codebase that calls Prism directly.
+
+```php
+use App\Services\PrismService;
+
+$response = app(PrismService::class)
+    ->withTools('puppeteer')
+    ->withPrompt('Navigate to laravel.com and summarise the homepage')
+    ->asText();
+
+// Multiple servers
+$response = app(PrismService::class)
+    ->withTools(['puppeteer', 'github'])
+    ->withPrompt('Find the Laravel repo and take a screenshot')
+    ->asText();
+```
+
+---
 
 ## Configuration
 
-Prism is configured in `config/prism.php` and uses environment variables from your `.env` file:
+Prism is configured in `config/prism.php` and `PrismSettings` (DB-backed, org-overridable):
 
 ```env
 OPENROUTER_API_KEY=your-api-key-here
 OPENROUTER_URL=https://openrouter.ai/api/v1
-OPENROUTER_SITE_HTTP_REFERER="${APP_URL}"
-OPENROUTER_SITE_X_TITLE="${APP_NAME}"
 
-# Default provider and model (used when no provider is specified)
 PRISM_DEFAULT_PROVIDER=openrouter
-# Best free thinking model: DeepSeek R1 0528 (performance on par with OpenAI o1)
-# Alternatives: deepseek/deepseek-r1:free, tng/deepseek-r1t2-chimera:free
 PRISM_DEFAULT_MODEL=deepseek/deepseek-r1-0528:free
-
-# Provider-specific model defaults (optional - falls back to PRISM_DEFAULT_MODEL)
-PRISM_OPENAI_DEFAULT_MODEL=gpt-4o-mini
-PRISM_ANTHROPIC_DEFAULT_MODEL=claude-3-5-sonnet-20241022
 ```
 
-### Configuration Structure
+The `withTools()` method uses `PRISM_DEFAULT_PROVIDER` and `PRISM_DEFAULT_MODEL` automatically. Pass `$model` to override for a specific call.
 
-The configuration supports:
-- **Default Provider**: Used when no provider is explicitly specified
-- **Default Model**: Used for the default provider and as fallback for other providers
-- **Provider-Specific Models**: Override the default model for specific providers
-
-All model selection is centralized in configuration - no hardcoded strings in the codebase. This makes it easy to:
-- Change models globally by updating `PRISM_DEFAULT_MODEL`
-- Use different models per provider via provider-specific environment variables
-- Maintain consistency across all commands and services
-
-## Usage
-
-### Using the Helper Function
-
-The simplest way to use Prism is via the `ai()` helper function:
-
-```php
-// Simple text generation
-$response = ai()->generate('Explain Laravel in one sentence');
-
-echo $response->text;
-```
-
-### Checking Availability
-
-Before calling AI in production or in optional features, check that the provider is configured so the app can degrade gracefully if keys are missing or wrong:
-
-```php
-use Prism\Prism\Enums\Provider;
-
-// Check default provider (from config)
-if (ai()->isAvailable()) {
-    $response = ai()->generate('Your prompt');
-    echo $response->text;
-}
-
-// Check a specific provider
-if (ai()->isAvailable(Provider::OpenRouter)) {
-    // Use OpenRouter
-}
-```
-
-Use this pattern for optional AI features (e.g. AI-generated seed data) so the app still works when `OPENROUTER_API_KEY` is not set.
-
-### Using the PrismService
-
-You can also use the `PrismService` class directly (resolved from the container):
-
-```php
-use App\Services\PrismService;
-
-$prism = app(PrismService::class);
-
-// Simple text generation (uses default model from config)
-$response = $prism->generate('Explain Laravel in one sentence');
-
-echo $response->text;
-
-// Get default provider and model from config
-$provider = $prism->defaultProvider();
-$model = $prism->defaultModel();
-
-// Get provider-specific default model
-$openaiModel = $prism->defaultModelForProvider(Provider::OpenAI);
-```
-
-### Direct Prism Usage
-
-You can also use Prism directly for more advanced features:
-
-```php
-use Prism\Prism\Enums\Provider;
-use Prism\Prism\Facades\Prism;
-use App\Services\PrismService;
-
-$prism = app(PrismService::class);
-
-// Use default model from config
-$response = Prism::text()
-    ->using($prism->defaultProvider(), $prism->defaultModel())
-    ->withPrompt('Hello, how are you?')
-    ->asText();
-
-// Or specify a model explicitly
-$response = Prism::text()
-    ->using(Provider::OpenRouter, 'deepseek/deepseek-r1-0528:free')
-    ->withPrompt('Hello, how are you?')
-    ->asText();
-
-echo $response->text;
-```
-
-### Using Different Providers
-
-Prism supports multiple providers. You can use any provider configured in `config/prism.php`. The service automatically uses provider-specific model defaults from configuration:
-
-```php
-use App\Services\PrismService;
-use Prism\Prism\Enums\Provider;
-
-$prism = app(PrismService::class);
-
-// Use OpenAI with default model from config (PRISM_OPENAI_DEFAULT_MODEL)
-$response = $prism->using(Provider::OpenAI, $prism->defaultModelForProvider(Provider::OpenAI))
-    ->withPrompt('Your prompt here')
-    ->asText();
-
-// Use Anthropic with default model from config (PRISM_ANTHROPIC_DEFAULT_MODEL)
-$response = $prism->using(Provider::Anthropic, $prism->defaultModelForProvider(Provider::Anthropic))
-    ->withPrompt('Your prompt here')
-    ->asText();
-
-// Or specify a model explicitly
-$response = $prism->using(Provider::OpenAI, 'gpt-4o')
-    ->withPrompt('Your prompt here')
-    ->asText();
-```
-
-> **Note:** All seed commands and services use `defaultModelForProvider()` to automatically select the correct model based on the provider, ensuring consistency across the application.
-
-### Available Models
-
-OpenRouter supports many models from different providers. Use the OpenRouter model format:
-
-**Free Thinking Models (Best Performance):**
-- `deepseek/deepseek-r1-0528:free` - **Default** - Performance on par with OpenAI o1, 671B parameters, 164K context
-- `deepseek/deepseek-r1:free` - Original DeepSeek R1, 671B parameters, open-source reasoning
-- `tngtech/deepseek-r1t2-chimera:free` - 20% faster than R1, 164K context (if available as free tier)
-
-**Paid Models:**
-- `openai/gpt-4o-mini`
-- `openai/gpt-4o`
-- `anthropic/claude-3-5-sonnet`
-- `google/gemini-pro`
-- And many more at [openrouter.ai/models](https://openrouter.ai/models)
-
-> **Note:** The starter kit defaults to `deepseek/deepseek-r1-0528:free`, which offers excellent reasoning capabilities at no cost. This model performs comparably to OpenAI o1 and is ideal for development and production use.
-
-### Using MCP Tools
-
-You can easily use MCP tools with the service:
-
-```php
-use App\Services\PrismService;
-
-$prism = app(PrismService::class);
-
-// Use tools from a single MCP server
-$response = $prism->withTools('puppeteer')
-    ->withPrompt('Navigate to laravel.com and summarize the homepage')
-    ->asText();
-
-// Use tools from multiple MCP servers
-$response = $prism->withTools(['puppeteer', 'github'])
-    ->withPrompt('Find Laravel on GitHub and take a screenshot')
-    ->asText();
-```
-
-### Structured Output
-
-Generate strongly-typed responses:
-
-```php
-use App\Services\PrismService;
-
-$prism = app(PrismService::class);
-
-// Define schema as array
-$schema = [
-    'type' => 'object',
-    'properties' => [
-        'summary' => ['type' => 'string'],
-        'points' => ['type' => 'array', 'items' => ['type' => 'string']],
-    ],
-    'required' => ['summary', 'points'],
-];
-
-$response = $prism->generateStructured(
-    'Explain Laravel in 3 bullet points',
-    $schema
-);
-
-// $response is now a strongly-typed array matching the schema
-echo $response['summary'];
-```
-
-### Streaming
-
-Stream responses in real-time:
-
-```php
-use App\Services\PrismService;
-
-$prism = app(PrismService::class);
-
-$prism->text()
-    ->withPrompt('Write a long story about Laravel')
-    ->asStream(function (string $chunk): void {
-        echo $chunk;
-    });
-```
-
-### Example Command
-
-Try the example command to test your setup:
-
-```bash
-# Basic usage
-php artisan prism:example --prompt="Explain Laravel in one sentence"
-
-# With streaming
-php artisan prism:example --prompt="Tell me a story" --stream
-
-# With MCP tools
-php artisan prism:example --prompt="Navigate to laravel.com" --tools=puppeteer
-
-# With structured output
-php artisan prism:example --structured --schema='{"type":"object","properties":{"summary":{"type":"string"}}}' --prompt="Summarize Laravel"
-
-# With different provider
-php artisan prism:example --provider=anthropic --model=claude-3-5-sonnet-20241022 --prompt="Hello"
-```
+---
 
 ## MCP Integration with Relay
 
-This starter kit includes [Prism Relay](https://github.com/prism-php/relay) for integrating MCP (Model Context Protocol) servers with Prism. Relay allows your AI agents to use external tools and APIs.
-
-### Configuration
-
-Relay is configured in `config/relay.php`. You can define MCP servers that provide tools for your AI agents:
+Relay is configured in `config/relay.php`. Define each MCP server your app needs:
 
 ```php
 'servers' => [
     'puppeteer' => [
         'transport' => Transport::Stdio,
-        'command' => ['npx', '-y', '@modelcontextprotocol/server-puppeteer'],
-        'timeout' => env('RELAY_PUPPETEER_SERVER_TIMEOUT', 60),
-        'env' => [],
+        'command'   => ['npx', '-y', '@modelcontextprotocol/server-puppeteer'],
+        'timeout'   => env('RELAY_PUPPETEER_SERVER_TIMEOUT', 60),
+        'env'       => [],
     ],
 ],
 ```
 
-### Using MCP Tools with Prism
+### Available transports
 
-You can use MCP tools in your Prism requests:
+- **Stdio** — locally running MCP servers communicating via standard I/O
+- **HTTP** — MCP servers communicating over HTTP
 
-```php
-use App\Services\PrismService;
-use Prism\Prism\Enums\Provider;
-use Prism\Prism\Facades\Prism;
-use Prism\Relay\Facades\Relay;
+---
 
-$prism = app(PrismService::class);
+## Artisan Commands
 
-// Using PrismService (uses default model from config)
-$response = $prism->withTools('puppeteer')
-    ->withPrompt('Find information about Laravel on the web')
-    ->asText();
+### `prism:validate`
 
-// Or using Prism directly with config-based model
-$response = Prism::text()
-    ->using($prism->defaultProvider(), $prism->defaultModel())
-    ->withPrompt('Find information about Laravel on the web')
-    ->withTools(Relay::tools('puppeteer'))
-    ->asText();
-```
-
-The agent can now use any tools provided by the configured MCP servers, such as navigating webpages, taking screenshots, clicking buttons, and more.
-
-### Available Transports
-
-Relay supports multiple transport mechanisms:
-
-- **STDIO Transport**: For locally running MCP servers that communicate via standard I/O
-- **HTTP Transport**: For MCP servers that communicate over HTTP
-
-For more information, see the [Prism Relay documentation](https://github.com/prism-php/relay).
-
-## Advanced Features
-
-Prism supports many advanced features:
-
-- **Structured Output**: Transform AI responses into strongly-typed data
-- **Tool Calling**: Empower AI with custom tools and external APIs via Relay
-- **Streaming**: Stream responses in real-time
-- **Multi-Modal**: Work with text, images, and audio
-- **Document Support**: Send PDFs and other documents to compatible models
-- **MCP Integration**: Use MCP servers to extend AI capabilities with external tools
-
-## Error Handling
-
-Prism throws specific exceptions that you can catch and handle:
-
-```php
-use App\Services\PrismService;
-use Prism\Prism\Exceptions\PrismException;
-use Prism\Prism\Exceptions\PrismRateLimitedException;
-use Prism\Prism\Exceptions\PrismRequestTooLargeException;
-use Prism\Relay\Exceptions\RelayException;
-use Prism\Relay\Exceptions\ServerConfigurationException;
-use Prism\Relay\Exceptions\ToolCallException;
-
-$prism = app(PrismService::class);
-
-try {
-    $response = $prism->generate('Your prompt here');
-    echo $response->text;
-} catch (PrismRateLimitedException $e) {
-    // Handle rate limiting
-    Log::warning('Rate limited: '.$e->getMessage());
-    // Retry with exponential backoff
-} catch (PrismRequestTooLargeException $e) {
-    // Handle request too large
-    Log::error('Request too large: '.$e->getMessage());
-    // Reduce prompt size or split request
-} catch (PrismException $e) {
-    // Handle other Prism errors
-    Log::error('Prism error: '.$e->getMessage());
-} catch (ServerConfigurationException $e) {
-    // Handle MCP server configuration errors
-    Log::error('MCP server configuration error: '.$e->getMessage());
-} catch (ToolCallException $e) {
-    // Handle tool call errors
-    Log::error('Tool call error: '.$e->getMessage());
-} catch (RelayException $e) {
-    // Handle other Relay errors
-    Log::error('Relay error: '.$e->getMessage());
-} catch (\Exception $e) {
-    // Handle any other errors
-    Log::error('Unexpected error: '.$e->getMessage());
-}
-```
-
-### Common Error Scenarios
-
-**Missing API Key:**
-```php
-// Error: "API key is required"
-// Solution: Set OPENROUTER_API_KEY in .env
-```
-
-**Invalid Model:**
-```php
-// Error: "Model not found"
-// Solution: Check model name format (e.g., 'openai/gpt-4o-mini' for OpenRouter)
-```
-
-**MCP Server Not Configured:**
-```php
-// Error: "MCP server 'puppeteer' not found in configuration"
-// Solution: Add server to config/relay.php
-```
-
-**Rate Limiting:**
-```php
-// Error: PrismRateLimitedException
-// Solution: Implement retry logic with exponential backoff
-```
-
-## Configuration Validation
-
-Validate your Prism and Relay configuration:
+Validates Prism and Relay configuration:
 
 ```bash
 php artisan prism:validate
 ```
 
-This command checks:
-- Default provider and model configuration
-- Provider-specific model defaults
+Checks:
+- Default provider and model values
 - OpenRouter API key and URL
-- MCP server configurations
-- Tool availability from MCP servers
+- MCP server definitions in `config/relay.php`
+- Tool availability from each configured MCP server
 
-Use this command to troubleshoot configuration issues or verify your setup before using Prism in production.
+### `prism:example`
 
-### Configuration Best Practices
+Quick smoke-test for text generation and MCP tools:
 
-1. **Centralize Model Selection**: Always use `PrismService` methods (`defaultModel()`, `defaultModelForProvider()`) instead of hardcoding model names
-2. **Use Environment Variables**: Configure models via `.env` for easy environment-specific changes
-3. **Provider-Specific Defaults**: Set `PRISM_OPENAI_DEFAULT_MODEL` and `PRISM_ANTHROPIC_DEFAULT_MODEL` if you frequently use those providers
-4. **Validate Configuration**: Run `php artisan prism:validate` after changing configuration
-5. **Check Availability**: For optional AI features, call `ai()->isAvailable()` (or `isAvailable($provider)`) before using AI so the app degrades gracefully when keys are missing
+```bash
+# Basic text generation (uses laravel/ai agent internally)
+php artisan prism:example --prompt="Explain Laravel in one sentence"
 
-For more information, see the [Prism PHP documentation](https://prismphp.com/).
+# With MCP tools via Relay
+php artisan prism:example --prompt="Navigate to laravel.com" --tools=puppeteer
+
+# Multiple MCP servers
+php artisan prism:example --tools="puppeteer,github" --prompt="..."
+```
+
+---
+
+## Error Handling
+
+Relay throws specific exceptions you can catch when using `withTools()`:
+
+```php
+use Prism\Relay\Exceptions\RelayException;
+use Prism\Relay\Exceptions\ServerConfigurationException;
+use Prism\Relay\Exceptions\ToolCallException;
+
+try {
+    $response = app(PrismService::class)
+        ->withTools('puppeteer')
+        ->withPrompt('...')
+        ->asText();
+} catch (ServerConfigurationException $e) {
+    // MCP server not found in config/relay.php
+} catch (ToolCallException $e) {
+    // Tool execution failed
+} catch (RelayException $e) {
+    // Other Relay error
+}
+```
+
+For Prism-level errors (rate limits, invalid model, etc.) catch `Prism\Prism\Exceptions\PrismException` and its subclasses.
+
+---
+
+For all other AI features — agents, structured output, text generation, images, audio, embeddings — see [ai-sdk.md](./ai-sdk.md).

@@ -5,38 +5,37 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Illuminate\Support\Facades\File;
-use Prism\Prism\Text\Response as TextResponse;
 use Throwable;
+
+use function Laravel\Ai\agent;
 
 final readonly class DocumentationPrismGenerator
 {
     public function __construct(
         private PrismService $prism,
         private DocumentationPromptGenerator $promptGenerator,
-        private DocumentationTemplateSelector $templateSelector
+        private DocumentationTemplateSelector $templateSelector,
     ) {}
 
     /**
-     * Generate Action documentation using Prism and write to file.
+     * Generate Action documentation and write to file.
      *
      * @param  array<string, mixed>  $actionInfo
      * @param  array<string, mixed>  $relationships
      * @return string|null Written file path or null on failure
      */
-    public function generateActionDoc(
-        string $actionName,
-        array $actionInfo,
-        array $relationships
-    ): ?string {
-        $templateName = $this->templateSelector->selectActionTemplate($actionInfo);
-        $templatePath = $this->templateSelector->getTemplatePath($templateName);
+    public function generateActionDoc(string $actionName, array $actionInfo, array $relationships): ?string
+    {
+        $templatePath = $this->templateSelector->getTemplatePath(
+            $this->templateSelector->selectActionTemplate($actionInfo)
+        );
 
         if (! File::exists($templatePath)) {
             return null;
         }
 
         $prompt = $this->promptGenerator->buildMinimalActionPrompt($actionInfo, $relationships, $templatePath);
-        $markdown = $this->callPrism($prompt);
+        $markdown = $this->callAi($prompt);
 
         if ($markdown === null || $markdown === '') {
             return null;
@@ -50,26 +49,24 @@ final readonly class DocumentationPrismGenerator
     }
 
     /**
-     * Generate Controller documentation using Prism and write to file.
+     * Generate Controller documentation and write to file.
      *
      * @param  array<string, mixed>  $controllerInfo
      * @param  array<string, mixed>  $relationships
      * @return string|null Written file path or null on failure
      */
-    public function generateControllerDoc(
-        string $controllerName,
-        array $controllerInfo,
-        array $relationships
-    ): ?string {
-        $templateName = $this->templateSelector->selectControllerTemplate($controllerInfo);
-        $templatePath = $this->templateSelector->getTemplatePath($templateName);
+    public function generateControllerDoc(string $controllerName, array $controllerInfo, array $relationships): ?string
+    {
+        $templatePath = $this->templateSelector->getTemplatePath(
+            $this->templateSelector->selectControllerTemplate($controllerInfo)
+        );
 
         if (! File::exists($templatePath)) {
             return null;
         }
 
         $prompt = $this->promptGenerator->buildMinimalControllerPrompt($controllerInfo, $relationships, $templatePath);
-        $markdown = $this->callPrism($prompt);
+        $markdown = $this->callAi($prompt);
 
         if ($markdown === null || $markdown === '') {
             return null;
@@ -83,26 +80,24 @@ final readonly class DocumentationPrismGenerator
     }
 
     /**
-     * Generate Page documentation using Prism and write to file.
+     * Generate Page documentation and write to file.
      *
      * @param  array<string, mixed>  $pageInfo
      * @param  array<string, mixed>  $relationships
      * @return string|null Written file path or null on failure
      */
-    public function generatePageDoc(
-        string $pagePath,
-        array $pageInfo,
-        array $relationships
-    ): ?string {
-        $templateName = $this->templateSelector->selectPageTemplate($pageInfo);
-        $templatePath = $this->templateSelector->getTemplatePath($templateName);
+    public function generatePageDoc(string $pagePath, array $pageInfo, array $relationships): ?string
+    {
+        $templatePath = $this->templateSelector->getTemplatePath(
+            $this->templateSelector->selectPageTemplate($pageInfo)
+        );
 
         if (! File::exists($templatePath)) {
             return null;
         }
 
         $prompt = $this->promptGenerator->buildMinimalPagePrompt($pageInfo, $relationships, $templatePath);
-        $markdown = $this->callPrism($prompt);
+        $markdown = $this->callAi($prompt);
 
         if ($markdown === null || $markdown === '') {
             return null;
@@ -120,23 +115,17 @@ final readonly class DocumentationPrismGenerator
         return $this->prism->isAvailable();
     }
 
-    /**
-     * Call Prism to generate text.
-     */
-    private function callPrism(string $prompt): ?string
+    private function callAi(string $prompt): ?string
     {
         try {
-            $response = $this->prism->generate($prompt);
-
-            return $response instanceof TextResponse ? $response->text : null;
+            return agent(instructions: 'You are a technical documentation writer. Generate only markdown content, no explanations.')
+                ->prompt($prompt)
+                ->text;
         } catch (Throwable) {
             return null;
         }
     }
 
-    /**
-     * Strip optional markdown code fence around the doc body.
-     */
     private function normalizeMarkdown(string $markdown): string
     {
         $markdown = mb_trim($markdown);

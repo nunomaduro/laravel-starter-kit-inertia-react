@@ -103,4 +103,17 @@ return [
 
     'prefix' => 'laravel_cache_',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Serializable Classes
+    |--------------------------------------------------------------------------
+    |
+    | This option controls which classes may be deserialized from the cache.
+    | Set to false to disallow all object deserialization (recommended).
+    | Set to an array of allowed class names if your app caches PHP objects.
+    |
+    */
+
+    'serializable_classes' => false,
+
 ];

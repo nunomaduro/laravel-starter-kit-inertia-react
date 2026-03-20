@@ -61,7 +61,7 @@
         "laravel/scout": "^11.1.0",
         "laravel/slack-notification-channel": "^3.8",
         "laravel/socialite": "^5.25.0",
-        "laravel/tinker": "^2.11.1",
+        "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.14",
         "laravelcm/laravel-subscriptions": "^1.7.2",
         "laraveldaily/laravel-invoices": "^4.2.0",
@@ -99,7 +99,7 @@
         "spatie/laravel-pdf": "^2.4.0",
         "spatie/laravel-permission": "^7.2.4",
         "spatie/laravel-personal-data-export": "^4.3.2",
-        "spatie/laravel-query-builder": "^6.4.4",
+        "spatie/laravel-query-builder": "^7.0.1",
         "spatie/laravel-rate-limited-job-middleware": "^2.9",
         "spatie/laravel-responsecache": "^8.3",
         "spatie/laravel-schemaless-attributes": "^2.6.0",
@@ -114,7 +114,7 @@
         "stripe/stripe-php": "^19.4.1",
         "thomasjohnkane/snooze": "^2.9",
         "typesense/typesense-php": "^6.0",
-        "wildside/userstamps": "^3.1.1"
+        "wildside/userstamps": "^4.0"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.2.0",

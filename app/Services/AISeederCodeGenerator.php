@@ -7,10 +7,12 @@ namespace App\Services;
 use Exception;
 use Illuminate\Support\Str;
 
+use function Laravel\Ai\agent;
+
 final readonly class AISeederCodeGenerator
 {
     public function __construct(
-        private PrismService $prismService
+        private PrismService $prismService,
     ) {}
 
     /**
@@ -21,14 +23,13 @@ final readonly class AISeederCodeGenerator
      */
     public function generateSeederCode(string $modelName, array $spec, array $relationships, string $category): string
     {
-        // Check if AI is available
         if (! $this->prismService->isAvailable()) {
             return $this->generateTraditionalSeederCode($modelName, $spec, $relationships);
         }
 
         try {
             $prompt = $this->buildSeederPrompt($modelName, $spec, $relationships, $category);
-            $code = $this->callAIForSeederCode($prompt);
+            $code = $this->callAi($prompt);
 
             if ($code !== null) {
                 return $code;
@@ -41,8 +42,6 @@ final readonly class AISeederCodeGenerator
     }
 
     /**
-     * Build prompt for AI seeder generation.
-     *
      * @param  array<string, mixed>  $spec
      * @param  array<string, array{type: string, model: string|null}>  $relationships
      */
@@ -50,16 +49,15 @@ final readonly class AISeederCodeGenerator
     {
         $fields = $spec['fields'] ?? [];
 
-        $prompt = "Generate a Laravel seeder class for model: {$modelName}\n\n";
-        $prompt .= "Category: {$category}\n\n";
+        $prompt = "Generate a Laravel seeder class for model: {$modelName}\n\nCategory: {$category}\n\nFields:\n";
 
-        $prompt .= "Fields:\n";
         foreach ($fields as $field => $fieldSpec) {
             if (in_array($field, ['id', 'created_at', 'updated_at'], true)) {
                 continue;
             }
 
             $prompt .= sprintf('  - %s: %s', $field, $fieldSpec['type']);
+
             if (! $fieldSpec['nullable']) {
                 $prompt .= ' (required)';
             }
@@ -78,33 +76,29 @@ final readonly class AISeederCodeGenerator
                 if ($rel['model'] !== null) {
                     $prompt .= ' -> '.$rel['model'];
                 }
-
                 $prompt .= "\n";
             }
         }
 
-        $prompt .= "\nRequirements:\n";
-        $prompt .= "1. Use idempotent methods (updateOrCreate or firstOrCreate)\n";
-        $prompt .= "2. Seed relationships before main model (belongsTo dependencies)\n";
-        $prompt .= "3. Use factory states when appropriate\n";
-        $prompt .= "4. Load JSON data if available\n";
-        $prompt .= "5. Generate realistic seed data\n";
-        $prompt .= "6. Follow Laravel best practices\n\n";
+        $prompt .= "\nRequirements:\n"
+            ."1. Use idempotent methods (updateOrCreate or firstOrCreate)\n"
+            ."2. Seed relationships before main model (belongsTo dependencies)\n"
+            ."3. Use factory states when appropriate\n"
+            ."4. Load JSON data if available\n"
+            ."5. Generate realistic seed data\n"
+            ."6. Follow Laravel best practices\n\n"
+            .'Generate ONLY the seeder class code (PHP), no explanations.';
 
-        return $prompt.'Generate ONLY the seeder class code (PHP), no explanations.';
+        return $prompt;
     }
 
-    /**
-     * Call AI to generate seeder code.
-     */
-    private function callAIForSeederCode(string $prompt): ?string
+    private function callAi(string $prompt): ?string
     {
         try {
-            $response = $this->prismService->generate($prompt);
+            $text = agent(instructions: 'You are a Laravel expert. Generate only PHP code, no explanations.')
+                ->prompt($prompt)
+                ->text;
 
-            $text = $response->text;
-
-            // Extract PHP code from response
             if (preg_match('/```php\s*(.*?)\s*```/s', $text, $matches)) {
                 return $matches[1];
             }
@@ -113,7 +107,6 @@ final readonly class AISeederCodeGenerator
                 return $matches[0];
             }
 
-            // If response looks like code, return it
             if (str_contains($text, 'class') && str_contains($text, 'Seeder')) {
                 return $text;
             }
@@ -125,8 +118,6 @@ final readonly class AISeederCodeGenerator
     }
 
     /**
-     * Generate traditional seeder code (fallback).
-     *
      * @param  array<string, mixed>  $spec
      * @param  array<string, array{type: string, model: string|null}>  $relationships
      */
@@ -135,11 +126,9 @@ final readonly class AISeederCodeGenerator
         $jsonKey = Str::snake(Str::plural($modelName));
         $jsonFileName = $jsonKey.'.json';
 
-        // Generate relationship code using enhanced analyzer
         $enhancedAnalyzer = resolve(EnhancedRelationshipAnalyzer::class);
         $relationshipCode = $enhancedAnalyzer->generateRelationshipSeederCode($relationships);
 
-        // Determine unique identifier field
         $fields = $spec['fields'] ?? [];
         $uniqueField = $this->findUniqueField($fields);
         $uniqueCheck = $this->getUniqueFieldCheck($uniqueField);
@@ -207,17 +196,10 @@ PHP;
         return $relationshipCode.$code;
     }
 
-    /**
-     * Find unique identifier field in spec.
-     *
-     * @param  array<string, mixed>  $fields
-     */
+    /** @param  array<string, mixed>  $fields */
     private function findUniqueField(array $fields): ?string
     {
-        // Check for common unique fields
-        $uniqueFields = ['email', 'slug', 'uuid', 'code', 'name'];
-
-        foreach ($uniqueFields as $field) {
+        foreach (['email', 'slug', 'uuid', 'code', 'name'] as $field) {
             if (isset($fields[$field])) {
                 return $field;
             }
@@ -226,9 +208,6 @@ PHP;
         return null;
     }
 
-    /**
-     * Get unique field check code (returns PHP code string).
-     */
     private function getUniqueFieldCheck(?string $uniqueField): string
     {
         if ($uniqueField === null) {
@@ -238,15 +217,8 @@ PHP;
         return sprintf("isset(\$itemData['%s']) && !empty(\$itemData['%s'])", $uniqueField, $uniqueField);
     }
 
-    /**
-     * Get unique field key code.
-     */
     private function getUniqueFieldKey(?string $uniqueField): string
     {
-        if ($uniqueField === null) {
-            return "'id'";
-        }
-
-        return sprintf("'%s'", $uniqueField);
+        return $uniqueField !== null ? sprintf("'%s'", $uniqueField) : "'id'";
     }
 }

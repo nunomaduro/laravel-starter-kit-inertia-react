@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Services\PrismService;
 use Exception;
 use Illuminate\Console\Command;
 use Prism\Prism\Enums\Provider;
@@ -17,7 +16,7 @@ final class PrismValidate extends Command
 
     protected $description = 'Validate Prism and Relay configuration';
 
-    public function handle(PrismService $prism): int
+    public function handle(): int
     {
         $this->info('Validating Prism and Relay configuration...');
         $this->newLine();

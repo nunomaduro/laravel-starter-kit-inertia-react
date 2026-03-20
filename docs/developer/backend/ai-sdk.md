@@ -1,87 +1,302 @@
 # Laravel AI SDK
 
-This project includes the [Laravel AI SDK](https://laravel.com/docs/12.x/ai-sdk) alongside [Prism](./prism.md). The two stacks are **complementary**: use each where it fits best.
+This project uses the [Laravel AI SDK](https://laravel.com/docs/12.x/ai) (`laravel/ai`) as the **primary pattern for all AI work**. It is built on top of `prism-php/prism` and adds agents, streaming, conversation memory, tools, structured output, images, audio, embeddings, and more.
 
-## When to Use Laravel AI SDK vs Prism
+> **Single rule:** Write `laravel/ai` Agent classes for everything. The only exception is `PrismService::withTools()` for MCP/Relay tool fetching — see [prism.md](./prism.md).
 
-| Use case | Use this |
-|----------|----------|
-| **OpenRouter**, many models via one API, ad-hoc text/structured | **Prism** (`ai()` helper, `PrismService`) |
-| **Seed commands**, AI seeder generation, docs generation | **Prism** (existing commands) |
-| **MCP / Relay** tool calling from Prism | **Prism** + Relay |
-| **Agents** (instructions, conversation storage, tools, schema) | **Laravel AI SDK** |
-| **Embeddings** generation (`Str::toEmbeddings()`, `Embeddings::for()`) | **Laravel AI SDK** |
-| **Images, TTS, STT**, reranking, files, vector stores | **Laravel AI SDK** |
-| **Provider tools** (WebSearch, WebFetch, FileSearch) | **Laravel AI SDK** |
-| **RAG** with `SimilaritySearch` tool + pgvector | **Laravel AI SDK** (agents) + existing pgvector storage |
+---
 
-**Rule of thumb:** Prism = OpenRouter + ad-hoc calls + existing app commands. Laravel AI = agents, embeddings, media, and first-party provider features.
+## When to Use What
+
+| Use case | Use |
+|----------|-----|
+| Text generation, one-off prompts | `agent()` helper or dedicated Agent class |
+| Structured JSON output | Agent + `HasStructuredOutput` interface |
+| Vision / multimodal (image input) | Agent + `Image::fromUpload()` attachment |
+| Streaming (HTTP) | `(new MyAgent)->stream(...)` |
+| Agents with conversation history | Agent + `RemembersConversations` trait |
+| Agents with semantic memory | Agent + `StoreMemory` / `RecallMemory` tools (see [ai-memory.md](./ai-memory.md)) |
+| Custom tools | Agent + `HasTools` + `php artisan make:tool` |
+| Provider-native tools (web search, file search) | Agent + `WebSearch` / `WebFetch` / `FileSearch` |
+| Images, TTS, STT, embeddings, reranking | `Image::of()`, `Audio::of()`, `Transcription::fromPath()`, `Embeddings::for()`, `Reranking::of()` |
+| MCP tools from external servers | `PrismService::withTools()` via Relay — see [prism.md](./prism.md) |
+
+---
 
 ## Configuration
 
-Laravel AI is configured in `config/ai.php`. Provider API keys are read from `.env` (e.g. `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`). The same `OPENROUTER_API_KEY` used by Prism is also used by the Laravel AI `openrouter` provider when you choose it for an agent.
+Laravel AI is configured in `config/ai.php`. Provider API keys come from `.env`. The same `OPENROUTER_API_KEY` used by Prism is also available to agents using the `openrouter` provider.
 
-Defaults in config:
+Provider defaults in `config/ai.php`:
 
-- **Text:** `openai` (override per agent or call)
+- **Text:** `openai` (override per agent with `#[Provider('openrouter')]` etc.)
 - **Images:** `gemini`
 - **Embeddings:** `openai`
 - **Reranking:** `cohere`
 
-Set the keys for the providers you use. Optional keys are documented in `.env.example`.
+---
 
 ## Agents
 
-Create an agent with:
+The primary building block. Create one with:
 
 ```bash
-php artisan make:agent SalesCoach
+php artisan make:agent MyAgent
 php artisan make:agent DocumentAnalyzer --structured
 ```
 
-Agents live in `app/Ai/Agents/`. Implement `instructions()`, optional `messages()`, `tools()`, and `schema()` for structured output. Use `RemembersConversations` for persistence (uses `agent_conversations` and `agent_conversation_messages` tables).
+Agents live in `app/Ai/Agents/`. Every agent implements the `Agent` interface and uses the `Promptable` trait.
+
+### Basic text generation
 
 ```php
-$response = (new SalesCoach)->forUser($user)->prompt('Hello!');
-// Or with conversation: ->continue($conversationId, as: $user)->prompt('Follow-up');
+use Laravel\Ai\Contracts\Agent;
+use Laravel\Ai\Promptable;
+
+final class SupportAgent implements Agent
+{
+    use Promptable;
+
+    public function instructions(): string
+    {
+        return 'You are a helpful support agent.';
+    }
+}
+
+$response = (new SupportAgent)->prompt('How do I reset my password?');
+echo $response->text;
 ```
 
-## Agent memory (semantic store/recall)
+### Anonymous agent (one-off calls)
 
-For agents that should **remember** facts across conversations (user preferences, prior decisions, context), use [Laravel AI Memory](./ai-memory.md) (eznix86/laravel-ai-memory). It provides:
+For quick, one-off calls without a dedicated class — used by `DocumentationPrismGenerator` and `AISeederCodeGenerator`:
 
-- **AgentMemory** facade: `store()`, `recall()`, `forget()`, `forgetAll()`
-- **StoreMemory / RecallMemory** tools so the agent can save and look up facts
-- **WithMemory** middleware to inject relevant memories into each prompt
+```php
+use function Laravel\Ai\agent;
 
-The app includes `App\Ai\Agents\AssistantAgent` as an example agent with memory. Requires PostgreSQL + pgvector and `config/ai.php` embeddings/reranking (e.g. OpenAI, Cohere).
+$response = agent(instructions: 'You are a technical writer.')
+    ->prompt('Document this action...');
 
-## Embeddings and Vectors
+echo $response->text;
+```
 
-- **Generate embeddings:** Laravel AI `Embeddings::for([...])->generate()` or `Str::of('...')->toEmbeddings()`.
-- **Store and query:** Use existing [pgvector](./pgvector.md) setup (pgvector package + `embedding_demos` or your own tables). Laravel 12’s `whereVectorSimilarTo` can be used if you adopt the framework’s vector column support; the project currently uses the `pgvector/pgvector` package and `HasNeighbors` for queries. The **memories** table (from [laravel-ai-memory](./ai-memory.md)) also uses pgvector for agent memory.
+### Provider and model attributes
 
-For RAG in an agent, use the SDK’s `SimilaritySearch` tool with a model that has an `embedding` column.
+```php
+use Laravel\Ai\Attributes\Model;
+use Laravel\Ai\Attributes\Provider;
+use Laravel\Ai\Attributes\Temperature;
 
-## Migrations
+#[Provider('openrouter')]
+#[Model('google/gemini-2.0-flash-001')]
+#[Temperature(0.3)]
+final class ThemeSuggestionAgent implements Agent, HasStructuredOutput
+{
+    use Promptable;
+    // ...
+}
+```
 
-Running `php artisan migrate` creates:
+---
 
-- `agent_conversations` – conversation metadata (user, title)
-- `agent_conversation_messages` – messages per conversation
+## Structured Output
 
-These are used by the `RemembersConversations` trait.
+Implement `HasStructuredOutput` and define `schema()`. The response is accessed as an array via `$response->structured`.
+
+```php
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Contracts\HasStructuredOutput;
+
+final class ReviewAgent implements Agent, HasStructuredOutput
+{
+    use Promptable;
+
+    public function instructions(): string
+    {
+        return 'You are a code reviewer.';
+    }
+
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'feedback' => $schema->string()->required(),
+            'score'    => $schema->integer()->min(1)->max(10)->required(),
+            'approved' => $schema->boolean()->required(),
+        ];
+    }
+}
+
+$response = (new ReviewAgent)->prompt('Review this PR...');
+echo $response->structured['score']; // e.g. 8
+```
+
+**Real example in this codebase:** `App\Ai\Agents\ThemeSuggestionAgent` — analyzes a logo image and returns a full theme configuration. Used by `SuggestThemeFromLogo` action.
+
+---
+
+## Image Attachments (Vision / Multimodal)
+
+Pass images as attachments to any agent:
+
+```php
+use Laravel\Ai\Files\Image;
+
+// From an UploadedFile (most convenient — handles base64 + mime automatically)
+$response = (new ThemeSuggestionAgent)->prompt(
+    prompt: 'Suggest a theme based on this logo.',
+    attachments: [Image::fromUpload($file)],
+);
+
+// Other sources
+Image::fromPath('/path/to/image.png')
+Image::fromStorage('logos/company.png')
+Image::fromUrl('https://example.com/logo.png')
+Image::fromBase64($base64String, 'image/png')
+```
+
+---
+
+## Conversation Memory
+
+Use `RemembersConversations` for automatic DB-backed conversation persistence:
+
+```php
+use Laravel\Ai\Concerns\RemembersConversations;
+use Laravel\Ai\Contracts\Conversational;
+
+final class ChatAgent implements Agent, Conversational
+{
+    use Promptable, RemembersConversations;
+
+    public function instructions(): string
+    {
+        return 'You are a helpful assistant.';
+    }
+}
+
+// New conversation
+$response = (new ChatAgent)->forUser($user)->prompt('Hello!');
+$id = $response->conversationId;
+
+// Continue
+$response = (new ChatAgent)->continue($id, as: $user)->prompt('Follow up...');
+```
+
+Requires the `agent_conversations` and `agent_conversation_messages` tables (included in migrations).
+
+---
+
+## Semantic Memory
+
+For agents that should remember facts across sessions, see [ai-memory.md](./ai-memory.md). The `AssistantAgent` (`app/Ai/Agents/AssistantAgent.php`) is a full example with `StoreMemory` / `RecallMemory` tools and `WithMemoryUnlessUnavailable` middleware.
+
+---
+
+## Streaming
+
+Returns a Laravel `StreamedResponse` suitable for returning directly from a route:
+
+```php
+// In a controller
+return (new SupportAgent)->stream('Explain this error...');
+```
+
+See `app/Http/Controllers/Api/ChatController.php` for the full streaming implementation using NDJSON + TanStack AG-UI events.
+
+---
+
+## Tools
+
+```bash
+php artisan make:tool SearchUsers
+```
+
+Tools live in `app/Ai/Tools/`. Implement `handle(Request $request)` and `schema(JsonSchema $schema)`. Attach to an agent via `HasTools`:
+
+```php
+use Laravel\Ai\Contracts\HasTools;
+
+final class MyAgent implements Agent, HasTools
+{
+    use Promptable;
+
+    public function tools(): iterable
+    {
+        return [new SearchUsers];
+    }
+}
+```
+
+See `app/Ai/Tools/UsersIndex.php` and `app/Ai/Tools/UsersShow.php` for existing examples.
+
+---
+
+## Provider-Native Tools
+
+These are executed by the AI provider, not your app:
+
+```php
+use Laravel\Ai\Providers\Tools\{WebSearch, WebFetch, FileSearch};
+
+public function tools(): iterable
+{
+    return [
+        (new WebSearch)->max(5)->allow(['laravel.com']),
+        new WebFetch,
+    ];
+}
+```
+
+---
+
+## Images, Audio, Embeddings
+
+```php
+use Laravel\Ai\{Image, Audio, Embeddings, Reranking, Transcription};
+
+// Image generation
+$image = Image::of('A sunset over mountains')->landscape()->generate();
+$path  = $image->store();
+
+// Text-to-speech
+$audio = Audio::of('Hello from Laravel.')->female()->generate();
+
+// Speech-to-text
+$transcript = Transcription::fromStorage('recording.mp3')->generate();
+
+// Embeddings
+$response = Embeddings::for(['Text one', 'Text two'])->generate();
+
+// Reranking
+$ranked = Reranking::of($documents)->rerank('PHP frameworks');
+```
+
+---
 
 ## Testing
 
-Laravel AI provides fakes for agents, embeddings, images, etc. Example:
+Every capability provides a `fake()` method with assertions:
 
 ```php
-use App\Ai\Agents\SalesCoach;
+use App\Ai\Agents\SupportAgent;
+use Laravel\Ai\{Image, Audio, Embeddings};
 
-SalesCoach::fake(['Expected response']);
-$response = (new SalesCoach)->prompt('...');
-SalesCoach::assertPrompted('...');
+// Agents
+SupportAgent::fake(['Response text']);
+(new SupportAgent)->prompt('Hello');
+SupportAgent::assertPrompted('Hello');
+SupportAgent::assertNeverPrompted();
+
+// Images
+Image::fake();
+Image::assertGenerated(fn ($p) => str_contains($p, 'sunset'));
+
+// Embeddings
+Embeddings::fake();
+Embeddings::assertGenerated(fn ($p) => $p->contains('Laravel'));
 ```
 
-See the [Laravel AI SDK documentation](https://laravel.com/docs/12.x/ai-sdk) for full coverage of agents, tools, embeddings, images, audio, and testing.
+---
+
+For MCP tool integration via Relay, see [prism.md](./prism.md).
+For semantic agent memory, see [ai-memory.md](./ai-memory.md).

@@ -1,230 +1,126 @@
 ---
 name: developing-with-prism
-description: Guide for developing with Prism PHP package - a Laravel package for integrating LLMs. Activate or use when working with Prism features including text generation, structured output, embeddings, image generation, audio processing, streaming, tools/function calling, or any LLM provider integration (OpenAI, Anthropic, Gemini, Mistral, Groq, XAI, DeepSeek, OpenRouter, Ollama, VoyageAI, ElevenLabs). Activate for any Prism-related development tasks.
+description: Guide for the narrow Prism/Relay role in this project. Activate ONLY when working with MCP tool integration via `PrismService::withTools()` (Relay bridge). For all other AI features — text generation, structured output, images, audio, embeddings, streaming, tools, conversation memory — use `developing-with-ai-sdk` instead.
 ---
 
-# Developing with Prism
+# Developing with Prism / Relay
 
-Prism is a Laravel package for integrating Large Language Models (LLMs) into applications with a fluent, expressive and eloquent API.
+> **Single rule for this project:** Use `laravel/ai` Agent classes for everything. The only exception is `PrismService::withTools()`, which bridges [Relay](https://github.com/prism-php/relay) MCP tools into a Prism request — Relay has no `laravel/ai` equivalent.
 
-## Basic Usage Examples
+See [ai-sdk.md](../../docs/developer/backend/ai-sdk.md) for agents, structured output, text generation, images, audio, and embeddings.
 
-### Text Generation
+---
+
+## Decision Workflow
+
+| What you need | Use |
+|---------------|-----|
+| Text generation, chat, agents | `laravel/ai` — see `developing-with-ai-sdk` |
+| Structured JSON output | `laravel/ai` Agent + `HasStructuredOutput` |
+| Vision / multimodal | `laravel/ai` Agent + `Image::fromUpload()` |
+| Streaming | `laravel/ai` Agent `->stream()` |
+| Conversation history | `laravel/ai` Agent + `RemembersConversations` |
+| Custom tools | `laravel/ai` Agent + `HasTools` |
+| Embeddings | `Laravel\Ai\Embeddings::for()` |
+| Images, Audio, TTS, STT | `Laravel\Ai\Image`, `Audio`, `Transcription` |
+| **MCP tools from external servers** | **`PrismService::withTools()` via Relay ← only use case** |
+| Provider availability check | `PrismService::isAvailable()` |
+
+---
+
+## PrismService — The Only Direct Prism Usage
+
+`App\Services\PrismService` has exactly two methods:
+
+### `isAvailable(?Provider $provider = null): bool`
+
+Returns `true` when the configured provider has an API key. Use before optional AI calls:
 
 ```php
-use Prism\Prism\Facades\Prism;
-use Prism\Prism\Enums\Provider;
+use App\Services\PrismService;
 
-$response = Prism::text()
-    ->using(Provider::Anthropic, 'claude-3-5-sonnet-20241022')
-    ->withSystemPrompt('You are an expert mathematician.')
-    ->withPrompt('Explain the Pythagorean theorem.')
-    ->asText();
-
-echo $response->text;
+if (app(PrismService::class)->isAvailable()) {
+    // safe to call AI
+}
 ```
 
-### Structured Output
+### `withTools(string|array $servers, ?string $model = null): PendingRequest`
+
+Fetches tools from one or more MCP servers via Relay and returns a Prism `PendingRequest`:
 
 ```php
-use Prism\Prism\Facades\Prism;
-use Prism\Prism\Enums\Provider;
-use Prism\Prism\Schema\ObjectSchema;
-use Prism\Prism\Schema\StringSchema;
+use App\Services\PrismService;
 
-$schema = new ObjectSchema(
-    name: 'movie_review',
-    description: 'A structured movie review',
-    properties: [
-        new StringSchema('title', 'The movie title'),
-        new StringSchema('rating', 'Rating out of 5 stars'),
-        new StringSchema('summary', 'Brief review summary')
+$response = app(PrismService::class)
+    ->withTools('puppeteer')
+    ->withPrompt('Navigate to laravel.com and summarise the homepage')
+    ->asText();
+
+// Multiple servers
+$response = app(PrismService::class)
+    ->withTools(['puppeteer', 'github'])
+    ->withPrompt('Find the Laravel repo and take a screenshot')
+    ->asText();
+```
+
+---
+
+## MCP Integration with Relay
+
+Relay is configured in `config/relay.php`. Define each MCP server your app needs:
+
+```php
+'servers' => [
+    'puppeteer' => [
+        'transport' => Transport::Stdio,
+        'command'   => ['npx', '-y', '@modelcontextprotocol/server-puppeteer'],
+        'timeout'   => env('RELAY_PUPPETEER_SERVER_TIMEOUT', 60),
+        'env'       => [],
     ],
-    requiredFields: ['title', 'rating', 'summary']
-);
-
-$response = Prism::structured()
-    ->using(Provider::OpenAI, 'gpt-4o')
-    ->withSchema($schema)
-    ->withPrompt('Review the movie Inception')
-    ->asStructured();
-
-$review = $response->structured;
-echo $review['title'];
+],
 ```
 
-### Streaming (Server-Sent Events)
+### Available transports
+
+- **Stdio** — locally running MCP servers communicating via standard I/O
+- **HTTP** — MCP servers communicating over HTTP
+
+---
+
+## Error Handling
 
 ```php
-Route::get('/chat', function () {
-    return Prism::text()
-        ->using('anthropic', 'claude-3-7-sonnet')
-        ->withPrompt(request('message'))
-        ->asEventStreamResponse();
-});
+use Prism\Relay\Exceptions\RelayException;
+use Prism\Relay\Exceptions\ServerConfigurationException;
+use Prism\Relay\Exceptions\ToolCallException;
+
+try {
+    $response = app(PrismService::class)
+        ->withTools('puppeteer')
+        ->withPrompt('...')
+        ->asText();
+} catch (ServerConfigurationException $e) {
+    // MCP server not found in config/relay.php
+} catch (ToolCallException $e) {
+    // Tool execution failed
+} catch (RelayException $e) {
+    // Other Relay error
+}
 ```
 
-### Tools / Function Calling
+---
 
-```php
-use Prism\Prism\Facades\Prism;
-use Prism\Prism\Tool;
-
-$weatherTool = Tool::as('get_weather')
-    ->for('Get current weather for a location')
-    ->withStringParameter('location', 'The city and state')
-    ->using(fn (string $location): string =>
-        "Weather in {$location}: 72F, sunny"
-    );
-
-$response = Prism::text()
-    ->using('anthropic', 'claude-3-5-sonnet-latest')
-    ->withTools([$weatherTool])
-    ->withMaxSteps(3)
-    ->withPrompt('What is the weather in San Francisco?')
-    ->asText();
-```
-
-### Multi-Modal (Images/Documents)
-
-```php
-use Prism\Prism\ValueObjects\Media\Image;
-use Prism\Prism\ValueObjects\Media\Document;
-
-$response = Prism::text()
-    ->using(Provider::Anthropic, 'claude-3-5-sonnet-20241022')
-    ->withPrompt(
-        'What objects do you see in this image?',
-        [Image::fromLocalPath('/path/to/image.jpg')]
-    )
-    ->asText();
-```
-
-## Prism Documentation
-
-**IMPORTANT:** Always search the docs before implementing Prism features.
-
-### How to Search
-
-1. **Read a specific doc file directly:**
-   ```
-   read vendor/prism-php/prism/docs/core-concepts/text-generation.md
-   read vendor/prism-php/prism/docs/providers/openai.md
-   ```
-
-2. **Search for a topic across docs:**
-   ```
-   grep "streaming" vendor/prism-php/prism/docs/
-   grep "withProviderOptions" vendor/prism-php/prism/docs/providers/
-   ```
-
-3. **Find all doc files:**
-   ```
-   glob "vendor/prism-php/prism/docs/**/*.md"
-   ```
-
-### Documentation Paths
-
-| Need | Read This File |
-|------|----------------|
-| Text generation | `docs/core-concepts/text-generation.md` |
-| Streaming responses | `docs/core-concepts/streaming-output.md` |
-| Tools / function calling | `docs/core-concepts/tools-function-calling.md` |
-| Structured JSON output | `docs/core-concepts/structured-output.md` |
-| Embeddings | `docs/core-concepts/embeddings.md` |
-| Image generation | `docs/core-concepts/image-generation.md` |
-| Audio (TTS/STT) | `docs/core-concepts/audio.md` |
-| Schema definitions | `docs/core-concepts/schemas.md` |
-| Testing | `docs/core-concepts/testing.md` |
-| Image input | `docs/input-modalities/images.md` |
-| Document input (PDF) | `docs/input-modalities/documents.md` |
-| OpenAI options | `docs/providers/openai.md` |
-| Anthropic options | `docs/providers/anthropic.md` |
-| Other providers | `docs/providers/{provider}.md` |
-| Error handling | `docs/advanced/error-handling.md` |
-
-### Source Code Reference
-
-For implementation details:
-```
-glob "src/**/*.php"
-grep "class Tool" src/
-```
-
-## Key Patterns
-
-- Use `Prism\Prism\Facades\Prism` facade or `prism()` helper
-- Core methods: `Prism::text()`, `Prism::structured()`, `Prism::embeddings()`, `Prism::image()`, `Prism::audio()`
-- Chain `->using(Provider::Name, 'model-id')` to specify provider/model
-- Finalize with: `->asText()`, `->asStructured()`, `->asStream()`, `->asEventStreamResponse()`, `->asDataStreamResponse()`
-
-## Provider-Specific Options
-
-Use `->withProviderOptions([...])` to pass provider-specific features:
-
-```php
-$response = Prism::text()
-    ->using('anthropic', 'claude-3-7-sonnet-latest')
-    ->withPrompt('Your prompt')
-    ->withProviderOptions(['thinking' => ['enabled' => true]])  // Anthropic-specific
-    ->asText();
-```
-
-**Always search the provider docs first** to find available options for each provider:
-- `docs/providers/openai.md` - strict mode, reasoning, image generation options
-- `docs/providers/anthropic.md` - thinking mode, prompt caching, citations
-- `docs/providers/gemini.md`, `docs/providers/mistral.md`, etc.
-
-## Common Pitfalls
-
-### Wrong Package Name
-
-**NEVER use the old package:** `echolabsdev/prism` is deprecated.
-
-**ALWAYS use:** `prism-php/prism`
+## Artisan Commands
 
 ```bash
+# Validate Prism and Relay configuration
+php artisan prism:validate
 
-# Correct
-
-composer require prism-php/prism
-
-# Wrong - do not use
-
-composer require echolabsdev/prism
+# Quick smoke-test (text via laravel/ai, MCP tools via Relay)
+php artisan prism:example --prompt="Explain Laravel in one sentence"
+php artisan prism:example --prompt="Navigate to laravel.com" --tools=puppeteer
 ```
 
-### Wrong Namespace
+---
 
-**ALWAYS use the `Prism\Prism` namespace** for all Prism classes:
-
-```php
-// Correct
-use Prism\Prism\Facades\Prism;
-use Prism\Prism\Enums\Provider;
-use Prism\Prism\Tool;
-use Prism\Prism\Schema\ObjectSchema;
-
-// Wrong - these namespaces do not exist
-use EchoLabs\Prism\Prism;
-use Prism\Facades\Prism;
-```
-
-### Decision Workflow
-
-When working with Prism, follow this pattern:
-
-1. Determine what you need:
-
-   **Text generation?** → Use `Prism::text()`
-   **Structured JSON output?** → Use `Prism::structured()`
-   **Embeddings?** → Use `Prism::embeddings()`
-   **Image generation?** → Use `Prism::image()`
-   **Audio (TTS/STT)?** → Use `Prism::audio()`
-
-2. Always read the relevant docs first before implementing.
-
-## Related Packages
-
-- **Prism Relay** - MCP tools integration for Prism. See `references/relay.md`
-- **Prism Bedrock** - AWS Bedrock provider: https://github.com/prism-php/bedrock
+For all other AI features, see [ai-sdk.md](../../docs/developer/backend/ai-sdk.md) and use the `developing-with-ai-sdk` skill.
