@@ -1,5 +1,6 @@
 import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 import tailwindcss from '@tailwindcss/vite';
+import type { Options } from '@vitejs/plugin-react';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite-plus';
@@ -59,7 +60,7 @@ export default defineConfig({
             babel: {
                 plugins: ['babel-plugin-react-compiler'],
             },
-        }),
+        } as Options),
         tailwindcss(),
         wayfinder({
             formVariants: true,
