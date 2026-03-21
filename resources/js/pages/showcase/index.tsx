@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { GuidedTour, type TourStep } from '@/components/guided-tour';
 import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
@@ -96,10 +97,46 @@ const features: Feature[] = [
     },
 ];
 
+const tourSteps: TourStep[] = [
+    {
+        title: 'Welcome to the AI-Native App Factory',
+        description:
+            'This starter kit gives you everything you need to build corporate-grade applications — multi-tenancy, billing, AI chat, admin panels, and more. All production-ready.',
+    },
+    {
+        title: 'AI Chat Assistant',
+        description:
+            'Talk to an AI that understands your app\'s data. It has memory, semantic search, and can answer questions about employees, deals, or any module you install.',
+        action: 'Try AI Chat →',
+        href: '/chat',
+    },
+    {
+        title: 'Module System',
+        description:
+            'Install vertical modules (HR, CRM, Fleet) with one command. Each module comes with models, actions, pages, and AI context — fully integrated.',
+    },
+    {
+        title: 'Build Your Own',
+        description:
+            'Run `php artisan make:module YourModel` to scaffold 18 files in one command — model, migration, actions, controller, React pages, Filament resource, and tests.',
+    },
+    {
+        title: 'One-Command Demo',
+        description:
+            'Run `php artisan app:demo` to set up a complete demo environment with sample data in under 60 seconds. Perfect for evaluating or showing to clients.',
+    },
+    {
+        title: 'Explore the Features',
+        description:
+            'Click any card below to explore that feature in action. Each one is production-ready and fully integrated with the rest of the platform.',
+    },
+];
+
 export default function ShowcaseIndex() {
     return (
         <AppSidebarLayout breadcrumbs={breadcrumbs}>
             <Head title="Feature Showcase" />
+            <GuidedTour steps={tourSteps} storageKey="showcase_tour_completed" />
 
             <div className="px-6 py-8">
                 <div className="mb-8">
