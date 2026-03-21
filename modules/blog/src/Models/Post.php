@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Modules\Blog\Database\Factories\PostFactory;
+use Pgvector\Laravel\HasNeighbors;
+use Pgvector\Laravel\Vector;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\ModelFlags\Models\Concerns\HasFlags;
@@ -49,6 +51,7 @@ final class Post extends Model implements HasMedia
     use Categorizable;
     use HasFactory;
     use HasFlags;
+    use HasNeighbors;
     use HasSlug;
     use HasTags;
     use InteractsWithMedia;
@@ -71,6 +74,7 @@ final class Post extends Model implements HasMedia
         'meta_description',
         'meta_keywords',
         'views',
+        'embedding',
     ];
 
     public function getSlugOptions(): SlugOptions
@@ -105,6 +109,33 @@ final class Post extends Model implements HasMedia
         ];
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('og_image')->singleFile();
+    }
+
+    protected static function booted(): void
+    {
+        self::saved(function (self $model): void {
+            if ($model->wasChanged(['title', 'content']) || $model->wasRecentlyCreated) {
+                \App\Jobs\GenerateEmbedding::dispatch($model, 'content')->onQueue('embeddings');
+            }
+
+            if ($model->wasChanged(['title', 'excerpt']) || $model->wasRecentlyCreated) {
+                $category = $model->relationLoaded('categories')
+                    ? $model->categories->first()?->name
+                    : null;
+
+                \App\Jobs\GenerateOgImageJob::dispatch(
+                    $model,
+                    $model->title,
+                    $model->excerpt,
+                    $category,
+                )->onQueue('og-images');
+            }
+        });
+    }
+
     protected static function newFactory(): PostFactory
     {
         return PostFactory::new();
@@ -116,6 +147,7 @@ final class Post extends Model implements HasMedia
             'is_published' => 'boolean',
             'published_at' => 'immutable_datetime',
             'views' => 'integer',
+            'embedding' => Vector::class,
         ];
     }
 

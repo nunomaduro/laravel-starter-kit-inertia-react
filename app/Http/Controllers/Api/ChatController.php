@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Ai\Agents\AssistantAgent;
+use App\Models\AgentConversation;
 use App\Services\PrismService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Ai\Streaming\Events\ReasoningDelta;
 use Laravel\Ai\Streaming\Events\ReasoningStart;
@@ -25,9 +25,15 @@ use function is_array;
 final class ChatController
 {
     /**
-     * Stream chat completion as NDJSON (TanStack AG-UI protocol) for use with fetchHttpStream.
-     * Accepts optional conversation_id to continue a conversation; creates one when absent.
-     * Messages may have either top-level "content" (string) or "parts" (TanStack UIMessage format).
+     * Stream an AI chat response as NDJSON (TanStack AG-UI protocol).
+     *
+     * Accepts an optional conversation_id to continue an existing conversation; a new conversation
+     * is created automatically when absent. Messages may carry either a top-level "content" string
+     * or a "parts" array (TanStack UIMessage format).
+     *
+     * Each newline-delimited JSON line is one of: RUN_STARTED, CONVERSATION_CREATED,
+     * TEXT_MESSAGE_START, TEXT_MESSAGE_CONTENT, TEXT_MESSAGE_END, CONVERSATION_TITLE_UPDATED,
+     * RUN_FINISHED, or RUN_ERROR.
      */
     public function __invoke(Request $request): Response|StreamedResponse
     {
@@ -42,7 +48,7 @@ final class ChatController
                     return;
                 }
 
-                $exists = DB::table('agent_conversations')
+                $exists = AgentConversation::query()
                     ->where('id', $value)
                     ->where('user_id', $user->id)
                     ->exists();
@@ -83,12 +89,10 @@ final class ChatController
 
         if ($conversationId === null) {
             $newConversationId = (string) Str::uuid();
-            DB::table('agent_conversations')->insert([
+            AgentConversation::create([
                 'id' => $newConversationId,
                 'user_id' => $user->id,
                 'title' => 'New chat',
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
             $conversationId = $newConversationId;
         }
@@ -276,8 +280,7 @@ final class ChatController
                             );
 
                             if ($generatedTitle !== '') {
-                                DB::table('agent_conversations')
-                                    ->where('id', $newConversationId)
+                                AgentConversation::where('id', $newConversationId)
                                     ->update(['title' => $generatedTitle, 'updated_at' => now()]);
 
                                 $ts = (int) (microtime(true) * 1000);

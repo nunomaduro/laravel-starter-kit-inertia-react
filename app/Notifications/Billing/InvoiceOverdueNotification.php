@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Notifications;
+namespace App\Notifications\Billing;
 
-use App\Actions\Billing\BuildLaravelDailyInvoice;
 use App\Models\Billing\Invoice;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-final class InvoicePaidNotification extends Notification
+final class InvoiceOverdueNotification extends Notification
 {
     use Queueable;
 
@@ -32,33 +31,26 @@ final class InvoicePaidNotification extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => 'Invoice paid',
+            'title' => 'Invoice overdue',
             'message' => sprintf(
-                'Invoice %s for %s %s has been paid.',
+                'Invoice #%s for %s %s is overdue.',
                 $this->invoice->number,
                 number_format($this->invoice->total / 100, 2),
                 mb_strtoupper($this->invoice->currency),
             ),
-            'type' => 'success',
+            'type' => 'error',
             'action_url' => route('billing.invoices.index'),
         ];
     }
 
     public function toMail(object $notifiable): MailMessage
     {
-        $laravelInvoice = (new BuildLaravelDailyInvoice)->handle($this->invoice);
-
         $formattedTotal = number_format($this->invoice->total / 100, 2).' '.mb_strtoupper($this->invoice->currency);
 
         return (new MailMessage)
-            ->subject('Invoice '.$this->invoice->number.' – Payment Confirmed')
-            ->greeting('Payment received!')
-            ->line('Thank you. Invoice '.$this->invoice->number.' for '.$formattedTotal.' has been paid.')
-            ->action('View Invoices', route('billing.invoices.index'))
-            ->attachData(
-                $laravelInvoice->toHtml(),
-                'invoice-'.$this->invoice->number.'.html',
-                ['mime' => 'text/html'],
-            );
+            ->subject('Invoice #'.$this->invoice->number.' is overdue')
+            ->greeting('Invoice overdue')
+            ->line('Invoice #'.$this->invoice->number.' for '.$formattedTotal.' is now overdue.')
+            ->action('View Invoices', route('billing.invoices.index'));
     }
 }

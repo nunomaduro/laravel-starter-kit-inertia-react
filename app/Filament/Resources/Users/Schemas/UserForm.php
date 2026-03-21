@@ -9,6 +9,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 final class UserForm
@@ -41,12 +43,19 @@ final class UserForm
                 DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
-                    ->required(),
-                Textarea::make('two_factor_secret')
-                    ->columnSpanFull(),
-                Textarea::make('two_factor_recovery_codes')
-                    ->columnSpanFull(),
-                DateTimePicker::make('two_factor_confirmed_at'),
+                    ->revealable()
+                    ->required(fn (Get $get): bool => $get('id') === null)
+                    ->dehydrated(fn (?string $state): bool => filled($state))
+                    ->helperText(fn (Get $get): ?string => $get('id') !== null ? 'Leave blank to keep current password.' : null),
+                Fieldset::make('Two-Factor Authentication')
+                    ->schema([
+                        Textarea::make('two_factor_secret')
+                            ->columnSpanFull(),
+                        Textarea::make('two_factor_recovery_codes')
+                            ->columnSpanFull(),
+                        DateTimePicker::make('two_factor_confirmed_at'),
+                    ])
+                    ->columns(2),
             ]);
     }
 }

@@ -1,4 +1,4 @@
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { Deferred, Head, router, useForm, usePage } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -7,6 +7,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
@@ -280,9 +281,21 @@ export default function Roles() {
                     </div>
 
                     {/* Create Role Form */}
-                    <CreateRoleForm
-                        grantablePermissions={grantablePermissions}
-                    />
+                    <Deferred
+                        data="grantablePermissions"
+                        fallback={
+                            <div className="space-y-2 rounded-lg border p-4">
+                                <Skeleton className="h-5 w-32" />
+                                <Skeleton className="h-8 w-full" />
+                                <Skeleton className="h-8 w-full" />
+                                <Skeleton className="h-9 w-24" />
+                            </div>
+                        }
+                    >
+                        <CreateRoleForm
+                            grantablePermissions={grantablePermissions}
+                        />
+                    </Deferred>
                 </div>
             </SettingsLayout>
         </AppLayout>

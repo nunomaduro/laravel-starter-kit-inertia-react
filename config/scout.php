@@ -20,8 +20,8 @@ return [
     |
     */
 
-    // Managed via Filament: Settings > Scout
-    'driver' => 'collection',
+    // Managed via Filament: Settings > Scout (set SCOUT_DRIVER=typesense for Herd/production)
+    'driver' => env('SCOUT_DRIVER', 'collection'),
 
     /*
     |--------------------------------------------------------------------------
@@ -47,7 +47,10 @@ return [
     |
     */
 
-    'queue' => false,
+    'queue' => [
+        'connection' => env('SCOUT_QUEUE_CONNECTION', config('queue.default')),
+        'queue' => env('SCOUT_QUEUE', 'default'),
+    ],
 
     /*
     |--------------------------------------------------------------------------

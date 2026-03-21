@@ -14,6 +14,8 @@ use Laravel\Scout\Searchable;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Modules\Changelog\Database\Factories\ChangelogEntryFactory;
 use Modules\Changelog\Enums\ChangelogType;
+use Pgvector\Laravel\HasNeighbors;
+use Pgvector\Laravel\Vector;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Tags\HasTags;
@@ -37,6 +39,7 @@ final class ChangelogEntry extends Model
     use BelongsToOrganization;
 
     use HasFactory;
+    use HasNeighbors;
     use HasTags;
     use LogsActivity;
     use Searchable;
@@ -53,6 +56,7 @@ final class ChangelogEntry extends Model
         'type',
         'is_published',
         'released_at',
+        'embedding',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -79,6 +83,15 @@ final class ChangelogEntry extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        self::saved(function (self $model): void {
+            if ($model->wasChanged(['title', 'description']) || $model->wasRecentlyCreated) {
+                \App\Jobs\GenerateEmbedding::dispatch($model, 'description')->onQueue('embeddings');
+            }
+        });
+    }
+
     protected static function newFactory(): ChangelogEntryFactory
     {
         return ChangelogEntryFactory::new();
@@ -90,6 +103,7 @@ final class ChangelogEntry extends Model
             'type' => ChangelogType::class,
             'is_published' => 'boolean',
             'released_at' => 'immutable_datetime',
+            'embedding' => Vector::class,
         ];
     }
 

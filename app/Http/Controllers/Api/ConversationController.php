@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AgentConversation;
+use App\Models\AgentConversationMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 final class ConversationController extends Controller
 {
@@ -21,17 +22,17 @@ final class ConversationController extends Controller
         $user = $request->user();
         $perPage = max(1, min(50, (int) $request->get('per_page', 20)));
 
-        $conversations = DB::table('agent_conversations')
+        $conversations = AgentConversation::query()
             ->where('user_id', $user->id)
             ->latest('updated_at')
             ->paginate($perPage);
 
         return response()->json([
-            'data' => $conversations->getCollection()->map(fn ($row): array => [
-                'id' => $row->id,
-                'title' => $row->title,
-                'created_at' => $row->created_at,
-                'updated_at' => $row->updated_at,
+            'data' => $conversations->getCollection()->map(fn (AgentConversation $c): array => [
+                'id' => $c->id,
+                'title' => $c->title,
+                'created_at' => $c->created_at,
+                'updated_at' => $c->updated_at,
             ])->all(),
             'meta' => [
                 'current_page' => $conversations->currentPage(),
@@ -51,7 +52,7 @@ final class ConversationController extends Controller
     {
         $user = $request->user();
 
-        $conversation = DB::table('agent_conversations')
+        $conversation = AgentConversation::query()
             ->where('id', $id)
             ->where('user_id', $user->id)
             ->first();
@@ -60,11 +61,10 @@ final class ConversationController extends Controller
             return response()->json(['message' => 'Conversation not found.'], 404);
         }
 
-        $messages = DB::table('agent_conversation_messages')
-            ->where('conversation_id', $id)
+        $messages = $conversation->messages()
             ->orderBy('id')
             ->get()
-            ->map(fn ($m): array => [
+            ->map(fn (AgentConversationMessage $m): array => [
                 'id' => $m->id,
                 'role' => $m->role,
                 'content' => $m->content ?? '',
@@ -91,16 +91,18 @@ final class ConversationController extends Controller
         $request->validate(['title' => ['required', 'string', 'max:255']]);
         $user = $request->user();
 
-        $updated = DB::table('agent_conversations')
+        $conversation = AgentConversation::query()
             ->where('id', $id)
             ->where('user_id', $user->id)
-            ->update(['title' => $request->input('title'), 'updated_at' => now()]);
+            ->first();
 
-        if (! $updated) {
+        if (! $conversation) {
             return response()->json(['message' => 'Conversation not found.'], 404);
         }
 
-        return response()->json(['data' => ['id' => $id, 'title' => $request->input('title')]]);
+        $conversation->update(['title' => $request->input('title')]);
+
+        return response()->json(['data' => ['id' => $id, 'title' => $conversation->title]]);
     }
 
     /**
@@ -110,18 +112,17 @@ final class ConversationController extends Controller
     {
         $user = $request->user();
 
-        $deleted = DB::table('agent_conversations')
+        $conversation = AgentConversation::query()
             ->where('id', $id)
             ->where('user_id', $user->id)
-            ->delete();
+            ->first();
 
-        if (! $deleted) {
+        if (! $conversation) {
             return response()->json(['message' => 'Conversation not found.'], 404);
         }
 
-        DB::table('agent_conversation_messages')
-            ->where('conversation_id', $id)
-            ->delete();
+        $conversation->messages()->delete();
+        $conversation->delete();
 
         return response()->json(null, 204);
     }

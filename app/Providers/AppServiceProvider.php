@@ -12,12 +12,19 @@ use App\Listeners\Billing\SyncSubscriptionSeatsOnMemberChange;
 use App\Listeners\CreatePersonalOrganizationOnUserCreated;
 use App\Listeners\LogImpersonationEvents;
 use App\Listeners\MigrationListener;
+use App\Listeners\ScheduleOnboardingReminderOnUserCreated;
 use App\Listeners\SendSlackAlertOnJobFailed;
+use App\Models\Billing\FailedPaymentAttempt;
+use App\Models\Billing\Invoice;
+use App\Models\Billing\Subscription;
 use App\Models\Shareable;
 use App\Models\User;
 use App\Observers\ActivityLogObserver;
+use App\Observers\FailedPaymentAttemptObserver;
+use App\Observers\InvoiceObserver;
 use App\Observers\PermissionActivityObserver;
 use App\Observers\RoleActivityObserver;
+use App\Observers\SubscriptionObserver;
 use App\Observers\UserObserver;
 use App\Policies\ShareablePolicy;
 use App\Services\PaymentGateway\PaymentGatewayManager;
@@ -113,6 +120,7 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(LeaveImpersonation::class, [LogImpersonationEvents::class, 'handleLeaveImpersonation']);
         Event::listen(JobFailed::class, SendSlackAlertOnJobFailed::class);
         Event::listen(UserCreated::class, CreatePersonalOrganizationOnUserCreated::class);
+        Event::listen(UserCreated::class, ScheduleOnboardingReminderOnUserCreated::class);
         Event::listen(OrganizationMemberAdded::class, SyncSubscriptionSeatsOnMemberChange::class);
         Event::listen(OrganizationMemberRemoved::class, SyncSubscriptionSeatsOnMemberChange::class);
         Event::listen(OrderCreated::class, AddCreditsFromLemonSqueezyOrder::class);
@@ -123,6 +131,9 @@ final class AppServiceProvider extends ServiceProvider
         });
 
         User::observe(UserObserver::class);
+        Invoice::observe(InvoiceObserver::class);
+        Subscription::observe(SubscriptionObserver::class);
+        FailedPaymentAttempt::observe(FailedPaymentAttemptObserver::class);
     }
 
     private function userHasBypassPermissions(object $user): bool

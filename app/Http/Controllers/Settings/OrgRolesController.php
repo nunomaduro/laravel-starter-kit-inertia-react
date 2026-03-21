@@ -32,9 +32,6 @@ final class OrgRolesController extends Controller
 
         abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);
 
-        $grantablePermissions = $this->roleService->getGrantablePermissionNames();
-        $roleTemplates = $this->roleService->getRoleTemplates();
-
         $customRoles = $this->roleService->getCustomRoles($organization)
             ->map(fn (Role $role): array => [
                 'id' => $role->id,
@@ -47,8 +44,8 @@ final class OrgRolesController extends Controller
 
         return Inertia::render('settings/roles', [
             'customRoles' => $customRoles,
-            'roleTemplates' => $roleTemplates,
-            'grantablePermissions' => $grantablePermissions,
+            'roleTemplates' => Inertia::once(fn () => $this->roleService->getRoleTemplates()),
+            'grantablePermissions' => Inertia::defer(fn () => $this->roleService->getGrantablePermissionNames()),
         ]);
     }
 

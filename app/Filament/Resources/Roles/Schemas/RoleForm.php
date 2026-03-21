@@ -50,7 +50,9 @@ final class RoleForm
                         ->gridDirection('column')
                         ->columns(2),
                 ])
-                ->collapsible();
+                ->collapsible()
+                ->persistCollapsedStatus()
+                ->collapsed();
         }
 
         return $schema->components($components);

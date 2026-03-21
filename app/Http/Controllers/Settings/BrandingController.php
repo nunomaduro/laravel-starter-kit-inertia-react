@@ -37,9 +37,9 @@ final class BrandingController extends Controller
 
         return Inertia::render('settings/branding', [
             'branding' => $branding,
-            'presetOptions' => collect(config('theme.presets', []))->mapWithKeys(fn (array $v, string $k): array => [$k => $v['label'] ?? $k])->all(),
-            'radiusOptions' => config('theme.radii', []),
-            'fontOptions' => config('theme.fonts', []),
+            'presetOptions' => Inertia::once(fn () => collect(config('theme.presets', []))->mapWithKeys(fn (array $v, string $k): array => [$k => $v['label'] ?? $k])->all()),
+            'radiusOptions' => Inertia::once(fn () => config('theme.radii', [])),
+            'fontOptions' => Inertia::once(fn () => config('theme.fonts', [])),
         ]);
     }
 

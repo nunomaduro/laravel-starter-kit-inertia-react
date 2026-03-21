@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Ai\Agents;
 
 use App\Ai\Middleware\WithMemoryUnlessUnavailable;
+use App\Ai\Tools\UsersIndexAiTool;
+use App\Ai\Tools\UsersShowAiTool;
 use Eznix86\AI\Memory\Tools\RecallMemory;
 use Eznix86\AI\Memory\Tools\StoreMemory;
 use Laravel\Ai\Concerns\RemembersConversations;
@@ -42,6 +44,8 @@ final class AssistantAgent implements Agent, Conversational, HasMiddleware, HasT
         return [
             (new RecallMemory)->context($this->context)->limit($this->recallLimit),
             (new StoreMemory)->context($this->context),
+            new UsersIndexAiTool,
+            new UsersShowAiTool,
         ];
     }
 

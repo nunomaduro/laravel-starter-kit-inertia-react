@@ -24,6 +24,7 @@ return RectorConfig::configure()
         LaravelSetList::LARAVEL_IF_HELPERS,
         LaravelSetList::LARAVEL_LEGACY_FACTORIES_TO_CLASSES,
         // Laravel version upgrades (loaded explicitly; withComposerBased merges cause RenameClassRector integer config error)
+        LaravelSetList::LARAVEL_130,
         LaravelSetList::LARAVEL_120,
         LaravelSetList::LARAVEL_110,
         LaravelSetList::LARAVEL_100,

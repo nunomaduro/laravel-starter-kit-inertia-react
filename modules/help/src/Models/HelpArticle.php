@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Mattiverse\Userstamps\Traits\Userstamps;
 use Modules\Help\Database\Factories\HelpArticleFactory;
+use Pgvector\Laravel\HasNeighbors;
+use Pgvector\Laravel\Vector;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\EloquentSortable\Sortable;
@@ -50,6 +52,7 @@ final class HelpArticle extends Model implements HasMedia, Sortable
     use Categorizable;
     use HasFactory;
     use HasFlags;
+    use HasNeighbors;
     use HasSlug;
     use HasTags;
     use InteractsWithMedia;
@@ -80,6 +83,7 @@ final class HelpArticle extends Model implements HasMedia, Sortable
         'not_helpful_count',
         'order',
         'is_published',
+        'embedding',
     ];
 
     public function getSlugOptions(): SlugOptions
@@ -122,11 +126,30 @@ final class HelpArticle extends Model implements HasMedia, Sortable
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images');
+        $this->addMediaCollection('og_image')->singleFile();
     }
 
     protected static function newFactory(): HelpArticleFactory
     {
         return HelpArticleFactory::new();
+    }
+
+    protected static function booted(): void
+    {
+        self::saved(function (self $model): void {
+            if ($model->wasChanged(['title', 'content']) || $model->wasRecentlyCreated) {
+                \App\Jobs\GenerateEmbedding::dispatch($model, 'content')->onQueue('embeddings');
+            }
+
+            if ($model->wasChanged(['title', 'excerpt', 'category']) || $model->wasRecentlyCreated) {
+                \App\Jobs\GenerateOgImageJob::dispatch(
+                    $model,
+                    $model->title,
+                    $model->excerpt,
+                    $model->category,
+                )->onQueue('og-images');
+            }
+        });
     }
 
     protected function casts(): array
@@ -137,6 +160,7 @@ final class HelpArticle extends Model implements HasMedia, Sortable
             'not_helpful_count' => 'integer',
             'order' => 'integer',
             'is_published' => 'boolean',
+            'embedding' => Vector::class,
         ];
     }
 
