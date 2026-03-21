@@ -48,6 +48,13 @@ export default defineConfig({
             'resources/js/routes/*',
             'resources/js/wayfinder/*',
         ],
+            functions: ["clsx", "cn"],
+            stylesheet: "resources/css/app.css",
+        },
+        sortImports: {
+            groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+            newlinesBetween: false,
+        },
     },
     plugins: [
         laravel({
