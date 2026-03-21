@@ -17,17 +17,17 @@ beforeEach(function (): void {
 
 test('super-admin can impersonate; non-org-admin cannot', function (): void {
     $superAdmin = User::factory()->withoutTwoFactor()->create();
-    $superAdmin->assignRole('super-admin');
+    assignRoleForTestUser($superAdmin, 'super-admin');
 
     $admin = User::factory()->withoutTwoFactor()->create();
-    $admin->assignRole('admin');
+    assignRoleForTestUser($admin, 'admin');
     // Ensure admin is not org admin (e.g. may have personal org as owner from listeners)
     $admin->organizations()->each(fn ($org) => $org->removeMember($admin));
     $org = Organization::factory()->create();
     $org->addMember($admin, 'member');
 
     $user = User::factory()->withoutTwoFactor()->create();
-    $user->assignRole('user');
+    assignRoleForTestUser($user, 'user');
     $user->organizations()->each(fn ($org) => $org->removeMember($user));
     $org2 = Organization::factory()->create();
     $org2->addMember($user, 'member');
@@ -40,7 +40,7 @@ test('super-admin can impersonate; non-org-admin cannot', function (): void {
 test('org admin can impersonate when feature is active', function (): void {
     $org = Organization::factory()->create();
     $orgAdmin = User::factory()->withoutTwoFactor()->create();
-    $orgAdmin->assignRole('user');
+    assignRoleForTestUser($orgAdmin, 'user');
 
     $org->addMember($orgAdmin, 'admin');
 
@@ -50,7 +50,7 @@ test('org admin can impersonate when feature is active', function (): void {
 test('org admin cannot impersonate when impersonation feature is inactive', function (): void {
     $org = Organization::factory()->create();
     $orgAdmin = User::factory()->withoutTwoFactor()->create();
-    $orgAdmin->assignRole('user');
+    assignRoleForTestUser($orgAdmin, 'user');
 
     $org->addMember($orgAdmin, 'admin');
     Feature::for($orgAdmin)->deactivate(ImpersonationFeature::class);
@@ -63,17 +63,17 @@ test('org admin can impersonate only same-org member', function (): void {
     $orgB = Organization::factory()->create();
 
     $orgAdmin = User::factory()->withoutTwoFactor()->create();
-    $orgAdmin->assignRole('user');
+    assignRoleForTestUser($orgAdmin, 'user');
 
     $orgA->addMember($orgAdmin, 'admin');
 
     $memberA = User::factory()->withoutTwoFactor()->create();
-    $memberA->assignRole('user');
+    assignRoleForTestUser($memberA, 'user');
 
     $orgA->addMember($memberA, 'member');
 
     $memberB = User::factory()->withoutTwoFactor()->create();
-    $memberB->assignRole('user');
+    assignRoleForTestUser($memberB, 'user');
 
     $orgB->addMember($memberB, 'member');
 
@@ -85,7 +85,7 @@ test('org admin can impersonate only same-org member', function (): void {
 
 test('super-admin cannot impersonate when impersonation feature is inactive', function (): void {
     $superAdmin = User::factory()->withoutTwoFactor()->create();
-    $superAdmin->assignRole('super-admin');
+    assignRoleForTestUser($superAdmin, 'super-admin');
     Feature::for($superAdmin)->deactivate(ImpersonationFeature::class);
 
     expect($superAdmin->canImpersonate())->toBeFalse();
@@ -93,10 +93,10 @@ test('super-admin cannot impersonate when impersonation feature is inactive', fu
 
 test('super-admin cannot be impersonated', function (): void {
     $superAdmin = User::factory()->withoutTwoFactor()->create();
-    $superAdmin->assignRole('super-admin');
+    assignRoleForTestUser($superAdmin, 'super-admin');
 
     $user = User::factory()->withoutTwoFactor()->create();
-    $user->assignRole('user');
+    assignRoleForTestUser($user, 'user');
 
     $this->actingAs($superAdmin);
 
@@ -106,10 +106,10 @@ test('super-admin cannot be impersonated', function (): void {
 
 test('taking impersonation logs activity with impersonator as causer', function (): void {
     $superAdmin = User::factory()->withoutTwoFactor()->create(['name' => 'Super Admin']);
-    $superAdmin->assignRole('super-admin');
+    assignRoleForTestUser($superAdmin, 'super-admin');
 
     $target = User::factory()->withoutTwoFactor()->create(['name' => 'Target User']);
-    $target->assignRole('user');
+    assignRoleForTestUser($target, 'user');
 
     $this->actingAs($superAdmin);
 
@@ -131,10 +131,10 @@ test('taking impersonation logs activity with impersonator as causer', function 
 
 test('leaving impersonation logs activity with impersonator as causer', function (): void {
     $superAdmin = User::factory()->withoutTwoFactor()->create(['name' => 'Super Admin']);
-    $superAdmin->assignRole('super-admin');
+    assignRoleForTestUser($superAdmin, 'super-admin');
 
     $target = User::factory()->withoutTwoFactor()->create(['name' => 'Target User']);
-    $target->assignRole('user');
+    assignRoleForTestUser($target, 'user');
 
     $this->actingAs($superAdmin);
     Impersonation::enter($superAdmin, $target, 'web');
@@ -158,10 +158,10 @@ test('leaving impersonation logs activity with impersonator as causer', function
 
 test('actions during impersonation are logged with impersonator as causer', function (): void {
     $superAdmin = User::factory()->withoutTwoFactor()->create(['name' => 'Super Admin']);
-    $superAdmin->assignRole('super-admin');
+    assignRoleForTestUser($superAdmin, 'super-admin');
 
     $target = User::factory()->withoutTwoFactor()->create(['name' => 'Target User']);
-    $target->assignRole('user');
+    assignRoleForTestUser($target, 'user');
 
     $this->actingAs($superAdmin);
     Impersonation::enter($superAdmin, $target, 'web');

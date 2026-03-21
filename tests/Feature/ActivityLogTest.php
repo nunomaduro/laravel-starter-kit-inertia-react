@@ -21,7 +21,7 @@ test('user model update creates activity log and does not store password in prop
         'name' => 'Original',
         'email' => 'original@example.com',
     ]);
-    $user->assignRole('user');
+    assignRoleForTestUser($user, 'user');
 
     $user->update(['name' => 'Updated Name']);
 
@@ -61,7 +61,7 @@ test('embedding demo update creates activity log and does not store embedding in
 
 test('two factor enable logs activity', function (): void {
     $user = User::factory()->withoutTwoFactor()->create();
-    $user->assignRole('user');
+    assignRoleForTestUser($user, 'user');
 
     $enable = resolve(EnableTwoFactorAuthentication::class);
     $enable($user, true);
@@ -89,7 +89,7 @@ test('CreateUser logs roles_assigned when default role is assigned', function ()
 
 test('role creation logs role_created activity', function (): void {
     $admin = User::factory()->withoutTwoFactor()->create();
-    $admin->assignRole('super-admin');
+    assignRoleForTestUser($admin, 'super-admin');
     $this->actingAs($admin);
 
     $role = Role::query()->create(['name' => 'test-role-activity', 'guard_name' => 'web']);

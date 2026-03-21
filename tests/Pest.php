@@ -31,6 +31,16 @@ pest()->extend(TestCase::class)
         // Ensure Spatie Permission uses teams so assignRole attaches organization_id (NOT NULL on pivot)
         ensurePermissionTeamsForTests();
         setPermissionsTeamId(0);
+
+        // Set seed_in_progress config so CreatePersonalOrganizationOnUserCreated skips
+        // (it checks this flag and returns early). This prevents the role assignment
+        // cascade that fails on SQLite (organization_id NOT NULL on model_has_roles).
+        config()->set('tenancy.seed_in_progress', true);
+
+        // Disable laravel-governor's CreatedListener which tries to assign a "Member" role
+        // via $model->roles()->syncWithoutDetaching('Member') on every User creation.
+        // This conflicts with Spatie's model_has_roles.organization_id NOT NULL constraint.
+        config()->set('genealabs-laravel-governor.models.auth', 'disabled');
     })
     ->in('Feature', 'Unit');
 
@@ -136,17 +146,43 @@ function assignRoleForTestUser(User $user, string $role = 'super-admin'): void
 {
     ensurePermissionTeamsForTests();
     setPermissionsTeamId(0);
-    $roleModel = Role::findByName($role, 'web');
-    if ($roleModel !== null) {
-        DB::table(config('permission.table_names.model_has_roles'))->insertOrIgnore([
-            'role_id' => $roleModel->id,
-            'model_id' => $user->id,
-            'model_type' => User::class,
-            'organization_id' => 0,
+    $teamKey = config('permission.column_names.team_foreign_key', 'organization_id');
+
+    // Find or create the role (org-scoped roles like 'member' may not exist globally)
+    $roleModel = Role::query()
+        ->where('name', $role)
+        ->where('guard_name', 'web')
+        ->where(fn ($q) => $q->whereNull($teamKey)->orWhere($teamKey, 0))
+        ->first();
+
+    if ($roleModel === null) {
+        $roleModel = Role::query()->create([
+            'name' => $role,
+            'guard_name' => 'web',
+            $teamKey => 0,
         ]);
     }
+
+    DB::table(config('permission.table_names.model_has_roles'))->insertOrIgnore([
+        'role_id' => $roleModel->id,
+        'model_id' => $user->id,
+        'model_type' => User::class,
+        'organization_id' => 0,
+    ]);
+
     $user->unsetRelation('roles');
     resolve(PermissionRegistrar::class)->forgetCachedPermissions();
+}
+
+/**
+ * Create a test user without firing model events (avoids UserObserver → CreatePersonalOrganization
+ * which triggers assignRole on the pivot without organization_id in SQLite).
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function createTestUser(array $attributes = []): User
+{
+    return User::withoutEvents(static fn (): User => User::factory()->withoutTwoFactor()->create($attributes));
 }
 
 function something(): void

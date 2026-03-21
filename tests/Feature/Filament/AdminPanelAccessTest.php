@@ -54,7 +54,7 @@ it('denies user without access admin panel permission', function (): void {
         'email' => 'regular@test.example',
         'password' => Hash::make('password'),
     ]));
-    $user->assignRole('user');
+    assignRoleForTestUser($user, 'user');
 
     $response = $test->actingAs($user)->get('/admin');
 

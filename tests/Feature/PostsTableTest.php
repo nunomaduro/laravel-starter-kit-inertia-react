@@ -17,7 +17,7 @@ test('authenticated user can access posts table and receives tableData', functio
         'email' => 'admin@posts-table-test.example',
         'password' => Hash::make('password'),
     ]));
-    $user->assignRole('super-admin');
+    assignRoleForTestUser($user, 'super-admin');
 
     $response = $this->actingAs($user)
         ->get(route('posts.table'));
@@ -40,7 +40,7 @@ test('authenticated user can request posts export', function (): void {
         'email' => 'admin@posts-export.example',
         'password' => Hash::make('password'),
     ]));
-    $user->assignRole('super-admin');
+    assignRoleForTestUser($user, 'super-admin');
 
     $response = $this->actingAs($user)
         ->get(route('data-table.export', ['table' => 'posts']));

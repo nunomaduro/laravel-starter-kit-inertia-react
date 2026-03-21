@@ -17,7 +17,7 @@ test('authenticated user can access categories table and receives tableData', fu
         'email' => 'admin@categories-table-test.example',
         'password' => Hash::make('password'),
     ]));
-    $user->assignRole('super-admin');
+    assignRoleForTestUser($user, 'super-admin');
 
     $response = $this->actingAs($user)
         ->get(route('categories.table'));

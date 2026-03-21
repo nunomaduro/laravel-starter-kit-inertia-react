@@ -14,7 +14,7 @@ test('globally disabled feature returns 404 for all users including super-admin'
     $user = User::factory()->withoutTwoFactor()->create([
         'onboarding_completed' => true,
     ]);
-    $user->assignRole('super-admin');
+    assignRoleForTestUser($user, 'super-admin');
     Feature::for($user)->activate(BlogFeature::class);
 
     $this->actingAs($user)

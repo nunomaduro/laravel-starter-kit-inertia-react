@@ -30,7 +30,7 @@ it('shows organization switcher when admin has multiple organizations', function
         'email' => 'admin-multi@filament-test.example',
         'password' => Hash::make('password'),
     ]);
-    $user->assignRole('admin');
+    assignRoleForTestUser($user, 'admin');
     $user->organizations()->sync([
         $orgA->id => ['is_default' => true],
         $orgB->id => ['is_default' => false],
@@ -52,7 +52,7 @@ it('switches organization and redirects back with success', function (): void {
         'email' => 'admin-switch@filament-test.example',
         'password' => Hash::make('password'),
     ]);
-    $user->assignRole('admin');
+    assignRoleForTestUser($user, 'admin');
     $user->organizations()->sync([
         $orgA->id => ['is_default' => true],
         $orgB->id => ['is_default' => false],

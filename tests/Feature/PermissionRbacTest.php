@@ -33,15 +33,15 @@ it('sync-routes command runs successfully', function (): void {
 });
 
 it('user with bypass-permissions passes gate check for arbitrary ability', function (): void {
-    $user = User::factory()->withoutTwoFactor()->create();
+    $user = User::withoutEvents(fn () => User::factory()->withoutTwoFactor()->create());
     $user->givePermissionTo('bypass-permissions');
 
     expect(Gate::forUser($user)->allows('some.arbitrary.permission'))->toBeTrue();
 });
 
 it('user without bypass-permissions does not pass arbitrary ability', function (): void {
-    $user = User::factory()->withoutTwoFactor()->create();
-    $user->assignRole('user');
+    $user = User::withoutEvents(fn () => User::factory()->withoutTwoFactor()->create());
+    assignRoleForTestUser($user, 'user');
 
     expect(Gate::forUser($user)->allows('some.arbitrary.permission'))->toBeFalse();
 });
@@ -60,11 +60,11 @@ it('permission:health exits 0 when super-admin role exists', function (): void {
 });
 
 it('last super-admin cannot be deleted', function (): void {
-    $superAdminUser = User::factory()->withoutTwoFactor()->create();
-    $superAdminUser->assignRole('super-admin');
+    $superAdminUser = User::withoutEvents(fn () => User::factory()->withoutTwoFactor()->create());
+    assignRoleForTestUser($superAdminUser, 'super-admin');
 
-    $admin = User::factory()->withoutTwoFactor()->create();
-    $admin->assignRole('admin');
+    $admin = User::withoutEvents(fn () => User::factory()->withoutTwoFactor()->create());
+    assignRoleForTestUser($admin, 'admin');
 
     expect(Gate::forUser($admin)->denies('delete', $superAdminUser))->toBeTrue();
 });

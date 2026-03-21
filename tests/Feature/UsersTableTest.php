@@ -17,7 +17,7 @@ test('authenticated user with permission can access users table and receives tab
         'email' => 'admin@users-table-test.example',
         'password' => Hash::make('password'),
     ]);
-    $user->assignRole('super-admin');
+    assignRoleForTestUser($user, 'super-admin');
 
     $response = $this->actingAs($user)
         ->get(route('users.table'));

@@ -16,7 +16,7 @@ beforeEach(function (): void {
 
 it('allows super-admin to create and update global and org announcements', function (): void {
     $superAdmin = User::factory()->withoutTwoFactor()->create();
-    $superAdmin->assignRole('super-admin');
+    assignRoleForTestUser($superAdmin, 'super-admin');
 
     expect(Gate::forUser($superAdmin)->allows('create', Announcement::class))->toBeTrue();
 
@@ -84,7 +84,7 @@ it('denies member from creating announcement', function (): void {
     $org->users()->attach($member->id, ['is_default' => false, 'joined_at' => now(), 'invited_by' => $owner->id]);
 
     TenantContext::set($org);
-    $member->assignRole('member');
+    assignRoleForTestUser($member, 'member');
 
     expect(Gate::forUser($member)->denies('create', Announcement::class))->toBeTrue();
 });

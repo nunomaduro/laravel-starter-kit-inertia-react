@@ -20,7 +20,7 @@ test('authenticated user can access announcements table and receives tableData',
         'email' => 'admin@announcements-table-test.example',
         'password' => Hash::make('password'),
     ]));
-    $user->assignRole('super-admin');
+    assignRoleForTestUser($user, 'super-admin');
 
     $response = $this->actingAs($user)
         ->get(route('announcements.table'));
@@ -43,7 +43,7 @@ test('authenticated user can reorder announcements', function (): void {
         'email' => 'admin@announcements-reorder.example',
         'password' => Hash::make('password'),
     ]));
-    $user->assignRole('super-admin');
+    assignRoleForTestUser($user, 'super-admin');
 
     $a1 = Announcement::query()->create([
         'title' => 'First',
