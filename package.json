@@ -40,7 +40,7 @@
         "@tailwindcss/vite": "^4.2.2",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "@vitejs/plugin-react": "^5.2.0",
+        "@vitejs/plugin-react": "^6.0.1",
         "babel-plugin-react-compiler": "^1.0.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
@@ -57,7 +57,7 @@
         "vite": "^8.0.1"
     },
     "optionalDependencies": {
-        "@rollup/rollup-linux-x64-gnu": "4.59.0",
+        "@rollup/rollup-linux-x64-gnu": "4.59.1",
         "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
         "lightningcss-linux-x64-gnu": "^1.32.0"
     }
