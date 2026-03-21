@@ -305,7 +305,7 @@ export default function TwoFactorSetupModal({
 
     useEffect(() => {
         if (isOpen && !qrCodeSvg) {
-            fetchSetupData();
+            void fetchSetupData();
         }
     }, [isOpen, qrCodeSvg, fetchSetupData]);
 
