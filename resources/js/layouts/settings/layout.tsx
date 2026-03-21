@@ -1,3 +1,5 @@
+import { Link } from '@inertiajs/react';
+import type { PropsWithChildren } from 'react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -8,8 +10,6 @@ import { edit as editPassword } from '@/routes/password';
 import { show as showTwoFactor } from '@/routes/two-factor';
 import { edit } from '@/routes/user-profile';
 import type { NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import type { PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
     {
