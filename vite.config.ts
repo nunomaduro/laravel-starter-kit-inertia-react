@@ -1,8 +1,8 @@
-import { wayfinder } from '@laravel/vite-plugin-wayfinder';
+import {wayfinder} from '@laravel/vite-plugin-wayfinder';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
-import { defineConfig } from 'vite-plus';
+import {defineConfig} from 'vite-plus';
 
 export default defineConfig({
     lint: {
@@ -41,20 +41,6 @@ export default defineConfig({
             ],
             newlinesBetween: false,
         },
-        ignorePatterns: [
-            'resources/js/components/ui/*',
-            'resources/views/mail/*',
-            'resources/js/actions/*',
-            'resources/js/routes/*',
-            'resources/js/wayfinder/*',
-        ],
-            functions: ["clsx", "cn"],
-            stylesheet: "resources/css/app.css",
-        },
-        sortImports: {
-            groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
-            newlinesBetween: false,
-        },
     },
     plugins: [
         laravel({
@@ -62,7 +48,11 @@ export default defineConfig({
             ssr: 'resources/js/ssr.tsx',
             refresh: true,
         }),
-        react(),
+        react({
+            babel: {
+                plugins: ['babel-plugin-react-compiler'],
+            },
+        }),
         tailwindcss(),
         wayfinder({
             formVariants: true,
