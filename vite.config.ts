@@ -41,6 +41,13 @@ export default defineConfig({
             ],
             newlinesBetween: false,
         },
+        ignorePatterns: [
+            'resources/js/components/ui/*',
+            'resources/views/mail/*',
+            'resources/js/actions/*',
+            'resources/js/routes/*',
+            'resources/js/wayfinder/*',
+        ],
     },
     plugins: [
         laravel({
