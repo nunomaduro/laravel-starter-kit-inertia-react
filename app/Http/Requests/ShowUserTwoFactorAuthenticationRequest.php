@@ -12,7 +12,7 @@ final class ShowUserTwoFactorAuthenticationRequest extends FormRequest
     use InteractsWithTwoFactorState;
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array{}
      */
     public function rules(): array
     {
