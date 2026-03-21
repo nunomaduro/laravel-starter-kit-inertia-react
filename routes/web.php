@@ -157,6 +157,18 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('profile/export-pdf', App\Http\Controllers\ProfileExportPdfController::class)
         ->middleware('feature:profile_pdf_export')
         ->name('profile.export-pdf');
+
+    // HR Module
+    Route::prefix('hr')->name('hr.')->group(function (): void {
+        Route::resource('employees', App\Http\Controllers\Hr\EmployeeController::class);
+        Route::resource('leave-requests', App\Http\Controllers\Hr\LeaveRequestController::class);
+    });
+
+    // CRM Module
+    Route::prefix('crm')->name('crm.')->group(function (): void {
+        Route::resource('contacts', App\Http\Controllers\Crm\ContactController::class);
+        Route::resource('deals', App\Http\Controllers\Crm\DealController::class);
+    });
 });
 
 Route::get('/api/slug-availability', SlugAvailabilityController::class)

@@ -83,5 +83,13 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [dashboards/index](./dashboards/index.md) | dashboards.index, dashboards.create | ✅ |
 | [dashboards/show](./dashboards/show.md) | dashboards.index, dashboards.create | ✅ |
 | [showcase/index](./showcase/index.md) | mails.webhook, filament.exports.download | ✅ |
+| [crm/contacts/create](./crm/contacts/create.md) | crm.contacts.index, crm.contacts.create | ✅ |
+| [crm/contacts/edit](./crm/contacts/edit.md) | crm.contacts.index, crm.contacts.create | ✅ |
+| [crm/contacts/index](./crm/contacts/index.md) | crm.contacts.index, crm.contacts.create | ✅ |
+| [crm/deals/index](./crm/deals/index.md) | crm.deals.index, crm.deals.create | ✅ |
+| [hr/employees/create](./hr/employees/create.md) | hr.employees.index, hr.employees.create | ✅ |
+| [hr/employees/edit](./hr/employees/edit.md) | hr.employees.index, hr.employees.create | ✅ |
+| [hr/employees/index](./hr/employees/index.md) | hr.employees.index, hr.employees.create | ✅ |
+| [hr/leave-requests/index](./hr/leave-requests/index.md) | hr.leave-requests.index, hr.leave-requests.create | ✅ |
 
 
