@@ -286,7 +286,11 @@
             "Modules\\Reports\\": "modules/reports/src/",
             "Modules\\Reports\\Database\\": "modules/reports/database/",
             "Modules\\Dashboards\\": "modules/dashboards/src/",
-            "Modules\\Dashboards\\Database\\": "modules/dashboards/database/"
+            "Modules\\Dashboards\\Database\\": "modules/dashboards/database/",
+            "Cogneiss\\ModuleHr\\": "modules/module-hr/src/",
+            "Cogneiss\\ModuleHr\\Database\\": "modules/module-hr/database/",
+            "Cogneiss\\ModuleCrm\\": "modules/module-crm/src/",
+            "Cogneiss\\ModuleCrm\\Database\\": "modules/module-crm/database/"
         },
         "files": [
             "bootstrap/helpers.php"

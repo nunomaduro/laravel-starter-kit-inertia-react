@@ -17,4 +17,8 @@ return [
     App\Providers\PermissionServiceProvider::class,
     App\Providers\SettingsOverlayServiceProvider::class,
     App\Providers\WaterlineServiceProvider::class,
+
+    // Modules
+    Cogneiss\ModuleHr\Providers\HrModuleServiceProvider::class,
+    Cogneiss\ModuleCrm\Providers\CrmModuleServiceProvider::class,
 ];

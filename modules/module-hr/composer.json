@@ -1,0 +1,20 @@
+{
+    "name": "cogneiss/module-hr",
+    "description": "HR Management module: employees, departments, leave requests, attendance",
+    "type": "library",
+    "require": {
+        "php": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cogneiss\\ModuleHr\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cogneiss\\ModuleHr\\Providers\\HrModuleServiceProvider"
+            ]
+        }
+    }
+}

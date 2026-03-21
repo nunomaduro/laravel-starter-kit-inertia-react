@@ -1,0 +1,20 @@
+{
+    "name": "cogneiss/module-crm",
+    "description": "CRM module: contacts, deals, pipelines, activities",
+    "type": "library",
+    "require": {
+        "php": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cogneiss\\ModuleCrm\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cogneiss\\ModuleCrm\\Providers\\CrmModuleServiceProvider"
+            ]
+        }
+    }
+}
