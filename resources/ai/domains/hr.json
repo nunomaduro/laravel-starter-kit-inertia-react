@@ -1,0 +1,43 @@
+{
+    "name": "Human Resources",
+    "slug": "hr",
+    "description": "Employee management, departments, leave tracking, attendance, and performance reviews",
+    "modules": ["cogneiss/module-hr"],
+    "terminology": {
+        "employee": "A staff member with personal details, position, department, and employment history",
+        "department": "An organizational unit grouping employees under a common function",
+        "leave_request": "A time-off request with type (annual, sick, personal, unpaid), date range, and approval workflow",
+        "attendance": "Daily clock-in/clock-out records for tracking work hours",
+        "performance_review": "Periodic evaluation of employee performance with ratings, goals, and feedback"
+    },
+    "common_queries": [
+        "How many employees are in each department?",
+        "Who has pending leave requests?",
+        "Show me all employees hired in the last quarter",
+        "What's the average salary by department?",
+        "Which employees have upcoming performance reviews?",
+        "List all employees on leave this week",
+        "Show the org chart for the engineering department"
+    ],
+    "example_interactions": [
+        {
+            "user": "Add a new employee to the Engineering department",
+            "assistant": "I'll help you add a new employee. Please provide: full name, email, position, hire date, and salary. I'll assign them to the Engineering department automatically."
+        },
+        {
+            "user": "Approve John's leave request",
+            "assistant": "I found John Smith's pending leave request for Annual Leave from March 25-28. Shall I approve it? This will notify John and update the leave calendar."
+        },
+        {
+            "user": "How many sick days has the marketing team used this year?",
+            "assistant": "The Marketing department (8 employees) has used a total of 23 sick days this year. The average is 2.9 days per employee. Sarah Chen has the most with 6 days."
+        }
+    ],
+    "suggested_features": [
+        "Employee self-service portal",
+        "Leave balance tracking",
+        "Organizational chart visualization",
+        "Onboarding checklists",
+        "Performance review cycles"
+    ]
+}

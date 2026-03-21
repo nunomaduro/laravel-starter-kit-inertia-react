@@ -1,0 +1,43 @@
+{
+    "name": "Customer Relationship Management",
+    "slug": "crm",
+    "description": "Contact management, deal tracking, sales pipelines, and activity logging",
+    "modules": ["cogneiss/module-crm"],
+    "terminology": {
+        "contact": "A person or lead with name, company, role, and communication details",
+        "deal": "A sales opportunity with monetary value, pipeline stage, probability, and expected close date",
+        "pipeline": "A sequence of stages a deal moves through (e.g., Lead → Qualified → Proposal → Negotiation → Won/Lost)",
+        "activity": "An interaction logged against a contact or deal — types: call, email, meeting, note, task",
+        "lead": "A new contact who has shown initial interest but hasn't been qualified yet"
+    },
+    "common_queries": [
+        "What deals are closing this month?",
+        "Show me all contacts from Acme Corp",
+        "What's our total pipeline value?",
+        "Which deals have been stuck in the same stage for over 2 weeks?",
+        "List all activities logged today",
+        "Who are my top 10 contacts by deal value?",
+        "What's our win rate this quarter?"
+    ],
+    "example_interactions": [
+        {
+            "user": "Log a call with Sarah at TechCorp",
+            "assistant": "I'll log a call activity for Sarah Johnson at TechCorp. What was discussed? I'll add it to her contact timeline and link it to any open deals."
+        },
+        {
+            "user": "Move the Acme deal to negotiation stage",
+            "assistant": "Moving 'Acme Corp - Enterprise License' ($150,000) from Proposal to Negotiation. Probability updated to 60%. Expected close date is April 15. Want me to schedule a follow-up activity?"
+        },
+        {
+            "user": "Show me deals closing this week",
+            "assistant": "You have 3 deals with expected close dates this week:\n1. TechStart SaaS ($12k) - Won stage, 90% probability\n2. DataFlow Annual ($45k) - Negotiation, 70% probability\n3. CloudSync Pilot ($8k) - Proposal, 40% probability\nTotal potential: $65,000"
+        }
+    ],
+    "suggested_features": [
+        "Email integration for auto-logging",
+        "Deal forecasting dashboard",
+        "Lead scoring",
+        "Automated follow-up reminders",
+        "Sales team leaderboard"
+    ]
+}

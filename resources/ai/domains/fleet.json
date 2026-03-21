@@ -1,0 +1,43 @@
+{
+    "name": "Fleet Management",
+    "slug": "fleet",
+    "description": "Vehicle tracking, driver management, maintenance scheduling, trip logging, and compliance",
+    "modules": ["cogneiss/module-fleet"],
+    "terminology": {
+        "vehicle": "A fleet asset with make, model, year, VIN, license plate, mileage, and status (active, maintenance, retired)",
+        "driver": "A certified operator assigned to vehicles with license info, certifications, and driving record",
+        "trip": "A vehicle journey with start/end locations, distance, duration, fuel usage, and purpose",
+        "maintenance": "Scheduled or unscheduled vehicle service — oil change, tire rotation, brake inspection, etc.",
+        "compliance": "Regulatory requirements: vehicle inspections, driver certifications, hours of service, insurance"
+    },
+    "common_queries": [
+        "Which vehicles are due for maintenance?",
+        "Show me all trips for truck VIN 1234 this week",
+        "What's the total fuel cost this month?",
+        "Which drivers have expiring certifications?",
+        "List vehicles with mileage over 100,000",
+        "What's the average cost per mile for each vehicle?",
+        "Show me the fleet utilization rate"
+    ],
+    "example_interactions": [
+        {
+            "user": "Schedule maintenance for truck #47",
+            "assistant": "Truck #47 (2022 Ford F-150, VIN ending 8923) is due for its 50,000-mile service. I'll schedule an oil change, tire rotation, and brake inspection. Preferred date and service center?"
+        },
+        {
+            "user": "Which drivers are available tomorrow?",
+            "assistant": "5 drivers are available tomorrow:\n- Mike Johnson (Class A CDL, no trips scheduled)\n- Sarah Williams (Class B CDL, available after 2pm)\n- David Chen (Class A CDL, full day available)\n- Lisa Park (Class C, morning only)\n- James Brown (Class A CDL, full day available)"
+        },
+        {
+            "user": "Add a new vehicle to the fleet",
+            "assistant": "I'll add a new vehicle. Please provide: make, model, year, VIN, license plate, and assigned location. I'll set up the maintenance schedule based on manufacturer recommendations."
+        }
+    ],
+    "suggested_features": [
+        "GPS tracking integration",
+        "Fuel card reconciliation",
+        "Driver hours of service tracking",
+        "Vehicle inspection checklists",
+        "Route optimization"
+    ]
+}
