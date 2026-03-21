@@ -39,7 +39,6 @@ export default defineConfig({
                 'sibling',
                 'index',
             ],
-            internalPattern: [], // try clearing it
             newlinesBetween: false,
         },
         ignorePatterns: [
