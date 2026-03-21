@@ -7,7 +7,9 @@ namespace App\Ai\Tools;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Tools\Request;
 use ReflectionClass;
+use Stringable;
 use Throwable;
 
 /**
@@ -43,13 +45,10 @@ final class ListModelsAiTool implements Tool
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $arguments
-     */
-    public function handle(array $arguments = []): string
+    public function handle(Request $request): Stringable|string
     {
         $models = [];
-        $module = $arguments['module'] ?? null;
+        $module = $request->arguments['module'] ?? null;
 
         // Core app models
         if (! $module) {

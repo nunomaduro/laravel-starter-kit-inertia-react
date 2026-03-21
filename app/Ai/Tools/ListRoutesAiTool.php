@@ -6,6 +6,8 @@ namespace App\Ai\Tools;
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Tools\Request;
+use Stringable;
 
 /**
  * AI tool that lists application routes.
@@ -40,12 +42,9 @@ final class ListRoutesAiTool implements Tool
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $arguments
-     */
-    public function handle(array $arguments = []): string
+    public function handle(Request $request): Stringable|string
     {
-        $filter = $arguments['filter'] ?? null;
+        $filter = $request->arguments['filter'] ?? null;
         $routes = collect(Route::getRoutes()->getRoutes());
 
         if ($filter) {

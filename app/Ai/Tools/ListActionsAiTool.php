@@ -7,9 +7,11 @@ namespace App\Ai\Tools;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Tools\Request;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionParameter;
+use Stringable;
 use Throwable;
 
 /**
@@ -45,12 +47,9 @@ final class ListActionsAiTool implements Tool
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $arguments
-     */
-    public function handle(array $arguments = []): string
+    public function handle(Request $request): Stringable|string
     {
-        $filter = $arguments['filter'] ?? null;
+        $filter = $request->arguments['filter'] ?? null;
         $actions = [];
 
         // Core actions
