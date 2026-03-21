@@ -1,0 +1,43 @@
+{
+    "model": "AgentConversation",
+    "table": "agent_conversations",
+    "fields": {
+        "id": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "user_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "title": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "user": {
+            "type": "belongsTo",
+            "model": "User"
+        },
+        "messages": {
+            "type": "hasMany",
+            "model": "Message"
+        }
+    },
+    "value_hints": [],
+    "scenarios": []
+}

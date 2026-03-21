@@ -1,0 +1,83 @@
+{
+    "model": "AgentConversationMessage",
+    "table": "agent_conversation_messages",
+    "fields": {
+        "id": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "conversation_id": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "user_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "agent": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "role": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "content": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "attachments": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "tool_calls": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "tool_results": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "usage": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "meta": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "conversation": {
+            "type": "belongsTo",
+            "model": "Conversation"
+        },
+        "user": {
+            "type": "belongsTo",
+            "model": "User"
+        }
+    },
+    "value_hints": [],
+    "scenarios": []
+}

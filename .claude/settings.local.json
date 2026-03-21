@@ -265,7 +265,8 @@
       "Bash(php:*)",
       "Bash(git stash:*)",
       "Bash(vendor/bin/pint app/Providers/Filament/SystemPanelProvider.php app/Support/ModuleServiceProvider.php --format agent 2>&1)",
-      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index"
+      "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index",
+      "Bash(git ls-tree:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

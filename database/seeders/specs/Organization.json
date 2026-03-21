@@ -116,6 +116,18 @@
         "invoices": {
             "type": "hasMany",
             "model": "Invoice"
+        },
+        "creator": {
+            "type": "belongsTo",
+            "model": "Creator"
+        },
+        "editor": {
+            "type": "belongsTo",
+            "model": "Editor"
+        },
+        "destroyer": {
+            "type": "belongsTo",
+            "model": "Destroyer"
         }
     },
     "value_hints": {
