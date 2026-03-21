@@ -1,0 +1,67 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
+import type { BreadcrumbItem, SharedData } from '@/types';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
+
+type {{ model }}Item = {
+    id: number;
+    created_at: string;
+    updated_at: string;
+};
+
+type Props = {
+    {{ modelVariable }}: {{ model }}Item;
+};
+
+export default function Edit() {
+    const { {{ modelVariable }} } = usePage<Props & SharedData>().props;
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: '{{ modelTitle }}', href: '/{{ modelKebabPlural }}' },
+        { title: 'Edit', href: `/{{ modelKebabPlural }}/${{{ modelVariable }}.id}/edit` },
+    ];
+
+    const { data, setData, put, processing, errors } = useForm({
+        // Initialize with existing values
+    });
+
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        put(`/{{ modelKebabPlural }}/${{{ modelVariable }}.id}`);
+    }
+
+    return (
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Edit {{ model }}" />
+
+            <div className="mx-auto max-w-2xl px-6 py-8">
+                <h1 className="mb-6 text-2xl font-bold">Edit {{ model }}</h1>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Add form fields here */}
+                    <div>
+                        <Label htmlFor="name">Name</Label>
+                        <Input
+                            id="name"
+                            value={data.name ?? ''}
+                            onChange={(e) => setData('name' as never, e.target.value as never)}
+                            className="mt-1"
+                        />
+                        {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+                    </div>
+
+                    <div className="flex gap-3">
+                        <Button type="submit" disabled={processing}>
+                            Update {{ model }}
+                        </Button>
+                        <Link href="/{{ modelKebabPlural }}">
+                            <Button type="button" variant="outline">Cancel</Button>
+                        </Link>
+                    </div>
+                </form>
+            </div>
+        </AppSidebarLayout>
+    );
+}

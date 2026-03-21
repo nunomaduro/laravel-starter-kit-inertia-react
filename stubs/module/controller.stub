@@ -1,0 +1,72 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+use App\Actions\Create{{ model }};
+use App\Actions\Delete{{ model }};
+use App\Actions\Update{{ model }};
+use App\Http\Requests\Store{{ model }}Request;
+use App\Http\Requests\Update{{ model }}Request;
+use App\Models\{{ model }};
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
+
+final class {{ model }}Controller extends Controller
+{
+    public function index(): Response
+    {
+        ${{ modelPlural }} = {{ model }}::query()
+            ->latest()
+            ->paginate(15);
+
+        return Inertia::render('{{ modelKebabPlural }}/index', [
+            '{{ modelPlural }}' => ${{ modelPlural }},
+        ]);
+    }
+
+    public function create(): Response
+    {
+        return Inertia::render('{{ modelKebabPlural }}/create');
+    }
+
+    public function store(Store{{ model }}Request $request, Create{{ model }} $action): RedirectResponse
+    {
+        $action->handle($request->validated());
+
+        return to_route('{{ modelKebabPlural }}.index')
+            ->with('success', '{{ model }} created.');
+    }
+
+    public function show({{ model }} ${{ modelVariable }}): Response
+    {
+        return Inertia::render('{{ modelKebabPlural }}/show', [
+            '{{ modelVariable }}' => ${{ modelVariable }},
+        ]);
+    }
+
+    public function edit({{ model }} ${{ modelVariable }}): Response
+    {
+        return Inertia::render('{{ modelKebabPlural }}/edit', [
+            '{{ modelVariable }}' => ${{ modelVariable }},
+        ]);
+    }
+
+    public function update(Update{{ model }}Request $request, {{ model }} ${{ modelVariable }}, Update{{ model }} $action): RedirectResponse
+    {
+        $action->handle(${{ modelVariable }}, $request->validated());
+
+        return to_route('{{ modelKebabPlural }}.index')
+            ->with('success', '{{ model }} updated.');
+    }
+
+    public function destroy({{ model }} ${{ modelVariable }}, Delete{{ model }} $action): RedirectResponse
+    {
+        $action->handle(${{ modelVariable }});
+
+        return to_route('{{ modelKebabPlural }}.index')
+            ->with('success', '{{ model }} deleted.');
+    }
+}

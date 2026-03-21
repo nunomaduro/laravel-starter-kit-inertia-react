@@ -1,0 +1,55 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
+import type { BreadcrumbItem } from '@/types';
+import { Head, Link, useForm } from '@inertiajs/react';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: '{{ modelTitle }}', href: '/{{ modelKebabPlural }}' },
+    { title: 'Create', href: '/{{ modelKebabPlural }}/create' },
+];
+
+export default function Create() {
+    const { data, setData, post, processing, errors } = useForm({
+        // Add form fields here
+    });
+
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        post('/{{ modelKebabPlural }}');
+    }
+
+    return (
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="Create {{ model }}" />
+
+            <div className="mx-auto max-w-2xl px-6 py-8">
+                <h1 className="mb-6 text-2xl font-bold">Create {{ model }}</h1>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Add form fields here */}
+                    <div>
+                        <Label htmlFor="name">Name</Label>
+                        <Input
+                            id="name"
+                            value={data.name ?? ''}
+                            onChange={(e) => setData('name' as never, e.target.value as never)}
+                            className="mt-1"
+                        />
+                        {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+                    </div>
+
+                    <div className="flex gap-3">
+                        <Button type="submit" disabled={processing}>
+                            Create {{ model }}
+                        </Button>
+                        <Link href="/{{ modelKebabPlural }}">
+                            <Button type="button" variant="outline">Cancel</Button>
+                        </Link>
+                    </div>
+                </form>
+            </div>
+        </AppSidebarLayout>
+    );
+}

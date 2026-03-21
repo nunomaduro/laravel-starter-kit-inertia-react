@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions;
+
+use App\Models\{{ model }};
+use Illuminate\Support\Facades\DB;
+
+final readonly class Create{{ model }}
+{
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function handle(array $data): {{ model }}
+    {
+        return DB::transaction(fn (): {{ model }} => {{ model }}::query()->create($data));
+    }
+}

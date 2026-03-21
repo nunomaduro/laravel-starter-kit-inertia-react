@@ -1,0 +1,82 @@
+import { Button } from '@/components/ui/button';
+import AppSidebarLayout from '@/layouts/app/app-sidebar-layout';
+import type { BreadcrumbItem, SharedData } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { Plus } from 'lucide-react';
+
+type {{ model }}Item = {
+    id: number;
+    created_at: string;
+    updated_at: string;
+};
+
+type Props = {
+    {{ modelPlural }}: {
+        data: {{ model }}Item[];
+        current_page: number;
+        last_page: number;
+        total: number;
+    };
+};
+
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: '{{ modelTitle }}', href: '/{{ modelKebabPlural }}' },
+];
+
+export default function Index() {
+    const { {{ modelPlural }} } = usePage<Props & SharedData>().props;
+
+    return (
+        <AppSidebarLayout breadcrumbs={breadcrumbs}>
+            <Head title="{{ modelTitle }}" />
+
+            <div className="flex items-center justify-between px-6 py-4">
+                <h1 className="text-2xl font-bold">{{ modelTitle }}</h1>
+                <Link href="/{{ modelKebabPlural }}/create">
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create {{ model }}
+                    </Button>
+                </Link>
+            </div>
+
+            <div className="px-6">
+                {{{ modelPlural }}.data.length === 0 ? (
+                    <div className="rounded-lg border border-dashed p-8 text-center">
+                        <p className="text-muted-foreground">No {{ modelPlural }} yet.</p>
+                        <Link href="/{{ modelKebabPlural }}/create">
+                            <Button variant="outline" className="mt-4">
+                                Create your first {{ model }}
+                            </Button>
+                        </Link>
+                    </div>
+                ) : (
+                    <div className="rounded-lg border">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="border-b">
+                                    <th className="px-4 py-3 text-left text-sm font-medium">ID</th>
+                                    <th className="px-4 py-3 text-left text-sm font-medium">Created</th>
+                                    <th className="px-4 py-3 text-right text-sm font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{{ modelPlural }}.data.map((item) => (
+                                    <tr key={item.id} className="border-b last:border-0">
+                                        <td className="px-4 py-3 text-sm">{item.id}</td>
+                                        <td className="px-4 py-3 text-sm">{new Date(item.created_at).toLocaleDateString()}</td>
+                                        <td className="px-4 py-3 text-right text-sm">
+                                            <Link href={`/{{ modelKebabPlural }}/${item.id}/edit`}>
+                                                <Button variant="ghost" size="sm">Edit</Button>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+        </AppSidebarLayout>
+    );
+}

@@ -1,0 +1,73 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\{{ model }};
+use App\Models\User;
+
+beforeEach(function (): void {
+    $this->user = User::factory()->create();
+    $this->actingAs($this->user);
+});
+
+it('lists {{ modelPlural }}', function (): void {
+    {{ model }}::factory()->count(3)->create();
+
+    $this->get(route('{{ modelKebabPlural }}.index'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('{{ modelKebabPlural }}/index')
+            ->has('{{ modelPlural }}.data', 3)
+        );
+});
+
+it('shows create form', function (): void {
+    $this->get(route('{{ modelKebabPlural }}.create'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('{{ modelKebabPlural }}/create')
+        );
+});
+
+it('creates a {{ modelVariable }}', function (): void {
+    $this->post(route('{{ modelKebabPlural }}.store'), [
+        // Add required fields
+    ])->assertRedirect(route('{{ modelKebabPlural }}.index'));
+
+    expect({{ model }}::query()->count())->toBe(1);
+});
+
+it('shows edit form', function (): void {
+    ${{ modelVariable }} = {{ model }}::factory()->create();
+
+    $this->get(route('{{ modelKebabPlural }}.edit', ${{ modelVariable }}))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('{{ modelKebabPlural }}/edit')
+            ->has('{{ modelVariable }}')
+        );
+});
+
+it('updates a {{ modelVariable }}', function (): void {
+    ${{ modelVariable }} = {{ model }}::factory()->create();
+
+    $this->put(route('{{ modelKebabPlural }}.update', ${{ modelVariable }}), [
+        // Add update fields
+    ])->assertRedirect(route('{{ modelKebabPlural }}.index'));
+});
+
+it('deletes a {{ modelVariable }}', function (): void {
+    ${{ modelVariable }} = {{ model }}::factory()->create();
+
+    $this->delete(route('{{ modelKebabPlural }}.destroy', ${{ modelVariable }}))
+        ->assertRedirect(route('{{ modelKebabPlural }}.index'));
+
+    expect({{ model }}::query()->count())->toBe(0);
+});
+
+it('requires authentication', function (): void {
+    auth()->logout();
+
+    $this->get(route('{{ modelKebabPlural }}.index'))
+        ->assertRedirect(route('login'));
+});

@@ -129,6 +129,14 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'telemetry' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/telemetry.log'),
+            'level' => 'info',
+            'days' => 30,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

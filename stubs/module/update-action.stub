@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions;
+
+use App\Models\{{ model }};
+use Illuminate\Support\Facades\DB;
+
+final readonly class Update{{ model }}
+{
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function handle({{ model }} ${{ modelVariable }}, array $data): {{ model }}
+    {
+        return DB::transaction(function () use (${{ modelVariable }}, $data): {{ model }} {
+            ${{ modelVariable }}->update($data);
+
+            return ${{ modelVariable }}->refresh();
+        });
+    }
+}

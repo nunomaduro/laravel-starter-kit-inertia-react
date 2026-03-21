@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions;
+
+use App\Models\{{ model }};
+use Illuminate\Support\Facades\DB;
+
+final readonly class Delete{{ model }}
+{
+    public function handle({{ model }} ${{ modelVariable }}): bool
+    {
+        return DB::transaction(fn (): bool => (bool) ${{ modelVariable }}->delete());
+    }
+}

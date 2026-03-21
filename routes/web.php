@@ -103,6 +103,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
+    Route::get('showcase', fn () => Inertia::render('showcase/index'))->name('showcase');
+
     Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
 
     Route::get('categories', [CategoriesTableController::class, 'index'])->name('categories.table');

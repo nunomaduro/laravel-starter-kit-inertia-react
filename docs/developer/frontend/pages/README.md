@@ -82,5 +82,6 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [dashboards/edit](./dashboards/edit.md) | dashboards.index, dashboards.create | ✅ |
 | [dashboards/index](./dashboards/index.md) | dashboards.index, dashboards.create | ✅ |
 | [dashboards/show](./dashboards/show.md) | dashboards.index, dashboards.create | ✅ |
+| [showcase/index](./showcase/index.md) | mails.webhook, filament.exports.download | ✅ |
 
 
