@@ -2,23 +2,21 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "build:ssr": "vite build && vite build --ssr",
-        "dev": "vite",
-        "lint": "oxlint --fix && prettier --write resources/",
-        "test:lint": "oxlint && prettier --check resources/",
+        "build": "vp build",
+        "build:ssr": "vp build && vp build --ssr",
+        "dev": "vp dev",
+        "lint": "NODE_OPTIONS='--experimental-strip-types' vp fmt resources/ && NODE_OPTIONS='--experimental-strip-types' vp lint --fix",
+        "test:lint": "NODE_OPTIONS='--experimental-strip-types' vp fmt --check resources/ && NODE_OPTIONS='--experimental-strip-types' vp lint",
         "test:types": "tsc --noEmit"
     },
     "devDependencies": {
         "@laravel/vite-plugin-wayfinder": "^0.1.7",
         "@types/node": "^25.5.0",
         "npm-check-updates": "^19.6.5",
-        "oxlint": "^1.56.0",
         "playwright": "^1.58.2",
-        "prettier": "^3.8.1",
-        "prettier-plugin-organize-imports": "^4.3.0",
-        "prettier-plugin-tailwindcss": "^0.7.2",
-        "tw-animate-css": "^1.4.0"
+        "tw-animate-css": "^1.4.0",
+        "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+        "vite-plus": "latest"
     },
     "dependencies": {
         "@headlessui/react": "^2.2.9",
@@ -53,8 +51,7 @@
         "tailwind-merge": "^3.5.0",
         "tailwindcss": "^4.2.2",
         "tailwindcss-animate": "^1.0.7",
-        "typescript": "^5.9.3",
-        "vite": "^8.0.1"
+        "typescript": "^5.9.3"
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.59.1",
