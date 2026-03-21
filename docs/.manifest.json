@@ -1353,6 +1353,23 @@
                     "posts/table"
                 ]
             }
+        },
+        "WizardController": {
+            "documented": true,
+            "path": "./wizardcontroller.md",
+            "relationships": {
+                "usesActions": [],
+                "usesFormRequests": [],
+                "relatedRoutes": [
+                    "wizard",
+                    "wizard.analyze",
+                    "wizard.preview",
+                    "wizard.generate"
+                ],
+                "rendersPages": [
+                    "wizard/index"
+                ]
+            }
         }
     },
     "pages": {
@@ -1652,6 +1669,10 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "wizard",
+                    "wizard.analyze",
+                    "wizard.preview",
+                    "wizard.generate",
                     "categories.table",
                     "users.table",
                     "users.bulk-soft-delete",
@@ -2144,6 +2165,10 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "wizard",
+                    "wizard.analyze",
+                    "wizard.preview",
+                    "wizard.generate",
                     "categories.table",
                     "users.table",
                     "users.bulk-soft-delete",
@@ -2542,6 +2567,10 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "wizard",
+                    "wizard.analyze",
+                    "wizard.preview",
+                    "wizard.generate",
                     "categories.table",
                     "users.table",
                     "users.bulk-soft-delete",
@@ -3113,6 +3142,10 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "wizard",
+                    "wizard.analyze",
+                    "wizard.preview",
+                    "wizard.generate",
                     "categories.table",
                     "users.table",
                     "users.bulk-soft-delete",
@@ -3912,6 +3945,10 @@
                     "terms.accept",
                     "terms.accept.store",
                     "dashboard",
+                    "wizard",
+                    "wizard.analyze",
+                    "wizard.preview",
+                    "wizard.generate",
                     "categories.table",
                     "users.table",
                     "users.bulk-soft-delete",
@@ -4304,6 +4341,22 @@
                     "hr.leave-requests.edit",
                     "hr.leave-requests.update",
                     "hr.leave-requests.destroy"
+                ]
+            }
+        },
+        "wizard/index": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./wizard/index.md",
+            "relationships": {
+                "renderedBy": [
+                    "WizardController"
+                ],
+                "relatedRoutes": [
+                    "wizard",
+                    "wizard.analyze",
+                    "wizard.preview",
+                    "wizard.generate"
                 ]
             }
         }

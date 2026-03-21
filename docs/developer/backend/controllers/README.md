@@ -62,5 +62,6 @@ All Controllers:
 | [CategoriesTableController](./categoriestablecontroller.md) | N/A | ✅ |
 | [OrganizationsTableController](./organizationstablecontroller.md) | N/A | ✅ |
 | [PostsTableController](./poststablecontroller.md) | N/A | ✅ |
+| [WizardController](./wizardcontroller.md) | N/A | ✅ |
 
 

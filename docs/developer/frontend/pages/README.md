@@ -91,5 +91,6 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [hr/employees/edit](./hr/employees/edit.md) | hr.employees.index, hr.employees.create | ✅ |
 | [hr/employees/index](./hr/employees/index.md) | hr.employees.index, hr.employees.create | ✅ |
 | [hr/leave-requests/index](./hr/leave-requests/index.md) | hr.leave-requests.index, hr.leave-requests.create | ✅ |
+| [wizard/index](./wizard/index.md) | wizard, wizard.analyze | ✅ |
 
 

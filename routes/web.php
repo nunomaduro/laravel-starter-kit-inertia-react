@@ -36,6 +36,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TermsAcceptController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsersTableController;
+use App\Http\Controllers\WizardController;
 use App\Http\Middleware\InternalRequestMiddleware;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\RedirectResponse;
@@ -104,6 +105,11 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('showcase', fn () => Inertia::render('showcase/index'))->name('showcase');
+
+    Route::get('wizard', [WizardController::class, 'index'])->name('wizard');
+    Route::post('wizard/analyze', [WizardController::class, 'analyze'])->name('wizard.analyze');
+    Route::post('wizard/preview', [WizardController::class, 'preview'])->name('wizard.preview');
+    Route::post('wizard/generate', [WizardController::class, 'generate'])->name('wizard.generate');
 
     Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
 
