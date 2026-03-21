@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Ai\Tools;
 
+use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Laravel\Ai\Contracts\Tool;
@@ -21,41 +22,25 @@ use Throwable;
  */
 final class ListActionsAiTool implements Tool
 {
-    public function name(): string
-    {
-        return 'list_actions';
-    }
-
-    public function description(): string
+    public function description(): Stringable|string
     {
         return 'List all Action classes in the application with their handle() method signatures';
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function parameters(): array
+    public function schema(JsonSchema $schema): array
     {
         return [
-            'type' => 'object',
-            'properties' => [
-                'filter' => [
-                    'type' => 'string',
-                    'description' => 'Filter actions by name (e.g., "User", "Create", "Employee")',
-                ],
-            ],
+            'filter' => $schema->string()->description('Filter actions by name (e.g., "User", "Create", "Employee")'),
         ];
     }
 
     public function handle(Request $request): Stringable|string
     {
-        $filter = $request->arguments['filter'] ?? null;
+        $filter = $request->get('filter');
         $actions = [];
 
-        // Core actions
         $actions = [...$actions, ...$this->scanActions(app_path('Actions'), 'App\\Actions')];
 
-        // Module actions
         $modulePaths = File::directories(base_path('modules'));
 
         foreach ($modulePaths as $modulePath) {

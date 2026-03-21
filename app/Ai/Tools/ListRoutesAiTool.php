@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Ai\Tools;
 
+use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\Route;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
@@ -16,35 +17,21 @@ use Stringable;
  */
 final class ListRoutesAiTool implements Tool
 {
-    public function name(): string
-    {
-        return 'list_routes';
-    }
-
-    public function description(): string
+    public function description(): Stringable|string
     {
         return 'List application routes with their methods, URIs, names, and controllers';
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function parameters(): array
+    public function schema(JsonSchema $schema): array
     {
         return [
-            'type' => 'object',
-            'properties' => [
-                'filter' => [
-                    'type' => 'string',
-                    'description' => 'Filter routes by URI prefix or name (e.g., "api", "hr", "billing")',
-                ],
-            ],
+            'filter' => $schema->string()->description('Filter routes by URI prefix or name (e.g., "api", "hr", "billing")'),
         ];
     }
 
     public function handle(Request $request): Stringable|string
     {
-        $filter = $request->arguments['filter'] ?? null;
+        $filter = $request->get('filter');
         $routes = collect(Route::getRoutes()->getRoutes());
 
         if ($filter) {
@@ -52,7 +39,7 @@ final class ListRoutesAiTool implements Tool
                 || str_contains($route->getName() ?? '', $filter));
         }
 
-        $routes = $routes->take(50); // Limit to prevent token overflow
+        $routes = $routes->take(50);
 
         if ($routes->isEmpty()) {
             return 'No routes found matching the filter.';

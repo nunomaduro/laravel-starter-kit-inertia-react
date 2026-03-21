@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Ai\Tools;
 
+use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Laravel\Ai\Contracts\Tool;
@@ -19,43 +20,27 @@ use Throwable;
  */
 final class ListModelsAiTool implements Tool
 {
-    public function name(): string
+    public function description(): Stringable|string
     {
-        return 'list_models';
+        return 'List all Eloquent models in the application with their table names';
     }
 
-    public function description(): string
-    {
-        return 'List all Eloquent models in the application with their table names and relationships';
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function parameters(): array
+    public function schema(JsonSchema $schema): array
     {
         return [
-            'type' => 'object',
-            'properties' => [
-                'module' => [
-                    'type' => 'string',
-                    'description' => 'Filter by module (e.g., "hr", "crm"). Leave empty for all models.',
-                ],
-            ],
+            'module' => $schema->string()->description('Filter by module (e.g., "hr", "crm"). Leave empty for all models.'),
         ];
     }
 
     public function handle(Request $request): Stringable|string
     {
         $models = [];
-        $module = $request->arguments['module'] ?? null;
+        $module = $request->get('module');
 
-        // Core app models
         if (! $module) {
             $models = [...$models, ...$this->scanDirectory(app_path('Models'), 'App\\Models')];
         }
 
-        // Module models
         $modulePaths = File::directories(base_path('modules'));
 
         foreach ($modulePaths as $modulePath) {
