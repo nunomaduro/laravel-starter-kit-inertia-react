@@ -43,7 +43,7 @@
             "default": null
         },
         "metadata": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
@@ -63,7 +63,7 @@
             "default": null
         },
         "extra_attributes": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         }

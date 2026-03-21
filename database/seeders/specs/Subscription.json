@@ -23,7 +23,7 @@
             "default": null
         },
         "name": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
@@ -33,7 +33,7 @@
             "default": null
         },
         "description": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },

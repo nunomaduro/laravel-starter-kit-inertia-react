@@ -50,3 +50,4 @@ polyscope.json
 
 # Storybook build output
 /storybook-static
+.gstack/

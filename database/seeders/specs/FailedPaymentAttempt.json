@@ -23,12 +23,12 @@
             "default": null
         },
         "attempt_number": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },
         "dunning_emails_sent": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },

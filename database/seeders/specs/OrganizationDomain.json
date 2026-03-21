@@ -68,7 +68,7 @@
             "default": null
         },
         "dns_check_attempts": {
-            "type": "integer",
+            "type": "int2",
             "nullable": true,
             "default": null
         },

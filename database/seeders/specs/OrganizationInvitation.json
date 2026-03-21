@@ -33,7 +33,7 @@
             "default": null
         },
         "invited_by": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

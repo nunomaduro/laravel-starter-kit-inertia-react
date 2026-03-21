@@ -67,11 +67,6 @@
             "nullable": true,
             "default": null
         },
-        "onboarding_steps_completed": {
-            "type": "text",
-            "nullable": true,
-            "default": null
-        },
         "timezone": {
             "type": "string",
             "nullable": true,
@@ -98,25 +93,17 @@
             "default": null
         },
         "tags": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "position": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         }
     },
     "relationships": {
-        "organizations": {
-            "type": "belongsToMany",
-            "model": "Organization"
-        },
-        "ownedOrganizations": {
-            "type": "hasMany",
-            "model": "OwnedOrganization"
-        },
         "socialAccounts": {
             "type": "hasMany",
             "model": "SocialAccount"
@@ -164,6 +151,14 @@
         "affiliate": {
             "type": "hasOne",
             "model": "Affiliate"
+        },
+        "organizations": {
+            "type": "belongsToMany",
+            "model": "Organization"
+        },
+        "ownedOrganizations": {
+            "type": "hasMany",
+            "model": "OwnedOrganization"
         },
         "roles": {
             "type": "belongsToMany",

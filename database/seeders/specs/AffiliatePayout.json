@@ -13,7 +13,7 @@
             "default": null
         },
         "amount": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },
@@ -43,7 +43,7 @@
             "default": null
         },
         "processed_by": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         },

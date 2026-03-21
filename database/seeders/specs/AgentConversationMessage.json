@@ -66,6 +66,11 @@
             "type": "timestamp",
             "nullable": true,
             "default": null
+        },
+        "embedding": {
+            "type": "vector",
+            "nullable": true,
+            "default": null
         }
     },
     "relationships": {
