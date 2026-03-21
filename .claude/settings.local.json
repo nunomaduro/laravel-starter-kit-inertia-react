@@ -266,7 +266,14 @@
       "Bash(git stash:*)",
       "Bash(vendor/bin/pint app/Providers/Filament/SystemPanelProvider.php app/Support/ModuleServiceProvider.php --format agent 2>&1)",
       "mcp__plugin_context-mode_context-mode__ctx_fetch_and_index",
-      "Bash(git ls-tree:*)"
+      "Bash(git ls-tree:*)",
+      "Bash(gtimeout 120 php artisan app:install --non-interactive --admin-email=admin@example.com --admin-password=password --admin-name=\"Admin\" --site-name=\"AI App Factory\" --url=https://laravel-starter-kit-inertia-react.test --tenancy=multi --no-demo)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(~/.claude/skills/gstack/browse/dist/browse goto:*)",
+      "Bash(~/.claude/skills/gstack/browse/dist/browse screenshot:*)",
+      "Bash(B=~/.claude/skills/gstack/browse/dist/browse)",
+      "Bash($B goto:*)",
+      "Bash($B screenshot:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
