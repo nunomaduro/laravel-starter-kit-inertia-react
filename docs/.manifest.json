@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastGenerated": "2026-03-20",
+    "lastGenerated": "2026-03-21",
     "actions": {
         "CreateUser": {
             "documented": true,
@@ -595,6 +595,24 @@
                 "usesModels": [
                     "App\\Models\\Billing\\Invoice"
                 ],
+                "relatedRoutes": []
+            }
+        },
+        "FindSimilarContent": {
+            "documented": true,
+            "path": "./findsimilarcontent.md",
+            "relationships": {
+                "usedBy": [],
+                "usesModels": [],
+                "relatedRoutes": []
+            }
+        },
+        "GenerateOgImage": {
+            "documented": true,
+            "path": "./generateogimage.md",
+            "relationships": {
+                "usedBy": [],
+                "usesModels": [],
                 "relatedRoutes": []
             }
         }

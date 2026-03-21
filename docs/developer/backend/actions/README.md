@@ -47,5 +47,7 @@ All Actions:
 | [FindOrCreateSocialUser](./FindOrCreateSocialUser.md) | N/A | ✅ |
 | [BatchUpdateUsersAction](./BatchUpdateUsersAction.md) | N/A | ✅ |
 | [BuildLaravelDailyInvoice](./Billing/BuildLaravelDailyInvoice.md) | N/A | ✅ |
+| [FindSimilarContent](./findsimilarcontent.md) | N/A | ✅ |
+| [GenerateOgImage](./generateogimage.md) | N/A | ✅ |
 
 

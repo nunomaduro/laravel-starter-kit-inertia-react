@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::getConnection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
         Schema::table('help_articles', function (Blueprint $table): void {
             $table->vector('embedding', 1536)->nullable();
             $table->rawIndex('embedding vector_cosine_ops', 'help_articles_embedding_idx');
@@ -24,6 +28,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (Schema::getConnection()->getDriverName() !== 'pgsql') {
+            return;
+        }
+
         Schema::table('help_articles', function (Blueprint $table): void {
             $table->dropIndex('help_articles_embedding_idx');
             $table->dropColumn('embedding');
