@@ -2,12 +2,17 @@
     "agents": [
         "claude_code",
         "cursor",
-        "phpstorm"
+        "junie"
     ],
-    "editors": [
-        "claude_code",
-        "cursor",
-        "phpstorm"
+    "guidelines": true,
+    "herd_mcp": false,
+    "mcp": true,
+    "nightwatch_mcp": false,
+    "packages": [
+        "laravel/fortify"
     ],
-    "guidelines": []
+    "sail": false,
+    "skills": [
+        "fortify-development"
+    ]
 }
