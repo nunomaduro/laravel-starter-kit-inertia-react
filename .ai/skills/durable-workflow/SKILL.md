@@ -36,7 +36,7 @@ Activate when:
 ## Configuration
 
 - **Waterline**: `config/waterline.php` — path (default `waterline`), domain, middleware.
-- **Gate**: `viewWaterline` in `WaterlineServiceProvider::gate()` — same as Horizon: `can('access admin panel')`.
+- **Gate**: `viewWaterline` in `Modules\Workflows\WorkflowsServiceProvider::bootModule()` — same as Horizon: `can('access admin panel')`.
 - **Queue**: Workflows use the same Laravel queue as jobs; run workers with Horizon or `queue:work`.
 
 ## Artisan

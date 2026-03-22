@@ -1,0 +1,7 @@
+{
+    "name": "workflows",
+    "label": "Workflows",
+    "description": "Durable workflows with Waterline monitoring dashboard.",
+    "provider": "Modules\\Workflows\\WorkflowsServiceProvider",
+    "seeders": []
+}

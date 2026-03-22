@@ -28,7 +28,7 @@ For one-off or simple scheduled tasks, standard Laravel jobs and Horizon remain 
 ## Configuration
 
 - **Waterline config**: `config/waterline.php` — `path` (default `waterline`), `domain`, `middleware`.
-- **Gate**: `App\Providers\WaterlineServiceProvider::gate()` defines `viewWaterline`; it allows users who `can('access admin panel')`.
+- **Gate**: `Modules\Workflows\WorkflowsServiceProvider::bootModule()` defines `viewWaterline`; it allows users who `can('access admin panel')`.
 - **Optional env**: `WATERLINE_PATH=waterline`, `WATERLINE_DOMAIN` (subdomain if desired).
 
 ## Creating a Workflow and Activity
@@ -81,15 +81,15 @@ Use `php artisan make:workflow MyWorkflow` to generate a workflow class.
 
 The starter includes a minimal demo:
 
-- **Activity**: `App\Workflows\DemoGreetingActivity` — `execute(string $name)` returns a greeting string.
-- **Workflow**: `App\Workflows\DemoGreetingWorkflow` — yields the activity and returns its result.
+- **Activity**: `Modules\Workflows\Workflows\DemoGreetingActivity` — `execute(string $name)` returns a greeting string.
+- **Workflow**: `Modules\Workflows\Workflows\DemoGreetingWorkflow` — yields the activity and returns its result.
 
 To run it (e.g. in tinker or a command):
 
 ```php
 use Workflow\WorkflowStub;
 
-$workflow = WorkflowStub::make(\App\Workflows\DemoGreetingWorkflow::class);
+$workflow = WorkflowStub::make(\Modules\Workflows\Workflows\DemoGreetingWorkflow::class);
 $workflow->start('world');
 // Optional: $workflow->output(); to wait for result
 ```

@@ -21,4 +21,5 @@ return [
     'gamification' => true,
     'reports' => true,
     'dashboards' => true,
+    'workflows' => true,
 ];
