@@ -12,7 +12,6 @@ use App\Http\Middleware\EnsureCountryAllowed;
 use App\Http\Middleware\EnsureFeatureActive;
 use App\Http\Middleware\EnsureOnboardingComplete;
 use App\Http\Middleware\EnsureRegistrationEnabled;
-use App\Http\Middleware\EnsureScrambleApiDocsVisible;
 use App\Http\Middleware\EnsureTenancyEnabled;
 use App\Http\Middleware\EnsureTenantContext;
 use App\Http\Middleware\EnsureTermsAccepted;
@@ -66,10 +65,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant' => EnsureTenantContext::class,
             'tenancy.enabled' => EnsureTenancyEnabled::class,
             'billing.country' => EnsureCountryAllowed::class,
+            'throttle.2fa' => ThrottleTwoFactorManagement::class,
         ]);
 
         $webAppend = [
-            EnsureScrambleApiDocsVisible::class,
             AddCspHeaders::class,
             AdditionalSecurityHeaders::class,
             ActivityLogContextMiddleware::class,

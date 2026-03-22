@@ -132,6 +132,7 @@ return [
     'middleware' => [
         'web',
         RestrictedDocsAccess::class,
+        App\Http\Middleware\EnsureScrambleApiDocsVisible::class,
     ],
 
     'extensions' => [],
