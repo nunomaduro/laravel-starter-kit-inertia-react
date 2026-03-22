@@ -187,15 +187,15 @@ export default function Welcome() {
             <Head title="AI-Native App Factory" />
             <div className="flex min-h-screen flex-col bg-background text-foreground">
                 {/* Header */}
-                <header className="border-b border-border/60">
+                <header className="border-b border-border">
                     <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-                        <span className="font-semibold tracking-tight">{name}</span>
+                        <span className="font-mono text-sm font-semibold tracking-tight">{name}</span>
                         <nav className="flex items-center gap-1">
                             {auth.user ? (
                                 <Link
                                     href={dashboard()}
                                     data-pan="welcome-dashboard"
-                                    className="rounded-md border border-border px-4 py-1.5 text-sm font-medium transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                                    className="rounded-md border border-border px-4 py-1.5 text-sm font-medium transition-colors duration-100 hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                                 >
                                     Dashboard
                                 </Link>
@@ -204,35 +204,35 @@ export default function Welcome() {
                                     <Link
                                         href="/wizard"
                                         data-pan="welcome-wizard"
-                                        className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                                        className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-100 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                                     >
                                         Wizard
                                     </Link>
                                     {flags.blog && (
-                                        <Link href={blogIndex().url} data-pan="welcome-blog" className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                                        <Link href={blogIndex().url} data-pan="welcome-blog" className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-100 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                                             Blog
                                         </Link>
                                     )}
                                     {flags.changelog && (
-                                        <Link href={changelogIndex().url} data-pan="welcome-changelog" className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                                        <Link href={changelogIndex().url} data-pan="welcome-changelog" className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-100 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                                             Changelog
                                         </Link>
                                     )}
                                     {flags.help && (
-                                        <Link href={helpIndex().url} data-pan="welcome-help" className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                                        <Link href={helpIndex().url} data-pan="welcome-help" className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-100 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                                             Help
                                         </Link>
                                     )}
                                     {flags.contact && (
-                                        <Link href={contactCreate().url} data-pan="welcome-contact" className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                                        <Link href={contactCreate().url} data-pan="welcome-contact" className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors duration-100 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                                             Contact
                                         </Link>
                                     )}
-                                    <Link href={login()} data-pan="welcome-log-in" className="rounded-md px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                                    <Link href={login()} data-pan="welcome-log-in" className="rounded-md px-4 py-1.5 text-sm text-muted-foreground transition-colors duration-100 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                                         Log in
                                     </Link>
                                     {flags.registration && (
-                                        <Link href={register()} data-pan="welcome-register" className="rounded-md border border-border bg-foreground px-4 py-1.5 text-sm font-medium text-background transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+                                        <Link href={register()} data-pan="welcome-register" className="rounded-md border border-border bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-colors duration-100 hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
                                             Get started
                                         </Link>
                                     )}
@@ -243,36 +243,34 @@ export default function Welcome() {
                 </header>
 
                 {/* Hero */}
-                <section className="relative mx-auto flex w-full max-w-5xl flex-col items-center justify-center px-6 py-24 text-center">
-                    <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
-                        <div className="h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl" />
-                    </div>
-                    <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+                <section className="mx-auto flex w-full max-w-5xl flex-col px-6 pt-24 pb-20">
+                    <span className="mb-6 font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-primary">// STARTER KIT</span>
+                    <h1 className="font-mono text-4xl font-bold tracking-tight sm:text-5xl" style={{ letterSpacing: '-0.03em' }}>
                         Build AI-native corporate apps
                         <br />
                         <span className="text-primary">in minutes, not months</span>
                     </h1>
-                    <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+                    <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
                         Skip 3 months of infrastructure. Describe your app, select modules, ship to production — powered by 70+ packages and an AI assistant that knows your domain.
                     </p>
-                    <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                    <div className="mt-8 flex flex-wrap items-center gap-3">
                         <Link
                             href="/wizard"
                             data-pan="welcome-hero-wizard"
-                            className="rounded-md bg-foreground px-6 py-2.5 text-sm font-semibold text-background transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                            className="rounded-md bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors duration-100 hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                         >
                             <Wand2 className="mr-2 inline h-4 w-4" />
-                            Launch the Wizard →
+                            Launch the Wizard
                         </Link>
                         <Link
                             href={login()}
                             data-pan="welcome-log-in"
-                            className="rounded-md border border-border px-6 py-2.5 text-sm font-medium transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                            className="rounded-md border border-border px-6 py-2.5 text-sm font-medium transition-colors duration-100 hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                         >
                             Log in
                         </Link>
                     </div>
-                    <p className="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                    <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
                         <span>Laravel 13</span>
                         <span className="text-border">·</span>
                         <span>Inertia v2</span>
@@ -286,40 +284,39 @@ export default function Welcome() {
                         <span>Laravel AI SDK</span>
                         <span className="text-border">·</span>
                         <span>TypeScript</span>
-                    </p>
+                    </div>
                 </section>
 
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+                <div className="h-px w-full bg-border" />
 
                 {/* How it works */}
-                <section className="mx-auto w-full max-w-5xl px-6 py-20">
-                    <h2 className="mb-2 text-center text-2xl font-bold">How it works</h2>
-                    <p className="mb-12 text-center text-muted-foreground">From idea to production in three steps</p>
-                    <div className="grid gap-6 sm:grid-cols-3">
+                <section className="mx-auto w-full max-w-5xl px-6 py-16">
+                    <span className="mb-6 block font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-primary">// HOW IT WORKS</span>
+                    <h2 className="mb-10 font-mono text-2xl font-bold tracking-tight" style={{ letterSpacing: '-0.025em' }}>From idea to production in three steps</h2>
+                    <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
                         {[
-                            { step: 1, icon: MessageSquare, title: 'Describe', description: 'Tell the AI wizard what you want to build — HR system, CRM, fleet tracker. Plain English.' },
-                            { step: 2, icon: Wand2, title: 'Generate', description: 'The factory analyzes your description, selects modules, and scaffolds models, controllers, pages, and tests.' },
-                            { step: 3, icon: Rocket, title: 'Ship', description: 'Multi-tenancy, billing, auth, and AI chat are already wired. Deploy your production-ready app.' },
+                            { step: '01', icon: MessageSquare, title: 'Describe', description: 'Tell the AI wizard what you want to build — HR system, CRM, fleet tracker. Plain English.' },
+                            { step: '02', icon: Wand2, title: 'Generate', description: 'The factory analyzes your description, selects modules, and scaffolds models, controllers, pages, and tests.' },
+                            { step: '03', icon: Rocket, title: 'Ship', description: 'Multi-tenancy, billing, auth, and AI chat are already wired. Deploy your production-ready app.' },
                         ].map((item) => (
-                            <div key={item.step} className="rounded-xl border border-border bg-card p-6 text-center" data-pan={`welcome-step-${item.step}`}>
-                                <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-                                    {item.step}
-                                </div>
-                                <item.icon className="mx-auto mb-3 h-6 w-6 text-muted-foreground" />
-                                <h3 className="font-semibold">{item.title}</h3>
-                                <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
+                            <div key={item.step} className="bg-card p-6" data-pan={`welcome-step-${item.step}`}>
+                                <span className="font-mono text-xs text-muted-foreground">{item.step}</span>
+                                <item.icon className="mt-3 mb-3 h-5 w-5 text-primary" />
+                                <h3 className="font-mono text-sm font-semibold tracking-tight">{item.title}</h3>
+                                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
                             </div>
                         ))}
                     </div>
                 </section>
 
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+                <div className="h-px w-full bg-border" />
 
                 {/* Module showcase */}
-                <section className="mx-auto w-full max-w-5xl px-6 py-20">
-                    <h2 className="mb-2 text-center text-2xl font-bold">Pre-built Domain Modules</h2>
-                    <p className="mb-12 text-center text-muted-foreground">Install in seconds, customize everything</p>
-                    <div className="grid gap-6 sm:grid-cols-3">
+                <section className="mx-auto w-full max-w-5xl px-6 py-16">
+                    <span className="mb-6 block font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-primary">// MODULES</span>
+                    <h2 className="mb-2 font-mono text-2xl font-bold tracking-tight" style={{ letterSpacing: '-0.025em' }}>Pre-built Domain Modules</h2>
+                    <p className="mb-10 text-sm text-muted-foreground">Install in seconds, customize everything</p>
+                    <div className="grid gap-4 sm:grid-cols-3">
                         {[
                             { icon: Users, name: 'HR', title: 'Human Resources', description: 'Employee management, departments, leave tracking, attendance, and performance reviews.', dataPan: 'welcome-module-hr' },
                             { icon: TrendingUp, name: 'CRM', title: 'Customer Relationship Management', description: 'Contact management, deal tracking, sales pipelines, and activity logging.', dataPan: 'welcome-module-crm' },
@@ -328,16 +325,16 @@ export default function Welcome() {
                             <Link
                                 key={mod.name}
                                 href="/showcase"
-                                className="group rounded-xl border-l-4 border-l-primary border border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:shadow-md"
+                                className="group rounded-lg border border-border bg-card p-6 transition-colors duration-100 hover:bg-accent"
                                 data-pan={mod.dataPan}
                             >
-                                <mod.icon className="mb-3 h-7 w-7 text-primary" />
-                                <h3 className="font-semibold">{mod.title}</h3>
-                                <p className="mt-2 text-sm text-muted-foreground">{mod.description}</p>
+                                <mod.icon className="mb-3 h-5 w-5 text-primary" />
+                                <h3 className="font-mono text-sm font-semibold tracking-tight">{mod.title}</h3>
+                                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{mod.description}</p>
                             </Link>
                         ))}
                     </div>
-                    <p className="mt-8 text-center text-sm text-muted-foreground">
+                    <p className="mt-8 text-sm text-muted-foreground">
                         Or create your own:{' '}
                         <code className="rounded bg-muted px-2 py-1 font-mono text-xs">php artisan make:module YourModel</code>
                         {' '}— scaffolds 18 files in one command
@@ -345,68 +342,70 @@ export default function Welcome() {
                 </section>
 
                 {/* Stats bar */}
-                <section className="bg-muted/30 py-10" data-pan="welcome-stats">
-                    <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-12 px-6">
+                <section className="border-y border-border bg-muted/40 py-10" data-pan="welcome-stats">
+                    <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-8 px-6">
                         {[
                             { value: '70+', label: 'Packages' },
                             { value: '30+', label: 'Models' },
                             { value: '18', label: 'Files per module' },
                             { value: '3', label: 'Domain modules' },
                         ].map((stat) => (
-                            <div key={stat.label} className="text-center">
-                                <div className="text-3xl font-bold">{stat.value}</div>
-                                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                            <div key={stat.label}>
+                                <div className="font-mono text-2xl font-bold tracking-tight">{stat.value}</div>
+                                <div className="text-xs text-muted-foreground">{stat.label}</div>
                             </div>
                         ))}
                     </div>
                 </section>
 
                 {/* Key differentiators */}
-                <section className="mx-auto w-full max-w-5xl px-6 py-20">
-                    <h2 className="mb-2 text-center text-2xl font-bold">What makes this different</h2>
-                    <p className="mb-12 text-center text-muted-foreground">Not just a starter kit — an AI-powered app factory</p>
-                    <div className="grid gap-6 sm:grid-cols-3">
-                        <Link href="/chat" className="rounded-xl border border-border bg-card p-8 transition-all hover:-translate-y-0.5 hover:shadow-md" data-pan="welcome-diff-ai">
-                            <Bot className="mb-4 h-8 w-8 text-primary" />
-                            <h3 className="font-mono text-lg font-semibold tracking-tight">AI Assistant</h3>
-                            <p className="mt-2 text-sm text-muted-foreground">
+                <section className="mx-auto w-full max-w-5xl px-6 py-16">
+                    <span className="mb-6 block font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-primary">// WHY THIS</span>
+                    <h2 className="mb-2 font-mono text-2xl font-bold tracking-tight" style={{ letterSpacing: '-0.025em' }}>What makes this different</h2>
+                    <p className="mb-10 text-sm text-muted-foreground">Not just a starter kit — an AI-powered app factory</p>
+                    <div className="grid gap-4 sm:grid-cols-3">
+                        <Link href="/chat" className="rounded-lg border border-border bg-card p-6 transition-colors duration-100 hover:bg-accent" data-pan="welcome-diff-ai">
+                            <Bot className="mb-3 h-5 w-5 text-primary" />
+                            <h3 className="font-mono text-sm font-semibold tracking-tight">AI Assistant</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                                 A built-in AI chat that understands your domain. Ask questions about your data, get help with code, or guide your users. Multi-provider with memory and RAG.
                             </p>
                         </Link>
-                        <Link href="/showcase" className="rounded-xl border border-border bg-card p-8 transition-all hover:-translate-y-0.5 hover:shadow-md" data-pan="welcome-diff-modules">
-                            <Wand2 className="mb-4 h-8 w-8 text-primary" />
-                            <h3 className="font-mono text-lg font-semibold tracking-tight">Module System</h3>
-                            <p className="mt-2 text-sm text-muted-foreground">
+                        <Link href="/showcase" className="rounded-lg border border-border bg-card p-6 transition-colors duration-100 hover:bg-accent" data-pan="welcome-diff-modules">
+                            <Wand2 className="mb-3 h-5 w-5 text-primary" />
+                            <h3 className="font-mono text-sm font-semibold tracking-tight">Module System</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                                 Pre-built domain modules (HR, CRM, Fleet) with full CRUD, admin panel, Inertia pages, and tests. Cross-module AI intelligence included.
                             </p>
                         </Link>
-                        <div className="rounded-xl border border-border bg-card p-8" data-pan="welcome-diff-scaffold">
-                            <Terminal className="mb-4 h-8 w-8 text-primary" />
-                            <h3 className="font-mono text-lg font-semibold tracking-tight">One-Command Scaffolding</h3>
-                            <p className="mt-2 text-sm text-muted-foreground">
-                                Run <code className="rounded bg-muted px-1.5 py-0.5 text-xs font-mono">make:module</code> for 18 files or{' '}
-                                <code className="rounded bg-muted px-1.5 py-0.5 text-xs font-mono">factory:create</code> with AI analysis. From description to app in minutes.
+                        <div className="rounded-lg border border-border bg-card p-6" data-pan="welcome-diff-scaffold">
+                            <Terminal className="mb-3 h-5 w-5 text-primary" />
+                            <h3 className="font-mono text-sm font-semibold tracking-tight">One-Command Scaffolding</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                                Run <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">make:module</code> for 18 files or{' '}
+                                <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">factory:create</code> with AI analysis. From description to app in minutes.
                             </p>
                         </div>
                     </div>
                 </section>
 
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+                <div className="h-px w-full bg-border" />
 
                 {/* Feature grid (condensed) */}
-                <section className="mx-auto w-full max-w-5xl space-y-10 px-6 py-20">
-                    <div className="text-center">
-                        <h2 className="text-2xl font-bold">40+ features, all production-ready</h2>
-                        <p className="mt-2 text-muted-foreground">Everything you need across 8 domains</p>
+                <section className="mx-auto w-full max-w-5xl space-y-10 px-6 py-16">
+                    <div>
+                        <span className="mb-6 block font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-primary">// FEATURES</span>
+                        <h2 className="font-mono text-2xl font-bold tracking-tight" style={{ letterSpacing: '-0.025em' }}>40+ features, all production-ready</h2>
+                        <p className="mt-2 text-sm text-muted-foreground">Everything you need across 8 domains</p>
                     </div>
                     {featureGroups.map((group) => (
                         <div key={group.label}>
-                            <h3 className="mb-4 text-xs font-semibold tracking-widest text-muted-foreground uppercase">{group.label}</h3>
-                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                            <h3 className="mb-4 font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-muted-foreground">{group.label}</h3>
+                            <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
                                 {group.features.map((feature) => (
-                                    <div key={feature.title} className="rounded-lg border border-border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md" data-pan={feature.dataPan}>
+                                    <div key={feature.title} className="bg-card p-4" data-pan={feature.dataPan}>
                                         <feature.icon className="mb-2 size-4 text-primary" />
-                                        <h4 className="text-sm font-semibold">{feature.title}</h4>
+                                        <h4 className="font-mono text-xs font-semibold tracking-tight">{feature.title}</h4>
                                         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{feature.description}</p>
                                     </div>
                                 ))}
@@ -415,34 +414,35 @@ export default function Welcome() {
                     ))}
                 </section>
 
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+                <div className="h-px w-full bg-border" />
 
                 {/* Pricing */}
-                <section className="mx-auto w-full max-w-5xl px-6 py-20">
-                    <h2 className="mb-2 text-center text-2xl font-bold">Simple pricing</h2>
-                    <p className="mb-12 text-center text-muted-foreground">Start building today. Scale when you're ready.</p>
-                    <div className="grid gap-6 sm:grid-cols-3">
+                <section className="mx-auto w-full max-w-5xl px-6 py-16">
+                    <span className="mb-6 block font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-primary">// PRICING</span>
+                    <h2 className="mb-2 font-mono text-2xl font-bold tracking-tight" style={{ letterSpacing: '-0.025em' }}>Simple pricing</h2>
+                    <p className="mb-10 text-sm text-muted-foreground">Start building today. Scale when you're ready.</p>
+                    <div className="grid gap-4 sm:grid-cols-3">
                         {pricingTiers.map((tier) => (
                             <div
                                 key={tier.name}
-                                className={`relative rounded-xl border p-6 ${tier.highlighted ? 'border-primary shadow-lg ring-1 ring-primary' : 'border-border bg-card'}`}
+                                className={`relative rounded-lg border p-6 ${tier.highlighted ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}
                                 data-pan={`welcome-pricing-${tier.name.toLowerCase()}`}
                             >
                                 {tier.highlighted && (
-                                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-medium text-primary-foreground">
+                                    <span className="absolute -top-3 left-4 rounded-full bg-primary px-3 py-0.5 font-mono text-[11px] font-medium text-primary-foreground">
                                         Most popular
                                     </span>
                                 )}
-                                <h3 className="text-lg font-semibold">{tier.name}</h3>
+                                <h3 className="font-mono text-base font-semibold tracking-tight">{tier.name}</h3>
                                 <p className="text-sm text-muted-foreground">{tier.description}</p>
                                 <div className="mt-4">
-                                    <span className="text-3xl font-bold">{tier.price}</span>
-                                    <span className="text-muted-foreground">{tier.period}</span>
+                                    <span className="font-mono text-3xl font-bold tracking-tight">{tier.price}</span>
+                                    <span className="text-sm text-muted-foreground">{tier.period}</span>
                                 </div>
                                 <ul className="mt-6 space-y-2">
                                     {tier.features.map((f) => (
-                                        <li key={f} className="flex items-center gap-2 text-sm">
-                                            <Check className="h-4 w-4 text-green-500" />
+                                        <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
+                                            <Check className="h-3.5 w-3.5 shrink-0 text-primary" />
                                             {f}
                                         </li>
                                     ))}
@@ -450,9 +450,9 @@ export default function Welcome() {
                                 <Link
                                     href={tier.name === 'Enterprise' ? '/contact' : register()}
                                     data-pan={`welcome-pricing-${tier.name.toLowerCase()}-cta`}
-                                    className={`mt-6 block rounded-md px-4 py-2 text-center text-sm font-medium transition-colors ${
+                                    className={`mt-6 block rounded-md px-4 py-2 text-center text-sm font-medium transition-colors duration-100 ${
                                         tier.highlighted
-                                            ? 'bg-foreground text-background hover:opacity-90'
+                                            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                                             : 'border border-border hover:bg-accent'
                                     }`}
                                 >
@@ -463,22 +463,23 @@ export default function Welcome() {
                     </div>
                 </section>
 
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+                <div className="h-px w-full bg-border" />
 
                 {/* Final CTA */}
-                <section className="mx-auto w-full max-w-5xl px-6 py-20 text-center">
-                    <h2 className="text-2xl font-bold">Ready to build your next app?</h2>
-                    <p className="mt-2 text-muted-foreground">Describe your idea and let the AI Factory do the rest.</p>
-                    <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+                <section className="mx-auto w-full max-w-5xl px-6 py-16">
+                    <span className="mb-6 block font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-primary">// GET STARTED</span>
+                    <h2 className="font-mono text-2xl font-bold tracking-tight" style={{ letterSpacing: '-0.025em' }}>Ready to build your next app?</h2>
+                    <p className="mt-2 text-sm text-muted-foreground">Describe your idea and let the AI Factory do the rest.</p>
+                    <div className="mt-8 flex flex-wrap items-center gap-4">
                         <Link
                             href="/wizard"
                             data-pan="welcome-cta-wizard"
-                            className="rounded-md bg-foreground px-8 py-3 text-sm font-semibold text-background transition-colors hover:opacity-90"
+                            className="rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-colors duration-100 hover:bg-primary/90"
                         >
                             <Wand2 className="mr-2 inline h-4 w-4" />
                             Open the Wizard
                         </Link>
-                        <div className="rounded-lg bg-muted px-4 py-2.5 font-mono text-xs text-muted-foreground" data-pan="welcome-cta-cli">
+                        <div className="rounded-md border border-border bg-muted px-4 py-2.5 font-mono text-xs text-muted-foreground" data-pan="welcome-cta-cli">
                             <Terminal className="mr-2 inline h-3.5 w-3.5" />
                             php artisan factory:create &quot;An HR system for a logistics company&quot;
                         </div>
@@ -486,14 +487,16 @@ export default function Welcome() {
                 </section>
 
                 {/* Footer */}
-                <footer className="border-t border-border/60 py-6 text-center text-sm text-muted-foreground">
-                    <Link href={legalTerms().url} className="hover:text-foreground hover:underline">
-                        Terms of Service
-                    </Link>
-                    {' · '}
-                    <Link href={legalPrivacy().url} className="hover:text-foreground hover:underline">
-                        Privacy Policy
-                    </Link>
+                <footer className="border-t border-border py-6 text-sm text-muted-foreground">
+                    <div className="mx-auto max-w-5xl px-6">
+                        <Link href={legalTerms().url} className="transition-colors duration-100 hover:text-foreground">
+                            Terms of Service
+                        </Link>
+                        {' · '}
+                        <Link href={legalPrivacy().url} className="transition-colors duration-100 hover:text-foreground">
+                            Privacy Policy
+                        </Link>
+                    </div>
                 </footer>
             </div>
         </>
