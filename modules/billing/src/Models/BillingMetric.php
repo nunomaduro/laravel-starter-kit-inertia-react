@@ -6,6 +6,7 @@ namespace Modules\Billing\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Billing\Database\Factories\BillingMetricFactory;
 
 /**
  * @property int $id
@@ -32,6 +33,11 @@ final class BillingMetric extends Model
         'credits_purchased',
         'credits_used',
     ];
+
+    protected static function newFactory(): BillingMetricFactory
+    {
+        return BillingMetricFactory::new();
+    }
 
     protected function casts(): array
     {

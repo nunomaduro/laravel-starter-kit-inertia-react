@@ -7,6 +7,7 @@ namespace Modules\Billing\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Crypt;
+use Modules\Billing\Database\Factories\PaymentGatewayFactory;
 use Modules\Billing\Enums\PaymentGatewayType;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
@@ -60,6 +61,11 @@ final class PaymentGateway extends Model implements Sortable
     public function setEncryptedSettings(array $value): void
     {
         $this->settings = Crypt::encryptString(json_encode($value, JSON_THROW_ON_ERROR));
+    }
+
+    protected static function newFactory(): PaymentGatewayFactory
+    {
+        return PaymentGatewayFactory::new();
     }
 
     protected function casts(): array

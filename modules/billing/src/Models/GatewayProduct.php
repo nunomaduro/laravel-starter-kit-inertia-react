@@ -6,6 +6,7 @@ namespace Modules\Billing\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Billing\Database\Factories\GatewayProductFactory;
 
 /**
  * @property int $id
@@ -33,5 +34,10 @@ final class GatewayProduct extends Model
     public function plan(): BelongsTo
     {
         return $this->belongsTo(config('laravel-subscriptions.models.plan'));
+    }
+
+    protected static function newFactory(): GatewayProductFactory
+    {
+        return GatewayProductFactory::new();
     }
 }

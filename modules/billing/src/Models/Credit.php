@@ -7,6 +7,7 @@ namespace Modules\Billing\Models;
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Billing\Database\Factories\CreditFactory;
 use Modules\Billing\Enums\CreditTransactionType;
 use Spatie\SchemalessAttributes\SchemalessAttributesTrait;
 
@@ -48,6 +49,11 @@ final class Credit extends Model
     public function creditable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    protected static function newFactory(): CreditFactory
+    {
+        return CreditFactory::new();
     }
 
     protected function casts(): array

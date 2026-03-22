@@ -10,6 +10,7 @@ use Deligoez\LaravelModelHashId\Traits\HasHashIdRouting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Modules\Billing\Database\Factories\InvoiceFactory;
 
 /**
  * @property int $id
@@ -69,6 +70,11 @@ final class Invoice extends Model
     public function paymentGateway(): BelongsTo
     {
         return $this->belongsTo(PaymentGateway::class, 'payment_gateway_id');
+    }
+
+    protected static function newFactory(): InvoiceFactory
+    {
+        return InvoiceFactory::new();
     }
 
     protected function casts(): array

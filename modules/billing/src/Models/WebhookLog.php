@@ -6,6 +6,7 @@ namespace Modules\Billing\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Billing\Database\Factories\WebhookLogFactory;
 
 /**
  * @property int $id
@@ -32,6 +33,11 @@ final class WebhookLog extends Model
     public function organization(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Organization::class);
+    }
+
+    protected static function newFactory(): WebhookLogFactory
+    {
+        return WebhookLogFactory::new();
     }
 
     protected function casts(): array

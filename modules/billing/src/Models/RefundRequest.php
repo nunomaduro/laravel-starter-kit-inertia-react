@@ -8,6 +8,7 @@ use App\Models\Concerns\BelongsToOrganization;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Billing\Database\Factories\RefundRequestFactory;
 use Modules\Billing\States\RefundRequest\RefundRequestStatus;
 use Spatie\ModelStates\HasStates;
 
@@ -44,6 +45,11 @@ final class RefundRequest extends Model
     public function processedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'processed_by');
+    }
+
+    protected static function newFactory(): RefundRequestFactory
+    {
+        return RefundRequestFactory::new();
     }
 
     protected function casts(): array
