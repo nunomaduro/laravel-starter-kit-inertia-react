@@ -63,7 +63,7 @@ trait HasAdminCapabilities
 
     public function isLastSuperAdmin(): bool
     {
-        if (! $this->hasRole('super-admin')) {
+        if (! $this->isSuperAdmin()) {
             return false;
         }
 
@@ -97,7 +97,7 @@ trait HasAdminCapabilities
             return false;
         }
 
-        if ($this->hasRole('super-admin')) {
+        if ($this->isSuperAdmin()) {
             return true;
         }
 
@@ -110,7 +110,7 @@ trait HasAdminCapabilities
      */
     public function canBeImpersonated(): bool
     {
-        if ($this->hasRole('super-admin')) {
+        if ($this->isSuperAdmin()) {
             return false;
         }
 
@@ -119,7 +119,7 @@ trait HasAdminCapabilities
             return false;
         }
 
-        if ($impersonator->hasRole('super-admin')) {
+        if ($impersonator->isSuperAdmin()) {
             return true;
         }
 

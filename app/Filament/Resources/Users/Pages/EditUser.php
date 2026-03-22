@@ -62,7 +62,7 @@ final class EditUser extends EditRecord
         unset($data['tag_names']);
 
         $user = $this->getRecord();
-        if (! $user->isLastSuperAdmin() || ! $user->hasRole('super-admin')) {
+        if (! $user->isLastSuperAdmin() || ! $user->isSuperAdmin()) {
             return $data;
         }
 

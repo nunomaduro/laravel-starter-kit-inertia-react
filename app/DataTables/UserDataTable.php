@@ -564,7 +564,7 @@ final class UserDataTable extends AbstractDataTable
         $user = request()->user();
         $query = User::query();
 
-        $canSeeAll = $user?->hasRole('super-admin') || $user?->can('bypass-permissions');
+        $canSeeAll = $user?->isSuperAdmin() || $user?->can('bypass-permissions');
         if (! $canSeeAll) {
             $organization = TenantContext::get();
             if (! $organization instanceof Organization) {

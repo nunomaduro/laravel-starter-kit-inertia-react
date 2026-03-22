@@ -29,7 +29,7 @@ final class PermissionService
             return false;
         }
 
-        if ($user->hasRole('super-admin')) {
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
@@ -76,7 +76,7 @@ final class PermissionService
             return collect();
         }
 
-        if ($user->hasRole('super-admin') || $organization->owner_id === $user->id) {
+        if ($user->isSuperAdmin() || $organization->owner_id === $user->id) {
             return $this->getAllOrganizationPermissions();
         }
 

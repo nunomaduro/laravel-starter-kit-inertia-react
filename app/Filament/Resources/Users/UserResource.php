@@ -46,7 +46,7 @@ final class UserResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
 
-        if ($user?->hasRole('super-admin')) {
+        if ($user?->isSuperAdmin()) {
             return $query;
         }
 

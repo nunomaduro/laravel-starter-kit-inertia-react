@@ -133,7 +133,9 @@ final class AppServiceProvider extends ServiceProvider
 
     private function userHasBypassPermissions(object $user): bool
     {
-        if (method_exists($user, 'hasRole') && $user->hasRole('super-admin')) {
+        // Use isSuperAdmin() which does a direct DB query with organization_id=0,
+        // bypassing Spatie's team-scoped hasRole() that fails when a tenant is active.
+        if (method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
             return true;
         }
 

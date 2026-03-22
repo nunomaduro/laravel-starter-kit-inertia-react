@@ -18,7 +18,7 @@ final class DashboardController
     {
         $user = $request->user();
 
-        $props = $user->hasRole('super-admin')
+        $props = $user->isSuperAdmin()
             ? [...$this->metrics->superAdminProps(), 'contactSubmissionsCount' => ContactSubmission::query()->count()]
             : [];
 

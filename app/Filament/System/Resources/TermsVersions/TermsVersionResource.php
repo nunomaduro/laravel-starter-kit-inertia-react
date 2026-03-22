@@ -39,7 +39,7 @@ final class TermsVersionResource extends Resource
 
     public static function canAccess(): bool
     {
-        return filament()->getCurrentPanel()?->getId() === 'system' && (auth()->user()?->hasRole('super-admin') ?? false);
+        return filament()->getCurrentPanel()?->getId() === 'system' && (auth()->user()?->isSuperAdmin() ?? false);
     }
 
     public static function form(Schema $schema): Schema

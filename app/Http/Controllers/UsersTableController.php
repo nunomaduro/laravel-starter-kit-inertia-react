@@ -108,7 +108,7 @@ final class UsersTableController extends Controller
     {
         $u = $request->user();
         abort_unless(
-            $u?->hasRole('super-admin')
+            $u?->isSuperAdmin()
             || $u?->can('bypass-permissions')
             || (config('tenancy.enabled', true) && $u?->canInOrganization('org.members.view')),
             403,
@@ -119,7 +119,7 @@ final class UsersTableController extends Controller
     {
         $this->authorizeViewUsers($request);
         $org = TenantContext::get();
-        $canBypass = $request->user()?->hasRole('super-admin') || $request->user()?->can('bypass-permissions');
+        $canBypass = $request->user()?->isSuperAdmin() || $request->user()?->can('bypass-permissions');
         if ($org && ! $canBypass) {
             abort_unless($user->organizations()->where('organizations.id', $org->id)->exists(), 404);
         }
