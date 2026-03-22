@@ -46,7 +46,7 @@ In Lemon Squeezy: **Settings** → **Webhooks** → add the URL above and subscr
 ### 5. Using the gateway in code
 
 ```php
-use App\Services\PaymentGateway\PaymentGatewayManager;
+use Modules\Billing\Services\PaymentGateway\PaymentGatewayManager;
 
 $gateway = app(PaymentGatewayManager::class)->resolve('lemon_squeezy');
 
@@ -67,7 +67,7 @@ return redirect()->away($url);
 ## Package
 
 - [lemonsqueezy/laravel](https://github.com/lemonsqueezy/laravel) – checkout creation and webhooks
-- App gateway: `App\Services\PaymentGateway\Gateways\LemonSqueezyGateway`
+- App gateway: `Modules\Billing\Services\PaymentGateway\Gateways\LemonSqueezyGateway`
 
 ## Related
 

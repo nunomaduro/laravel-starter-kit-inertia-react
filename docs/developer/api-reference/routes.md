@@ -561,7 +561,7 @@ This document lists all available routes in the application.
 
 ## PricingController
 
-**Controller**: `App\Http\Controllers\Billing\PricingController`
+**Controller**: `Modules\Billing\Http\Controllers\PricingController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
@@ -1069,7 +1069,7 @@ This document lists all available routes in the application.
 
 ## BillingDashboardController
 
-**Controller**: `App\Http\Controllers\Billing\BillingDashboardController`
+**Controller**: `Modules\Billing\Http\Controllers\BillingDashboardController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
@@ -1088,7 +1088,7 @@ This document lists all available routes in the application.
 
 ## CreditController
 
-**Controller**: `App\Http\Controllers\Billing\CreditController`
+**Controller**: `Modules\Billing\Http\Controllers\CreditController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
@@ -1135,7 +1135,7 @@ This document lists all available routes in the application.
 
 ## InvoiceController
 
-**Controller**: `App\Http\Controllers\Billing\InvoiceController`
+**Controller**: `Modules\Billing\Http\Controllers\InvoiceController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
@@ -1400,7 +1400,7 @@ This document lists all available routes in the application.
 
 ## PageController
 
-**Controller**: `App\Http\Controllers\PageController`
+**Controller**: `Modules\PageBuilder\Http\Controllers\PageController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|
@@ -1463,7 +1463,7 @@ This document lists all available routes in the application.
 **Middleware**: web, auth, verified, tenant
 
 **Method Parameters**:
-- `page`: `App\Models\Page`
+- `page`: `Modules\PageBuilder\Models\Page`
 
 ### update
 
@@ -1480,7 +1480,7 @@ This document lists all available routes in the application.
 
 **Method Parameters**:
 - `request`: `App\Http\Requests\UpdatePageRequest`
-- `page`: `App\Models\Page`
+- `page`: `Modules\PageBuilder\Models\Page`
 
 ### preview
 
@@ -1497,7 +1497,7 @@ This document lists all available routes in the application.
 
 **Method Parameters**:
 - `request`: `Illuminate\Http\Request`
-- `page`: `App\Models\Page`
+- `page`: `Modules\PageBuilder\Models\Page`
 
 ### duplicate
 
@@ -1513,7 +1513,7 @@ This document lists all available routes in the application.
 **Middleware**: web, auth, verified, tenant
 
 **Method Parameters**:
-- `page`: `App\Models\Page`
+- `page`: `Modules\PageBuilder\Models\Page`
 
 ### destroy
 
@@ -1529,12 +1529,12 @@ This document lists all available routes in the application.
 **Middleware**: web, auth, verified, tenant
 
 **Method Parameters**:
-- `page`: `App\Models\Page`
+- `page`: `Modules\PageBuilder\Models\Page`
 
 
 ## PageViewController
 
-**Controller**: `App\Http\Controllers\PageViewController`
+**Controller**: `Modules\PageBuilder\Http\Controllers\PageViewController`
 
 | Method | URI | Route Name | Middleware |
 |--------|-----|------------|------------|

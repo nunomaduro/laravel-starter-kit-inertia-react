@@ -17,13 +17,13 @@ App-wide theming, organization branding, and the Puck-based page builder for cus
 
 ## Page builder (Puck)
 
-- **Model:** `App\Models\Page` — `BelongsToOrganization`, slug scoped to org; `puck_json` (root + content); `is_published`; sitemap includes published pages.
+- **Model:** `Modules\PageBuilder\Models\Page` — `BelongsToOrganization`, slug scoped to org; `puck_json` (root + content); `is_published`; sitemap includes published pages.
 - **Routes:** Under tenant: `pages.*` (index, create, store, edit, update, duplicate, destroy) and `p/{slug}` (public view via `PageViewController`).
 - **Editor:** `resources/js/pages/pages/edit.tsx` — Puck editor (lazy, `ssr: false`); config in `resources/js/lib/puck-config.tsx`. Blocks in `resources/js/components/puck-blocks/` (Hero, Features, CTA, CardBlock, DataListBlock).
 - **View:** `PageViewController@show` loads page by slug, resolves data for data-aware blocks via `PageDataSourceRegistry`, injects into block props, renders `pages/show` with `page-view-layout` and Puck `<Render>`.
-- **Data sources:** `App\Services\PageDataSourceRegistry` — register keys (e.g. `members`, `invoices`) with callables; resolution is auth-aware and tenant-scoped.
-- **Policy:** `PagePolicy`; permission `org.pages.manage` for create/edit/delete; view allowed for published pages or users who can manage.
-- **Revisions:** Each page update creates a `PageRevision` (previous `puck_json`, name, slug, is_published). Preview via `pages.preview` (editors only).
+- **Data sources:** `Modules\PageBuilder\Services\PageDataSourceRegistry` — register keys (e.g. `members`, `invoices`) with callables; resolution is auth-aware and tenant-scoped.
+- **Policy:** `Modules\PageBuilder\Policies\PagePolicy`; permission `org.pages.manage` for create/edit/delete; view allowed for published pages or users who can manage.
+- **Revisions:** Each page update creates a `Modules\PageBuilder\Models\PageRevision` (previous `puck_json`, name, slug, is_published). Preview via `pages.preview` (editors only).
 - **SEO:** Optional `meta_description` and `meta_image` on Page; rendered in `pages/show` as `<meta name="description">` and `og:title` / `og:description` / `og:image`.
 
 ## PageDataSourceRegistry
@@ -47,9 +47,9 @@ Data-aware blocks (e.g. `DataListBlock`) can request server-resolved data by set
 | Theme config | `config/theme.php` |
 | Theme settings | `app/Settings/ThemeSettings.php`, Filament `ManageTheme` |
 | Branding | `OrganizationSettingsService`, `BrandingController`, `settings/branding.tsx` |
-| Pages | `app/Models/Page.php`, `PageController`, `PageViewController`, `PagePolicy` |
+| Pages | `modules/page-builder/src/Models/Page.php`, `PageController`, `PageViewController`, `PagePolicy` |
 | Puck config | `resources/js/lib/puck-config.tsx` |
 | Blocks | `resources/js/components/puck-blocks/*.tsx` |
-| Data | `app/Services/PageDataSourceRegistry.php` |
-| Revisions | `app/Models/PageRevision.php`, `page_revisions` table |
+| Data | `modules/page-builder/src/Services/PageDataSourceRegistry.php` |
+| Revisions | `modules/page-builder/src/Models/PageRevision.php`, `page_revisions` table |
 | Validation | `app/Rules/ValidPuckJson.php`, `config/pages.puck` |

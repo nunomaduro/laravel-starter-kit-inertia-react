@@ -13,7 +13,7 @@ Third-party API integrations use **Saloon** (`saloonphp/saloon` v3) for a consis
 
 - **Connector**: `App\Http\Integrations\Paddle\PaddleConnector` — base URL from `config('paddle.sandbox')` (sandbox vs production), Bearer token from `config('paddle.vendor_auth_code')`.
 - **Requests**: `PaddleGetRequest` (GET), `PaddleApiRequest` (POST/PATCH with JSON body).
-- **Usage**: Injected into `App\Services\PaymentGateway\Gateways\PaddleGateway`; the gateway calls `$this->connector->send(new PaddleGetRequest('/subscriptions/'.$id))` or `$this->connector->send(new PaddleApiRequest(Method::POST, '/customers', $data))` and uses `$response->json()`.
+- **Usage**: Injected into `Modules\Billing\Services\PaymentGateway\Gateways\PaddleGateway`; the gateway calls `$this->connector->send(new PaddleGetRequest('/subscriptions/'.$id))` or `$this->connector->send(new PaddleApiRequest(Method::POST, '/customers', $data))` and uses `$response->json()`.
 
 ### Typesense (search health check)
 
