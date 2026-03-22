@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace Modules\PageBuilder\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +36,14 @@ final class PageRevision extends Model
     public function page(): BelongsTo
     {
         return $this->belongsTo(Page::class);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): \Modules\PageBuilder\Database\Factories\PageRevisionFactory
+    {
+        return \Modules\PageBuilder\Database\Factories\PageRevisionFactory::new();
     }
 
     /**

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Policies;
+namespace Modules\PageBuilder\Policies;
 
-use App\Models\Page;
 use App\Models\User;
+use Modules\PageBuilder\Models\Page;
 
 final class PagePolicy
 {

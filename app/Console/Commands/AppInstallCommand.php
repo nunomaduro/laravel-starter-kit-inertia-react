@@ -152,8 +152,8 @@ final class AppInstallCommand extends Command
             'seeders' => [
                 \Database\Seeders\Development\CategorySeeder::class,
                 \Modules\Blog\Database\Seeders\PostSeeder::class,
-                \Database\Seeders\Development\PageSeeder::class,
-                \Database\Seeders\Development\PageRevisionSeeder::class,
+                \Modules\PageBuilder\Database\Seeders\PageSeeder::class,
+                \Modules\PageBuilder\Database\Seeders\PageRevisionSeeder::class,
                 \Modules\Help\Database\Seeders\HelpArticleSeeder::class,
                 \Modules\Changelog\Database\Seeders\ChangelogEntrySeeder::class,
             ],

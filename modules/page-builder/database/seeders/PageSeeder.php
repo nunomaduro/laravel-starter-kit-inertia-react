@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders\Development;
+namespace Modules\PageBuilder\Database\Seeders;
 
 use App\Models\Organization;
-use App\Models\Page;
 use App\Services\TenantContext;
 use Illuminate\Database\Seeder;
+use Modules\PageBuilder\Models\Page;
 
 final class PageSeeder extends Seeder
 {

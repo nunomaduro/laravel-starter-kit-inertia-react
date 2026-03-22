@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace Modules\PageBuilder\Services;
 
 use App\Models\Billing\Invoice;
 use App\Models\Organization;

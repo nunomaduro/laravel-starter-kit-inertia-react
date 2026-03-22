@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use App\Models\Organization;
-use App\Models\Page;
 use App\Models\User;
 use App\Services\TenantContext;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\Artisan;
+use Modules\PageBuilder\Models\Page;
 
 it('redirects when tenant context is missing', function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);

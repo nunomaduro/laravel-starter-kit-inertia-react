@@ -30,8 +30,6 @@ use App\Http\Controllers\OrganizationInvitationController;
 use App\Http\Controllers\OrganizationMemberController;
 use App\Http\Controllers\OrganizationsTableController;
 use App\Http\Controllers\OrganizationSwitchController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TermsAcceptController;
 use App\Http\Controllers\UserController;
@@ -146,18 +144,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::post('billing/credits/checkout/lemon-squeezy', [CreditController::class, 'checkoutLemonSqueezy'])->name('billing.credits.checkout.lemon-squeezy');
         Route::get('billing/invoices', [InvoiceController::class, 'index'])->name('billing.invoices.index');
         Route::get('billing/invoices/{invoice}', [InvoiceController::class, 'download'])->name('billing.invoices.download');
-    });
-
-    Route::middleware('tenant')->group(function (): void {
-        Route::get('pages', [PageController::class, 'index'])->name('pages.index');
-        Route::get('pages/create', [PageController::class, 'create'])->name('pages.create');
-        Route::post('pages', [PageController::class, 'store'])->name('pages.store')->middleware('throttle:30,1');
-        Route::get('pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit');
-        Route::put('pages/{page}', [PageController::class, 'update'])->name('pages.update')->middleware('throttle:30,1');
-        Route::get('pages/{page}/preview', [PageController::class, 'preview'])->name('pages.preview');
-        Route::post('pages/{page}/duplicate', [PageController::class, 'duplicate'])->name('pages.duplicate');
-        Route::delete('pages/{page}', [PageController::class, 'destroy'])->name('pages.destroy');
-        Route::get('p/{slug}', [PageViewController::class, 'show'])->name('pages.show')->middleware('throttle:120,1');
     });
 
     Route::get('profile/export-pdf', App\Http\Controllers\ProfileExportPdfController::class)

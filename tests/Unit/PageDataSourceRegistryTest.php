@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use App\Models\Organization;
 use App\Models\User;
-use App\Services\PageDataSourceRegistry;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
+use Modules\PageBuilder\Services\PageDataSourceRegistry;
 
 beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);

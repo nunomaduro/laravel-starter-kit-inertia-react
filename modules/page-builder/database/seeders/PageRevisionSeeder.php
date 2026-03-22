@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Database\Seeders\Development;
+namespace Modules\PageBuilder\Database\Seeders;
 
-use App\Models\Page;
-use App\Models\PageRevision;
 use Illuminate\Database\Seeder;
+use Modules\PageBuilder\Models\Page;
+use Modules\PageBuilder\Models\PageRevision;
 
 final class PageRevisionSeeder extends Seeder
 {

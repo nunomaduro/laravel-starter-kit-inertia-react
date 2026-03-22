@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests;
+namespace Modules\PageBuilder\Http\Requests;
 
 use App\Rules\ValidPuckJson;
 use App\Services\TenantContext;

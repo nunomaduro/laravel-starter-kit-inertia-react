@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace Modules\PageBuilder\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +22,7 @@ use Spatie\Sluggable\SlugOptions;
  * @property string|null $meta_image
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read Organization $organization
+ * @property-read \App\Models\Organization $organization
  * @property-read \Illuminate\Database\Eloquent\Collection<int, PageRevision> $revisions
  * @property \Spatie\SchemalessAttributes\SchemalessAttributes $extra_attributes
  */
@@ -88,6 +88,14 @@ final class Page extends Model
     public function revisions(): HasMany
     {
         return $this->hasMany(PageRevision::class)->latest();
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): \Modules\PageBuilder\Database\Factories\PageFactory
+    {
+        return \Modules\PageBuilder\Database\Factories\PageFactory::new();
     }
 
     /**

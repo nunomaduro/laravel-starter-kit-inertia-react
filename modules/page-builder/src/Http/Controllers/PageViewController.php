@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace Modules\PageBuilder\Http\Controllers;
 
-use App\Models\Page;
-use App\Services\PageDataSourceRegistry;
+use App\Http\Controllers\Controller;
 use App\Services\TenantContext;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\PageBuilder\Models\Page;
+use Modules\PageBuilder\Services\PageDataSourceRegistry;
 
 final class PageViewController extends Controller
 {

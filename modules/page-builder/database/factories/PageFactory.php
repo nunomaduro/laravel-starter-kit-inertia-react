@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Database\Factories;
+namespace Modules\PageBuilder\Database\Factories;
 
-use App\Models\Page;
-use App\Models\PageRevision;
+use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Modules\PageBuilder\Models\Page;
 
 /**
- * @extends Factory<PageRevision>
+ * @extends Factory<Page>
  */
-final class PageRevisionFactory extends Factory
+final class PageFactory extends Factory
 {
-    protected $model = PageRevision::class;
+    protected $model = Page::class;
 
     /**
      * @return array<string, mixed>
@@ -24,10 +24,10 @@ final class PageRevisionFactory extends Factory
         $name = fake()->sentence(3);
 
         return [
-            'page_id' => Page::factory(),
-            'puck_json' => ['root' => (object) [], 'content' => []],
+            'organization_id' => Organization::factory(),
             'name' => $name,
             'slug' => Str::slug($name),
+            'puck_json' => ['root' => (object) [], 'content' => []],
             'is_published' => false,
         ];
     }

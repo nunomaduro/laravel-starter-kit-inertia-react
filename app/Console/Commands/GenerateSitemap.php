@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Models\Page;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Route;
+use Modules\PageBuilder\Models\Page;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 

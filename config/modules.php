@@ -22,4 +22,5 @@ return [
     'reports' => true,
     'dashboards' => true,
     'workflows' => true,
+    'page-builder' => true,
 ];

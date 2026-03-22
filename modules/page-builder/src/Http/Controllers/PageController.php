@@ -2,18 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace Modules\PageBuilder\Http\Controllers;
 
-use App\Http\Requests\StorePageRequest;
-use App\Http\Requests\UpdatePageRequest;
-use App\Models\Page;
-use App\Services\PageDataSourceRegistry;
+use App\Http\Controllers\Controller;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\PageBuilder\Http\Requests\StorePageRequest;
+use Modules\PageBuilder\Http\Requests\UpdatePageRequest;
+use Modules\PageBuilder\Models\Page;
+use Modules\PageBuilder\Services\PageDataSourceRegistry;
 
 final class PageController extends Controller
 {
