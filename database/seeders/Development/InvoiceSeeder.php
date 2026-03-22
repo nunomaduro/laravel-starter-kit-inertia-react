@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Billing\Invoice;
-use App\Models\Billing\PaymentGateway;
 use App\Models\Organization;
 use App\Services\TenantContext;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Models\Invoice;
+use Modules\Billing\Models\PaymentGateway;
 
 final class InvoiceSeeder extends Seeder
 {

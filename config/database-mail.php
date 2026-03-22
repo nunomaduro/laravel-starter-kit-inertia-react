@@ -51,9 +51,9 @@ return [
         App\Events\User\UserCreated::class,
         App\Events\OrganizationInvitationSent::class,
         App\Events\OrganizationInvitationAccepted::class,
-        App\Events\Billing\TrialEndingReminder::class,
-        App\Events\Billing\DunningFailedPaymentReminder::class,
-        App\Events\Billing\InvoicePaid::class,
+        Modules\Billing\Events\TrialEndingReminder::class,
+        Modules\Billing\Events\DunningFailedPaymentReminder::class,
+        Modules\Billing\Events\InvoicePaid::class,
         App\Events\NewTermsVersionPublished::class,
     ],
 ];

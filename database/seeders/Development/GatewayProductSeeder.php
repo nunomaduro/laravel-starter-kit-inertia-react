@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Billing\GatewayProduct;
-use App\Models\Billing\PaymentGateway;
-use App\Models\Billing\Plan;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Models\GatewayProduct;
+use Modules\Billing\Models\PaymentGateway;
+use Modules\Billing\Models\Plan;
 
 final class GatewayProductSeeder extends Seeder
 {

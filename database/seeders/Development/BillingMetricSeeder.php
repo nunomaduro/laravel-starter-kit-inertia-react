@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Billing\BillingMetric;
 use App\Models\Organization;
 use App\Services\TenantContext;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Models\BillingMetric;
 
 final class BillingMetricSeeder extends Seeder
 {

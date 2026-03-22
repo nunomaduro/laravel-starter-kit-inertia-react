@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Billing\Affiliate;
-use App\Models\Billing\AffiliateCommission;
-use App\Models\Billing\Invoice;
 use App\Models\Organization;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Models\Affiliate;
+use Modules\Billing\Models\AffiliateCommission;
+use Modules\Billing\Models\Invoice;
 
 final class AffiliateCommissionSeeder extends Seeder
 {

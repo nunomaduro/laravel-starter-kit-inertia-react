@@ -30,7 +30,7 @@ Schedule::command('model:prune', [
     '--model' => [Spatie\WebhookClient\Models\WebhookCall::class],
 ])->daily();
 
-Schedule::job(new App\Jobs\Billing\GenerateBillingMetrics)->daily()->at('02:00');
-Schedule::job(new App\Jobs\Billing\ExpireCredits)->daily()->at('03:00');
-Schedule::job(new App\Jobs\Billing\ProcessTrialEndingReminders)->daily()->at('04:00');
-Schedule::job(new App\Jobs\Billing\ProcessDunningReminders)->daily()->at('05:00');
+Schedule::job(new Modules\Billing\Jobs\GenerateBillingMetrics)->daily()->at('02:00');
+Schedule::job(new Modules\Billing\Jobs\ExpireCredits)->daily()->at('03:00');
+Schedule::job(new Modules\Billing\Jobs\ProcessTrialEndingReminders)->daily()->at('04:00');
+Schedule::job(new Modules\Billing\Jobs\ProcessDunningReminders)->daily()->at('05:00');

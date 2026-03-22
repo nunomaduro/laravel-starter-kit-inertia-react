@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Billing\FailedPaymentAttempt;
 use App\Models\Organization;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Models\FailedPaymentAttempt;
 
 final class FailedPaymentAttemptSeeder extends Seeder
 {

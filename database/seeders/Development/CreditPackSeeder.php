@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Billing\CreditPack;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Models\CreditPack;
 
 final class CreditPackSeeder extends Seeder
 {

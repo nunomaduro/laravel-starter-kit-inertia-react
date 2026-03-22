@@ -4,30 +4,19 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Events\OrganizationMemberAdded;
-use App\Events\OrganizationMemberRemoved;
 use App\Events\User\UserCreated;
-use App\Listeners\Billing\AddCreditsFromLemonSqueezyOrder;
-use App\Listeners\Billing\SyncSubscriptionSeatsOnMemberChange;
 use App\Listeners\CreatePersonalOrganizationOnUserCreated;
 use App\Listeners\LogImpersonationEvents;
 use App\Listeners\MigrationListener;
 use App\Listeners\ScheduleOnboardingReminderOnUserCreated;
 use App\Listeners\SendSlackAlertOnJobFailed;
-use App\Models\Billing\FailedPaymentAttempt;
-use App\Models\Billing\Invoice;
-use App\Models\Billing\Subscription;
 use App\Models\Shareable;
 use App\Models\User;
 use App\Observers\ActivityLogObserver;
-use App\Observers\FailedPaymentAttemptObserver;
-use App\Observers\InvoiceObserver;
 use App\Observers\PermissionActivityObserver;
 use App\Observers\RoleActivityObserver;
-use App\Observers\SubscriptionObserver;
 use App\Observers\UserObserver;
 use App\Policies\ShareablePolicy;
-use App\Services\PaymentGateway\PaymentGatewayManager;
 use App\Services\PrismService;
 use App\Settings\AuthSettings;
 use App\Settings\SeoSettings;
@@ -45,7 +34,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
-use LemonSqueezy\Laravel\Events\OrderCreated;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\Activitylog\CauserResolver as ActivitylogCauserResolver;
 use Spatie\Permission\Models\Permission;
@@ -72,8 +60,6 @@ final class AppServiceProvider extends ServiceProvider
         if (class_exists(\Essa\APIToolKit\Exceptions\Handler::class)) {
             $this->app->singleton(ExceptionHandler::class, \Essa\APIToolKit\Exceptions\Handler::class);
         }
-
-        $this->app->singleton(PaymentGatewayManager::class);
 
         config(['filament-impersonate.redirect_to' => '/dashboard']);
 
@@ -136,9 +122,6 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(JobFailed::class, SendSlackAlertOnJobFailed::class);
         Event::listen(UserCreated::class, CreatePersonalOrganizationOnUserCreated::class);
         Event::listen(UserCreated::class, ScheduleOnboardingReminderOnUserCreated::class);
-        Event::listen(OrganizationMemberAdded::class, SyncSubscriptionSeatsOnMemberChange::class);
-        Event::listen(OrganizationMemberRemoved::class, SyncSubscriptionSeatsOnMemberChange::class);
-        Event::listen(OrderCreated::class, AddCreditsFromLemonSqueezyOrder::class);
 
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event): void {
             $event->extendSocialite('google', \SocialiteProviders\Google\Provider::class);
@@ -146,9 +129,6 @@ final class AppServiceProvider extends ServiceProvider
         });
 
         User::observe(UserObserver::class);
-        Invoice::observe(InvoiceObserver::class);
-        Subscription::observe(SubscriptionObserver::class);
-        FailedPaymentAttempt::observe(FailedPaymentAttemptObserver::class);
     }
 
     private function userHasBypassPermissions(object $user): bool

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\PageBuilder\Services;
 
-use App\Models\Billing\Invoice;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Modules\Billing\Models\Invoice;
 
 final class PageDataSourceRegistry
 {

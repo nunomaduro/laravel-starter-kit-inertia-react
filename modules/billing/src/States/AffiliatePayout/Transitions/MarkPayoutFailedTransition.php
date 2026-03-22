@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Billing\States\AffiliatePayout\Transitions;
+
+use App\Models\User;
+use Modules\Billing\Models\AffiliatePayout;
+use Spatie\ModelStates\DefaultTransition;
+use Spatie\ModelStates\State;
+
+final class MarkPayoutFailedTransition extends DefaultTransition
+{
+    public function __construct(
+        AffiliatePayout $model,
+        string $field,
+        State $newState,
+        private readonly string $notes,
+        private readonly User $processor
+    ) {
+        parent::__construct($model, $field, $newState);
+    }
+
+    public function handle(): AffiliatePayout
+    {
+        $this->model->{$this->field} = $this->newState;
+        $this->model->notes = $this->notes;
+        $this->model->processed_by = $this->processor->id;
+        $this->model->processed_at = now();
+        $this->model->save();
+
+        return $this->model;
+    }
+}

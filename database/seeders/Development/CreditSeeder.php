@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Enums\Billing\CreditTransactionType;
-use App\Models\Billing\Credit;
 use App\Models\Organization;
 use App\Services\TenantContext;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Enums\CreditTransactionType;
+use Modules\Billing\Models\Credit;
 
 final class CreditSeeder extends Seeder
 {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Enums\Billing\CreditTransactionType;
-use App\Listeners\Billing\AddCreditsFromLemonSqueezyOrder;
-use App\Models\Billing\Credit;
 use App\Models\Organization;
 use App\Models\User;
 use App\Services\TenantContext;
 use Illuminate\Support\Facades\Event;
 use LemonSqueezy\Laravel\Events\OrderCreated;
 use LemonSqueezy\Laravel\Events\OrderRefunded;
+use Modules\Billing\Enums\CreditTransactionType;
+use Modules\Billing\Listeners\AddCreditsFromLemonSqueezyOrder;
+use Modules\Billing\Models\Credit;
 
 beforeEach(function (): void {
     $this->signingSecret = 'ls_test_signing_secret_for_testing';

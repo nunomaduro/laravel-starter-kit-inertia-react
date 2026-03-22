@@ -9,12 +9,6 @@ declare(strict_types=1);
  */
 
 use App\Http\Controllers\Api\SlugAvailabilityController;
-use App\Http\Controllers\Billing\BillingDashboardController;
-use App\Http\Controllers\Billing\CreditController;
-use App\Http\Controllers\Billing\InvoiceController;
-use App\Http\Controllers\Billing\PaddleWebhookController;
-use App\Http\Controllers\Billing\PricingController;
-use App\Http\Controllers\Billing\StripeWebhookController;
 use App\Http\Controllers\CategoriesTableController;
 use App\Http\Controllers\CookieConsentController;
 use App\Http\Controllers\DashboardController;
@@ -88,8 +82,6 @@ Route::get('cookie-consent/accept', CookieConsentController::class)
 Route::get('legal/terms', fn () => Inertia::render('legal/terms'))->name('legal.terms');
 Route::get('legal/privacy', fn () => Inertia::render('legal/privacy'))->name('legal.privacy');
 
-Route::get('pricing', [PricingController::class, 'index'])->name('pricing');
-
 Route::get('enterprise', [EnterpriseInquiryController::class, 'create'])
     ->name('enterprise-inquiries.create');
 Route::post('enterprise', [EnterpriseInquiryController::class, 'store'])
@@ -137,15 +129,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::get('search', SearchController::class)->middleware('tenant')->name('search');
 
-    Route::middleware('tenant')->group(function (): void {
-        Route::get('billing', [BillingDashboardController::class, 'index'])->name('billing.index');
-        Route::get('billing/credits', [CreditController::class, 'index'])->name('billing.credits.index');
-        Route::post('billing/credits/purchase', [CreditController::class, 'purchase'])->name('billing.credits.purchase');
-        Route::post('billing/credits/checkout/lemon-squeezy', [CreditController::class, 'checkoutLemonSqueezy'])->name('billing.credits.checkout.lemon-squeezy');
-        Route::get('billing/invoices', [InvoiceController::class, 'index'])->name('billing.invoices.index');
-        Route::get('billing/invoices/{invoice}', [InvoiceController::class, 'download'])->name('billing.invoices.download');
-    });
-
     Route::get('profile/export-pdf', App\Http\Controllers\ProfileExportPdfController::class)
         ->middleware('feature:profile_pdf_export')
         ->name('profile.export-pdf');
@@ -171,9 +154,6 @@ Route::get('/internal/caddy/ask', CaddyAskController::class)
     ->middleware(InternalRequestMiddleware::class)
     ->withoutMiddleware([ValidateCsrfToken::class])
     ->name('internal.caddy.ask');
-
-Route::post('webhooks/stripe', StripeWebhookController::class)->name('webhooks.stripe')->withoutMiddleware([ValidateCsrfToken::class]);
-Route::post('webhooks/paddle', PaddleWebhookController::class)->name('webhooks.paddle')->withoutMiddleware([ValidateCsrfToken::class]);
 
 Route::webhooks('webhooks/spatie', 'default');
 

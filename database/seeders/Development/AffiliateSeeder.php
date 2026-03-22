@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Billing\Affiliate;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Models\Affiliate;
 
 final class AffiliateSeeder extends Seeder
 {

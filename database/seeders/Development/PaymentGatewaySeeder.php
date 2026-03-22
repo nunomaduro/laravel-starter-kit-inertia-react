@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Enums\Billing\PaymentGatewayType;
-use App\Models\Billing\PaymentGateway;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Crypt;
+use Modules\Billing\Enums\PaymentGatewayType;
+use Modules\Billing\Models\PaymentGateway;
 
 final class PaymentGatewaySeeder extends Seeder
 {

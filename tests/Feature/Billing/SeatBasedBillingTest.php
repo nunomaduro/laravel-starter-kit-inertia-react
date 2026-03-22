@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Actions\Billing\SyncSubscriptionSeatsAction;
-use App\Models\Billing\Plan;
-use App\Models\Billing\Subscription;
 use App\Models\Organization;
 use App\Models\User;
 use App\Settings\BillingSettings;
+use Modules\Billing\Actions\SyncSubscriptionSeatsAction;
+use Modules\Billing\Models\Plan;
+use Modules\Billing\Models\Subscription;
 
 beforeEach(function (): void {
     $this->plan = Plan::query()->create([

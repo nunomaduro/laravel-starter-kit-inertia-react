@@ -38,7 +38,7 @@ final class MailTemplatesSeeder extends Seeder
             ],
             [
                 'name' => 'Trial ending reminder',
-                'event' => \App\Events\Billing\TrialEndingReminder::class,
+                'event' => \Modules\Billing\Events\TrialEndingReminder::class,
                 'subject' => 'Your trial ends in {{ $daysRemaining }} day(s)',
                 'body' => '<h1>Hello!</h1><p>Your free trial of {{ $planName }} ends in {{ $daysRemaining }} days.</p><p>Add a payment method to continue enjoying all features after your trial ends.</p><p><a href="{{ route("billing.index") }}">Billing Dashboard</a></p><p>Questions? Our support team is happy to help.</p>',
                 'recipients' => ['owner'],
@@ -46,7 +46,7 @@ final class MailTemplatesSeeder extends Seeder
             ],
             [
                 'name' => 'Dunning (failed payment reminder)',
-                'event' => \App\Events\Billing\DunningFailedPaymentReminder::class,
+                'event' => \Modules\Billing\Events\DunningFailedPaymentReminder::class,
                 'subject' => 'Payment Update Required',
                 'body' => '<p>We were unable to process a recent payment for your {{ $organization->name }} account.</p><p>This is reminder #{{ $attemptNumber }} (day {{ $daysSinceFailure }} since the failure).</p><p><a href="{{ route("dashboard") }}">Update Payment Method</a></p><p>Please update your payment method to avoid service interruption.</p>',
                 'recipients' => ['owner'],
@@ -54,7 +54,7 @@ final class MailTemplatesSeeder extends Seeder
             ],
             [
                 'name' => 'Invoice paid',
-                'event' => \App\Events\Billing\InvoicePaid::class,
+                'event' => \Modules\Billing\Events\InvoicePaid::class,
                 'subject' => 'Invoice {{ $invoice->number }} paid',
                 'body' => '<p>Your invoice {{ $invoice->number }} has been paid.</p><p>Total: {{ $invoice->currency }} {{ number_format($invoice->total / 100, 2) }}</p>',
                 'recipients' => ['owner'],

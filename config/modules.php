@@ -23,4 +23,5 @@ return [
     'dashboards' => true,
     'workflows' => true,
     'page-builder' => true,
+    'billing' => true,
 ];

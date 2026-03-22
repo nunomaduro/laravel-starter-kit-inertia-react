@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Development;
 
-use App\Models\Billing\Plan;
 use Illuminate\Database\Seeder;
+use Modules\Billing\Models\Plan;
 
 /**
  * Seeds the AI-Native App Factory platform subscription tiers.

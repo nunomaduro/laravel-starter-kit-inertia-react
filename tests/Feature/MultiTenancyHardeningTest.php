@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Models\Billing\Credit;
-use App\Models\Billing\RefundRequest;
 use App\Models\Organization;
 use App\Models\User;
-use App\Policies\CreditPolicy;
-use App\Policies\RefundRequestPolicy;
 use App\Services\TenantContext;
+use Modules\Billing\Models\Credit;
+use Modules\Billing\Models\RefundRequest;
+use Modules\Billing\Policies\CreditPolicy;
+use Modules\Billing\Policies\RefundRequestPolicy;
 
 it('denies viewing credit from another organization', function (): void {
     $user = User::factory()->withoutTwoFactor()->create();

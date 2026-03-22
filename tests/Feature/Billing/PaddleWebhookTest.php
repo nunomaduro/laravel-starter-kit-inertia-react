@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Models\Billing\FailedPaymentAttempt;
-use App\Models\Billing\Invoice;
-use App\Models\Billing\Plan;
-use App\Models\Billing\Subscription;
-use App\Models\Billing\WebhookLog;
 use App\Models\Organization;
 use App\Models\User;
-use App\Services\PaymentGateway\Contracts\PaymentGatewayInterface;
-use App\Services\PaymentGateway\Gateways\PaddleGateway;
 use Illuminate\Support\Facades\Cache;
+use Modules\Billing\Models\FailedPaymentAttempt;
+use Modules\Billing\Models\Invoice;
+use Modules\Billing\Models\Plan;
+use Modules\Billing\Models\Subscription;
+use Modules\Billing\Models\WebhookLog;
+use Modules\Billing\Services\PaymentGateway\Contracts\PaymentGatewayInterface;
+use Modules\Billing\Services\PaymentGateway\Gateways\PaddleGateway;
 
 beforeEach(function (): void {
     $this->webhookSecret = 'pdl_test_secret_for_testing';

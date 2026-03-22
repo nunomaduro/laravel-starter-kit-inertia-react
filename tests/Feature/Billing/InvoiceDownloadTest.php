@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Models\Billing\Invoice;
 use App\Models\Organization;
 use App\Models\User;
 use App\Services\TenantContext;
 use App\Settings\SetupWizardSettings;
+use Modules\Billing\Models\Invoice;
 
 beforeEach(function (): void {
     $setup = resolve(SetupWizardSettings::class);

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Services\TenantContext;
-use App\Traits\Billing\HasBilling;
-use App\Traits\Billing\HasCredits;
 use Askedio\SoftCascade\Traits\SoftCascadeTrait;
 use Database\Factories\OrganizationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +17,8 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Laravelcm\Subscriptions\Traits\HasPlanSubscriptions;
 use Mattiverse\Userstamps\Traits\Userstamps;
+use Modules\Billing\Traits\HasBilling;
+use Modules\Billing\Traits\HasCredits;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Models\Role;

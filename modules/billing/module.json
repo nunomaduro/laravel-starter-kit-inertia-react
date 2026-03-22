@@ -1,0 +1,7 @@
+{
+    "name": "billing",
+    "label": "Billing",
+    "description": "Billing system with selectable payment gateway providers (Stripe, Paddle, LemonSqueezy).",
+    "provider": "Modules\\Billing\\BillingServiceProvider",
+    "seeders": []
+}

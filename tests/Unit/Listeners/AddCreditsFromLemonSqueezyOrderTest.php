@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Enums\Billing\CreditTransactionType;
-use App\Listeners\Billing\AddCreditsFromLemonSqueezyOrder;
-use App\Models\Billing\Credit;
 use App\Models\Organization;
 use App\Models\User;
 use App\Services\TenantContext;
 use Illuminate\Support\Facades\Log;
 use LemonSqueezy\Laravel\Events\OrderCreated;
+use Modules\Billing\Enums\CreditTransactionType;
+use Modules\Billing\Listeners\AddCreditsFromLemonSqueezyOrder;
+use Modules\Billing\Models\Credit;
 
 beforeEach(function (): void {
     $this->owner = User::factory()->withoutTwoFactor()->create();

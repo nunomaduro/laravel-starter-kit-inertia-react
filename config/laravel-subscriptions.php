@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Models\Billing\Plan;
-use App\Models\Billing\Subscription;
 use Laravelcm\Subscriptions\Models\Feature;
 use Laravelcm\Subscriptions\Models\SubscriptionUsage;
+use Modules\Billing\Models\Plan;
+use Modules\Billing\Models\Subscription;
 
 return [
 
