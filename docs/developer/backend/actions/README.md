@@ -12,42 +12,42 @@ All Actions:
 
 ## Available Actions
 
-| Action | Purpose | Documented |
-|--------|---------|------------|
-| [CreateUser](./CreateUser.md) | N/A | ✅ |
-| [CreateUserEmailResetNotification](./CreateUserEmailResetNotification.md) | N/A | ✅ |
-| [CreateUserEmailVerificationNotification](./CreateUserEmailVerificationNotification.md) | N/A | ✅ |
-| [CreateUserPassword](./CreateUserPassword.md) | N/A | ✅ |
-| [DeleteUser](./DeleteUser.md) | N/A | ✅ |
-| [UpdateUser](./UpdateUser.md) | N/A | ✅ |
-| [UpdateUserPassword](./UpdateUserPassword.md) | N/A | ✅ |
-| [LoggingEnableTwoFactorAuthentication](./LoggingEnableTwoFactorAuthentication.md) | N/A | ✅ |
-| [LoggingDisableTwoFactorAuthentication](./LoggingDisableTwoFactorAuthentication.md) | N/A | ✅ |
-| [LoggingConfirmTwoFactorAuthentication](./LoggingConfirmTwoFactorAuthentication.md) | N/A | ✅ |
-| [LoggingGenerateNewRecoveryCodes](./LoggingGenerateNewRecoveryCodes.md) | N/A | ✅ |
-| [StoreContactSubmission](./StoreContactSubmission.md) | N/A | ✅ |
-| [CompleteOnboardingAction](./CompleteOnboardingAction.md) | N/A | ✅ |
-| [RateHelpArticleAction](./RateHelpArticleAction.md) | N/A | ✅ |
-| [AcceptOrganizationInvitationAction](./acceptorganizationinvitationaction.md) | N/A | ✅ |
-| [CreateOrganizationAction](./createorganizationaction.md) | N/A | ✅ |
-| [CreatePersonalOrganizationForUserAction](./createpersonalorganizationforuseraction.md) | N/A | ✅ |
-| [InviteToOrganizationAction](./invitetoorganizationaction.md) | N/A | ✅ |
-| [RemoveOrganizationMemberAction](./removeorganizationmemberaction.md) | N/A | ✅ |
-| [SwitchOrganizationAction](./switchorganizationaction.md) | N/A | ✅ |
-| [TransferOrganizationOwnershipAction](./transferorganizationownershipaction.md) | N/A | ✅ |
-| [GetRequiredTermsVersionsForUser](./GetRequiredTermsVersionsForUser.md) | N/A | ✅ |
-| [RecordTermsAcceptance](./RecordTermsAcceptance.md) | N/A | ✅ |
-| [StoreEnterpriseInquiryAction](./StoreEnterpriseInquiryAction.md) | N/A | ✅ |
-| [BulkSoftDeleteUsers](./BulkSoftDeleteUsers.md) | N/A | ✅ |
-| [DuplicateUser](./DuplicateUser.md) | N/A | ✅ |
-| [UpdateUserThemeMode](docs/developer/backend/actions/UpdateUserThemeMode.md) | N/A | ✅ |
-| [SuggestThemeFromLogo](docs/developer/backend/actions/SuggestThemeFromLogo.md) | N/A | ✅ |
-| [RecordAuditLog](docs/developer/backend/actions/RecordAuditLog.md) | N/A | ✅ |
-| [VerifyCustomDomain](docs/developer/backend/actions/VerifyCustomDomain.md) | N/A | ✅ |
-| [FindOrCreateSocialUser](./FindOrCreateSocialUser.md) | N/A | ✅ |
-| [BatchUpdateUsersAction](./BatchUpdateUsersAction.md) | N/A | ✅ |
-| [BuildLaravelDailyInvoice](./Billing/BuildLaravelDailyInvoice.md) | N/A | ✅ |
-| [FindSimilarContent](./findsimilarcontent.md) | N/A | ✅ |
-| [GenerateOgImage](./generateogimage.md) | N/A | ✅ |
+| Action | Documented |
+|------|------|
+| [CreateUser](./CreateUser.md) | Yes |
+| [CreateUserEmailResetNotification](./CreateUserEmailResetNotification.md) | Yes |
+| [CreateUserEmailVerificationNotification](./CreateUserEmailVerificationNotification.md) | Yes |
+| [CreateUserPassword](./CreateUserPassword.md) | Yes |
+| [DeleteUser](./DeleteUser.md) | Yes |
+| [UpdateUser](./UpdateUser.md) | Yes |
+| [UpdateUserPassword](./UpdateUserPassword.md) | Yes |
+| [LoggingEnableTwoFactorAuthentication](./LoggingEnableTwoFactorAuthentication.md) | Yes |
+| [LoggingDisableTwoFactorAuthentication](./LoggingDisableTwoFactorAuthentication.md) | Yes |
+| [LoggingConfirmTwoFactorAuthentication](./LoggingConfirmTwoFactorAuthentication.md) | Yes |
+| [LoggingGenerateNewRecoveryCodes](./LoggingGenerateNewRecoveryCodes.md) | Yes |
+| [StoreContactSubmission](./StoreContactSubmission.md) | Yes |
+| [CompleteOnboardingAction](./CompleteOnboardingAction.md) | Yes |
+| [RateHelpArticleAction](./RateHelpArticleAction.md) | Yes |
+| [AcceptOrganizationInvitationAction](./acceptorganizationinvitationaction.md) | Yes |
+| [CreateOrganizationAction](./createorganizationaction.md) | Yes |
+| [CreatePersonalOrganizationForUserAction](./createpersonalorganizationforuseraction.md) | Yes |
+| [InviteToOrganizationAction](./invitetoorganizationaction.md) | Yes |
+| [RemoveOrganizationMemberAction](./removeorganizationmemberaction.md) | Yes |
+| [SwitchOrganizationAction](./switchorganizationaction.md) | Yes |
+| [TransferOrganizationOwnershipAction](./transferorganizationownershipaction.md) | Yes |
+| [GetRequiredTermsVersionsForUser](./GetRequiredTermsVersionsForUser.md) | Yes |
+| [RecordTermsAcceptance](./RecordTermsAcceptance.md) | Yes |
+| [StoreEnterpriseInquiryAction](./StoreEnterpriseInquiryAction.md) | Yes |
+| [BulkSoftDeleteUsers](./BulkSoftDeleteUsers.md) | Yes |
+| [DuplicateUser](./DuplicateUser.md) | Yes |
+| [UpdateUserThemeMode](docs/developer/backend/actions/UpdateUserThemeMode.md) | Yes |
+| [SuggestThemeFromLogo](docs/developer/backend/actions/SuggestThemeFromLogo.md) | Yes |
+| [RecordAuditLog](docs/developer/backend/actions/RecordAuditLog.md) | Yes |
+| [VerifyCustomDomain](docs/developer/backend/actions/VerifyCustomDomain.md) | Yes |
+| [FindOrCreateSocialUser](./FindOrCreateSocialUser.md) | Yes |
+| [BatchUpdateUsersAction](./BatchUpdateUsersAction.md) | Yes |
+| [BuildLaravelDailyInvoice](./Billing/BuildLaravelDailyInvoice.md) | Yes |
+| [FindSimilarContent](./findsimilarcontent.md) | Yes |
+| [GenerateOgImage](./generateogimage.md) | Yes |
 
 
