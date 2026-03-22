@@ -25,7 +25,7 @@ final class SaveThemeRequest extends FormRequest
             'skin' => ['required', 'string', 'in:shadow,bordered,flat,elevated'],
             'radius' => ['required', 'string', 'in:none,sm,default,md,lg,full'],
             'layout' => ['sometimes', 'string', 'in:main,sideblock'],
-            'font' => ['sometimes', 'string', 'in:inter,geist-sans,poppins,outfit,plus-jakarta-sans,instrument-sans'],
+            'font' => ['sometimes', 'string', 'in:ibm-plex-sans,inter,geist-sans,poppins,outfit,plus-jakarta-sans,instrument-sans'],
             'menuColor' => ['sometimes', 'string', 'in:default,primary,muted'],
             'menuAccent' => ['sometimes', 'string', 'in:subtle,strong,bordered'],
         ];

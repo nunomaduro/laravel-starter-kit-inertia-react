@@ -158,7 +158,7 @@ final class OrgThemeController extends Controller
         $settings->card_skin = 'shadow';
         $settings->border_radius = 'default';
         $settings->sidebar_layout = 'main';
-        $settings->font = 'instrument-sans';
+        $settings->font = 'ibm-plex-sans';
         $settings->menu_color = 'default';
         $settings->menu_accent = 'subtle';
         $settings->save();

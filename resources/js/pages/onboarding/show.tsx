@@ -43,7 +43,7 @@ export default function OnboardingShow({
             <div className="flex h-full flex-1 flex-col items-center justify-center gap-8 p-4">
                 <div className="w-full max-w-md space-y-6">
                     <div className="text-center">
-                        <h1 className="text-2xl font-semibold tracking-tight">
+                        <h1 className="text-2xl font-mono font-semibold tracking-tight">
                             Welcome to {name}
                         </h1>
                         <p className="mt-2 text-muted-foreground">

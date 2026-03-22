@@ -21,7 +21,7 @@ export default function LegalPrivacy() {
                     </div>
                 </header>
                 <main className="mx-auto max-w-3xl px-4 py-8">
-                    <h1 className="mb-2 text-2xl font-semibold">
+                    <h1 className="mb-2 text-2xl font-mono font-semibold tracking-tight">
                         Privacy Policy
                     </h1>
                     <p className="mb-6 text-sm text-muted-foreground">

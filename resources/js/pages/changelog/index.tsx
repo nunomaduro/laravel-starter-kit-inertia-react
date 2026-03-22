@@ -50,7 +50,7 @@ export default function ChangelogIndex({ entries }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Changelog" />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
-                <h1 className="text-2xl font-semibold">Changelog</h1>
+                <h1 className="text-2xl font-mono font-semibold tracking-tight">Changelog</h1>
                 {entries.data.length === 0 ? (
                     <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
                         <p className="text-sm font-medium text-muted-foreground">

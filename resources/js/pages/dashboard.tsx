@@ -87,7 +87,7 @@ export default function Dashboard() {
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h2 className="text-xl font-semibold tracking-tight">
+                    <h2 className="text-xl font-mono font-semibold tracking-tight">
                         {getGreeting()}, {auth.user.name}
                     </h2>
                     {showApiDocs && (
@@ -152,7 +152,7 @@ function StatCard({
                 <span className="text-sm">{label}</span>
             </div>
             <div className="flex items-end justify-between gap-2">
-                <p className="text-2xl font-semibold">
+                <p className="text-2xl font-mono font-semibold tabular-nums">
                     {value !== undefined ? (
                         value
                     ) : (

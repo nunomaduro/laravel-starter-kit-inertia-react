@@ -28,7 +28,7 @@ export default function PageViewLayout({ children }: PageViewLayoutProps) {
                             </span>
                         )}
                     </div>
-                    <span className="ml-2 font-semibold">{siteName}</span>
+                    <span className="ml-2 font-mono font-semibold tracking-tight">{siteName}</span>
                 </div>
             </header>
             <main className="flex-1">{children}</main>

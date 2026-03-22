@@ -221,7 +221,7 @@ function ShowcaseSection({
         <section id={id} className="scroll-mt-20 space-y-6">
             <div className="border-b pb-3">
                 <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-semibold tracking-tight">
+                    <h2 className="text-xl font-mono font-semibold tracking-tight">
                         {title}
                     </h2>
                     {badge && (

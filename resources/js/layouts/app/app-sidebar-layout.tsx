@@ -19,7 +19,7 @@ export default function AppSidebarLayout({
         return (
             <div className="flex min-h-screen items-center justify-center bg-background">
                 <div className="max-w-md space-y-3 p-8 text-center">
-                    <h1 className="text-2xl font-semibold">
+                    <h1 className="font-mono text-2xl font-semibold tracking-tight">
                         Setup in Progress
                     </h1>
                     <p className="text-muted-foreground">

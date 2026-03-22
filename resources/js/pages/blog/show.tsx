@@ -40,7 +40,7 @@ export default function BlogShow({ post }: Props) {
                     <TextLink href={blogIndex().url}>Back to blog</TextLink>
                 </p>
                 <article>
-                    <h1 className="mb-2 text-2xl font-semibold">
+                    <h1 className="mb-2 text-2xl font-mono font-semibold tracking-tight">
                         {post.title}
                     </h1>
                     <p className="mb-6 text-sm text-muted-foreground">

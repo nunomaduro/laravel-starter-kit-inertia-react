@@ -86,7 +86,7 @@ export default function UserShowPage({ user }: Props) {
                         )}
                         <div>
                             <div className="flex items-center gap-2">
-                                <h1 className="text-xl font-semibold tracking-tight">
+                                <h1 className="text-xl font-mono font-semibold tracking-tight">
                                     {user.name}
                                 </h1>
                                 <Badge variant="filled" color={status.color}>

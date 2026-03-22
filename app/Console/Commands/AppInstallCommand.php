@@ -1501,6 +1501,7 @@ final class AppInstallCommand extends Command
             $theme->font = select(
                 '  Font',
                 [
+                    'ibm-plex-sans' => 'IBM Plex Sans',
                     'instrument-sans' => 'Instrument Sans',
                     'inter' => 'Inter',
                     'geist' => 'Geist',
@@ -1508,7 +1509,7 @@ final class AppInstallCommand extends Command
                     'outfit' => 'Outfit',
                     'plus-jakarta-sans' => 'Plus Jakarta Sans',
                 ],
-                default: 'instrument-sans',
+                default: 'ibm-plex-sans',
             );
         }
         $theme->save();

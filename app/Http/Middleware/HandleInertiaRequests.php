@@ -185,7 +185,7 @@ final class HandleInertiaRequests extends Middleware
             'preset' => config('theme.preset', 'default'),
             'base_color' => config('theme.base_color', 'neutral'),
             'radius' => config('theme.radius', 'default'),
-            'font' => config('theme.font', 'instrument-sans'),
+            'font' => config('theme.font', 'ibm-plex-sans'),
             'default_appearance' => config('theme.default_appearance', 'system'),
             'dark' => '',
             'primary' => '',

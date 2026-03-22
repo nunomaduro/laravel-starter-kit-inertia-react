@@ -42,6 +42,7 @@ export const SIDEBAR_LAYOUTS = ['main', 'sideblock'] as const;
 export type SidebarLayout = (typeof SIDEBAR_LAYOUTS)[number];
 
 export const FONT_OPTIONS = [
+    'ibm-plex-sans',
     'inter',
     'geist-sans',
     'instrument-sans',

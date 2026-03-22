@@ -900,7 +900,7 @@ export default function DevPages({ templates }: Props) {
                                         <LayoutDashboard className="size-5 text-primary" />
                                     </div>
                                     <div>
-                                        <h1 className="text-xl font-semibold tracking-tight">
+                                        <h1 className="text-xl font-mono font-semibold tracking-tight">
                                             Page Template Gallery
                                         </h1>
                                         <p className="text-sm text-muted-foreground">

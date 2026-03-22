@@ -140,7 +140,7 @@ export default function ShowcaseIndex() {
 
             <div className="px-6 py-8">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold tracking-tight">Feature Showcase</h1>
+                    <h1 className="text-3xl font-mono font-bold tracking-tight">Feature Showcase</h1>
                     <p className="text-muted-foreground mt-2 text-lg">
                         Everything you need to build corporate-grade AI-native applications.
                         Each feature is production-ready and fully integrated.
@@ -175,7 +175,7 @@ export default function ShowcaseIndex() {
                 </div>
 
                 <div className="mt-12 rounded-lg border border-dashed p-8 text-center">
-                    <h2 className="text-xl font-semibold">Build Your Own Module</h2>
+                    <h2 className="text-xl font-mono font-semibold tracking-tight">Build Your Own Module</h2>
                     <p className="text-muted-foreground mt-2">
                         Scaffold a complete module with one command — model, actions, controller, pages, tests, and admin resource.
                     </p>

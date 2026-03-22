@@ -50,7 +50,7 @@ export default function HelpShow({ article, related }: Props) {
                     <TextLink href={helpIndex().url}>Back to help</TextLink>
                 </p>
                 <article>
-                    <h1 className="mb-2 text-2xl font-semibold">
+                    <h1 className="mb-2 text-2xl font-mono font-semibold tracking-tight">
                         {article.title}
                     </h1>
                     {article.excerpt && (

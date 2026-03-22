@@ -15,7 +15,7 @@ export function DataListBlock({
     return (
         <section className="container py-8">
             {title && (
-                <h2 className="mb-4 text-2xl font-semibold tracking-tight">
+                <h2 className="mb-4 text-2xl font-mono font-semibold tracking-tight">
                     {title}
                 </h2>
             )}

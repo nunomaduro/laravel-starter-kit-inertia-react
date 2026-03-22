@@ -14,7 +14,7 @@ return [
 
     'radius' => env('THEME_RADIUS', 'default'),
 
-    'font' => env('THEME_FONT', 'instrument-sans'),
+    'font' => env('THEME_FONT', 'ibm-plex-sans'),
 
     'default_appearance' => env('THEME_DEFAULT_APPEARANCE', 'system'), // light | dark | system
 
@@ -60,8 +60,10 @@ return [
     ],
 
     'fonts' => [
+        'ibm-plex-sans' => 'IBM Plex Sans',
         'instrument-sans' => 'Instrument Sans',
         'geist-sans' => 'Geist Sans',
+        'inter' => 'Inter',
     ],
 
     'appearances' => [

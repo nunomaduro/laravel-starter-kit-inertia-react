@@ -65,7 +65,7 @@ export default function Error({ status }: ErrorProps) {
                         <p className="text-8xl font-bold tracking-tighter text-muted-foreground/30">
                             {status}
                         </p>
-                        <h1 className="text-2xl font-semibold tracking-tight">
+                        <h1 className="text-2xl font-mono font-semibold tracking-tight">
                             {title}
                         </h1>
                         <p className="text-sm text-muted-foreground">

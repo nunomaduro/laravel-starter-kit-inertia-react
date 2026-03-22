@@ -770,3 +770,24 @@ These apply in addition to the Laravel Boost guidelines above. They are kept **a
 - **User onboarding:** spatie/laravel-onboard for multi-step onboarding (verify email, complete profile, get started); steps in OnboardingServiceProvider; feature flag `onboarding`; middleware EnsureOnboardingComplete; CompleteOnboardingAction. See docs/developer/backend/onboarding.md.
 - **Health checks:** spatie/laravel-health for scheduled checks and notifications (mail by default in `config/health.php`; Slack can be enabled once notifications are compatible with your Slack channel stack); checks registered in HealthServiceProvider; `health:check` scheduled every 5 minutes. See docs/developer/backend/health.md.
 - **Rate-limited jobs:** spatie/laravel-rate-limited-job-middleware; throttle queued jobs via job middleware (allow/everySeconds/releaseAfterSeconds); used on ProcessWebhookJob, NotifyUsersOfNewTermsVersion, billing reminders, VerifyOrganizationDomain. See docs/developer/backend/rate-limited-jobs.md.
+
+## Design System
+Always read DESIGN.md before making any visual or UI decisions.
+All font choices, colors, spacing, and aesthetic direction are defined there.
+Do not deviate without explicit user approval.
+In QA mode, flag any code that doesn't match DESIGN.md.
+
+### Quick Reference
+- **Aesthetic**: Industrial-minimal, dark-first. References: Linear, Raycast, Vercel.
+- **Display font**: JetBrains Mono 700 (headings, stats, data). **Body font**: IBM Plex Sans 400/500/600. **Code**: JetBrains Mono 400.
+- **Accent**: Muted teal `oklch(0.65 0.14 165)`. Neutrals have cool blue undertone (hue 260).
+- **No card shadows** — use background-level differentiation only.
+- **Motion**: Minimal-functional. 100ms micro, 200ms transitions, 300ms page-level. No bounce/spring.
+- **Accessibility**: WCAG 2.1 AA. Full keyboard nav, reduced-motion respect.
+
+### 5 Design Principles
+1. **Precision over decoration** — every element earns its place
+2. **Speed is a feature** — skeleton states, optimistic updates, smooth transitions
+3. **Dark-first confidence** — design for dark first, adapt for light
+4. **Keyboard-first, mouse-friendly** — command palette, shortcuts, focus rings
+5. **Progressive disclosure** — show what matters now, reveal complexity on demand

@@ -37,7 +37,7 @@ final class ThemeSuggestionAgent implements Agent, HasStructuredOutput
             'light' => $schema->string()->enum(['slate', 'gray', 'neutral'])->required(),
             'skin' => $schema->string()->enum(['shadow', 'bordered', 'flat', 'elevated'])->required(),
             'radius' => $schema->string()->enum(['none', 'sm', 'default', 'md', 'lg', 'full'])->required(),
-            'font' => $schema->string()->enum(['inter', 'geist-sans', 'instrument-sans', 'poppins', 'outfit', 'plus-jakarta-sans'])->required(),
+            'font' => $schema->string()->enum(['ibm-plex-sans', 'inter', 'geist-sans', 'instrument-sans', 'poppins', 'outfit', 'plus-jakarta-sans'])->required(),
             'menuColor' => $schema->string()->enum(['default', 'primary', 'muted'])->required(),
             'menuAccent' => $schema->string()->enum(['subtle', 'strong', 'bordered'])->required(),
             'reason' => $schema->string()->required(),

@@ -96,6 +96,7 @@ const LIGHT_THEME_COLORS: Record<LightTheme, string> = {
 };
 
 const FONT_LABELS: Record<FontOption, string> = {
+    'ibm-plex-sans': 'IBM Plex',
     inter: 'Inter',
     'geist-sans': 'Geist',
     'instrument-sans': 'Instrument',
@@ -105,6 +106,7 @@ const FONT_LABELS: Record<FontOption, string> = {
 };
 
 const FONT_FAMILIES: Record<FontOption, string> = {
+    'ibm-plex-sans': '"IBM Plex Sans", sans-serif',
     inter: 'Inter, sans-serif',
     'geist-sans': '"Geist", "Geist Sans", sans-serif',
     'instrument-sans': '"Instrument Sans", sans-serif',

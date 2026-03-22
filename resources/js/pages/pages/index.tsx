@@ -35,7 +35,7 @@ export default function PagesIndex({ pages }: Props) {
                 data-pan="pages-index"
             >
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">Pages</h1>
+                    <h1 className="text-2xl font-mono font-semibold tracking-tight">Pages</h1>
                     <Button asChild data-pan="pages-create">
                         <Link href={PageController.create().url}>
                             <Plus className="mr-2 size-4" />

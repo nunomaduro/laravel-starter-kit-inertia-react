@@ -5,6 +5,12 @@
  */
 
 /* Font overrides (--app-font-sans drives @theme --font-sans in app.css) */
+[data-font='ibm-plex-sans'] {
+    --app-font-sans:
+        'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+}
 [data-font='instrument-sans'] {
     --app-font-sans:
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif,

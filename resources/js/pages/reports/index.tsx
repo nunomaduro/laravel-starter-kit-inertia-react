@@ -35,7 +35,7 @@ export default function ReportsIndex({ reports }: Props) {
                 data-pan="reports-index"
             >
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">Reports</h1>
+                    <h1 className="text-2xl font-mono font-semibold tracking-tight">Reports</h1>
                     <Button asChild data-pan="reports-create">
                         <Link href={ReportController.create().url}>
                             <Plus className="mr-2 size-4" />

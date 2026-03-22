@@ -139,7 +139,7 @@ export default function ContactCreate() {
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title="Contact" />
                 <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
-                    <h1 className="text-2xl font-semibold">Contact support</h1>
+                    <h1 className="text-2xl font-mono font-semibold tracking-tight">Contact support</h1>
                     <p className="text-muted-foreground">
                         Send us a message and we&apos;ll get back to you.
                     </p>

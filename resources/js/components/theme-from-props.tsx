@@ -31,7 +31,7 @@ export function ThemeFromProps() {
         const preset =
             branding?.themePreset ?? userPreset ?? theme.preset ?? 'default';
         const radius = branding?.themeRadius ?? theme.radius ?? 'default';
-        const font = branding?.themeFont ?? theme.font ?? 'instrument-sans';
+        const font = branding?.themeFont ?? theme.font ?? 'ibm-plex-sans';
         const baseColor = theme.base_color ?? 'neutral';
 
         root.setAttribute('data-theme', preset);

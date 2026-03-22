@@ -35,7 +35,7 @@ export default function DashboardsIndex({ dashboards }: Props) {
                 data-pan="dashboards-index"
             >
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">Dashboards</h1>
+                    <h1 className="text-2xl font-mono font-semibold tracking-tight">Dashboards</h1>
                     <Button asChild data-pan="dashboards-create">
                         <Link
                             href={

@@ -35,7 +35,7 @@ export default function AppLogo() {
                 )}
             </div>
             <div className="ml-1 grid min-w-0 flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-tight font-semibold">
+                <span className="mb-0.5 truncate leading-tight font-mono font-semibold tracking-tight">
                     {siteName}
                 </span>
             </div>

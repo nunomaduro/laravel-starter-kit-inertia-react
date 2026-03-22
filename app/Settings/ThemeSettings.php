@@ -14,8 +14,8 @@ final class ThemeSettings extends Settings
 
     public string $radius = 'default';
 
-    /** @var 'instrument-sans'|'inter'|'geist'|'poppins'|'outfit'|'plus-jakarta-sans' */
-    public string $font = 'instrument-sans';
+    /** @var 'ibm-plex-sans'|'instrument-sans'|'inter'|'geist'|'poppins'|'outfit'|'plus-jakarta-sans' */
+    public string $font = 'ibm-plex-sans';
 
     /** @var 'light'|'dark'|'system' */
     public string $default_appearance = 'system';

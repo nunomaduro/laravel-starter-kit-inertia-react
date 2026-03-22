@@ -7,7 +7,7 @@ Blade theme injection contract (Phase 0):
 - Theme presets override CSS custom properties only; @theme in app.css stays as-is.
 --}}
 @php
-    $theme = $theme ?? ['default_appearance' => 'system', 'font' => 'instrument-sans', 'preset' => 'default', 'radius' => 'default', 'base_color' => 'neutral'];
+    $theme = $theme ?? ['default_appearance' => 'system', 'font' => 'ibm-plex-sans', 'preset' => 'default', 'radius' => 'default', 'base_color' => 'neutral'];
     $effectiveAppearance = $appearance ?? ($theme['default_appearance'] ?? 'system');
     $themePreset = $theme['preset'] ?? 'default';
     $themeRadius = $theme['radius'] ?? 'default';
@@ -61,8 +61,8 @@ Blade theme injection contract (Phase 0):
 
         {{-- Inline style: first-paint background to match theme (no flash before hydration) --}}
         <style>
-            html { background-color: oklch(1 0 0); }
-            html.dark { background-color: oklch(0.145 0 0); }
+            html { background-color: oklch(0.985 0.002 260); }
+            html.dark { background-color: oklch(0.11 0.005 260); }
         </style>
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -74,11 +74,8 @@ Blade theme injection contract (Phase 0):
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        @if(($theme['font'] ?? 'instrument-sans') === 'geist-sans')
-        <link href="https://fonts.bunny.net/css?family=geist:400,500,600" rel="stylesheet" />
-        @else
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-        @endif
+        {{-- Load all available fonts so theme customizer can switch live --}}
+        <link href="https://fonts.bunny.net/css?family=jetbrains-mono:400,500,600,700|ibm-plex-sans:400,500,600|instrument-sans:400,500,600|geist:400,500,600|inter:400,500,600|poppins:400,500,600|outfit:400,500,600|plus-jakarta-sans:400,500,600" rel="stylesheet" />
 
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])

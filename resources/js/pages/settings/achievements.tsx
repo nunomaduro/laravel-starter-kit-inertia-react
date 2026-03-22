@@ -53,7 +53,7 @@ export default function Achievements({
                                 <p className="text-sm text-muted-foreground">
                                     Level
                                 </p>
-                                <p className="text-2xl font-semibold">
+                                <p className="text-2xl font-mono font-semibold tabular-nums">
                                     {level}
                                 </p>
                             </div>
@@ -61,7 +61,7 @@ export default function Achievements({
                                 <p className="text-sm text-muted-foreground">
                                     XP
                                 </p>
-                                <p className="text-2xl font-semibold">
+                                <p className="text-2xl font-mono font-semibold tabular-nums">
                                     {points}
                                 </p>
                             </div>
