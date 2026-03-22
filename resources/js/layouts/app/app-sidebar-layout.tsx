@@ -13,9 +13,9 @@ export default function AppSidebarLayout({
     children,
     breadcrumbs = [],
 }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
-    const { setup_complete } = usePage<SharedData>().props;
+    const { setup_complete, auth } = usePage<SharedData>().props;
 
-    if (!setup_complete) {
+    if (!setup_complete && !auth?.can_bypass) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-background">
                 <div className="max-w-md space-y-3 p-8 text-center">

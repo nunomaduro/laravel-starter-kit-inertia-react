@@ -294,6 +294,13 @@ final class HandleInertiaRequests extends Middleware
 
     private function resolveSetupState(): bool
     {
+        // Super-admins always see the app as "setup complete" so they are never blocked
+        // by the frontend "Setup in Progress" screen — they need full access to finish setup.
+        $user = request()->user();
+        if ($user !== null && $user->isSuperAdmin()) {
+            return true;
+        }
+
         try {
             return resolve(\App\Settings\SetupWizardSettings::class)->setup_completed;
         } catch (Throwable) {

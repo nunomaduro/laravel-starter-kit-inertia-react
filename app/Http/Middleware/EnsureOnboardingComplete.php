@@ -47,6 +47,11 @@ final class EnsureOnboardingComplete
         /** @var User $user */
         $user = $request->user();
 
+        // Super-admins bypass onboarding entirely — they need unrestricted access.
+        if ($user->isSuperAdmin()) {
+            return $next($request);
+        }
+
         if (! FeatureHelper::isActiveForClass(OnboardingFeature::class, $user)) {
             return $next($request);
         }

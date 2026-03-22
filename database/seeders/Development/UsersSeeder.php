@@ -315,13 +315,33 @@ final class UsersSeeder extends Seeder
     }
 
     /**
-     * Ensure the demo super-admin user has the global super-admin role (for login and /users access).
+     * Ensure the demo super-admin user has the global super-admin role (for login and /users access)
+     * and belongs to at least one organization so TenantContext can resolve.
      */
     private function ensureSuperAdminHasGlobalRole(): void
     {
         $user = User::query()->where('email', 'superadmin@example.com')->first();
-        if ($user !== null) {
-            AssignRoleViaDb::assignGlobal($user, ['super-admin']);
+        if ($user === null) {
+            return;
+        }
+
+        AssignRoleViaDb::assignGlobal($user, ['super-admin']);
+
+        // Attach super-admin to Acme if they have no organizations, so tenant context resolves.
+        if (! $user->organizations()->exists()) {
+            $acme = Organization::query()->where('name', 'Acme')->first();
+            if ($acme instanceof Organization && ! $user->organizations()->where('organizations.id', $acme->id)->exists()) {
+                $acme->addMember($user, 'admin');
+                $user->organizations()->updateExistingPivot($acme->id, ['is_default' => true]);
+            }
+        }
+
+        // Ensure a default org is set if they have orgs but no default.
+        if ($user->organizations()->exists() && $user->defaultOrganization() === null) {
+            $firstOrg = $user->organizations()->first();
+            if ($firstOrg !== null) {
+                $user->organizations()->updateExistingPivot($firstOrg->id, ['is_default' => true]);
+            }
         }
     }
 }

@@ -160,6 +160,7 @@ final class AppDemoCommand extends Command
             $user = $userClass::query()->where('email', 'demo@example.com')->first();
 
             if ($user) {
+                $this->ensureDemoUserHasOrganization($user);
                 info('✓ Demo user exists');
 
                 return;
@@ -170,6 +171,7 @@ final class AppDemoCommand extends Command
                 'email' => 'demo@example.com',
                 'password' => bcrypt('password'),
                 'email_verified_at' => now(),
+                'onboarding_completed' => true,
             ]);
 
             // Try to assign super-admin role
@@ -179,9 +181,47 @@ final class AppDemoCommand extends Command
                 // Role may not exist
             }
 
+            $this->ensureDemoUserHasOrganization($user);
+
             info('✓ Demo user created (demo@example.com / password)');
         } catch (Throwable $e) {
             warning('Could not create demo user: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Ensure the demo user has at least one organization with a default set,
+     * so TenantContext can resolve and the user is not stuck without org context.
+     */
+    private function ensureDemoUserHasOrganization(mixed $user): void
+    {
+        try {
+            if ($user->organizations()->exists()) {
+                // Ensure a default is set
+                if ($user->defaultOrganization() === null) {
+                    $firstOrg = $user->organizations()->first();
+                    if ($firstOrg !== null) {
+                        $user->organizations()->updateExistingPivot($firstOrg->id, ['is_default' => true]);
+                    }
+                }
+
+                return;
+            }
+
+            // Create a demo organization for the user
+            $orgClass = \App\Models\Organization::class;
+            $org = $orgClass::query()->firstOrCreate(
+                ['name' => 'Demo Organization'],
+                ['owner_id' => $user->id]
+            );
+
+            if (! $user->organizations()->where('organizations.id', $org->id)->exists()) {
+                $org->addMember($user, 'admin');
+            }
+
+            $user->organizations()->updateExistingPivot($org->id, ['is_default' => true]);
+        } catch (Throwable) {
+            // Organization setup is optional for demo
         }
     }
 
