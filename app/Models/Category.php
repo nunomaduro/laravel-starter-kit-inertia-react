@@ -38,6 +38,16 @@ final class Category extends Model
         'parent_id',
     ];
 
+    /**
+     * Override to prevent boot recursion: NodeTrait::usesSoftDelete()
+     * calls `new static` during boot, which triggers bootIfNotBooted()
+     * while the model is already booting.
+     */
+    public static function usesSoftDelete(): bool
+    {
+        return false;
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
