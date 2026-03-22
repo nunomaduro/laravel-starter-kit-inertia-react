@@ -22,7 +22,7 @@ export default function DeleteUser() {
     return (
         <div className="space-y-6 rounded-xl border border-destructive/20 p-6">
             <div>
-                <h3 className="text-base font-semibold text-destructive">
+                <h3 className="font-mono text-base font-semibold tracking-tight text-destructive">
                     Danger Zone
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">

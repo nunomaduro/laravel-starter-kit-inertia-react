@@ -30,7 +30,7 @@ export default function BillingIndex() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Billing" />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
-                <h2 className="text-lg font-medium">Billing</h2>
+                <h2 className="font-mono text-lg font-medium tracking-tight">Billing</h2>
 
                 <div className="grid gap-4 md:grid-cols-2">
                     <CurrentPlanCard

@@ -61,7 +61,7 @@ export default function BillingCredits() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Credits" />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
-                <h2 className="text-lg font-medium">Credits</h2>
+                <h2 className="font-mono text-lg font-medium tracking-tight">Credits</h2>
 
                 <Card>
                     <CardHeader>

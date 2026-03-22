@@ -45,7 +45,7 @@ export default function BillingInvoices() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Invoices" />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
-                <h2 className="text-lg font-medium">Invoices</h2>
+                <h2 className="font-mono text-lg font-medium tracking-tight">Invoices</h2>
 
                 <Card>
                     <CardHeader>

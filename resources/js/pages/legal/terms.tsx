@@ -37,7 +37,7 @@ export default function LegalTerms() {
                             Please read these terms of service carefully before
                             using this application.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">
                             1. Acceptance of terms
                         </h2>
                         <p>
@@ -45,7 +45,7 @@ export default function LegalTerms() {
                             bound by these terms. If you do not agree, do not
                             use the service.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">
                             2. Use of the service
                         </h2>
                         <p>
@@ -55,7 +55,7 @@ export default function LegalTerms() {
                             your account and for all activity under your
                             account.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">3. Changes</h2>
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">3. Changes</h2>
                         <p>
                             We may update these terms from time to time. We will
                             notify you of material changes by posting the
@@ -64,7 +64,7 @@ export default function LegalTerms() {
                             service after changes constitutes acceptance of the
                             updated terms.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">4. Contact</h2>
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">4. Contact</h2>
                         <p>
                             If you have questions about these terms, please
                             contact us through the contact page.

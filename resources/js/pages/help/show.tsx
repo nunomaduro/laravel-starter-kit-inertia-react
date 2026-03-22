@@ -118,7 +118,7 @@ export default function HelpShow({ article, related }: Props) {
                 </section>
                 {related.length > 0 && (
                     <section className="mt-8 border-t pt-6">
-                        <h2 className="mb-3 text-lg font-medium">
+                        <h2 className="mb-3 font-mono text-lg font-medium tracking-tight">
                             Related articles
                         </h2>
                         <ul className="space-y-2">

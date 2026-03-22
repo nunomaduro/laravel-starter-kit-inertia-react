@@ -13,7 +13,7 @@ export function EmptyState({ onSend }: { onSend: (content: string) => void }) {
                 <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
                     <MessageSquare className="size-6 text-muted-foreground" />
                 </div>
-                <h2 className="text-lg font-semibold">How can I help?</h2>
+                <h2 className="font-mono text-lg font-semibold tracking-tight">How can I help?</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
                     Start a conversation or try one of these:
                 </p>

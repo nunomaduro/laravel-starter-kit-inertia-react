@@ -42,7 +42,7 @@ export default function HelpIndex({ featured, byCategory }: Props) {
                 ) : null}
                 {featured.length > 0 && (
                     <section className="mb-8">
-                        <h2 className="mb-3 text-lg font-medium">
+                        <h2 className="mb-3 font-mono text-lg font-medium tracking-tight">
                             Featured articles
                         </h2>
                         <ul className="grid gap-3 sm:grid-cols-2">
@@ -75,7 +75,7 @@ export default function HelpIndex({ featured, byCategory }: Props) {
                         ([category, articles]) =>
                             articles.length > 0 && (
                                 <div key={category} className="mb-8">
-                                    <h2 className="mb-3 text-lg font-medium capitalize">
+                                    <h2 className="mb-3 font-mono text-lg font-medium capitalize tracking-tight">
                                         {category}
                                     </h2>
                                     <ul className="space-y-2">

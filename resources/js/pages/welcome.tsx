@@ -368,21 +368,21 @@ export default function Welcome() {
                     <div className="grid gap-6 sm:grid-cols-3">
                         <Link href="/chat" className="rounded-xl border border-border bg-card p-8 transition-all hover:-translate-y-0.5 hover:shadow-md" data-pan="welcome-diff-ai">
                             <Bot className="mb-4 h-8 w-8 text-primary" />
-                            <h3 className="text-lg font-semibold">AI Assistant</h3>
+                            <h3 className="font-mono text-lg font-semibold tracking-tight">AI Assistant</h3>
                             <p className="mt-2 text-sm text-muted-foreground">
                                 A built-in AI chat that understands your domain. Ask questions about your data, get help with code, or guide your users. Multi-provider with memory and RAG.
                             </p>
                         </Link>
                         <Link href="/showcase" className="rounded-xl border border-border bg-card p-8 transition-all hover:-translate-y-0.5 hover:shadow-md" data-pan="welcome-diff-modules">
                             <Wand2 className="mb-4 h-8 w-8 text-primary" />
-                            <h3 className="text-lg font-semibold">Module System</h3>
+                            <h3 className="font-mono text-lg font-semibold tracking-tight">Module System</h3>
                             <p className="mt-2 text-sm text-muted-foreground">
                                 Pre-built domain modules (HR, CRM, Fleet) with full CRUD, admin panel, Inertia pages, and tests. Cross-module AI intelligence included.
                             </p>
                         </Link>
                         <div className="rounded-xl border border-border bg-card p-8" data-pan="welcome-diff-scaffold">
                             <Terminal className="mb-4 h-8 w-8 text-primary" />
-                            <h3 className="text-lg font-semibold">One-Command Scaffolding</h3>
+                            <h3 className="font-mono text-lg font-semibold tracking-tight">One-Command Scaffolding</h3>
                             <p className="mt-2 text-sm text-muted-foreground">
                                 Run <code className="rounded bg-muted px-1.5 py-0.5 text-xs font-mono">make:module</code> for 18 files or{' '}
                                 <code className="rounded bg-muted px-1.5 py-0.5 text-xs font-mono">factory:create</code> with AI analysis. From description to app in minutes.

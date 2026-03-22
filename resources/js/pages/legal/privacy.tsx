@@ -38,7 +38,7 @@ export default function LegalPrivacy() {
                             and protect your information when you use this
                             application.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">
                             1. Information we collect
                         </h2>
                         <p>
@@ -47,7 +47,7 @@ export default function LegalPrivacy() {
                             data (e.g. IP address, browser type) necessary to
                             operate the service.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">
                             2. How we use your information
                         </h2>
                         <p>
@@ -56,7 +56,7 @@ export default function LegalPrivacy() {
                             legal obligations. We do not sell your personal
                             data.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">
                             3. Data retention and your rights
                         </h2>
                         <p>
@@ -66,7 +66,7 @@ export default function LegalPrivacy() {
                             your data through your account settings or by
                             contacting us.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">
                             4. Cookies and similar technologies
                         </h2>
                         <p>
@@ -75,7 +75,7 @@ export default function LegalPrivacy() {
                             manage cookie preferences in your browser or through
                             our cookie consent when applicable.
                         </p>
-                        <h2 className="mt-6 text-lg font-medium">5. Contact</h2>
+                        <h2 className="mt-6 font-mono text-lg font-medium tracking-tight">5. Contact</h2>
                         <p>
                             For privacy-related questions or to exercise your
                             rights, please contact us through the contact page.
