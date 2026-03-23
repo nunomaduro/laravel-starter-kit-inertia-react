@@ -164,7 +164,7 @@ const featureGroups: FeatureGroup[] = [
             { icon: Download, title: 'Personal Data Export', description: 'GDPR-ready ZIP export delivered via queued job.', dataPan: 'welcome-feature-data-export' },
             { icon: CloudCog, title: 'Backups', description: 'Spatie Laravel Backup with disk, DB, and Filament management.', dataPan: 'welcome-feature-backups' },
             { icon: Rocket, title: 'CLI Installer', description: 'Interactive CLI installer with presets, AI keys, and demo data.', dataPan: 'welcome-feature-cli-installer' },
-            { icon: TestTube, title: '150+ Tests', description: 'Comprehensive Pest test suite with feature and unit tests. 100% coverage target.', dataPan: 'welcome-feature-tests' },
+            { icon: TestTube, title: '520+ Tests', description: 'Comprehensive Pest test suite with feature and unit tests. 100% coverage target.', dataPan: 'welcome-feature-tests' },
             { icon: Route, title: 'Type-safe Routes', description: 'Laravel Wayfinder generates TypeScript functions for every route. No magic strings.', dataPan: 'welcome-feature-wayfinder' },
             { icon: Cog, title: 'Code Quality', description: 'Rector, PHPStan max, Laravel Pint, ESLint, and Prettier enforced. Zero tolerance for code smells.', dataPan: 'welcome-feature-code-quality' },
             { icon: Heart, title: 'Health Checks', description: 'Spatie Health with scheduled monitoring. Database, queue, disk, and custom checks.', dataPan: 'welcome-feature-health-checks' },
@@ -396,7 +396,7 @@ export default function Welcome() {
                             { name: 'Filament v5', detail: 'Admin panel, SDUI' },
                             { name: 'Tailwind v4', detail: '155+ shadcn components' },
                             { name: 'Laravel AI SDK', detail: 'Agents, tools, streaming' },
-                            { name: 'Pest 4', detail: '150+ tests, full coverage' },
+                            { name: 'Pest 4', detail: '520+ tests, full coverage' },
                             { name: 'Horizon + Pulse', detail: 'Queues, monitoring' },
                             { name: 'Scout + Typesense', detail: 'Full-text search' },
                         ].map((tech) => (

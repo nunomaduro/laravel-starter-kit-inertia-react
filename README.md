@@ -1,244 +1,272 @@
-- Inertia & React (this project) version: **[github.com/nunomaduro/laravel-starter-kit-inertia-react](https://github.com/nunomaduro/laravel-starter-kit-inertia-react)**
-- Inertia & Vue version: **[github.com/nunomaduro/laravel-starter-kit-inertia-vue](https://github.com/nunomaduro/laravel-starter-kit-inertia-vue)**
-- Blade version: **[github.com/nunomaduro/laravel-starter-kit](https://github.com/nunomaduro/laravel-starter-kit)**
+# Laravel Starter Kit (Inertia + React)
 
-<p align="center">
-    <a href="https://youtu.be/VhzP0XWGTC4" target="_blank">
-        <img src="https://github.com/nunomaduro/laravel-starter-kit/blob/main/art/banner.png" alt="Overview Laravel Starter Kit" style="width:70%;">
-    </a>
-</p>
+An AI-native SaaS platform framework. Not a boilerplate -- a production-ready foundation with 70+ packages, 13 toggleable modules, and built-in AI infrastructure.
 
-<p>
-    <a href="https://github.com/nunomaduro/laravel-starter-kit-inertia-react/actions"><img src="https://github.com/nunomaduro/laravel-starter-kit-inertia-react/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
-    <a href="https://packagist.org/packages/nunomaduro/laravel-starter-kit-inertia-react"><img src="https://img.shields.io/packagist/dt/nunomaduro/laravel-starter-kit-inertia-react" alt="Total Downloads"></a>
-    <a href="https://packagist.org/packages/nunomaduro/laravel-starter-kit-inertia-react"><img src="https://img.shields.io/packagist/v/nunomaduro/laravel-starter-kit-inertia-react" alt="Latest Stable Version"></a>
-    <a href="https://packagist.org/packages/nunomaduro/laravel-starter-kit-inertia-react"><img src="https://img.shields.io/packagist/l/nunomaduro/laravel-starter-kit-inertia-react" alt="License"></a>
-</p>
+Built with Laravel 13, PHP 8.4, React 19, Inertia v2, Filament v5, and Tailwind v4. Enforces strict types, immutable-first architecture, and 100% type coverage.
 
-**Laravel Starter Kit (Inertia & React)** is an ultra-strict, type-safe [Laravel](https://laravel.com) skeleton engineered for developers who refuse to compromise on code quality. This opinionated starter kit enforces rigorous development standards through meticulous tooling configuration and architectural decisions that prioritize type safety, immutability, and fail-fast principles.
+---
 
-## Why This Starter Kit?
-
-Modern PHP has evolved into a mature, type-safe language, yet many Laravel projects still operate with loose conventions and optional typing. This starter kit changes that paradigm by enforcing:
-
-- **Fully Actions-Oriented Architecture**: Every operation is encapsulated in a single-action class
-- **Cruddy by Design**: Standardized CRUD operations for all controllers, actions, and Inertia & React pages
-- **100% Type Coverage**: Every method, property, and parameter is explicitly typed
-- **Zero Tolerance for Code Smells**: Rector, PHPStan, ESLint, and Prettier at maximum strictness catch issues before they become bugs
-- **Immutable-First Architecture**: Data structures favor immutability to prevent unexpected mutations
-- **Fail-Fast Philosophy**: Errors are caught at compile-time, not runtime
-- **Automated Code Quality**: Pre-configured tools ensure consistent, pristine code across your entire team
-- **Just Better Laravel Defaults**: Thanks to **[Essentials](https://github.com/nunomaduro/essentials)** / strict models, auto eager loading, immutable dates, and more...
-- **AI Guidelines**: Integrated AI Guidelines to assist in maintaining code quality and consistency
-- **AI Integration**: Prism PHP (OpenRouter, `ai()` helper) for text, structured output, and MCP/Relay; Laravel AI SDK for agents, embeddings, images, and provider tools. See `docs/developer/backend/prism.md` and `docs/developer/backend/ai-sdk.md`.
-- **Optional: PostgreSQL + pgvector**: Vector embeddings for semantic search and RAG when using PostgreSQL
-- **Multi-Tenant & Single-Tenant Modes**: Switch between SaaS (multi-org) and internal apps with `MULTI_ORGANIZATION_ENABLED`; see `docs/developer/backend/single-tenant-mode.md`
-- **Server-side DataTables**: [machour/laravel-data-table](https://github.com/coding-sunshine/laravel-data-table) (project fork) — one PHP class per model for sorting, filtering, pagination, quick views, and a full React UI (TanStack Table); see `docs/developer/backend/data-table.md`
-- **Durable Workflows**: [laravel-workflow](https://github.com/durable-workflow/workflow) for long-running, persistent workflows (sagas, onboarding, AI pipelines); [Waterline](https://github.com/durable-workflow/waterline) UI at `/waterline` for monitoring (admin only). See `docs/developer/backend/durable-workflow.md`
-- **Full Testing Suite**: More than 150 tests with 100% code coverage using Pest
-- **Automated Seeder System**: Comprehensive seeder automation with category-based organization, JSON support, and relationship-aware generation
-- **Activity Logging**: [Spatie Laravel Activity Log](https://spatie.be/docs/laravel-activitylog/v4/introduction) and [Filament Activity Log](https://filamentphp.com/plugins/alizharb-activity-log) for user and model changes, including 2FA and role/permission changes, with IP and user agent; new models from `make:model:full` get activity logging by default
--
-### Features & integrated packages
-
-- **Invoice PDF**: LaravelDaily Invoices for billing; `BuildLaravelDailyInvoice` action and download route — see [Content & export](docs/developer/backend/content-export.md)
-- **GA4 widget**: Filament dashboard widget for [Spatie Laravel Analytics](https://github.com/spatie/laravel-analytics) (7-day visitors and top pages) — see [SEO & monitoring](docs/developer/backend/seo-and-monitoring.md)
-- **Cronless schedule**: Run the scheduler without cron (e.g. on PaaS); `composer schedule:cronless` and `schedule:run-cronless` — see [Cronless schedule](docs/developer/backend/cronless-schedule.md) and [Deployment](docs/developer/deployment.md)
-- **Model states**: [Spatie Laravel Model States](https://github.com/spatie/laravel-model-states) for RefundRequest, OrganizationInvitation, Affiliate, AffiliateCommission, AffiliatePayout — see [Search & data](docs/developer/backend/search-and-data.md)
-- **Model flags**: [Spatie Laravel Model Flags](https://github.com/spatie/laravel-model-flags) for HelpArticle (featured, pinned), Announcement and Post (featured) — see [Search & data](docs/developer/backend/search-and-data.md)
-- **Schemaless attributes**: [Spatie Laravel Schemaless Attributes](https://github.com/spatie/laravel-schemaless-attributes) on Credit, Organization, Page (`extra_attributes`) — see [Search & data](docs/developer/backend/search-and-data.md)
-- **Saloon**: HTTP client for Paddle and Typesense; connectors in `App\Http\Integrations\*` — see [Saloon](docs/developer/backend/saloon.md)
-- **Pan (product analytics)**: Impressions, hovers, clicks via `data-pan`; whitelist in `AppServiceProvider::configurePan()`; `php artisan pan` — see [Pan](docs/developer/backend/pan.md)
-- **Laravel Pulse**: Real-time app monitoring at `/pulse` (requests, jobs, queue, server, exceptions); first-party; admin-only — see [Pulse](docs/developer/backend/pulse.md)
-- **Spatie Laravel Health**: Scheduled health checks (DB, cache, disk, Horizon, Redis, queue, backups, schedule) with notifications when checks fail (mail by default; Slack optional — see [Health](docs/developer/backend/health.md))
-- **User onboarding**: [spatie/laravel-onboard](https://github.com/spatie/laravel-onboard) for multi-step onboarding (verify email, complete profile, get started); feature flag `onboarding`; middleware `EnsureOnboardingComplete` — see [Onboarding](docs/developer/backend/onboarding.md)
-- **Rate-limited jobs**: [spatie/laravel-rate-limited-job-middleware](https://github.com/spatie/laravel-rate-limited-job-middleware) to throttle queued jobs (webhooks, notifications, DNS checks); opt-in per job via `middleware()` — see [Rate-limited jobs](docs/developer/backend/rate-limited-jobs.md)
-
-This isn't just another Laravel boilerplate—it's a statement that PHP applications can and should be built with the same rigor as strongly-typed languages like Rust or TypeScript.
-
-## Getting Started
-
-> **Requires [PHP 8.4+](https://php.net/releases/), [Bun](https://bun.sh) and a code coverage driver like [xdebug](https://xdebug.org/docs/install)**.
-
-Create your type-safe Laravel application using [Composer](https://getcomposer.org):
+## Quick Start
 
 ```bash
-composer create-project nunomaduro/laravel-starter-kit-inertia-react --prefer-dist example-app
-```
+# Prerequisites: PHP 8.4+, Node 20+ or Bun, Composer
 
-### Initial Setup
-
-Navigate to your project and complete the setup:
-
-```bash
-cd example-app
-
-# Setup the project
-composer setup
-
-# Start the development server
+composer create-project nunomaduro/laravel-starter-kit-inertia-react my-app
+cd my-app
+php artisan app:install
 composer dev
 ```
 
-### Optional: Browser Testing Setup
+---
 
-If you plan to use Pest's browser testing capabilities:
+## Installation
+
+### Prerequisites
+
+| Requirement | Version | Notes |
+|-------------|---------|-------|
+| PHP | 8.4+ | With xdebug for coverage |
+| Node.js or Bun | 20+ / latest | Frontend build tooling |
+| PostgreSQL or SQLite | 15+ / 3.35+ | PostgreSQL recommended for pgvector |
+| Redis | 7+ | Optional -- required for Horizon, broadcasting, caching |
+| Composer | 2.x | PHP dependency management |
+
+### Step-by-Step
+
+1. **Create the project**
 
 ```bash
-bun add playwright
-bunx playwright install
+composer create-project nunomaduro/laravel-starter-kit-inertia-react my-app
+cd my-app
 ```
 
-### Verify Installation
-
-Run `php artisan env:validate` to check required environment variables (e.g. `APP_KEY`, `DB_*`, `APP_URL`). Use `--production` to warn when session/cache/queue use file/sync in production. Then run `php artisan app:health` to verify subsystems (database, cache, queue, mail, etc.), and `composer test` for the test suite.
+2. **Install dependencies**
 
 ```bash
-php artisan env:validate && php artisan app:health && composer test
+composer install && npm install   # or bun install
 ```
 
-You should see health checks and all tests passing. For the full suite (coverage, type coverage, lint, static analysis), run `composer test:full`.
+3. **Run the interactive installer**
 
-## Available Tooling
-
-### Development
-- `composer dev` - Starts Laravel server, queue worker, log monitoring, and Vite dev server concurrently
-- `php artisan seed:environment` - Seed database with environment-aware seeders
-
-### Code Quality
-- `composer lint` - Runs Rector (refactoring), Pint (PHP formatting), and Prettier (JS/TS formatting)
-- `composer test:lint` - Dry-run mode for CI/CD pipelines
-
-### Testing
-- `composer test` - Fast test suite (Pest in parallel, compact output); used by pre-commit
-- `composer test:quick` - Alias for the same fast run
-- `composer test:full` - Full suite: type coverage, unit tests with coverage, lint, static analysis (use in CI or before release)
-- `composer test:type-coverage` - Ensures 100% type coverage with Pest
-- `composer test:types` - Runs PHPStan at level 9 (maximum strictness)
-- `composer test:unit` - Runs Pest tests with 100% code coverage requirement
-
-### Maintenance
-- `composer update:requirements` - Updates all PHP and NPM dependencies to latest versions
-
-### Database Seeding
-
-This starter kit includes a **comprehensive automated seeder system** that ensures all models have corresponding seeders:
-
-- `php artisan make:model:full {name}` - Create model with factory, seeder, and JSON data
-- `php artisan seed:environment` - Run environment-aware seeders
-- `php artisan seeders:list` - List all available seeders
-- `php artisan seeders:sync` - Sync seeders with models
-- `php artisan models:audit` - Audit models for missing factories/seeders
-
-#### Quick Start
-
-Create a new model with full setup:
 ```bash
-php artisan make:model:full Post --category=development --all
+php artisan app:install
 ```
 
-Seed the database:
+The installer runs 24 phases in sequence:
+
+| # | Phase | What it configures |
+|---|-------|--------------------|
+| 1 | Pre-flight | Environment checks, .env setup |
+| 2 | Database | Driver, host, credentials |
+| 3 | Migrations | Schema creation |
+| 4 | Seeders | Initial data population |
+| 5 | Admin | Super-admin account |
+| 6 | App | Site name, URL, timezone |
+| 7 | Tenancy | Multi-tenant or single-tenant mode |
+| 8 | Infrastructure | Cache, session, queue drivers |
+| 9 | Mail | SMTP / Mailgun / Postmark |
+| 10 | Search | Scout driver, Typesense settings |
+| 11 | AI | Provider keys, default model |
+| 12 | Social | Google / GitHub OAuth |
+| 13 | Storage | Local or S3 filesystem |
+| 14 | Broadcasting | Reverb / WebSocket config |
+| 15 | SEO | Meta, Open Graph defaults |
+| 16 | Monitoring | Sentry DSN, error tracking |
+| 17 | Billing | Payment gateway, currency, trials |
+| 18 | Integrations | Slack, Postmark, Resend |
+| 19 | Theme | Preset, appearance, fonts |
+| 20 | Memory | AI memory and embeddings config |
+| 21 | Backup | Retention and storage settings |
+| 22 | Features | Feature flag toggles |
+| 23 | Modules | Enable/disable application modules |
+| 24 | Demo | Optional demo data |
+
+Each phase is resumable -- the installer tracks progress and picks up where it left off.
+
+4. **Start development**
+
 ```bash
-php artisan seed:environment
+composer dev   # Runs server, queue, logs, and Vite concurrently
 ```
 
-Use in tests:
-```php
-seedFor(Post::class, 5); // Auto-seeds with relationships
-```
+5. **Verify**
 
-#### Features
-
-- **Category-based organization**: Essential, Development, Production seeders
-- **JSON data support**: Maintainable seed data in JSON files
-- **Environment-aware**: Automatically runs appropriate seeders
-- **Relationship-aware**: Auto-detects and seeds relationships
-- **Git hooks**: Pre-commit validation for new models
-- **Full automation**: Commands to create, audit, and sync seeders
-- **Seed Specs**: Canonical descriptions that auto-sync with schema changes
-- **AI-Assisted**: Offline AI generation of realistic seed data (with graceful fallback)
-- **AI-Powered Seeders**: Intelligent seeder code generation using AI + model context
-- **Enhanced Relationships**: Full relationship detection using model reflection
-- **Auto-Regeneration**: Seeders auto-update when relationships change
-- **Auto-Generation**: Smart JSON generation when creating models (AI or Faker)
-- **Migration Listener**: Auto-syncs specs and regenerates seeders after migrations
-- **Idempotent by Default**: All seeders use updateOrCreate/firstOrCreate patterns
-- **Interactive Pre-Commit**: Prompts to auto-fix missing components
-- **Test Scenarios**: Named scenarios for consistent test data
-- **Real Data Profiling**: Learn from production patterns
-- **Observability**: Metrics, logs, and strict/lenient modes
-- **AI Review**: Automated review of seeders and specs
-- **Structured Output**: Reliable JSON generation using Prism
-
-See [Seeder Documentation](./docs/developer/backend/database/seeders.md) and [Advanced Features](./docs/developer/backend/database/advanced-features.md) for complete details.
-
-### Documentation
-
-This starter kit includes **automated documentation management** to ensure all code is properly documented:
-
-- `composer docs:check` - Check if all Actions, Controllers, and Pages are documented
-- `composer docs:sync` - Sync the documentation manifest with the current codebase
-- `composer docs:generate` - Auto-generate documentation stubs for undocumented items
-- `php artisan docs:sync` - Same as above (Artisan command)
-- `php artisan docs:sync --check` - Check-only mode (returns exit code 1 if undocumented items found)
-- `php artisan docs:sync --generate` - Generate documentation stubs automatically
-- `php artisan docs:sync --generate --ai` - Generate rich AI prompts for full documentation generation (saved under `docs/.ai-prompts/`)
-- `php artisan docs:review` - Review documentation quality and detect mismatches with the current code
-- `php artisan docs:api` - Regenerate API reference under `docs/developer/api-reference/routes.md`
-
-#### How It Works
-
-The documentation system automatically:
-
-1. **Scans your codebase** for Actions, Controllers, and Pages
-2. **Extracts structure & docs** using PHP reflection and PHPDoc/TSDoc (methods, parameters, return types, props)
-3. **Discovers relationships** between Actions, Controllers, Routes, Models, and Pages and stores them in the manifest
-4. **Tracks documentation status** in `docs/.manifest.json`
-5. **Enforces documentation** via:
-   - Pre-commit Git hook (blocks commits if documentation is missing)
-   - CI/CD checks (fails builds if undocumented items are detected)
-   - AI guidelines (requires documentation before marking tasks complete)
-6. **Auto-syncs** manifest when you run `composer install` or `composer update`
-7. **Auto-updates index files** (Actions/Controllers/Pages READMEs) with documentation status tables
-
-#### Documentation Structure
-
-- **User Guide**: `docs/user-guide/` - End-user facing documentation
-- **Developer Guide**: `docs/developer/` - Technical documentation for developers
-- **Templates**: `docs/.templates/` - Documentation templates for consistent structure
-- **Manifest**: `docs/.manifest.json` - Tracks what's documented vs. what exists
-- **AI Prompts**: `docs/.ai-prompts/` - Generated prompts for AI agents to produce full documentation
-- **API Reference**: `docs/developer/api-reference/routes.md` - Markdown API reference generated from routes/controllers
-
-#### Quick Start
-
-Check documentation status:
 ```bash
-composer docs:check
+php artisan env:validate && php artisan app:health
 ```
 
-Generate documentation stubs for undocumented items:
+---
+
+## Architecture
+
+```
+app/
+  Actions/          # Business logic (single handle() method per class)
+  Console/Commands/ # Artisan commands (app:install, app:configure, module:*)
+  Http/Controllers/ # Thin controllers delegating to Actions
+  Settings/         # DB-backed runtime settings (spatie/laravel-settings)
+  Models/           # Eloquent models with strict defaults
+
+modules/            # Toggleable feature modules (self-contained)
+resources/js/       # React 19 + Inertia v2 frontend
+  pages/            # Inertia page components
+  components/       # Shared UI components
+
+config/             # Framework and module configuration
+routes/             # Web, API, console, AI routes
+```
+
+**Core subsystems**: Authentication (Fortify), multi-tenancy (organizations + domain resolution), DB-backed settings with config overlay, AI infrastructure (laravel/ai + Prism relay + MCP server).
+
+**Frontend**: Inertia v2 server-driven SPA with React 19, Tailwind v4, and Wayfinder for type-safe route generation.
+
+**Admin**: Filament v5 panel with settings pages, resource management, and product analytics.
+
+---
+
+## Modules
+
+13 self-contained modules under `modules/`. Each can be enabled, disabled, or removed independently.
+
+| Module | Description |
+|--------|-------------|
+| `blog` | Posts, categories, tags, SEO metadata |
+| `changelog` | Product changelog and release notes |
+| `help` | Knowledge base with articles and categories |
+| `contact` | Contact forms and inquiry management |
+| `announcements` | In-app announcements and notifications |
+| `gamification` | Points, badges, leaderboards |
+| `reports` | Reporting engine and data exports |
+| `dashboards` | Customizable dashboard widgets |
+| `workflows` | Durable workflow orchestration (Waterline UI) |
+| `page-builder` | Visual page builder (Puck) |
+| `billing` | Subscriptions, credits, invoices (Stripe / Paddle / LemonSqueezy) |
+| `module-hr` | Human resources management |
+| `module-crm` | Customer relationship management |
+
+### Module Commands
+
 ```bash
-composer docs:generate
+php artisan module:list              # Show all modules and their status
+php artisan module:enable blog       # Enable a module
+php artisan module:disable billing   # Disable a module
+php artisan module:remove module-hr  # Remove a module entirely
 ```
 
-#### Automation Features
+---
 
-- **Pre-commit Hook**: Automatically checks documentation before allowing commits
-- **CI/CD Integration**: GitHub Actions verifies documentation in all pull requests
-- **AI Integration**: Laravel Boost guidelines automatically require documentation for new code
-- **Auto-sync**: Manifest automatically syncs when dependencies are installed or updated
-- **Template-based**: Consistent documentation structure using templates in `docs/.templates/`
+## Configuration
 
-The system will automatically prompt you (or AI agents) to document new features when they're created. Documentation is **mandatory** - commits and CI builds will fail if documentation is missing.
+After installation, reconfigure any section with:
 
-## Troubleshooting
+```bash
+php artisan app:configure              # Interactive section picker
+php artisan app:configure billing      # Configure a specific section
+php artisan app:configure --list       # List all 18 sections
+```
 
-- **`composer test:types` fails** — Fix reported PHPStan or TypeScript errors. Run `bun run test:types` for frontend only; ensure Wayfinder has generated routes (`bun run build` or `composer dev`).
-- **Vite manifest missing** — Run `bun run build` or start the dev server with `bun run dev` / `composer dev`.
-- **Pre-commit fails (docs)** — Run `php artisan docs:sync` and, if needed, `php artisan docs:sync --generate`. See [CONTRIBUTING.md](CONTRIBUTING.md).
-- **Contributing** — Setup, commands, and pre-commit hook: see [CONTRIBUTING.md](CONTRIBUTING.md).
+**Available sections**: app, mail, ai, billing, search, social, storage, broadcasting, seo, monitoring, tenancy, theme, features, modules, infra, integrations, memory, backup.
+
+---
+
+## Tech Stack
+
+### Backend
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| Laravel | 13 | Framework |
+| PHP | 8.4 | Runtime |
+| Filament | v5 | Admin panel (SDUI) |
+| Fortify | v1 | Headless authentication |
+| Horizon | v5 | Queue monitoring |
+| Sanctum | v4 | API authentication |
+| Pennant | v1 | Feature flags |
+| Scout | v11 | Full-text search (Typesense) |
+| Pulse | v1 | Application monitoring |
+| Reverb | v1 | WebSocket broadcasting |
+| laravel/ai | v0 | AI SDK (agents, embeddings, tools) |
+| Prism | -- | LLM relay and MCP integration |
+| Pest | v4 | Testing framework |
+| PHPStan / Larastan | v3 | Static analysis (level 9) |
+| Rector | v2 | Automated refactoring |
+| Pint | v1 | Code formatting |
+
+### Frontend
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| React | 19 | UI framework |
+| Inertia.js | v2 | Server-driven SPA |
+| Tailwind CSS | v4 | Utility-first styling |
+| Wayfinder | v0 | Type-safe route generation |
+| ESLint | v10 | JavaScript linting |
+| Prettier | v3 | Code formatting |
+
+### Design System
+
+Industrial-minimal aesthetic. JetBrains Mono 700 for headings and data. IBM Plex Sans for body text. Muted teal accent (`oklch(0.65 0.14 165)`). Dark-first, no card shadows. See `DESIGN.md` for the full specification.
+
+---
+
+## Development
+
+```bash
+composer dev              # Server + queue + logs + Vite (concurrent)
+composer lint             # Rector + Pint + Prettier
+composer test             # Pest in parallel (compact output)
+composer test:full        # Type coverage + unit coverage + lint + static analysis
+composer test:types       # PHPStan level 9 + TypeScript checks
+composer test:unit        # Pest with 100% code coverage requirement
+composer update:requirements  # Bump PHP + NPM dependencies
+```
+
+### Key Artisan Commands
+
+```bash
+php artisan app:install           # Interactive 24-phase setup
+php artisan app:configure         # Reconfigure any section
+php artisan module:list           # Module status overview
+php artisan seed:environment      # Environment-aware database seeding
+php artisan env:validate          # Validate environment variables
+php artisan app:health            # Check subsystem health
+php artisan make:model:full Post  # Model + factory + seeder + JSON data
+php artisan docs:sync             # Sync documentation manifest
+```
+
+---
+
+## Testing
+
+520+ tests. 100% type coverage. SQLite schema dump for fast parallel execution (~70s full suite).
+
+```bash
+composer test              # Fast parallel run
+composer test:full         # Complete suite (coverage, types, lint, static analysis)
+composer test:unit         # With 100% code coverage enforcement
+composer test:type-coverage # Verify 100% type coverage
+```
+
+Browser testing (optional):
+
+```bash
+bun add playwright && bunx playwright install
+```
+
+---
+
+## Strict Defaults
+
+This project enforces rigorous standards out of the box:
+
+- **Strict models**: `shouldBeStrict()`, `CarbonImmutable` dates, auto-eager-loading, destructive commands prohibited
+- **100% type coverage**: Every method, property, and parameter is explicitly typed
+- **PHPStan level 9**: Maximum static analysis strictness
+- **ECS structured logging**: Available for production observability
+- **Pre-commit hooks**: Automated quality checks before every commit
+
+---
 
 ## License
 
-**Laravel Starter Kit Inertia React** was created by **[Nuno Maduro](https://x.com/enunomaduro)** under the **[MIT license](https://opensource.org/licenses/MIT)**.
+**Laravel Starter Kit (Inertia + React)** was created by **[Nuno Maduro](https://x.com/enunomaduro)** under the **[MIT license](https://opensource.org/licenses/MIT)**.
