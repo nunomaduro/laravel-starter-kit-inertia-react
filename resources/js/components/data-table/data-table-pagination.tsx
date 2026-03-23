@@ -77,22 +77,22 @@ export function DataTablePagination({
     );
 
     return (
-        <div className="flex items-center justify-between px-3 py-2">
-            <div className="text-sm text-muted-foreground">
+        <div className="flex items-center justify-between px-3 py-3 border-t border-border/40">
+            <div className="text-xs tabular-nums text-muted-foreground">
                 {!isCursor && !isSimple && (() => {
                     const from = (meta.currentPage - 1) * meta.perPage + 1;
                     const to = Math.min(meta.currentPage * meta.perPage, meta.total);
                     return t.showingRange ? t.showingRange(from, to, meta.total) : t.totalResults(meta.total);
                 })()}
             </div>
-            <div className="flex items-center gap-6 lg:gap-8">
+            <div className="flex items-center gap-4 lg:gap-6">
                 <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">{t.rowsPerPage}</p>
+                    <p className="text-xs font-medium text-muted-foreground">{t.rowsPerPage}</p>
                     <Select
                         value={String(meta.perPage)}
                         onValueChange={(value) => onPerPageChange(Number(value))}
                     >
-                        <SelectTrigger className="h-8 w-[70px]">
+                        <SelectTrigger className="h-8 w-[70px] text-xs">
                             <SelectValue placeholder={String(meta.perPage)} />
                         </SelectTrigger>
                         <SelectContent side="top">
@@ -105,16 +105,16 @@ export function DataTablePagination({
                     </Select>
                 </div>
                 {!isCursor && (
-                    <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                    <div className="flex w-[100px] items-center justify-center text-xs font-medium tabular-nums text-muted-foreground">
                         {t.pageOf(meta.currentPage, meta.lastPage)}
                     </div>
                 )}
                 {isCursor ? (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                         <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-9 w-9 focus-visible:ring-2 focus-visible:ring-primary/30"
                             onClick={() => onCursorChange?.(meta.prevCursor ?? null)}
                             disabled={!meta.prevCursor}
                             aria-label="Previous page"
@@ -124,7 +124,7 @@ export function DataTablePagination({
                         <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-9 w-9 focus-visible:ring-2 focus-visible:ring-primary/30"
                             onClick={() => onCursorChange?.(meta.nextCursor ?? null)}
                             disabled={!meta.nextCursor}
                             aria-label="Next page"
@@ -133,12 +133,12 @@ export function DataTablePagination({
                         </Button>
                     </div>
                 ) : (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                         {!isSimple && (
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-9 w-9 focus-visible:ring-2 focus-visible:ring-primary/30"
                                 onClick={() => onPageChange(1)}
                                 onMouseEnter={() => meta.currentPage > 1 && prefetchPage(1)}
                                 disabled={meta.currentPage <= 1}
@@ -150,7 +150,7 @@ export function DataTablePagination({
                         <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-9 w-9 focus-visible:ring-2 focus-visible:ring-primary/30"
                             onClick={() => onPageChange(meta.currentPage - 1)}
                             onMouseEnter={() => meta.currentPage > 1 && prefetchPage(meta.currentPage - 1)}
                             disabled={meta.currentPage <= 1}
@@ -161,7 +161,7 @@ export function DataTablePagination({
                         <Button
                             variant="outline"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-9 w-9 focus-visible:ring-2 focus-visible:ring-primary/30"
                             onClick={() => onPageChange(meta.currentPage + 1)}
                             onMouseEnter={() => meta.currentPage < meta.lastPage && prefetchPage(meta.currentPage + 1)}
                             disabled={meta.currentPage >= meta.lastPage}
@@ -173,7 +173,7 @@ export function DataTablePagination({
                             <Button
                                 variant="outline"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-9 w-9 focus-visible:ring-2 focus-visible:ring-primary/30"
                                 onClick={() => onPageChange(meta.lastPage)}
                                 onMouseEnter={() => meta.currentPage < meta.lastPage && prefetchPage(meta.lastPage)}
                                 disabled={meta.currentPage >= meta.lastPage}

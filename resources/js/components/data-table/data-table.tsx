@@ -1688,36 +1688,59 @@ function GridLayout<TData>({ rows, columns, renderCell, actions, onRowClick, row
                 const imgSrc = imageColumn ? rowData[imageColumn] as string | undefined : undefined;
                 const title = titleColumn ? String(rowData[titleColumn] ?? "") : null;
                 const subtitle = subtitleColumn ? String(rowData[subtitleColumn] ?? "") : null;
+                const initials = title ? title.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() : "?";
                 const visibleCols = columns.filter(c => c.visible !== false && c.id !== imageColumn && c.id !== titleColumn && c.id !== subtitleColumn);
 
                 return (
                     <div key={rowData.id != null ? String(rowData.id) : idx}
-                        className={cn("group rounded-xl border bg-card shadow-sm overflow-hidden transition-all",
-                            isClickable && "cursor-pointer hover:shadow-md hover:border-primary/30",
+                        className={cn("group rounded-lg border bg-card overflow-hidden transition-colors",
+                            isClickable && "cursor-pointer hover:bg-accent/5 hover:border-primary/30",
                             density === "compact" && "text-xs")}
                         onClick={isClickable ? handleClick : undefined}>
-                        {imgSrc && (
-                            <div className="aspect-video bg-muted overflow-hidden">
-                                <img src={imgSrc} alt={title ?? ""} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
-                            </div>
-                        )}
-                        <div className={cn("p-4 space-y-2", density === "compact" && "p-2.5 space-y-1", density === "spacious" && "p-5 space-y-3")}>
-                            {title && <h3 className="font-semibold text-sm truncate">{title}</h3>}
-                            {subtitle && <p className="text-xs text-muted-foreground truncate">{subtitle}</p>}
-                            {visibleCols.slice(0, 4).map(col => {
-                                const value = rowData[col.id];
-                                const custom = renderCell?.(col.id, value, row);
-                                return (
-                                    <div key={col.id} className="flex items-center justify-between gap-2">
-                                        <span className="text-[11px] text-muted-foreground shrink-0">{col.label}</span>
-                                        <span className="text-xs text-right truncate">
-                                            {custom !== undefined ? custom : value == null ? "—" : String(value)}
-                                        </span>
+                        <div className={cn("p-4 space-y-3", density === "compact" && "p-2.5 space-y-1.5", density === "spacious" && "p-5 space-y-3")}>
+                            {/* Header with avatar/image + name */}
+                            <div className="flex items-center gap-3">
+                                {imgSrc ? (
+                                    <img src={imgSrc} alt={title ?? ""} className="h-10 w-10 rounded-full object-cover shrink-0 ring-1 ring-border" />
+                                ) : title ? (
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                                        {initials}
                                     </div>
-                                );
-                            })}
+                                ) : null}
+                                <div className="min-w-0 flex-1">
+                                    {title && <h3 className="font-semibold text-sm truncate">{title}</h3>}
+                                    {subtitle && <p className="text-xs text-muted-foreground truncate">{subtitle}</p>}
+                                </div>
+                            </div>
+                            {/* Fields */}
+                            <div className="space-y-1.5 pt-2 border-t border-border/40">
+                                {visibleCols.slice(0, 4).map(col => {
+                                    const value = rowData[col.id];
+                                    const custom = renderCell?.(col.id, value, row);
+                                    return (
+                                        <div key={col.id} className="flex items-center justify-between gap-2">
+                                            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider shrink-0">{col.label}</span>
+                                            <span className="text-xs text-right truncate">
+                                                {custom !== undefined ? custom
+                                                    : col.type === "badge" && value != null ? (
+                                                        <span className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset",
+                                                            String(value).toLowerCase() === "active" ? "bg-emerald-500/10 text-emerald-500 ring-emerald-500/20"
+                                                            : String(value).toLowerCase() === "pending" ? "bg-amber-500/10 text-amber-500 ring-amber-500/20"
+                                                            : String(value).toLowerCase() === "deleted" ? "bg-red-500/10 text-red-500 ring-red-500/20"
+                                                            : "bg-muted text-muted-foreground ring-border"
+                                                        )}>{String(value)}</span>
+                                                    )
+                                                    : col.type === "boolean" ? (
+                                                        <Checkbox checked={!!value} disabled className="h-4 w-4 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500" />
+                                                    )
+                                                    : value == null ? "—" : String(value)}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                             {actions && actions.length > 0 && (
-                                <div className="flex justify-end gap-1 pt-2 border-t">
+                                <div className="flex justify-end gap-1 pt-2 border-t border-border/40">
                                     <DataTableRowActions row={row} actions={actions} t={t} />
                                 </div>
                             )}
@@ -1732,17 +1755,17 @@ function GridLayout<TData>({ rows, columns, renderCell, actions, onRowClick, row
 // ─── Enhanced Card Layout ────────────────────────────────────────────────
 
 function CardLayout<TData>({ rows, columns, renderCell, actions, onRowClick, rowLink, t, density,
-    titleColumn, subtitleColumn }: {
+    titleColumn, subtitleColumn, imageColumn }: {
     rows: TData[]; columns: DataTableColumnDef[];
     renderCell?: (columnId: string, value: unknown, row: TData) => React.ReactNode | undefined;
     actions?: import("./types").DataTableAction<TData>[];
     onRowClick?: (row: TData) => void; rowLink?: (row: TData) => string;
     t: DataTableTranslations; density: DataTableDensity;
-    titleColumn?: string; subtitleColumn?: string;
+    titleColumn?: string; subtitleColumn?: string; imageColumn?: string;
 }) {
-    const visibleCols = columns.filter(c => c.visible !== false && c.id !== titleColumn && c.id !== subtitleColumn);
+    const visibleCols = columns.filter(c => c.visible !== false && c.id !== titleColumn && c.id !== subtitleColumn && c.id !== imageColumn);
     return (
-        <div className="space-y-3">
+        <div className="space-y-2">
             {rows.length === 0 ? (
                 <div className="text-center py-12 text-muted-foreground">{t.noData}</div>
             ) : rows.map((row, idx) => {
@@ -1754,21 +1777,37 @@ function CardLayout<TData>({ rows, columns, renderCell, actions, onRowClick, row
                 const isClickable = !!onRowClick || !!rowLink;
                 const title = titleColumn ? String(rowData[titleColumn] ?? "") : null;
                 const subtitle = subtitleColumn ? String(rowData[subtitleColumn] ?? "") : null;
+                const imgSrc = imageColumn ? rowData[imageColumn] as string | undefined : undefined;
+                const initials = title ? title.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() : "?";
 
                 return (
                     <div key={rowData.id != null ? String(rowData.id) : idx}
-                        className={cn("rounded-xl border bg-card shadow-sm transition-all",
-                            isClickable && "cursor-pointer hover:shadow-md hover:border-primary/30",
+                        className={cn("rounded-lg border bg-card transition-colors",
+                            isClickable && "cursor-pointer hover:bg-accent/5 hover:border-primary/30",
                             density === "compact" && "text-xs")}
                         onClick={isClickable ? handleClick : undefined}>
                         <div className={cn("p-4", density === "compact" && "p-3", density === "spacious" && "p-6")}>
-                            {(title || subtitle) && (
-                                <div className="mb-3 pb-3 border-b">
-                                    {title && <h3 className="font-semibold text-base">{title}</h3>}
-                                    {subtitle && <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>}
+                            {/* Header row with avatar + title + actions */}
+                            <div className="flex items-center gap-3 mb-3 pb-3 border-b border-border/40">
+                                {imgSrc ? (
+                                    <img src={imgSrc} alt={title ?? ""} className="h-10 w-10 rounded-full object-cover shrink-0 ring-1 ring-border" />
+                                ) : title ? (
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                                        {initials}
+                                    </div>
+                                ) : null}
+                                <div className="min-w-0 flex-1">
+                                    {title && <h3 className="font-semibold text-sm">{title}</h3>}
+                                    {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
                                 </div>
-                            )}
-                            <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                                {actions && actions.length > 0 && (
+                                    <div className="shrink-0">
+                                        <DataTableRowActions row={row} actions={actions} t={t} />
+                                    </div>
+                                )}
+                            </div>
+                            {/* Fields in a responsive grid */}
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2.5">
                                 {visibleCols.map(col => {
                                     const value = rowData[col.id];
                                     const custom = renderCell?.(col.id, value, row);
@@ -1776,17 +1815,24 @@ function CardLayout<TData>({ rows, columns, renderCell, actions, onRowClick, row
                                         <div key={col.id} className="space-y-0.5">
                                             <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">{col.label}</span>
                                             <div className="text-sm">
-                                                {custom !== undefined ? custom : value == null ? "—" : String(value)}
+                                                {custom !== undefined ? custom
+                                                    : col.type === "badge" && value != null ? (
+                                                        <span className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset",
+                                                            String(value).toLowerCase() === "active" ? "bg-emerald-500/10 text-emerald-500 ring-emerald-500/20"
+                                                            : String(value).toLowerCase() === "pending" ? "bg-amber-500/10 text-amber-500 ring-amber-500/20"
+                                                            : String(value).toLowerCase() === "deleted" ? "bg-red-500/10 text-red-500 ring-red-500/20"
+                                                            : "bg-muted text-muted-foreground ring-border"
+                                                        )}>{String(value)}</span>
+                                                    )
+                                                    : col.type === "boolean" ? (
+                                                        <Checkbox checked={!!value} disabled className="h-4 w-4 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500" />
+                                                    )
+                                                    : value == null ? "—" : String(value)}
                                             </div>
                                         </div>
                                     );
                                 })}
                             </div>
-                            {actions && actions.length > 0 && (
-                                <div className="flex justify-end gap-1 pt-3 mt-3 border-t">
-                                    <DataTableRowActions row={row} actions={actions} t={t} />
-                                </div>
-                            )}
                         </div>
                     </div>
                 );
@@ -3753,6 +3799,7 @@ function DataTableInner<TData extends object>({
 
     // Header filter state
     const [headerFilterValues, setHeaderFilterValues] = useState<Record<string, string>>({});
+    const [headerFiltersVisible, setHeaderFiltersVisible] = useState(false);
 
     // Tree data state
     const [expandedTreeNodes, setExpandedTreeNodes] = useState<Set<string>>(new Set());
@@ -4843,6 +4890,16 @@ function DataTableInner<TData extends object>({
                             <span className="hidden sm:inline">{showTrashed ? t.hideTrashed : t.showTrashed}</span>
                         </Button>
                     )}
+                    {resolvedOptions.headerFilters && (
+                        <Button variant={headerFiltersVisible ? "secondary" : "outline"} size="sm" className="h-8 gap-1.5"
+                            onClick={() => setHeaderFiltersVisible(v => !v)}
+                            title={t.headerFilterToggle ?? "Toggle column filters"}
+                            aria-label={t.headerFilterToggle ?? "Toggle column filters"}
+                            aria-pressed={headerFiltersVisible}>
+                            <Rows3 className="h-3.5 w-3.5" />
+                            <span className="hidden sm:inline">{t.headerFilterToggle ?? "Column filters"}</span>
+                        </Button>
+                    )}
                 </div>
                 <div className="flex items-center gap-2">
                     {/* Presence indicators */}
@@ -4854,39 +4911,51 @@ function DataTableInner<TData extends object>({
                             showKanban={resolvedOptions.kanbanView && !!kanbanColumnId} t={t} />
                     )}
 
-                    {/* Conditional formatting button */}
-                    {resolvedOptions.conditionalFormatting && (
-                        <Button variant="outline" size="sm" className="h-8 gap-1.5" onClick={() => setCondFormatOpen(true)}>
-                            <Paintbrush className="h-3.5 w-3.5" />
-                            <span className="hidden sm:inline">{t.conditionalFormatting}</span>
-                            {condFormat.rules.length > 0 && (
-                                <span className="ml-0.5 rounded-full bg-primary/10 px-1.5 text-[10px] font-medium text-primary">{condFormat.rules.length}</span>
-                            )}
-                        </Button>
-                    )}
-
-                    {/* Integrated Charts button */}
-                    {resolvedOptions.integratedCharts && numericCols.length > 0 && (
-                        <Button variant={chartState ? "secondary" : "outline"} size="sm" className="h-8 gap-1.5" onClick={() => chartState ? setChartState(null) : openChart()}>
-                            <BarChart3 className="h-3.5 w-3.5" />
-                            <span className="hidden sm:inline">{t.chartTitle}</span>
-                        </Button>
-                    )}
-
-                    {/* Find & Replace button */}
-                    {resolvedOptions.findReplace && (
-                        <Button variant={findReplaceOpen ? "secondary" : "outline"} size="sm" className="h-8 gap-1.5" onClick={() => setFindReplaceOpen(v => !v)}>
-                            <Search className="h-3.5 w-3.5" />
-                            <span className="hidden sm:inline">{t.findReplace}</span>
-                        </Button>
-                    )}
-
-                    {/* AI Assistant button (only when aiBaseUrl is set) */}
-                    {aiBaseUrl && (
-                        <Button variant={aiPanelOpen ? "secondary" : "outline"} size="sm" className="h-8 gap-1.5" onClick={() => setAiPanelOpen(v => !v)}>
-                            <Sparkles className="h-3.5 w-3.5" />
-                            <span className="hidden sm:inline">{t.aiAssistant}</span>
-                        </Button>
+                    {/* Secondary actions — overflow "More" menu */}
+                    {(resolvedOptions.conditionalFormatting || (resolvedOptions.integratedCharts && numericCols.length > 0) || resolvedOptions.findReplace || aiBaseUrl) && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="sm" className="h-8 gap-1.5">
+                                    <Plus className="h-3.5 w-3.5" />
+                                    <span className="hidden sm:inline">{t.more ?? "More"}</span>
+                                    {(condFormat.rules.length > 0 || chartState || findReplaceOpen || aiPanelOpen) && (
+                                        <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                                    )}
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-52">
+                                {resolvedOptions.conditionalFormatting && (
+                                    <DropdownMenuItem onClick={() => setCondFormatOpen(true)}>
+                                        <Paintbrush className="mr-2 h-4 w-4" />
+                                        {t.conditionalFormatting}
+                                        {condFormat.rules.length > 0 && (
+                                            <span className="ml-auto rounded-full bg-primary/10 px-1.5 text-[10px] font-medium text-primary">{condFormat.rules.length}</span>
+                                        )}
+                                    </DropdownMenuItem>
+                                )}
+                                {resolvedOptions.integratedCharts && numericCols.length > 0 && (
+                                    <DropdownMenuItem onClick={() => chartState ? setChartState(null) : openChart()}>
+                                        <BarChart3 className="mr-2 h-4 w-4" />
+                                        {t.chartTitle}
+                                        {chartState && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary shrink-0" />}
+                                    </DropdownMenuItem>
+                                )}
+                                {resolvedOptions.findReplace && (
+                                    <DropdownMenuItem onClick={() => setFindReplaceOpen(v => !v)}>
+                                        <Search className="mr-2 h-4 w-4" />
+                                        {t.findReplace}
+                                        {findReplaceOpen && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary shrink-0" />}
+                                    </DropdownMenuItem>
+                                )}
+                                {aiBaseUrl && (
+                                    <DropdownMenuItem onClick={() => setAiPanelOpen(v => !v)}>
+                                        <Sparkles className="mr-2 h-4 w-4" />
+                                        {t.aiAssistant}
+                                        {aiPanelOpen && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary shrink-0" />}
+                                    </DropdownMenuItem>
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     )}
 
                     {slots?.toolbar ?? (
@@ -5020,7 +5089,8 @@ function DataTableInner<TData extends object>({
                 <CardLayout rows={tableData.data} columns={mergedColumns}
                     renderCell={renderCell} actions={actions} onRowClick={onRowClick}
                     rowLink={rowLink} t={t} density={density}
-                    titleColumn={cardTitleColumn} subtitleColumn={cardSubtitleColumn} />
+                    titleColumn={cardTitleColumn} subtitleColumn={cardSubtitleColumn}
+                    imageColumn={cardImageColumn} />
             )}
 
             {/* ── Kanban Layout ── */}
@@ -5084,7 +5154,7 @@ function DataTableInner<TData extends object>({
                                                                             columnType={colDef.type} data={tableData.data as Record<string, unknown>[]} t={t} />
                                                                     )}
                                                                 </div>
-                                                                {colDef.description && <span className="text-[10px] font-normal text-muted-foreground/70 leading-tight line-clamp-1" title={colDef.description}>{colDef.description}</span>}
+                                                                {colDef.description && <span className="text-[11px] font-normal text-muted-foreground/60 leading-tight line-clamp-1" title={colDef.description}>{colDef.description}</span>}
                                                             </div>
                                                         ) : (
                                                             <div className="flex flex-col">
@@ -5096,7 +5166,7 @@ function DataTableInner<TData extends object>({
                                                                             columnType={colDef.type} data={tableData.data as Record<string, unknown>[]} t={t} />
                                                                     )}
                                                                 </div>
-                                                                {colDef?.description && <span className="text-[10px] font-normal text-muted-foreground/70 leading-tight">{colDef.description}</span>}
+                                                                {colDef?.description && <span className="text-[11px] font-normal text-muted-foreground/60 leading-tight">{colDef.description}</span>}
                                                             </div>
                                                         )}
                                                         {resolvedOptions.columnResizing && header.column.getCanResize() && (
@@ -5113,7 +5183,7 @@ function DataTableInner<TData extends object>({
                                                 return (
                                                     <TableHead key={header.id} colSpan={header.colSpan}
                                                         style={{ ...pin.style, ...(resolvedOptions.columnResizing ? { width: header.getSize() } : {}) }}
-                                                        className={cn("h-9 text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70 border-b border-border/40", isNumber && "text-right",
+                                                        className={cn("h-9 text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border/40", isNumber && "text-right",
                                                             leafGroup && groupClassName?.[leafGroup],
                                                             pin.className, "relative")}
                                                         aria-sort={ariaSort} role="columnheader">
@@ -5132,9 +5202,9 @@ function DataTableInner<TData extends object>({
                                         </TableRow>
                                     );
                                 })}
-                                {/* Header filters row */}
-                                {resolvedOptions.headerFilters && (
-                                    <TableRow className="border-b border-border/30">
+                                {/* Header filters row — toggleable */}
+                                {resolvedOptions.headerFilters && headerFiltersVisible && (
+                                    <TableRow className="border-b border-border/30 animate-in fade-in-0 slide-in-from-top-1 duration-150">
                                         {table.getVisibleLeafColumns().map((col) => {
                                             const colDef = tableData.columns.find(c => c.id === col.id);
                                             const isFilterable = colDef?.filterable || colDef?.headerFilter;

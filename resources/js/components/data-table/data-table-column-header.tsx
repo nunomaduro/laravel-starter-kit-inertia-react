@@ -25,7 +25,7 @@ export function DataTableColumnHeader({
     const content = children ?? label;
 
     if (!sortable) {
-        return <span className="text-sm font-medium">{content}</span>;
+        return <span className="text-xs font-semibold">{content}</span>;
     }
 
     const sortIndex = sorts.findIndex((s) => s.id === columnId);

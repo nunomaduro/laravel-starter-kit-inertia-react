@@ -239,6 +239,7 @@ export interface DataTableTranslations {
 
     // Header filters
     headerFilterPlaceholder: string;
+    headerFilterToggle: string;
     clearHeaderFilter: string;
 
     // Tree data
@@ -260,6 +261,9 @@ export interface DataTableTranslations {
 
     // Sparklines
     sparklineLabel: string;
+
+    // Overflow menu
+    more: string;
 
     // AI assistant
     aiAssistant: string;
@@ -628,6 +632,7 @@ export const defaultTranslations: DataTableTranslations = {
 
     // Header filters
     headerFilterPlaceholder: "Filter...",
+    headerFilterToggle: "Column filters",
     clearHeaderFilter: "Clear filter",
 
     // Tree data
@@ -649,6 +654,9 @@ export const defaultTranslations: DataTableTranslations = {
 
     // Sparklines
     sparklineLabel: "Trend",
+
+    // Overflow menu
+    more: "More",
 
     // AI assistant
     aiAssistant: "AI Assistant",
