@@ -41,36 +41,35 @@ import { useMemo } from 'react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
+    // ── Platform ──
     {
         title: 'Dashboard',
         href: dashboard().url,
         icon: LayoutGrid,
+        group: 'Platform',
         dataPan: 'nav-dashboard',
     },
     {
         title: 'Chat',
         href: chat().url,
         icon: MessageCircle,
+        group: 'Platform',
         dataPan: 'nav-chat',
     },
+    // ── Organization ──
     {
         title: 'Users',
         href: '/users',
         icon: Users,
+        group: 'Organization',
         permission: ['view users', 'org.members.view'],
         dataPan: 'nav-users',
-    },
-    {
-        title: 'Announcements',
-        href: '/announcements',
-        icon: Bell,
-        permission: ['announcements.manage_global', 'announcements.manage'],
-        dataPan: 'nav-announcements',
     },
     {
         title: 'Organizations',
         href: organizations.index.url(),
         icon: Building2,
+        group: 'Organization',
         tenancyRequired: true,
         dataPan: 'nav-organizations',
     },
@@ -78,6 +77,7 @@ const mainNavItems: NavItem[] = [
         title: 'Organizations (table)',
         href: '/organizations/list',
         icon: Building2,
+        group: 'Organization',
         tenancyRequired: true,
         dataPan: 'nav-organizations-table',
     },
@@ -85,27 +85,33 @@ const mainNavItems: NavItem[] = [
         title: 'Categories',
         href: '/categories',
         icon: FolderTree,
+        group: 'Organization',
         tenancyRequired: true,
         dataPan: 'nav-categories',
     },
     {
+        title: 'Announcements',
+        href: '/announcements',
+        icon: Bell,
+        group: 'Organization',
+        permission: ['announcements.manage_global', 'announcements.manage'],
+        dataPan: 'nav-announcements',
+    },
+    // ── Content ──
+    {
         title: 'Pages',
         href: PageController.index().url,
         icon: FileText,
+        group: 'Content',
         permission: 'org.pages.manage',
         tenancyRequired: true,
         dataPan: 'nav-pages',
     },
     {
-        title: 'Billing',
-        href: '/billing',
-        icon: CreditCard,
-        dataPan: 'nav-billing',
-    },
-    {
         title: 'Blog',
         href: blogIndex().url,
         icon: FileText,
+        group: 'Content',
         permission: 'blog.index',
         feature: 'blog',
         dataPan: 'nav-blog',
@@ -114,6 +120,7 @@ const mainNavItems: NavItem[] = [
         title: 'Posts',
         href: '/posts',
         icon: FileText,
+        group: 'Content',
         permission: 'blog.index',
         feature: 'blog',
         dataPan: 'nav-posts',
@@ -122,14 +129,25 @@ const mainNavItems: NavItem[] = [
         title: 'Changelog',
         href: changelogIndex().url,
         icon: Megaphone,
+        group: 'Content',
         permission: 'changelog.index',
         feature: 'changelog',
         dataPan: 'nav-changelog',
     },
+    // ── Billing ──
+    {
+        title: 'Billing',
+        href: '/billing',
+        icon: CreditCard,
+        group: 'Billing',
+        dataPan: 'nav-billing',
+    },
+    // ── Support ──
     {
         title: 'Help',
         href: helpIndex().url,
         icon: LifeBuoy,
+        group: 'Support',
         permission: 'help.index',
         feature: 'help',
         dataPan: 'nav-help',
@@ -138,6 +156,7 @@ const mainNavItems: NavItem[] = [
         title: 'Contact',
         href: contactCreate().url,
         icon: Mail,
+        group: 'Support',
         permission: 'contact.create',
         feature: 'contact',
         dataPan: 'nav-contact',
@@ -279,11 +298,12 @@ export function AppSidebar() {
                         <a
                             href={adminPanelHref}
                             data-pan="nav-admin-panel"
-                            className="flex min-h-11 cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            title={adminPanelLabel}
+                            className="flex min-h-11 cursor-pointer items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
                         >
                             <ShieldCheck className="size-4 shrink-0" />
-                            <span>{adminPanelLabel}</span>
-                            <ExternalLink className="ml-auto size-3 shrink-0 opacity-50" />
+                            <span className="truncate group-data-[collapsible=icon]:hidden">{adminPanelLabel}</span>
+                            <ExternalLink className="ml-auto size-3 shrink-0 opacity-50 group-data-[collapsible=icon]:hidden" />
                         </a>
                     </div>
                 )}

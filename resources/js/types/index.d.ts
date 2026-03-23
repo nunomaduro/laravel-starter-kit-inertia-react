@@ -48,6 +48,8 @@ export interface NavItem {
     dataPan?: string;
     /** When true, item is only visible to super-admin users. */
     superAdminOnly?: boolean;
+    /** Sidebar group label for organizing nav items into sections. */
+    group?: string;
 }
 
 /** Pennant feature flags shared to the frontend (key => active for current user/guest default). */

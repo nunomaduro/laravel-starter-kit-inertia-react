@@ -5315,7 +5315,7 @@ function DataTableInner<TData extends object>({
                                                                 index <= Math.max(dragFillState.startRowIndex, dragFillEndIndex) &&
                                                                 index !== dragFillState.startRowIndex;
                                                             // Cell range selection highlight
-                                                            const isCellInRange = resolvedOptions.cellRangeSelection && cellRange.isCellInRange(index, cell.column.id);
+                                                            const isCellInRange = resolvedOptions.cellRangeSelection && cellRange.isCellInRange(index, cell.column.id, visibleColumnIds);
                                                             // Conditional formatting styles
                                                             const condStyle = resolvedOptions.conditionalFormatting ? getCondFormatStyle(row.original, cell.column.id) : {};
                                                             // Find & Replace highlight
