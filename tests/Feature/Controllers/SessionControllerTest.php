@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 
 it('renders login page', function (): void {
@@ -148,18 +146,14 @@ it('throttles login attempts after too many failures', function (): void {
             ]);
     }
 
-    // The 6th attempt should be throttled
+    // The 6th attempt should be throttled by the rate limiter middleware (429)
     $response = $this->fromRoute('login')
         ->post(route('login.store'), [
             'email' => 'test@example.com',
             'password' => 'wrong-password',
         ]);
 
-    $response->assertRedirectToRoute('login')
-        ->assertSessionHasErrors('email');
-
-    $errors = session('errors');
-    expect($errors->get('email')[0])->toContain('Too many login attempts');
+    $response->assertStatus(429);
 });
 
 it('clears rate limit after successful login', function (): void {
@@ -188,17 +182,14 @@ it('clears rate limit after successful login', function (): void {
     $this->assertAuthenticatedAs($user);
 });
 
-it('dispatches lockout event when rate limit is reached', function (): void {
-    Event::fake([Lockout::class]);
-
+it('returns 429 when rate limit is reached on login', function (): void {
     $user = User::factory()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
     ]);
 
-    // Make 6 failed login attempts to trigger rate limiting and Lockout event
-    // The Lockout event fires on the 6th attempt when tooManyAttempts returns true
-    for ($i = 0; $i < 6; $i++) {
+    // Make 5 failed login attempts to exhaust the rate limiter
+    for ($i = 0; $i < 5; $i++) {
         $this->fromRoute('login')
             ->post(route('login.store'), [
                 'email' => 'test@example.com',
@@ -206,5 +197,12 @@ it('dispatches lockout event when rate limit is reached', function (): void {
             ]);
     }
 
-    Event::assertDispatched(Lockout::class);
+    // The 6th attempt should be blocked by the ThrottleRequests middleware
+    $response = $this->fromRoute('login')
+        ->post(route('login.store'), [
+            'email' => 'test@example.com',
+            'password' => 'wrong-password',
+        ]);
+
+    $response->assertStatus(429);
 });

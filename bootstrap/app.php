@@ -94,6 +94,13 @@ return Application::configure(basePath: dirname(__DIR__))
             ],
         );
 
+        // SetTenantContext must run BEFORE SubstituteBindings so that
+        // route-model-binding queries respect the OrganizationScope.
+        $middleware->prependToPriorityList(
+            Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SetTenantContext::class,
+        );
+
         $middleware->api(append: [
             AddCspHeaders::class,
             AdditionalSecurityHeaders::class,

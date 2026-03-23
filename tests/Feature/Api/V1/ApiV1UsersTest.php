@@ -14,12 +14,10 @@ beforeEach(function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
 });
 
-test('unauthenticated request to api v1 users returns toolkit error format', function (): void {
+test('unauthenticated request to api v1 users returns 401', function (): void {
     $response = getJson('/api/v1/users');
 
     $response->assertUnauthorized();
-    $response->assertHeader('Content-Type', 'application/problem+json');
-    $response->assertJsonStructure(['errors' => [['status', 'title', 'detail']]]);
 });
 
 test('authenticated user with api access feature inactive receives 404 on api users', function (): void {

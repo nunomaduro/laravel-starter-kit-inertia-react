@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Settings\InfrastructureSettings;
 use App\Settings\PrismSettings;
 use Illuminate\Support\ServiceProvider;
 use Throwable;
@@ -52,6 +53,12 @@ final class SettingsOverlayServiceProvider extends ServiceProvider
     public static function applyOverlay(): void
     {
         foreach (self::overlayMap() as $settingsClass => $config) {
+            // Infrastructure settings (cache, session, queue drivers) must come from
+            // .env / phpunit.xml — never override them from the DB during tests.
+            if ($settingsClass === InfrastructureSettings::class && app()->runningUnitTests()) {
+                continue;
+            }
+
             try {
                 /** @var \Spatie\LaravelSettings\Settings $settings */
                 $settings = resolve($settingsClass);

@@ -34,6 +34,7 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <env name="SCOUT_DRIVER" value="collection"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>

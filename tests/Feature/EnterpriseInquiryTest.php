@@ -30,7 +30,7 @@ it('stores an enterprise inquiry', function (): void {
             'name' => 'Acme Corp',
             'email' => 'sales@acme.com',
             'company' => 'Acme Inc',
-            'phone' => '+32 2 123 45 67',
+            'phone' => '+12025551234',
             'message' => 'We need an enterprise plan.',
             ...enterpriseHoneypotFields(),
         ]);
@@ -43,7 +43,7 @@ it('stores an enterprise inquiry', function (): void {
     expect($inquiry)->not->toBeNull()
         ->and($inquiry->name)->toBe('Acme Corp')
         ->and($inquiry->company)->toBe('Acme Inc')
-        ->and($inquiry->phone)->toBe('+32 2 123 45 67')
+        ->and($inquiry->phone)->toBe('+12025551234')
         ->and($inquiry->message)->toBe('We need an enterprise plan.')
         ->and($inquiry->status)->toBe('new');
 });

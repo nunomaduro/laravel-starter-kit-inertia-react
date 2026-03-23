@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -111,7 +110,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
     {
         $routesPath = $this->modulePath('routes/web.php');
         if (file_exists($routesPath)) {
-            Route::middleware(SubstituteBindings::class)->group($routesPath);
+            Route::middleware('web')->group($routesPath);
         }
     }
 

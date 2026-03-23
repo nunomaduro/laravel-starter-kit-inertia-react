@@ -66,7 +66,7 @@ test('api chat returns 422 when messages are missing', function (): void {
     $response = actingAs($user, 'sanctum')->postJson('/api/chat', []);
 
     $response->assertUnprocessable();
-    $response->assertJsonFragment(['detail' => 'The messages field is required.']);
+    $response->assertJsonValidationErrors('messages');
 });
 
 test('api chat returns 503 when AI provider has no API key', function (): void {

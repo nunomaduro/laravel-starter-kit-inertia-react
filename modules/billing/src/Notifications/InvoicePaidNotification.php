@@ -48,7 +48,11 @@ final class InvoicePaidNotification extends Notification
     {
         $laravelInvoice = (new BuildLaravelDailyInvoice)->handle($this->invoice);
 
-        $formattedTotal = number_format($this->invoice->total / 100, 2).' '.mb_strtoupper($this->invoice->currency);
+        // Ensure items and totals are calculated before rendering to HTML
+        // (toHtml() does not call beforeRender()/calculate() unlike render()).
+        $laravelInvoice->calculate();
+
+        $formattedTotal = number_format(($this->invoice->total ?? 0) / 100, 2).' '.mb_strtoupper($this->invoice->currency ?? 'usd');
 
         return (new MailMessage)
             ->subject('Invoice '.$this->invoice->number.' – Payment Confirmed')

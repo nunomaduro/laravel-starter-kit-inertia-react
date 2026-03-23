@@ -17,6 +17,14 @@ beforeEach(function (): void {
     $this->webhookSecret = 'pdl_test_secret_for_testing';
     config(['paddle.webhook_secret' => $this->webhookSecret]);
 
+    // Register the Paddle webhook route (normally loaded by BillingServiceProvider
+    // only when billing.default_gateway = paddle, but tests may use a different default).
+    if (! Illuminate\Support\Facades\Route::has('webhooks.paddle')) {
+        Illuminate\Support\Facades\Route::post('webhooks/paddle', Modules\Billing\Http\Controllers\PaddleWebhookController::class)
+            ->name('webhooks.paddle')
+            ->withoutMiddleware([Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
+    }
+
     $this->owner = User::withoutEvents(fn (): User => User::factory()->withoutTwoFactor()->create());
     $this->org = Organization::factory()->forOwner($this->owner)->create([
         'paddle_customer_id' => 'ctm_test_'.uniqid(),

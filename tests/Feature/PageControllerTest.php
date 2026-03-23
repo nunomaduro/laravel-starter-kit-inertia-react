@@ -14,7 +14,7 @@ beforeEach(function (): void {
     $this->user = User::factory()->withoutTwoFactor()->create();
     $this->org = $this->user->defaultOrganization();
     if (! $this->org) {
-        $this->org = Organization::factory()->create();
+        $this->org = Organization::factory()->forOwner($this->user)->create();
         $this->org->addMember($this->user, 'admin');
         $this->user->organizations()->updateExistingPivot($this->org->id, ['is_default' => true]);
     }

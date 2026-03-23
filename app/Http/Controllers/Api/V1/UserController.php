@@ -31,15 +31,15 @@ final class UserController extends BaseApiController
     public function index(Request $request): AnonymousResourceCollection
     {
         $users = QueryBuilder::for(User::class)
-            ->allowedFields([
+            ->allowedFields(
                 'id', 'name', 'email', 'phone', 'email_verified_at', 'created_at', 'updated_at',
-            ])
-            ->allowedFilters([
+            )
+            ->allowedFilters(
                 AllowedFilter::partial('name'),
                 AllowedFilter::partial('email'),
-            ])
-            ->allowedSorts(['id', 'name', 'email', 'created_at', 'updated_at'])
-            ->allowedIncludes(['roles'])
+            )
+            ->allowedSorts('id', 'name', 'email', 'created_at', 'updated_at')
+            ->allowedIncludes('roles')
             ->paginate($request->input('per_page', 15))
             ->withQueryString();
 

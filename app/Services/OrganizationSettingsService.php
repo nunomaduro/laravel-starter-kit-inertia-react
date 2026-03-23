@@ -43,13 +43,25 @@ final class OrganizationSettingsService
     {
         $cacheKey = $this->cacheKey($organization);
 
-        return Cache::remember(
+        $result = Cache::remember(
             $cacheKey,
             now()->addMinutes(self::CACHE_TTL_MINUTES),
             fn () => DB::table('organization_settings')
                 ->where('organization_id', $organization->id)
                 ->get(['group', 'name', 'payload', 'is_encrypted']),
         );
+
+        // Guard against corrupted cache entries (__PHP_Incomplete_Class from
+        // stale serialized data). Flush the bad entry and re-query.
+        if (! $result instanceof \Illuminate\Support\Collection) {
+            Cache::forget($cacheKey);
+
+            return DB::table('organization_settings')
+                ->where('organization_id', $organization->id)
+                ->get(['group', 'name', 'payload', 'is_encrypted']);
+        }
+
+        return $result;
     }
 
     public function setOverride(

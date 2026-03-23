@@ -28,6 +28,12 @@ it('creates personal org for new user when not invited as member and for_admins 
     $tenancy->auto_create_personal_org_for_members = false;
     $tenancy->save();
 
+    // Re-apply overlay so config reflects the saved settings and
+    // allow the CreatePersonalOrganizationOnUserCreated listener to run
+    // (Pest.php sets seed_in_progress=true by default to prevent cascading role issues).
+    App\Providers\SettingsOverlayServiceProvider::applyOverlay();
+    config()->set('tenancy.seed_in_progress', false);
+
     $user = User::withoutEvents(fn (): User => User::factory()->withoutTwoFactor()->create([
         'email' => 'newadmin@test.example',
     ]));

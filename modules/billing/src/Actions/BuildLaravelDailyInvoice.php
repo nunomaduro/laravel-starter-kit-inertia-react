@@ -30,10 +30,15 @@ final readonly class BuildLaravelDailyInvoice
             $laravelInvoice->addItem($item);
         }
 
-        if ($invoice->tax > 0 && $invoice->subtotal > 0) {
+        if (($invoice->tax ?? 0) > 0 && ($invoice->subtotal ?? 0) > 0) {
             $rate = round($invoice->tax / $invoice->subtotal * 100, 2);
             $laravelInvoice->taxRate((float) $rate);
         }
+
+        // Ensure discount and shipping default to 0 to avoid null in formatCurrency()
+        $laravelInvoice->total_discount ??= 0.0;
+        $laravelInvoice->shipping_amount ??= 0.0;
+        $laravelInvoice->taxable_amount ??= (float) (($invoice->total ?? 0) / 100);
 
         return $laravelInvoice;
     }
