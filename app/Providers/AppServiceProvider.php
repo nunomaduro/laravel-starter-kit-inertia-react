@@ -21,16 +21,19 @@ use App\Services\PrismService;
 use App\Settings\AuthSettings;
 use App\Settings\SeoSettings;
 use App\Support\ModuleLoader;
+use Carbon\CarbonImmutable;
 use Closure;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Events\MigrationsEnded;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -70,6 +73,8 @@ final class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->bootStrictDefaults();
+
         // Disable Governor's ParseCustomPolicyActions middleware — incompatible
         // with Laravel 13 (__PHP_Incomplete_Class from cache deserialization).
         $this->app->bind(
@@ -277,6 +282,18 @@ final class AppServiceProvider extends ServiceProvider
      * Create the SQLite database file if the default connection is SQLite and the file does not exist.
      * Allows the app (and installer) to boot when .env has no DB_* and Laravel falls back to sqlite.
      */
+    private function bootStrictDefaults(): void
+    {
+        Model::shouldBeStrict(! $this->app->isProduction());
+        Model::automaticallyEagerLoadRelationships();
+        Date::use(CarbonImmutable::class);
+        DB::prohibitDestructiveCommands($this->app->isProduction());
+
+        if ($this->app->isProduction()) {
+            URL::forceHttps();
+        }
+    }
+
     private function ensureSqliteDatabaseExists(): void
     {
         if (config('database.default') !== 'sqlite') {

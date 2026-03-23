@@ -369,6 +369,7 @@
             "bun run test:lint"
         ],
         "test:unit": "XDEBUG_MODE=\"coverage\" pest --parallel --coverage --exactly=100.0",
+        "test:coverage-html": "XDEBUG_MODE=\"coverage\" pest --coverage --coverage-html=coverage",
         "test:quick": "pest --parallel --compact",
         "test:types": [
             "phpstan",
