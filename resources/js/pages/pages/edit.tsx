@@ -1,4 +1,4 @@
-import PageController from '@/actions/App/Http/Controllers/PageController';
+import PageController from '@/actions/Modules/PageBuilder/Http/Controllers/PageController';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';

@@ -1,4 +1,4 @@
-import PageController from '@/actions/App/Http/Controllers/PageController';
+import PageController from '@/actions/Modules/PageBuilder/Http/Controllers/PageController';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
