@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Testing;
 
 use App\Services\SeedScenarioManager;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use InvalidArgumentException;
-use ReflectionClass;
 use RuntimeException;
 
 final class SeedHelper
@@ -33,16 +31,12 @@ final class SeedHelper
 
         throw_unless(Schema::hasTable($table), RuntimeException::class, sprintf('Table %s does not exist. Run migrations first.', $table));
 
-        // Check if model has factory
-        $factoryClass = 'Database\\Factories\\'.class_basename($modelClass).'Factory';
-
-        throw_unless(class_exists($factoryClass), RuntimeException::class, sprintf('Factory %s does not exist. Create it first.', $factoryClass));
-
-        // Seed parent relationships first
-        self::seedRelationships($modelClass);
-
-        // Create the models
-        return $modelClass::factory()->count($count)->create();
+        // Create the models — factory() handles resolution via newFactory() override on module models
+        try {
+            return $modelClass::factory()->count($count)->create();
+        } catch (\Illuminate\Contracts\Container\BindingResolutionException $e) {
+            throw new RuntimeException(sprintf('Factory for %s not found. Ensure the model has a newFactory() override.', $modelClass), 0, $e);
+        }
     }
 
     /**
@@ -95,53 +89,5 @@ final class SeedHelper
         }
 
         return self::$scenarioManager;
-    }
-
-    /**
-     * Seed relationships for a model.
-     *
-     * @param  class-string<Model>  $modelClass
-     */
-    private static function seedRelationships(string $modelClass): void
-    {
-        $model = new $modelClass;
-        $reflection = new ReflectionClass($modelClass);
-
-        // Get all belongsTo relationships
-        foreach ($reflection->getMethods() as $method) {
-            if ($method->getNumberOfRequiredParameters() > 0) {
-                continue;
-            }
-
-            $returnType = $method->getReturnType();
-
-            if ($returnType === null) {
-                continue;
-            }
-
-            $returnTypeName = $returnType->getName();
-
-            // Check if it's a relationship method
-            if (! method_exists($returnTypeName, 'getRelated')) {
-                continue;
-            }
-
-            // For belongsTo relationships, seed the parent
-            try {
-                $relationship = $model->{$method->getName()}();
-
-                if (method_exists($relationship, 'getForeignKeyName')) {
-                    $relatedModel = $relationship->getRelated();
-
-                    // Check if related model exists and has records
-                    if ($relatedModel::query()->count() === 0) {
-                        self::seedFor($relatedModel::class, 1);
-                    }
-                }
-            } catch (Exception) {
-                // Skip if relationship can't be resolved
-                continue;
-            }
-        }
     }
 }

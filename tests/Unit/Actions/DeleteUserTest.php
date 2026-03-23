@@ -12,5 +12,5 @@ it('may delete a user', function (): void {
 
     $action->handle($user);
 
-    expect($user->exists)->toBeFalse();
+    expect($user->trashed())->toBeTrue();
 });

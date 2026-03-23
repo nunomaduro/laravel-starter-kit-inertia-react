@@ -10,6 +10,7 @@ final readonly class DeleteUser
 {
     public function handle(User $user): void
     {
+        $user->loadMissing(['experience']);
         $user->experience?->delete();
         $user->allAchievements()->detach();
         $user->delete();
