@@ -6,7 +6,6 @@ namespace App\Filament\Resources\Billing\Affiliates;
 
 use App\Filament\Resources\Billing\Affiliates\Pages\ManageAffiliates;
 use App\Filament\Resources\Billing\Affiliates\Tables\AffiliatesTable;
-use App\Models\Billing\Affiliate;
 use BackedEnum;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -15,6 +14,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Billing\Models\Affiliate;
 use UnitEnum;
 
 final class AffiliateResource extends Resource

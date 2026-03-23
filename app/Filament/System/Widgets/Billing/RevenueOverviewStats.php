@@ -6,11 +6,11 @@ namespace App\Filament\System\Widgets\Billing;
 
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money;
-use App\Models\Billing\Invoice;
 use App\Models\Organization;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
+use Modules\Billing\Models\Invoice;
 
 final class RevenueOverviewStats extends StatsOverviewWidget
 {

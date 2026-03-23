@@ -273,7 +273,22 @@
       "Bash(~/.claude/skills/gstack/browse/dist/browse screenshot:*)",
       "Bash(B=~/.claude/skills/gstack/browse/dist/browse)",
       "Bash($B goto:*)",
-      "Bash($B screenshot:*)"
+      "Bash($B screenshot:*)",
+      "Bash(open:*)",
+      "Bash(B=~/.claude/skills/gstack/browse/dist/browse $B goto \"https://laravel-starter-kit-inertia-react.test/login\")",
+      "Bash($B fill:*)",
+      "Bash($B click:*)",
+      "Bash(B=~/.claude/skills/gstack/browse/dist/browse $B snapshot)",
+      "Bash(B=~/.claude/skills/gstack/browse/dist/browse $B goto \"https://laravel-starter-kit-inertia-react.test/dashboard\")",
+      "Bash($B js:*)",
+      "Bash(B=~/.claude/skills/gstack/browse/dist/browse $B goto \"https://laravel-starter-kit-inertia-react.test/settings/appearance\")",
+      "Read(//Users/apple/Code/cogneiss/Products/laravel-starter-kit-inertia-react/**)",
+      "Bash(1 sleep:*)",
+      "Bash(B=~/.claude/skills/gstack/browse/dist/browse $B close 2)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(node:*)",
+      "Bash(npx vite:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

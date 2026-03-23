@@ -38,17 +38,17 @@
             "default": null
         },
         "old_value": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "new_value": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
         "ip_address": {
-            "type": "inet",
+            "type": "string",
             "nullable": true,
             "default": null
         },

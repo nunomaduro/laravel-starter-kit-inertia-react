@@ -9,12 +9,12 @@ use App\Filament\Resources\CreditPacks\Pages\EditCreditPack;
 use App\Filament\Resources\CreditPacks\Pages\ListCreditPacks;
 use App\Filament\Resources\CreditPacks\Schemas\CreditPackForm;
 use App\Filament\Resources\CreditPacks\Tables\CreditPacksTable;
-use App\Models\Billing\CreditPack;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Modules\Billing\Models\CreditPack;
 use UnitEnum;
 
 final class CreditPackResource extends Resource

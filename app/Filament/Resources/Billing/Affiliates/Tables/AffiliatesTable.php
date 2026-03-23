@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Billing\Affiliates\Tables;
 
 use App\Filament\Concerns\HasStandardExports;
-use App\Models\Billing\Affiliate;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -14,6 +13,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Modules\Billing\Models\Affiliate;
 
 final class AffiliatesTable
 {
