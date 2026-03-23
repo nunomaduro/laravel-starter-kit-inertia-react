@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Throwable;
 
 final class HealthController
@@ -44,7 +45,7 @@ final class HealthController
         }
 
         try {
-            $key = 'health_ready_'.uniqid();
+            $key = 'health_ready_'.Str::random(8);
             Cache::store()->put($key, true, 5);
             $checks['cache'] = Cache::store()->get($key) === true;
             Cache::store()->forget($key);

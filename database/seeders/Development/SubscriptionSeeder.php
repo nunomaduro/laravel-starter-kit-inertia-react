@@ -6,6 +6,7 @@ namespace Database\Seeders\Development;
 
 use App\Models\Organization;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Modules\Billing\Models\Plan;
 
 final class SubscriptionSeeder extends Seeder
@@ -28,7 +29,7 @@ final class SubscriptionSeeder extends Seeder
 
             $org->planSubscriptions()->create([
                 'name' => ['en' => $name],
-                'slug' => 'dev-sub-'.$org->id.'-'.uniqid(),
+                'slug' => 'dev-sub-'.$org->id.'-'.Str::random(8),
                 'plan_id' => $plan->id,
                 'quantity' => 1,
                 'starts_at' => now()->subDays(fake()->numberBetween(0, 30)),

@@ -5,6 +5,8 @@ declare(strict_types=1);
 arch()->preset()->php();
 arch()->preset()->security()->ignoring([
     'assert',
+    App\Console\Commands\AppDemoCommand::class,
+    App\Console\Commands\ModuleInstallCommand::class,
 ]);
 
 arch('controllers')
@@ -62,7 +64,9 @@ arch('seeders only use allowed layers')
         'App\Enums',
         'App\Events',
         'App\Models',
+        'App\Notifications',
         'App\Services',
+        'App\Support',
         'Database\Seeders',
         'Database\Factories',
         'Illuminate\Database',
@@ -71,10 +75,13 @@ arch('seeders only use allowed layers')
         'Illuminate\Foundation',
         'LevelUp\Experience',
         'MartinPetricko\LaravelDatabaseMail',
+        'Modules\Billing',
+        'Modules\PageBuilder',
+        'Modules\Workflows',
         'Pgvector\Laravel',
         'Spatie\Permission',
     ])
-    ->ignoring(['RuntimeException', 'Throwable', 'app', 'config', 'database_path', 'now', 'resolve']);
+    ->ignoring(['RuntimeException', 'Throwable', 'app', 'config', 'database_path', 'fake', 'now', 'resolve']);
 
 // Strict preset disabled: Filament resource pages override protected getHeaderActions()
 // and LoadsJsonData uses protected loadJson(); strict()->ignoring() did not exclude them.

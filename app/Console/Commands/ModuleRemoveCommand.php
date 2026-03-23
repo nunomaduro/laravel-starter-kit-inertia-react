@@ -8,6 +8,7 @@ use App\Support\ModuleLoader;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 use function Laravel\Prompts\confirm;
@@ -239,7 +240,7 @@ final class ModuleRemoveCommand extends Command
     private function deleteDirectoryExceptMigrations(string $modulePath): void
     {
         $migrationsPath = $modulePath.'/database/migrations';
-        $tempPath = sys_get_temp_dir().'/module_migrations_'.uniqid();
+        $tempPath = sys_get_temp_dir().'/module_migrations_'.Str::random(8);
 
         // Move migrations to temp if they exist
         $hasMigrations = File::isDirectory($migrationsPath);

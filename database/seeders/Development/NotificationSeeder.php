@@ -37,10 +37,10 @@ final class NotificationSeeder extends Seeder
             $used = [];
 
             for ($i = 0; $i < $count; $i++) {
-                $template = $templates[array_rand($templates)];
+                $template = fake()->randomElement($templates);
                 $key = implode('|', $template);
                 if (isset($used[$key]) && $used[$key] >= 2) {
-                    $template = $templates[array_rand($templates)];
+                    $template = fake()->randomElement($templates);
                 }
                 $used[implode('|', $template)] = ($used[implode('|', $template)] ?? 0) + 1;
 

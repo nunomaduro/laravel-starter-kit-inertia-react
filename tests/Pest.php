@@ -40,6 +40,9 @@ pest()->extend(TestCase::class)
         // Disable laravel-governor's CreatedListener which tries to assign a "Member" role
         // via $model->roles()->syncWithoutDetaching('Member') on every User creation.
         // This conflicts with Spatie's model_has_roles.organization_id NOT NULL constraint.
+        // Disable laravel-governor's CreatedListener which tries to assign a "Member" role
+        // via $model->roles()->syncWithoutDetaching('Member') on every User creation.
+        // This conflicts with Spatie's model_has_roles.organization_id NOT NULL constraint.
         config()->set('genealabs-laravel-governor.models.auth', 'disabled');
     })
     ->in('Feature', 'Unit');
