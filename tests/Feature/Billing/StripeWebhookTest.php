@@ -329,6 +329,7 @@ it('handles invoice.paid webhook and creates invoice', function (): void {
 
 it('handles invoice.paid webhook with existing invoice (idempotent)', function (): void {
     Event::fake([InvoicePaid::class]);
+    Illuminate\Support\Facades\Notification::fake();
 
     $invoiceId = 'in_stripe_'.uniqid();
 

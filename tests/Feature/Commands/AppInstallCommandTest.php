@@ -17,6 +17,29 @@ use Illuminate\Support\Facades\Artisan;
 beforeEach(function (): void {
     $path = base_path('.env');
     $this->originalEnv = file_exists($path) ? (string) file_get_contents($path) : '';
+
+    // Seed scout settings so ScoutSettings can be resolved without TypeError
+    // (the settings migration data rows are not present in the schema dump).
+    foreach ([
+        'driver' => 'collection',
+        'prefix' => '',
+        'queue' => false,
+        'identify' => false,
+        'typesense_api_key' => null,
+        'typesense_host' => 'localhost',
+        'typesense_port' => 8108,
+        'typesense_protocol' => 'http',
+    ] as $name => $value) {
+        Illuminate\Support\Facades\DB::table('settings')->updateOrInsert(
+            ['group' => 'scout', 'name' => $name],
+            [
+                'locked' => false,
+                'payload' => json_encode($value),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+    }
 });
 
 afterEach(function (): void {

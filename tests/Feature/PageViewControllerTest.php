@@ -9,6 +9,10 @@ use Database\Seeders\Essential\RolesAndPermissionsSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Modules\PageBuilder\Models\Page;
 
+afterEach(function (): void {
+    TenantContext::forget();
+});
+
 it('redirects when tenant context is missing', function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
     $user = User::factory()->withoutTwoFactor()->create();
@@ -34,6 +38,8 @@ it('shows published page when tenant is set', function (): void {
     Artisan::call('permission:sync', ['--silent' => true]);
     $page = Page::factory()->for($org)->published()->create(['slug' => 'about']);
 
+    TenantContext::set($org);
+
     $response = $this->actingAs($user)
         ->withSession(['current_organization_id' => $org->id])
         ->get(route('pages.show', $page->slug));
@@ -58,6 +64,8 @@ it('shows published page for authenticated user with tenant', function (): void 
     Artisan::call('permission:sync', ['--silent' => true]);
     $page = Page::factory()->for($org)->published()->create(['slug' => 'welcome']);
 
+    TenantContext::set($org);
+
     $response = $this->actingAs($user)
         ->withSession(['current_organization_id' => $org->id])
         ->get(route('pages.show', $page->slug));
@@ -72,10 +80,12 @@ it('shows published page for authenticated user with tenant', function (): void 
 it('denies viewing draft page when user cannot manage pages', function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
     $org = Organization::factory()->create();
-    $user = User::factory()->withoutTwoFactor()->create();
+    $user = User::factory()->withoutTwoFactor()->create(['onboarding_completed' => true]);
     $org->addMember($user, 'member');
     Artisan::call('permission:sync', ['--silent' => true]);
     $page = Page::factory()->for($org)->create(['slug' => 'draft', 'is_published' => false]);
+
+    TenantContext::set($org);
 
     $response = $this->actingAs($user)
         ->withSession(['current_organization_id' => $org->id])
@@ -86,12 +96,14 @@ it('denies viewing draft page when user cannot manage pages', function (): void 
 
 it('returns 404 for non-existent slug', function (): void {
     $this->seed(RolesAndPermissionsSeeder::class);
-    $user = User::factory()->withoutTwoFactor()->create();
+    $user = User::factory()->withoutTwoFactor()->create(['onboarding_completed' => true]);
     $org = $user->defaultOrganization();
     if (! $org) {
         $org = Organization::factory()->create();
         $org->addMember($user, 'admin');
     }
+
+    TenantContext::set($org);
 
     $response = $this->actingAs($user)
         ->withSession(['current_organization_id' => $org->id])

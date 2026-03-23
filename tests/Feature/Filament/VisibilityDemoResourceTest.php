@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\VisibilityEnum;
+use App\Models\Organization;
 use App\Models\VisibilityDemo;
 use App\Settings\SetupWizardSettings;
 use Database\Seeders\Essential\RolesAndPermissionsSeeder;
@@ -26,10 +27,12 @@ it('allows super-admin to open visibility demos create page', function (): void 
 });
 
 it('creates visibility demo as global when share_to_all_orgs is true', function (): void {
+    $organization = Organization::factory()->create();
+
     $record = VisibilityDemo::query()->create([
         'title' => 'Global demo item',
         'visibility' => VisibilityEnum::Organization,
-        'organization_id' => 1,
+        'organization_id' => $organization->id,
     ]);
 
     $record->visibility = VisibilityEnum::Global;

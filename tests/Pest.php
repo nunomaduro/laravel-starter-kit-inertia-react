@@ -37,6 +37,11 @@ pest()->extend(TestCase::class)
         // cascade that fails on SQLite (organization_id NOT NULL on model_has_roles).
         config()->set('tenancy.seed_in_progress', true);
 
+        // Mark setup as complete so RedirectToInstallerIfNotSetup middleware
+        // does not return 503 on every request. The settings table exists (from
+        // schema dump) but has no data rows, so setup_completed defaults to false.
+        config()->set('settings.setup_completed', true);
+
         // Disable laravel-governor's CreatedListener which tries to assign a "Member" role
         // via $model->roles()->syncWithoutDetaching('Member') on every User creation.
         // This conflicts with Spatie's model_has_roles.organization_id NOT NULL constraint.
@@ -58,6 +63,10 @@ pest()->extend(TestCase::class)
 
         $this->freezeTime();
         // Do not call withoutVite() so Browser tests load real Vite assets and the app JS runs.
+
+        // Mark setup as complete so RedirectToInstallerIfNotSetup middleware
+        // does not return 503 on every request.
+        config()->set('settings.setup_completed', true);
     })
     ->in('Browser');
 

@@ -30,6 +30,11 @@ final class RedirectToInstallerIfNotSetup
             return $next($request);
         }
 
+        // Allow tests (or config) to bypass setup check
+        if (config('settings.setup_completed')) {
+            return $next($request);
+        }
+
         try {
             $wizard = resolve(SetupWizardSettings::class);
             if ($wizard->setup_completed) {

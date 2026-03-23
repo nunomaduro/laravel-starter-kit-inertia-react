@@ -56,7 +56,7 @@ final class InvoicePaidNotification extends Notification
             ->line('Thank you. Invoice '.$this->invoice->number.' for '.$formattedTotal.' has been paid.')
             ->action('View Invoices', route('billing.invoices.index'))
             ->attachData(
-                $laravelInvoice->toHtml(),
+                (string) $laravelInvoice->toHtml()->render(),
                 'invoice-'.$this->invoice->number.'.html',
                 ['mime' => 'text/html'],
             );

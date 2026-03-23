@@ -823,6 +823,33 @@ final class AppInstallCommand extends Command
         }
     }
 
+    /**
+     * Ensure all properties for a settings group exist in the DB.
+     * Prevents TypeError when spatie/laravel-settings loads null into typed properties.
+     *
+     * @param  array<string, mixed>  $defaults
+     */
+    private function ensureSettingsGroupSeeded(string $group, array $defaults): void
+    {
+        foreach ($defaults as $name => $value) {
+            $exists = DB::table('settings')
+                ->where('group', $group)
+                ->where('name', $name)
+                ->exists();
+
+            if (! $exists) {
+                DB::table('settings')->insert([
+                    'group' => $group,
+                    'name' => $name,
+                    'locked' => false,
+                    'payload' => json_encode($value),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+    }
+
     private function migrationsRan(): bool
     {
         try {
@@ -1100,6 +1127,16 @@ final class AppInstallCommand extends Command
                 default: 'typesense',
             );
 
+        $this->ensureSettingsGroupSeeded('scout', [
+            'driver' => 'collection',
+            'prefix' => '',
+            'queue' => false,
+            'identify' => false,
+            'typesense_api_key' => null,
+            'typesense_host' => 'localhost',
+            'typesense_port' => 8108,
+            'typesense_protocol' => 'http',
+        ]);
         $scout = resolve(ScoutSettings::class);
         $scout->driver = $driver;
 
