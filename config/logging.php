@@ -137,6 +137,15 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'ecs' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ecs/laravel.json'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => env('LOG_DAILY_DAYS', 14),
+            'formatter' => App\Infrastructure\Logging\EcsFormatter::class,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];
