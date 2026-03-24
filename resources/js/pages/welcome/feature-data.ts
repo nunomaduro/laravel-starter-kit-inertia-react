@@ -49,6 +49,10 @@ import {
     Users,
     Wand2,
     Workflow,
+    Zap,
+    ShieldCheck,
+    Slack,
+    Stamp,
     type LucideIcon,
 } from 'lucide-react';
 
@@ -154,11 +158,15 @@ export const featureGroups: FeatureGroup[] = [
             { icon: Download, title: 'Personal Data Export', description: 'GDPR-ready ZIP export delivered via queued job.', dataPan: 'welcome-feature-data-export' },
             { icon: CloudCog, title: 'Backups', description: 'Spatie Laravel Backup with disk, DB, and Filament management.', dataPan: 'welcome-feature-backups' },
             { icon: Rocket, title: 'CLI Installer', description: 'Interactive CLI installer with presets, AI keys, and demo data.', dataPan: 'welcome-feature-cli-installer' },
-            { icon: TestTube, title: '520+ Tests', description: 'Comprehensive Pest test suite with feature and unit tests. 100% coverage target.', dataPan: 'welcome-feature-tests' },
+            { icon: TestTube, title: '670+ Tests', description: 'Comprehensive Pest test suite covering policies, jobs, controllers, actions, API endpoints, and tenant isolation.', dataPan: 'welcome-feature-tests' },
             { icon: Route, title: 'Type-safe Routes', description: 'Laravel Wayfinder generates TypeScript functions for every route. No magic strings.', dataPan: 'welcome-feature-wayfinder' },
             { icon: Cog, title: 'Code Quality', description: 'Rector, PHPStan max, Laravel Pint, ESLint, and Prettier enforced. Zero tolerance for code smells.', dataPan: 'welcome-feature-code-quality' },
             { icon: Heart, title: 'Health Checks', description: 'Spatie Health with scheduled monitoring. Database, queue, disk, and custom checks.', dataPan: 'welcome-feature-health-checks' },
             { icon: UserCheck, title: 'User Onboarding', description: 'Multi-step onboarding flow with spatie/laravel-onboard. Verify email, complete profile, get started.', dataPan: 'welcome-feature-onboarding' },
+            { icon: Zap, title: 'Response Caching', description: 'Spatie response cache for blazing-fast page loads on public routes.', dataPan: 'welcome-feature-response-cache' },
+            { icon: ShieldCheck, title: 'Rate-limited Jobs', description: 'Spatie rate-limited job middleware prevents API flooding on webhooks and notifications.', dataPan: 'welcome-feature-rate-limited-jobs' },
+            { icon: Slack, title: 'Slack Alerts', description: 'Automatic Slack notifications on failed jobs and critical errors.', dataPan: 'welcome-feature-slack' },
+            { icon: Stamp, title: 'Userstamps', description: 'Automatic created_by and updated_by tracking on all stamped models.', dataPan: 'welcome-feature-userstamps' },
         ],
     },
 ];
