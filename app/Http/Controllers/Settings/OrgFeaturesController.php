@@ -46,8 +46,12 @@ final class OrgFeaturesController extends Controller
             ];
         }
 
+        $currentPlan = $organization->activePlan();
+
         return Inertia::render('settings/features', [
             'features' => $features,
+            'orgPlan' => $currentPlan?->slug,
+            'planFeatures' => config('billing.plan_features', []),
         ]);
     }
 
