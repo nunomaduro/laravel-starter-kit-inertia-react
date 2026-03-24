@@ -47,8 +47,8 @@ final class ListActionsAiTool implements Tool
             $actionsDir = $modulePath.'/src/Actions';
 
             if (File::isDirectory($actionsDir)) {
-                $moduleName = Str::after(basename($modulePath), 'module-');
-                $namespace = 'Cogneiss\\Module'.Str::studly($moduleName).'\\Actions';
+                $moduleName = basename($modulePath);
+                $namespace = 'Modules\\'.Str::studly($moduleName).'\\Actions';
                 $actions = [...$actions, ...$this->scanActions($actionsDir, $namespace)];
             }
         }

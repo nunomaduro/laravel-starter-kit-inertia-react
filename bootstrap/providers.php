@@ -16,6 +16,6 @@ return [
     App\Providers\PermissionServiceProvider::class,
     App\Providers\SettingsOverlayServiceProvider::class,
     // Modules
-    Cogneiss\ModuleHr\Providers\HrModuleServiceProvider::class,
-    Cogneiss\ModuleCrm\Providers\CrmModuleServiceProvider::class,
+    Modules\Hr\Providers\HrModuleServiceProvider::class,
+    Modules\Crm\Providers\CrmModuleServiceProvider::class,
 ];

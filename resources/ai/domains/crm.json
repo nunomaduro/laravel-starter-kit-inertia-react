@@ -2,7 +2,7 @@
     "name": "Customer Relationship Management",
     "slug": "crm",
     "description": "Contact management, deal tracking, sales pipelines, and activity logging",
-    "modules": ["cogneiss/module-crm"],
+    "modules": ["modules/crm"],
     "terminology": {
         "contact": "A person or lead with name, company, role, and communication details",
         "deal": "A sales opportunity with monetary value, pipeline stage, probability, and expected close date",

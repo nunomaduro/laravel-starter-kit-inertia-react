@@ -44,7 +44,7 @@ final class ListModelsAiTool implements Tool
         $modulePaths = File::directories(base_path('modules'));
 
         foreach ($modulePaths as $modulePath) {
-            $moduleName = Str::after(basename($modulePath), 'module-');
+            $moduleName = basename($modulePath);
 
             if ($module && $moduleName !== $module) {
                 continue;
@@ -53,7 +53,7 @@ final class ListModelsAiTool implements Tool
             $srcModels = $modulePath.'/src/Models';
 
             if (File::isDirectory($srcModels)) {
-                $namespace = 'Cogneiss\\Module'.Str::studly($moduleName).'\\Models';
+                $namespace = 'Modules\\'.Str::studly($moduleName).'\\Models';
                 $models = [...$models, ...$this->scanDirectory($srcModels, $namespace)];
             }
         }

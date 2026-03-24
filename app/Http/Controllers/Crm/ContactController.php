@@ -6,11 +6,11 @@ namespace App\Http\Controllers\Crm;
 
 use App\Http\Requests\Crm\StoreContactRequest;
 use App\Http\Requests\Crm\UpdateContactRequest;
-use Cogneiss\ModuleCrm\Models\Contact;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Crm\Models\Contact;
 
 final readonly class ContactController
 {

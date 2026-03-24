@@ -25,7 +25,7 @@ use function Laravel\Prompts\warning;
 final class ModuleInstallCommand extends Command
 {
     protected $signature = 'module:install
-                            {package : The Composer package name (e.g. cogneiss/module-hr)}
+                            {package : The Composer package name (e.g. modules/hr)}
                             {--no-seed : Skip seeding demo data}
                             {--force : Skip confirmation prompts}';
 
@@ -177,7 +177,7 @@ final class ModuleInstallCommand extends Command
         $parts = explode('/', $package);
         $moduleName = str_replace('module-', '', end($parts));
         $moduleName = str_replace('-', '', ucwords($moduleName, '-'));
-        $seederClass = "Cogneiss\\Module{$moduleName}\\Database\\Seeders\\{$moduleName}Seeder";
+        $seederClass = "Modules\\{$moduleName}\\Database\\Seeders\\{$moduleName}Seeder";
 
         if (class_exists($seederClass)) {
             spin(function () use ($seederClass): void {

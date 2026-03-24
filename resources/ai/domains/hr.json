@@ -2,7 +2,7 @@
     "name": "Human Resources",
     "slug": "hr",
     "description": "Employee management, departments, leave tracking, attendance, and performance reviews",
-    "modules": ["cogneiss/module-hr"],
+    "modules": ["modules/hr"],
     "terminology": {
         "employee": "A staff member with personal details, position, department, and employment history",
         "department": "An organizational unit grouping employees under a common function",
