@@ -41,11 +41,14 @@ final class SearchController
         $total = 0;
 
         if ($this->shouldSearch('users', $type) && $total < $totalLimit) {
+            $isSuperAdmin = $request->user()?->isSuperAdmin() ?? false;
             $users = User::search($query)
-                ->query(fn (Builder $builder) => $builder->whereHas(
-                    'organizations',
-                    fn (Builder $q) => $q->where('organizations.id', TenantContext::id())
-                ))
+                ->query(fn (Builder $builder) => $isSuperAdmin
+                    ? $builder
+                    : $builder->whereHas(
+                        'organizations',
+                        fn (Builder $q) => $q->where('organizations.id', TenantContext::id())
+                    ))
                 ->take($perCategory)
                 ->get()
                 ->map(fn (User $user): array => [

@@ -484,7 +484,7 @@ export default function UsersTablePage({
                         clipboardPaste: true,
                         dragToFill: true,
                         headerFilters: true,
-                        masterDetail: true,
+                        masterDetail: false,
                         stickyHeader: true,
                         // Disabled features
                         spreadsheetMode: false,

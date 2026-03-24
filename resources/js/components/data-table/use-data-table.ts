@@ -16,19 +16,30 @@ const STORAGE_PREFIX = "dt-columns-";
 const ORDER_STORAGE_PREFIX = "dt-column-order-";
 
 function loadVisibility(tableName: string, columns: DataTableColumnDef[]): VisibilityState {
+    const serverDefaults: VisibilityState = {};
+    const knownIds = new Set<string>();
+    for (const col of columns) {
+        serverDefaults[col.id] = col.visible;
+        knownIds.add(col.id);
+    }
+
     const stored = localStorage.getItem(STORAGE_PREFIX + tableName);
     if (stored) {
         try {
-            return JSON.parse(stored) as VisibilityState;
+            const parsed = JSON.parse(stored) as VisibilityState;
+            // Reconcile: use stored values for known columns, server defaults for new ones
+            const merged: VisibilityState = { ...serverDefaults };
+            for (const [id, visible] of Object.entries(parsed)) {
+                if (knownIds.has(id)) {
+                    merged[id] = visible;
+                }
+            }
+            return merged;
         } catch {
             // fall through
         }
     }
-    const visibility: VisibilityState = {};
-    for (const col of columns) {
-        visibility[col.id] = col.visible;
-    }
-    return visibility;
+    return serverDefaults;
 }
 
 function saveVisibility(tableName: string, visibility: VisibilityState) {
@@ -36,15 +47,21 @@ function saveVisibility(tableName: string, visibility: VisibilityState) {
 }
 
 function loadColumnOrder(tableName: string, columns: DataTableColumnDef[]): ColumnOrderState {
+    const serverOrder = columns.map((col) => col.id);
     const stored = localStorage.getItem(ORDER_STORAGE_PREFIX + tableName);
     if (stored) {
         try {
-            return JSON.parse(stored) as ColumnOrderState;
+            const parsed = JSON.parse(stored) as ColumnOrderState;
+            const knownIds = new Set(serverOrder);
+            // Keep stored order for known columns, append any new columns at the end
+            const filtered = parsed.filter((id) => knownIds.has(id));
+            const missing = serverOrder.filter((id) => !filtered.includes(id));
+            return [...filtered, ...missing];
         } catch {
             // fall through
         }
     }
-    return columns.map((col) => col.id);
+    return serverOrder;
 }
 
 function saveColumnOrder(tableName: string, order: ColumnOrderState) {

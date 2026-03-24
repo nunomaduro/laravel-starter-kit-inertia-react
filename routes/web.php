@@ -127,7 +127,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::put('organizations/{organization}/invitations/{invitation}/resend', [OrganizationInvitationController::class, 'update'])->name('organizations.invitations.resend')->scopeBindings();
     });
 
-    Route::get('search', SearchController::class)->middleware('tenant')->name('search');
+    Route::get('search', SearchController::class)->name('search');
 
     Route::get('profile/export-pdf', App\Http\Controllers\ProfileExportPdfController::class)
         ->middleware('feature:profile_pdf_export')

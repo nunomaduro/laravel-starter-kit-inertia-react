@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Modules\Blog\Models\Post;
+use Modules\Changelog\Models\ChangelogEntry;
+use Modules\Help\Models\HelpArticle;
 
 return [
 
@@ -191,6 +194,55 @@ return [
                 ],
                 'search-parameters' => [
                     'query_by' => 'name,email',
+                ],
+            ],
+            Post::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        ['name' => 'id', 'type' => 'string'],
+                        ['name' => 'title', 'type' => 'string'],
+                        ['name' => 'excerpt', 'type' => 'string'],
+                        ['name' => 'content', 'type' => 'string'],
+                        ['name' => 'created_at', 'type' => 'int64'],
+                        ['name' => 'updated_at', 'type' => 'int64'],
+                    ],
+                    'default_sorting_field' => 'created_at',
+                ],
+                'search-parameters' => [
+                    'query_by' => 'title,excerpt,content',
+                ],
+            ],
+            HelpArticle::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        ['name' => 'id', 'type' => 'string'],
+                        ['name' => 'title', 'type' => 'string'],
+                        ['name' => 'excerpt', 'type' => 'string'],
+                        ['name' => 'content', 'type' => 'string'],
+                        ['name' => 'category', 'type' => 'string'],
+                        ['name' => 'created_at', 'type' => 'int64'],
+                        ['name' => 'updated_at', 'type' => 'int64'],
+                    ],
+                    'default_sorting_field' => 'created_at',
+                ],
+                'search-parameters' => [
+                    'query_by' => 'title,excerpt,content',
+                ],
+            ],
+            ChangelogEntry::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        ['name' => 'id', 'type' => 'string'],
+                        ['name' => 'title', 'type' => 'string'],
+                        ['name' => 'description', 'type' => 'string'],
+                        ['name' => 'version', 'type' => 'string'],
+                        ['name' => 'created_at', 'type' => 'int64'],
+                        ['name' => 'updated_at', 'type' => 'int64'],
+                    ],
+                    'default_sorting_field' => 'created_at',
+                ],
+                'search-parameters' => [
+                    'query_by' => 'title,description',
                 ],
             ],
         ],

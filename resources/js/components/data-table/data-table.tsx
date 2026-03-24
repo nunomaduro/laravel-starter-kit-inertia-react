@@ -5111,7 +5111,7 @@ function DataTableInner<TData extends object>({
                     <div ref={scrollShadowRightRef} className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-20 bg-gradient-to-l from-background/80 to-transparent opacity-0 transition-opacity duration-150" aria-hidden="true" />
                     <div ref={virtualContainerRef} className={cn("overflow-x-auto", resolvedOptions.virtualScrolling && "max-h-[600px] overflow-y-auto")}
                         style={resolvedOptions.virtualScrolling && autoSizerDimensions && autoSizerDimensions.height > 0 ? { height: autoSizerDimensions.height } : undefined}>
-                        <Table ref={tableElementRef} style={resolvedOptions.columnResizing ? { width: table.getCenterTotalSize() } : undefined}
+                        <Table ref={tableElementRef} className="w-max min-w-full" style={resolvedOptions.columnResizing ? { width: table.getCenterTotalSize() } : undefined}
                             role="grid" aria-rowcount={meta.total} aria-colcount={table.getVisibleLeafColumns().length}>
                             <TableHeader className={cn(resolvedOptions.stickyHeader && "sticky top-0 z-10 bg-background shadow-[0_1px_3px_-1px_rgba(0,0,0,0.1)]")}>
                                 {table.getHeaderGroups().map((headerGroup, groupIdx) => {
@@ -5184,6 +5184,7 @@ function DataTableInner<TData extends object>({
                                                     <TableHead key={header.id} colSpan={header.colSpan}
                                                         style={{ ...pin.style, ...(resolvedOptions.columnResizing ? { width: header.getSize() } : {}) }}
                                                         className={cn("h-9 text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border/40", isNumber && "text-right",
+                                                            header.column.id.startsWith("_") && "w-px",
                                                             leafGroup && groupClassName?.[leafGroup],
                                                             pin.className, "relative")}
                                                         aria-sort={ariaSort} role="columnheader">
@@ -5333,6 +5334,7 @@ function DataTableInner<TData extends object>({
                                                                     className={cn(
                                                                         isAutoHeight ? "whitespace-normal" : "whitespace-nowrap",
                                                                         densityClasses.cell,
+                                                                        cell.column.id.startsWith("_") && "w-px",
                                                                         cellMeta?.type === "number" && "text-right",
                                                                         cellMeta?.type === "currency" && "text-right",
                                                                         cellMeta?.type === "percentage" && "text-right",

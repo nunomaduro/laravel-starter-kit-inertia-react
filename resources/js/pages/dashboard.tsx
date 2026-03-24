@@ -1,3 +1,4 @@
+import { ActivityLog, type ActivityEntry } from '@/components/composed/activity-log';
 import { OnboardingCard } from '@/components/onboarding-card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -56,6 +57,7 @@ interface DashboardProps {
     orgsCount?: number;
     contactSubmissionsCount?: number;
     weeklyStats?: WeeklyStat[];
+    recentActivity?: ActivityEntry[];
     usersGrowthPercent?: number | null;
     orgsGrowthPercent?: number | null;
 }
@@ -109,6 +111,7 @@ export default function Dashboard() {
                         orgsCount={props.orgsCount}
                         contactSubmissionsCount={props.contactSubmissionsCount}
                         weeklyStats={weeklyStats}
+                        recentActivity={props.recentActivity ?? []}
                         showContact={showContact}
                         usersGrowthPercent={props.usersGrowthPercent}
                         orgsGrowthPercent={props.orgsGrowthPercent}
@@ -223,6 +226,7 @@ function SuperAdminDashboard({
     orgsCount,
     contactSubmissionsCount,
     weeklyStats,
+    recentActivity,
     showContact,
     usersGrowthPercent,
     orgsGrowthPercent,
@@ -231,6 +235,7 @@ function SuperAdminDashboard({
     orgsCount?: number;
     contactSubmissionsCount?: number;
     weeklyStats: WeeklyStat[];
+    recentActivity: ActivityEntry[];
     showContact: boolean;
     usersGrowthPercent?: number | null;
     orgsGrowthPercent?: number | null;
@@ -275,7 +280,19 @@ function SuperAdminDashboard({
                 )}
             </div>
 
-            <ActivityChart data={weeklyStats} />
+            <div className="grid gap-4 lg:grid-cols-2">
+                <ActivityChart data={weeklyStats} />
+                <div className="rounded-xl border bg-card p-6" data-pan="dashboard-activity-feed">
+                    <h3 className="mb-4 font-medium">Recent activity</h3>
+                    {recentActivity.length > 0 ? (
+                        <ActivityLog entries={recentActivity} maxHeight={232} />
+                    ) : (
+                        <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
+                            No recent activity
+                        </div>
+                    )}
+                </div>
+            </div>
 
             <div className="rounded-lg border bg-card p-6">
                 <h3 className="mb-4 font-medium">Admin tools</h3>
