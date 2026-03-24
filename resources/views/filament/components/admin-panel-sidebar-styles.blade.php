@@ -72,40 +72,10 @@
         gap: 0.5rem;
     }
 
-    /* Sidebar collapsed: proper touch targets */
+    /* Sidebar collapsed: touch targets (tooltips are native via Alpine x-tooltip) */
     .fi-panel-admin .fi-sidebar[data-collapsed] .fi-sidebar-item-btn {
         min-width: 2.75rem;
         min-height: 2.75rem;
-    }
-
-    /* Sidebar collapsed: CSS tooltip on hover */
-    .fi-panel-admin .fi-sidebar[data-collapsed] .fi-sidebar-item-btn {
-        position: relative;
-    }
-    .fi-panel-admin .fi-sidebar[data-collapsed] .fi-sidebar-item-btn::after {
-        content: attr(x-tooltip);
-        position: absolute;
-        left: calc(100% + 0.5rem);
-        top: 50%;
-        transform: translateY(-50%);
-        background: var(--gray-900, #111);
-        color: var(--gray-100, #f5f5f5);
-        padding: 0.25rem 0.625rem;
-        border-radius: 0.375rem;
-        font-size: 0.75rem;
-        font-family: 'IBM Plex Sans', sans-serif;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 150ms ease;
-        z-index: 50;
-    }
-    .fi-panel-admin .fi-sidebar[data-collapsed] .fi-sidebar-item-btn:hover::after {
-        opacity: 1;
-    }
-    /* Hide tooltip if no x-tooltip attr present */
-    .fi-panel-admin .fi-sidebar[data-collapsed] .fi-sidebar-item-btn:not([x-tooltip])::after {
-        display: none;
     }
 
     /* Mobile: improve Filament table readability */

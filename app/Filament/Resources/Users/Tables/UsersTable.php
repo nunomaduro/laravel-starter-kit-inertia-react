@@ -30,26 +30,34 @@ final class UsersTable
                 ImageColumn::make('avatar')
                     ->label('')
                     ->circular()
-                    ->defaultImageUrl(fn ($record): string => 'https://ui-avatars.com/api/?name='.urlencode((string) $record->name).'&size=48'),
+                    ->defaultImageUrl(fn ($record): string => 'https://ui-avatars.com/api/?name='.urlencode((string) $record->name).'&size=48')
+                    ->visibleFrom('sm'),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->description(fn ($record): string => $record->email, position: 'below')
+                    ->wrap(),
                 TextColumn::make('email')
                     ->label('Email address')
-                    ->searchable(),
+                    ->searchable()
+                    ->visibleFrom('sm'),
                 TextColumn::make('roles.name')
                     ->label('Roles')
                     ->badge()
-                    ->separator(','),
+                    ->separator(',')
+                    ->visibleFrom('sm'),
                 TextColumn::make('tags.name')
                     ->label('Tags')
                     ->badge()
-                    ->separator(', '),
+                    ->separator(', ')
+                    ->visibleFrom('sm'),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
                 TextColumn::make('two_factor_confirmed_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('lg'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
