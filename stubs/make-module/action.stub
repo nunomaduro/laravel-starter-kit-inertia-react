@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{ ModuleName }}\Actions;
+
+use Illuminate\Support\Facades\DB;
+use Modules\{{ ModuleName }}\Models\{{ ModuleName }};
+
+final readonly class Create{{ ModuleName }}
+{
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function handle(array $data): {{ ModuleName }}
+    {
+        return DB::transaction(fn (): {{ ModuleName }} => {{ ModuleName }}::query()->create($data));
+    }
+}

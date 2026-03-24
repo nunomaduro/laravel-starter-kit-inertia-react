@@ -1,0 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+use Modules\{{ ModuleName }}\Models\{{ ModuleName }};
+
+it('can create a {{ moduleName }} model', function (): void {
+    ${{ modelVariable }} = {{ ModuleName }}::factory()->create();
+
+    expect(${{ modelVariable }})->toBeInstanceOf({{ ModuleName }}::class)
+        ->and(${{ modelVariable }}->exists)->toBeTrue();
+});

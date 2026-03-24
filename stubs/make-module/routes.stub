@@ -1,0 +1,10 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Support\Facades\Route;
+use Modules\{{ ModuleName }}\Http\Controllers\{{ ModuleName }}Controller;
+
+Route::middleware(['web', 'auth', 'verified', 'tenant'])->group(function (): void {
+    Route::get('/{{ moduleName }}', [{{ ModuleName }}Controller::class, 'index'])->name('{{ module_name }}.index');
+});

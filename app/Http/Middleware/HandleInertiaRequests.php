@@ -10,6 +10,7 @@ use App\Services\TenantContext;
 use App\Settings\SeoSettings;
 use App\Support\FeatureHelper;
 use App\Support\ModuleFeatureRegistry;
+use App\Support\ModuleNavigationRegistry;
 use Closure;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
@@ -94,6 +95,7 @@ final class HandleInertiaRequests extends Middleware
             ],
             'announcements' => $this->resolveAnnouncements($user),
             'onboarding' => $this->resolveOnboarding($user, $features),
+            'moduleNavItems' => fn () => ModuleNavigationRegistry::groupedBySection(),
         ];
     }
 

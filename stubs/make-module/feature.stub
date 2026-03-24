@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{ ModuleName }}\Features;
+
+use Stephenjude\FilamentFeatureFlag\Traits\WithFeatureResolver;
+
+final class {{ ModuleName }}Feature
+{
+    use WithFeatureResolver;
+
+    public bool $defaultValue = true;
+}

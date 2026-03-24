@@ -15,7 +15,4 @@ return [
     App\Providers\PanServiceProvider::class,
     App\Providers\PermissionServiceProvider::class,
     App\Providers\SettingsOverlayServiceProvider::class,
-    // Modules
-    Cogneiss\ModuleHr\Providers\HrModuleServiceProvider::class,
-    Cogneiss\ModuleCrm\Providers\CrmModuleServiceProvider::class,
 ];

@@ -2,6 +2,6 @@
     "name": "reports",
     "label": "Reports",
     "description": "Drag-and-drop report builder with charts, tables, KPIs, and scheduled exports.",
-    "provider": "Modules\\Reports\\ReportsServiceProvider",
+    "provider": "Modules\\Reports\\Providers\\ReportsModuleServiceProvider",
     "seeders": []
 }

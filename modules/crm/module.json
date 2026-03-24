@@ -1,0 +1,6 @@
+{
+    "name": "crm",
+    "label": "CRM",
+    "description": "Customer relationship management with contacts, deals, pipelines, and activity tracking.",
+    "provider": "Modules\\Crm\\Providers\\CrmModuleServiceProvider"
+}

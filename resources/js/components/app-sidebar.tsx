@@ -13,34 +13,37 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { chat, dashboard } from '@/routes';
-import { index as blogIndex } from '@/routes/blog';
-import { index as changelogIndex } from '@/routes/changelog';
-import { create as contactCreate } from '@/routes/contact';
-import { index as helpIndex } from '@/routes/help';
 import organizations from '@/routes/organizations';
-import { type NavItem, type SharedData } from '@/types';
+import { type ModuleNavItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import {
     Bell,
     BookOpen,
+    Box,
     Building2,
-    CreditCard,
     ExternalLink,
     FileText,
     Folder,
     FolderTree,
     LayoutGrid,
-    LifeBuoy,
-    Mail,
-    Megaphone,
     MessageCircle,
     ShieldCheck,
     Users,
+    type LucideIcon,
 } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+function resolveIcon(name: string): LucideIcon {
+    const pascalName = name
+        .split('-')
+        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+        .join('');
+    return (Icons as unknown as Record<string, LucideIcon>)[pascalName] ?? Box;
+}
+
+const coreNavItems: NavItem[] = [
     // ── Platform ──
     {
         title: 'Dashboard',
@@ -107,60 +110,6 @@ const mainNavItems: NavItem[] = [
         tenancyRequired: true,
         dataPan: 'nav-pages',
     },
-    {
-        title: 'Blog',
-        href: blogIndex().url,
-        icon: FileText,
-        group: 'Content',
-        permission: 'blog.index',
-        feature: 'blog',
-        dataPan: 'nav-blog',
-    },
-    {
-        title: 'Posts',
-        href: '/posts',
-        icon: FileText,
-        group: 'Content',
-        permission: 'blog.index',
-        feature: 'blog',
-        dataPan: 'nav-posts',
-    },
-    {
-        title: 'Changelog',
-        href: changelogIndex().url,
-        icon: Megaphone,
-        group: 'Content',
-        permission: 'changelog.index',
-        feature: 'changelog',
-        dataPan: 'nav-changelog',
-    },
-    // ── Billing ──
-    {
-        title: 'Billing',
-        href: '/billing',
-        icon: CreditCard,
-        group: 'Billing',
-        dataPan: 'nav-billing',
-    },
-    // ── Support ──
-    {
-        title: 'Help',
-        href: helpIndex().url,
-        icon: LifeBuoy,
-        group: 'Support',
-        permission: 'help.index',
-        feature: 'help',
-        dataPan: 'nav-help',
-    },
-    {
-        title: 'Contact',
-        href: contactCreate().url,
-        icon: Mail,
-        group: 'Support',
-        permission: 'contact.create',
-        feature: 'contact',
-        dataPan: 'nav-contact',
-    },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -218,17 +167,40 @@ function canShowNavItem(
     return required.some((p) => permissions.includes(p));
 }
 
+function moduleNavItemToNavItem(item: ModuleNavItem): NavItem {
+    return {
+        title: item.label,
+        href: item.route,
+        icon: resolveIcon(item.icon),
+        group: item.group,
+        feature: item.module,
+        permission: item.permission,
+        dataPan: `nav-module-${item.module}`,
+    };
+}
+
 export function AppSidebar() {
-    const { auth, features } = usePage<SharedData>().props;
+    const { auth, features, moduleNavItems = {} } = usePage<SharedData>().props;
     const permissions = auth.permissions ?? [];
     const canBypass = auth.can_bypass ?? false;
     const resolvedFeatures = features ?? {};
     const tenancyEnabled = auth.tenancy_enabled ?? true;
     const isSuperAdmin = auth.roles?.includes('super-admin') ?? false;
 
+    const dynamicNavItems = useMemo<NavItem[]>(() => {
+        return Object.values(moduleNavItems)
+            .flat()
+            .map(moduleNavItemToNavItem);
+    }, [moduleNavItems]);
+
+    const allMainNavItems = useMemo<NavItem[]>(
+        () => [...coreNavItems, ...dynamicNavItems],
+        [dynamicNavItems],
+    );
+
     const visibleMainNavItems = useMemo(
         () =>
-            mainNavItems.filter((item) =>
+            allMainNavItems.filter((item) =>
                 canShowNavItem(
                     item,
                     permissions,
@@ -239,6 +211,7 @@ export function AppSidebar() {
                 ),
             ),
         [
+            allMainNavItems,
             permissions,
             canBypass,
             resolvedFeatures,
@@ -246,6 +219,7 @@ export function AppSidebar() {
             isSuperAdmin,
         ],
     );
+
     const visibleFooterNavItems = useMemo(
         () =>
             footerNavItems.filter((item) =>

@@ -6,14 +6,14 @@ namespace App\Http\Controllers\Hr;
 
 use App\Http\Requests\Hr\StoreEmployeeRequest;
 use App\Http\Requests\Hr\UpdateEmployeeRequest;
-use Cogneiss\ModuleHr\Actions\CreateEmployee;
-use Cogneiss\ModuleHr\Actions\UpdateEmployee;
-use Cogneiss\ModuleHr\Models\Department;
-use Cogneiss\ModuleHr\Models\Employee;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Hr\Actions\CreateEmployee;
+use Modules\Hr\Actions\UpdateEmployee;
+use Modules\Hr\Models\Department;
+use Modules\Hr\Models\Employee;
 
 final readonly class EmployeeController
 {

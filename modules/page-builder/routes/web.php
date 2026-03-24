@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\PageBuilder\Http\Controllers\PageController;
 use Modules\PageBuilder\Http\Controllers\PageViewController;
 
-Route::middleware(['auth', 'verified', 'tenant', 'feature:page_builder'])->group(function (): void {
+Route::middleware(['auth', 'verified', 'tenant', 'feature:page-builder'])->group(function (): void {
     Route::get('pages', [PageController::class, 'index'])->name('pages.index');
     Route::get('pages/create', [PageController::class, 'create'])->name('pages.create');
     Route::post('pages', [PageController::class, 'store'])->name('pages.store')->middleware('throttle:30,1');

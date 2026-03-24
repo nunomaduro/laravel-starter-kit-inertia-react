@@ -6,11 +6,11 @@ namespace App\Http\Controllers\Crm;
 
 use App\Http\Requests\Crm\StoreDealRequest;
 use App\Http\Requests\Crm\UpdateDealRequest;
-use Cogneiss\ModuleCrm\Models\Contact;
-use Cogneiss\ModuleCrm\Models\Deal;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Crm\Models\Contact;
+use Modules\Crm\Models\Deal;
 
 final readonly class DealController
 {

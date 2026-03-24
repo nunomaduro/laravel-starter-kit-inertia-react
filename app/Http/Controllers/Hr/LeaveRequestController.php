@@ -6,12 +6,12 @@ namespace App\Http\Controllers\Hr;
 
 use App\Http\Requests\Hr\StoreLeaveRequestRequest;
 use App\Http\Requests\Hr\UpdateLeaveRequestRequest;
-use Cogneiss\ModuleHr\Actions\CreateLeaveRequest;
-use Cogneiss\ModuleHr\Models\Employee;
-use Cogneiss\ModuleHr\Models\LeaveRequest;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Hr\Actions\CreateLeaveRequest;
+use Modules\Hr\Models\Employee;
+use Modules\Hr\Models\LeaveRequest;
 
 final readonly class LeaveRequestController
 {

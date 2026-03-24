@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{ ModuleName }}\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Modules\{{ ModuleName }}\Database\Factories\{{ ModuleName }}Factory;
+
+final class {{ ModuleName }} extends Model
+{
+    use HasFactory;
+
+    /** @var list<string> */
+    protected $fillable = [
+        'name',
+    ];
+
+    protected static function newFactory(): {{ ModuleName }}Factory
+    {
+        return {{ ModuleName }}Factory::new();
+    }
+}

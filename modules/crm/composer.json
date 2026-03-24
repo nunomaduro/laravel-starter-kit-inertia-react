@@ -1,0 +1,21 @@
+{
+    "name": "modules/crm",
+    "description": "CRM module: contacts, deals, pipelines, activities",
+    "type": "library",
+    "require": {
+        "php": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Crm\\": "src/",
+            "Modules\\Crm\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Crm\\Providers\\CrmModuleServiceProvider"
+            ]
+        }
+    }
+}

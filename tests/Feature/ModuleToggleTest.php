@@ -21,7 +21,7 @@ test('enabled contact module routes return 200', function (): void {
     // Contact is enabled by default — routes registered at boot.
     // Re-register features after flush so feature middleware resolves.
     config(['modules.contact' => true]);
-    (new Modules\Contact\ContactServiceProvider(app()))->register();
+    (new Modules\Contact\Providers\ContactModuleServiceProvider(app()))->register();
 
     $this->get('/contact')
         ->assertOk();
@@ -29,7 +29,7 @@ test('enabled contact module routes return 200', function (): void {
 
 test('enabled module registers features in ModuleFeatureRegistry', function (): void {
     config(['modules.contact' => true]);
-    (new Modules\Contact\ContactServiceProvider(app()))->register();
+    (new Modules\Contact\Providers\ContactModuleServiceProvider(app()))->register();
 
     $inertiaFeatures = ModuleFeatureRegistry::allInertiaFeatures();
 
@@ -39,7 +39,7 @@ test('enabled module registers features in ModuleFeatureRegistry', function (): 
 
 test('enabled module feature resolves as active for user', function (): void {
     config(['modules.contact' => true]);
-    (new Modules\Contact\ContactServiceProvider(app()))->register();
+    (new Modules\Contact\Providers\ContactModuleServiceProvider(app()))->register();
 
     $user = User::withoutEvents(fn (): User => User::factory()->create());
 
@@ -56,7 +56,7 @@ test('enabled module feature resolves as active for user', function (): void {
 test('disabled module service provider does not register features', function (): void {
     config(['modules.contact' => false]);
 
-    $provider = new Modules\Contact\ContactServiceProvider(app());
+    $provider = new Modules\Contact\Providers\ContactModuleServiceProvider(app());
     $provider->register();
     $provider->boot();
 
@@ -67,7 +67,7 @@ test('disabled module service provider does not register features', function ():
 test('disabled module isEnabled returns false', function (): void {
     config(['modules.contact' => false]);
 
-    $provider = new Modules\Contact\ContactServiceProvider(app());
+    $provider = new Modules\Contact\Providers\ContactModuleServiceProvider(app());
 
     expect($provider->isEnabled())->toBeFalse();
 });
@@ -86,7 +86,7 @@ test('disabled module isEnabled returns false', function (): void {
 
 test('disabled contact feature causes route to return 404', function (): void {
     config(['modules.contact' => true]);
-    (new Modules\Contact\ContactServiceProvider(app()))->register();
+    (new Modules\Contact\Providers\ContactModuleServiceProvider(app()))->register();
 
     $user = User::withoutEvents(fn (): User => User::factory()->create());
     Feature::for($user)->deactivate(ContactFeature::class);
@@ -111,7 +111,7 @@ test('disabled contact module features are absent from the registry', function (
     // Registry flushed in beforeEach — contact not registered.
     // Only register non-contact modules.
     config(['modules.contact' => false]);
-    (new Modules\Contact\ContactServiceProvider(app()))->register();
+    (new Modules\Contact\Providers\ContactModuleServiceProvider(app()))->register();
 
     $allFeatures = ModuleFeatureRegistry::allInertiaFeatures();
 
@@ -127,7 +127,7 @@ test('disabled contact module features are absent from the registry', function (
 test('module toggle contract: enabled registers features, disabled does not', function (): void {
     // --- Enabled ---
     config(['modules.contact' => true]);
-    (new Modules\Contact\ContactServiceProvider(app()))->register();
+    (new Modules\Contact\Providers\ContactModuleServiceProvider(app()))->register();
 
     expect(ModuleFeatureRegistry::moduleInertiaFeatures())->toHaveKey('contact')
         ->and(ModuleFeatureRegistry::moduleRouteFeatures())->toHaveKey('contact');
@@ -135,7 +135,7 @@ test('module toggle contract: enabled registers features, disabled does not', fu
     // --- Reset and test disabled ---
     ModuleFeatureRegistry::flush();
     config(['modules.contact' => false]);
-    (new Modules\Contact\ContactServiceProvider(app()))->register();
+    (new Modules\Contact\Providers\ContactModuleServiceProvider(app()))->register();
 
     expect(ModuleFeatureRegistry::moduleInertiaFeatures())->not->toHaveKey('contact')
         ->and(ModuleFeatureRegistry::moduleRouteFeatures())->not->toHaveKey('contact');

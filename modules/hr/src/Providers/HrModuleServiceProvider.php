@@ -1,0 +1,82 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Hr\Providers;
+
+use App\Modules\Contracts\ProvidesAIContext;
+use App\Modules\Support\ModuleManifest;
+use App\Modules\Support\ModuleProvider;
+use Illuminate\Support\Facades\Gate;
+use Modules\Hr\Features\HrFeature;
+use Modules\Hr\Models\Department;
+use Modules\Hr\Models\Employee;
+use Modules\Hr\Models\LeaveRequest;
+use Modules\Hr\Policies\DepartmentPolicy;
+use Modules\Hr\Policies\EmployeePolicy;
+use Modules\Hr\Policies\LeaveRequestPolicy;
+
+final class HrModuleServiceProvider extends ModuleProvider implements ProvidesAIContext
+{
+    public function manifest(): ModuleManifest
+    {
+        return new ModuleManifest(
+            name: 'HR',
+            version: '1.0.0',
+            description: 'Human Resources management: employees, departments, leave requests',
+            models: [
+                Employee::class,
+                Department::class,
+                LeaveRequest::class,
+            ],
+            pages: [
+                'hr.employees.index' => 'hr/employees/index',
+                'hr.employees.create' => 'hr/employees/create',
+                'hr.employees.edit' => 'hr/employees/edit',
+            ],
+            navigation: [
+                ['label' => 'Employees', 'route' => 'hr.employees.index', 'icon' => 'users', 'group' => 'HR'],
+                ['label' => 'Departments', 'route' => 'hr.departments.index', 'icon' => 'building', 'group' => 'HR'],
+                ['label' => 'Leave Requests', 'route' => 'hr.leaves.index', 'icon' => 'calendar', 'group' => 'HR'],
+            ],
+        );
+    }
+
+    public function systemPrompt(): string
+    {
+        return <<<'PROMPT'
+        ## HR Module
+        This application manages human resources data:
+        - **Employees**: Staff records with employee number, name, email, position, department, hire date, salary, and status (active/inactive/terminated)
+        - **Departments**: Organizational units with a name, description, and optional department head
+        - **Leave Requests**: Employee time-off requests with type (annual, sick, personal, unpaid), date range, reason, and approval status (pending, approved, rejected)
+
+        Key relationships: Employees belong to Departments. Leave Requests belong to Employees. Departments have a head Employee.
+        All data is scoped to the current organization (multi-tenant).
+        PROMPT;
+    }
+
+    public function tools(): array
+    {
+        return [];
+    }
+
+    public function searchableModels(): array
+    {
+        return [
+            Employee::class,
+        ];
+    }
+
+    protected function featureClass(): ?string
+    {
+        return HrFeature::class;
+    }
+
+    protected function bootModule(): void
+    {
+        Gate::policy(Department::class, DepartmentPolicy::class);
+        Gate::policy(Employee::class, EmployeePolicy::class);
+        Gate::policy(LeaveRequest::class, LeaveRequestPolicy::class);
+    }
+}
