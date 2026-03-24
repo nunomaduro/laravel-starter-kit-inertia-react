@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\User;
+
+beforeEach(function (): void {
+    $this->user = User::factory()->create();
+    $this->actingAs($this->user);
+});
+
+it('displays the {{ moduleName }} index page', function (): void {
+    $this->get(route('{{ module_name }}.index'))
+        ->assertOk();
+});
+
+it('requires authentication', function (): void {
+    auth()->logout();
+
+    $this->get(route('{{ module_name }}.index'))
+        ->assertRedirect(route('login'));
+});

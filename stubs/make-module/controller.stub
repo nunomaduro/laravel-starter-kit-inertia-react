@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{ ModuleName }}\Http\Controllers;
+
+use Inertia\Inertia;
+use Inertia\Response;
+use Modules\{{ ModuleName }}\Models\{{ ModuleName }};
+
+final class {{ ModuleName }}Controller
+{
+    public function index(): Response
+    {
+        ${{ modelVariablePlural }} = {{ ModuleName }}::query()
+            ->latest()
+            ->paginate(15);
+
+        return Inertia::render('{{ moduleName }}/index', [
+            '{{ modelVariablePlural }}' => ${{ modelVariablePlural }},
+        ]);
+    }
+}

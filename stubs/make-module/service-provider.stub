@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\{{ ModuleName }}\Providers;
+
+use App\Modules\Support\ModuleManifest;
+use App\Modules\Support\ModuleProvider;
+use Illuminate\Support\Facades\Gate;
+use Modules\{{ ModuleName }}\Features\{{ ModuleName }}Feature;
+use Modules\{{ ModuleName }}\Models\{{ ModuleName }};
+use Modules\{{ ModuleName }}\Policies\{{ ModuleName }}Policy;
+
+final class {{ ModuleName }}ModuleServiceProvider extends ModuleProvider
+{
+    public function manifest(): ModuleManifest
+    {
+        return new ModuleManifest(
+            name: '{{ moduleName }}',
+            version: '1.0.0',
+            description: '{{ moduleLabel }} module.',
+            models: [{{ ModuleName }}::class],
+            navigation: [
+                ['label' => '{{ moduleLabel }}', 'route' => '{{ module_name }}.index', 'icon' => 'box', 'group' => 'Platform'],
+            ],
+        );
+    }
+
+    protected function featureClass(): ?string
+    {
+        return {{ ModuleName }}Feature::class;
+    }
+
+    protected function bootModule(): void
+    {
+        Gate::policy({{ ModuleName }}::class, {{ ModuleName }}Policy::class);
+    }
+}

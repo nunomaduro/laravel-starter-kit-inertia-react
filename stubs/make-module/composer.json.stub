@@ -1,0 +1,8 @@
+{
+    "name": "modules/{{ moduleName }}",
+    "autoload": {
+        "psr-4": {
+            "Modules\\{{ ModuleName }}\\": "src/"
+        }
+    }
+}

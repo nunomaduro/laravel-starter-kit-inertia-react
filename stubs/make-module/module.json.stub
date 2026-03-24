@@ -1,0 +1,6 @@
+{
+    "name": "{{ moduleName }}",
+    "label": "{{ moduleLabel }}",
+    "description": "{{ moduleLabel }} module.",
+    "provider": "Modules\\{{ ModuleName }}\\Providers\\{{ ModuleName }}ModuleServiceProvider"
+}
