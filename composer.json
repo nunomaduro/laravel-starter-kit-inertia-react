@@ -382,6 +382,8 @@
             "@test:lint",
             "@test:types"
         ],
+        "test:modules": "pest --parallel --compact --test-suite=Modules",
+        "test:all": "pest --parallel --compact",
         "check:overrides": "@php scripts/check-inline-overrides.php",
         "docs:check": "php artisan docs:sync --check",
         "docs:sync": "php artisan docs:sync",

@@ -50,7 +50,7 @@ pest()->extend(TestCase::class)
         // This conflicts with Spatie's model_has_roles.organization_id NOT NULL constraint.
         config()->set('genealabs-laravel-governor.models.auth', 'disabled');
     })
-    ->in('Feature', 'Unit');
+    ->in('Feature', 'Unit', '../modules/*/tests');
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
