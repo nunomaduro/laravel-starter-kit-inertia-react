@@ -10,6 +10,7 @@ use App\Modules\Support\ModuleManifest;
 use App\Modules\Support\ModuleProvider;
 use App\Modules\Support\ModuleRelationship;
 use Illuminate\Support\Facades\Gate;
+use Modules\Crm\Features\CrmFeature;
 use Modules\Crm\Models\Activity;
 use Modules\Crm\Models\Contact;
 use Modules\Crm\Models\Deal;
@@ -38,9 +39,9 @@ final class CrmModuleServiceProvider extends ModuleProvider implements DeclaresM
                 'crm.deals.index' => 'crm/deals/index',
             ],
             navigation: [
-                ['label' => 'Contacts', 'route' => 'crm.contacts.index', 'icon' => 'users'],
-                ['label' => 'Deals', 'route' => 'crm.deals.index', 'icon' => 'dollar-sign'],
-                ['label' => 'Pipelines', 'route' => 'crm.pipelines.index', 'icon' => 'git-branch'],
+                ['label' => 'Contacts', 'route' => 'crm.contacts.index', 'icon' => 'users', 'group' => 'CRM'],
+                ['label' => 'Deals', 'route' => 'crm.deals.index', 'icon' => 'dollar-sign', 'group' => 'CRM'],
+                ['label' => 'Pipelines', 'route' => 'crm.pipelines.index', 'icon' => 'git-branch', 'group' => 'CRM'],
             ],
         );
     }
@@ -88,6 +89,11 @@ final class CrmModuleServiceProvider extends ModuleProvider implements DeclaresM
         return [
             Contact::class,
         ];
+    }
+
+    protected function featureClass(): ?string
+    {
+        return CrmFeature::class;
     }
 
     protected function bootModule(): void

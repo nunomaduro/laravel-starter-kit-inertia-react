@@ -8,6 +8,7 @@ use App\Modules\Contracts\ProvidesAIContext;
 use App\Modules\Support\ModuleManifest;
 use App\Modules\Support\ModuleProvider;
 use Illuminate\Support\Facades\Gate;
+use Modules\Hr\Features\HrFeature;
 use Modules\Hr\Models\Department;
 use Modules\Hr\Models\Employee;
 use Modules\Hr\Models\LeaveRequest;
@@ -34,9 +35,9 @@ final class HrModuleServiceProvider extends ModuleProvider implements ProvidesAI
                 'hr.employees.edit' => 'hr/employees/edit',
             ],
             navigation: [
-                ['label' => 'Employees', 'route' => 'hr.employees.index', 'icon' => 'users'],
-                ['label' => 'Departments', 'route' => 'hr.departments.index', 'icon' => 'building'],
-                ['label' => 'Leave Requests', 'route' => 'hr.leaves.index', 'icon' => 'calendar'],
+                ['label' => 'Employees', 'route' => 'hr.employees.index', 'icon' => 'users', 'group' => 'HR'],
+                ['label' => 'Departments', 'route' => 'hr.departments.index', 'icon' => 'building', 'group' => 'HR'],
+                ['label' => 'Leave Requests', 'route' => 'hr.leaves.index', 'icon' => 'calendar', 'group' => 'HR'],
             ],
         );
     }
@@ -65,6 +66,11 @@ final class HrModuleServiceProvider extends ModuleProvider implements ProvidesAI
         return [
             Employee::class,
         ];
+    }
+
+    protected function featureClass(): ?string
+    {
+        return HrFeature::class;
     }
 
     protected function bootModule(): void
