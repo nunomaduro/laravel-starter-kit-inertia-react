@@ -13,6 +13,11 @@ use Cogneiss\ModuleCrm\Models\Activity;
 use Cogneiss\ModuleCrm\Models\Contact;
 use Cogneiss\ModuleCrm\Models\Deal;
 use Cogneiss\ModuleCrm\Models\Pipeline;
+use Cogneiss\ModuleCrm\Policies\ActivityPolicy;
+use Cogneiss\ModuleCrm\Policies\ContactPolicy;
+use Cogneiss\ModuleCrm\Policies\DealPolicy;
+use Cogneiss\ModuleCrm\Policies\PipelinePolicy;
+use Illuminate\Support\Facades\Gate;
 
 final class CrmModuleServiceProvider extends ModuleProvider implements DeclaresModuleRelationships, ProvidesAIContext
 {
@@ -83,5 +88,13 @@ final class CrmModuleServiceProvider extends ModuleProvider implements DeclaresM
         return [
             Contact::class,
         ];
+    }
+
+    protected function bootModule(): void
+    {
+        Gate::policy(Contact::class, ContactPolicy::class);
+        Gate::policy(Deal::class, DealPolicy::class);
+        Gate::policy(Pipeline::class, PipelinePolicy::class);
+        Gate::policy(Activity::class, ActivityPolicy::class);
     }
 }

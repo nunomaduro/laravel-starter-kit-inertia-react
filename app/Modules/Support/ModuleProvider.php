@@ -42,6 +42,15 @@ abstract class ModuleProvider extends ServiceProvider
         $this->loadMigrations();
         $this->registerAIContext();
         $this->registerRelationships();
+        $this->bootModule();
+    }
+
+    /**
+     * Hook for subclasses to add custom boot logic (e.g. policy registration).
+     */
+    protected function bootModule(): void
+    {
+        //
     }
 
     /**

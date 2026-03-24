@@ -10,6 +10,8 @@ use Machour\DataTable\Http\Controllers\DataTableReorderController;
 use Machour\DataTable\Http\Controllers\DataTableToggleController;
 use Modules\Announcements\DataTables\AnnouncementDataTable;
 use Modules\Announcements\Features\AnnouncementsFeature;
+use Modules\Announcements\Models\Announcement;
+use Modules\Announcements\Policies\AnnouncementPolicy;
 
 final class AnnouncementsServiceProvider extends ModuleServiceProvider
 {
@@ -33,6 +35,8 @@ final class AnnouncementsServiceProvider extends ModuleServiceProvider
 
     protected function bootModule(): void
     {
+        \Illuminate\Support\Facades\Gate::policy(Announcement::class, AnnouncementPolicy::class);
+
         $this->registerDataTables();
     }
 

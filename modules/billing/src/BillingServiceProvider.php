@@ -8,6 +8,7 @@ use App\Events\OrganizationMemberAdded;
 use App\Events\OrganizationMemberRemoved;
 use App\Support\ModuleServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use LemonSqueezy\Laravel\Events\OrderCreated;
 use Modules\Billing\Features\BillingFeature;
 use Modules\Billing\Listeners\AddCreditsFromLemonSqueezyOrder;
@@ -47,9 +48,20 @@ final class BillingServiceProvider extends ModuleServiceProvider
 
     protected function bootModule(): void
     {
+        $this->registerPolicies();
         $this->registerObservers();
         $this->registerListeners();
         $this->loadGatewayRoutes();
+    }
+
+    private function registerPolicies(): void
+    {
+        Gate::policy(Models\Credit::class, Policies\CreditPolicy::class);
+        Gate::policy(Invoice::class, Policies\InvoicePolicy::class);
+        Gate::policy(Models\Plan::class, Policies\PlanPolicy::class);
+        Gate::policy(Models\RefundRequest::class, Policies\RefundRequestPolicy::class);
+        Gate::policy(Subscription::class, Policies\SubscriptionPolicy::class);
+        Gate::policy(Models\WebhookLog::class, Policies\WebhookLogPolicy::class);
     }
 
     private function registerObservers(): void

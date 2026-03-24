@@ -10,6 +10,10 @@ use App\Modules\Support\ModuleProvider;
 use Cogneiss\ModuleHr\Models\Department;
 use Cogneiss\ModuleHr\Models\Employee;
 use Cogneiss\ModuleHr\Models\LeaveRequest;
+use Cogneiss\ModuleHr\Policies\DepartmentPolicy;
+use Cogneiss\ModuleHr\Policies\EmployeePolicy;
+use Cogneiss\ModuleHr\Policies\LeaveRequestPolicy;
+use Illuminate\Support\Facades\Gate;
 
 final class HrModuleServiceProvider extends ModuleProvider implements ProvidesAIContext
 {
@@ -61,5 +65,12 @@ final class HrModuleServiceProvider extends ModuleProvider implements ProvidesAI
         return [
             Employee::class,
         ];
+    }
+
+    protected function bootModule(): void
+    {
+        Gate::policy(Department::class, DepartmentPolicy::class);
+        Gate::policy(Employee::class, EmployeePolicy::class);
+        Gate::policy(LeaveRequest::class, LeaveRequestPolicy::class);
     }
 }

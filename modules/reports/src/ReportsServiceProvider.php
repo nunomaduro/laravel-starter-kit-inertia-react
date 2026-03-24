@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Gate;
 use Modules\Reports\Console\Commands\DispatchScheduledReportsCommand;
 use Modules\Reports\Features\ReportsFeature;
 use Modules\Reports\Models\Report;
+use Modules\Reports\Models\ReportOutput;
+use Modules\Reports\Policies\ReportOutputPolicy;
 use Modules\Reports\Policies\ReportPolicy;
 use Modules\Reports\Services\ReportDataSourceRegistry;
 
@@ -41,6 +43,7 @@ final class ReportsServiceProvider extends ModuleServiceProvider
     protected function bootModule(): void
     {
         Gate::policy(Report::class, ReportPolicy::class);
+        Gate::policy(ReportOutput::class, ReportOutputPolicy::class);
 
         $this->commands([DispatchScheduledReportsCommand::class]);
 

@@ -10,6 +10,8 @@ use Machour\DataTable\Http\Controllers\DataTableReorderController;
 use Machour\DataTable\Http\Controllers\DataTableToggleController;
 use Modules\Blog\DataTables\PostDataTable;
 use Modules\Blog\Features\BlogFeature;
+use Modules\Blog\Models\Post;
+use Modules\Blog\Policies\PostPolicy;
 
 final class BlogServiceProvider extends ModuleServiceProvider
 {
@@ -33,6 +35,8 @@ final class BlogServiceProvider extends ModuleServiceProvider
 
     protected function bootModule(): void
     {
+        \Illuminate\Support\Facades\Gate::policy(Post::class, PostPolicy::class);
+
         $this->registerDataTables();
     }
 
