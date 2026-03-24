@@ -6,6 +6,7 @@ namespace Cogneiss\ModuleHr\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
 use App\Models\User;
+use Cogneiss\ModuleHr\Database\Factories\EmployeeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -91,6 +92,11 @@ final class Employee extends Model
     public function fullName(): string
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    protected static function newFactory(): EmployeeFactory
+    {
+        return EmployeeFactory::new();
     }
 
     /**

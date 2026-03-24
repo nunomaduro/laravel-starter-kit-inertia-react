@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cogneiss\ModuleCrm\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
+use Cogneiss\ModuleCrm\Database\Factories\DealFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,6 +54,11 @@ final class Deal extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class);
+    }
+
+    protected static function newFactory(): DealFactory
+    {
+        return DealFactory::new();
     }
 
     /**

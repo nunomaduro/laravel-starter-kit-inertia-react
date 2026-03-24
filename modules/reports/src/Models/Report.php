@@ -8,6 +8,7 @@ use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Reports\Database\Factories\ReportFactory;
 use Modules\Reports\Enums\OutputFormat;
 
 /**
@@ -39,6 +40,11 @@ final class Report extends Model
     public function outputs(): HasMany
     {
         return $this->hasMany(ReportOutput::class)->latest();
+    }
+
+    protected static function newFactory(): ReportFactory
+    {
+        return ReportFactory::new();
     }
 
     /**

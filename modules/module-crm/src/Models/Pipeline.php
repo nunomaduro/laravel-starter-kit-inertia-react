@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cogneiss\ModuleCrm\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
+use Cogneiss\ModuleCrm\Database\Factories\PipelineFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,6 +30,11 @@ final class Pipeline extends Model
     public function deals(): HasMany
     {
         return $this->hasMany(Deal::class);
+    }
+
+    protected static function newFactory(): PipelineFactory
+    {
+        return PipelineFactory::new();
     }
 
     /**

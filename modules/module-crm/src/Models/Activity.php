@@ -6,6 +6,7 @@ namespace Cogneiss\ModuleCrm\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
 use App\Models\User;
+use Cogneiss\ModuleCrm\Database\Factories\ActivityFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,6 +52,11 @@ final class Activity extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected static function newFactory(): ActivityFactory
+    {
+        return ActivityFactory::new();
     }
 
     /**

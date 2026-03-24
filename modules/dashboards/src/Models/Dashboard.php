@@ -7,6 +7,7 @@ namespace Modules\Dashboards\Models;
 use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Dashboards\Database\Factories\DashboardFactory;
 
 /**
  * @property int $id
@@ -30,6 +31,11 @@ final class Dashboard extends Model
         'is_default',
         'refresh_interval',
     ];
+
+    protected static function newFactory(): DashboardFactory
+    {
+        return DashboardFactory::new();
+    }
 
     /**
      * @return array<string, string>

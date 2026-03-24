@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Cogneiss\ModuleCrm\Models;
 
 use App\Models\Concerns\BelongsToOrganization;
+use Cogneiss\ModuleCrm\Database\Factories\ContactFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -76,5 +77,10 @@ final class Contact extends Model
     public function fullName(): string
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    protected static function newFactory(): ContactFactory
+    {
+        return ContactFactory::new();
     }
 }
