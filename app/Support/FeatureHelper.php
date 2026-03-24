@@ -128,9 +128,17 @@ final class FeatureHelper
             }
         }
 
-        // Org-level override (inherit | enabled | disabled)
+        // Resolve org once for both plan check and org override.
         $organization = TenantContext::get();
         if ($organization instanceof Organization) {
+            // Plan-gated check: if the feature requires a plan, verify the org has it.
+            // This runs BEFORE org override so org admins can't bypass plan restrictions.
+            $planCheck = new \App\Actions\CheckPlanFeatureAccess;
+            if (! $planCheck->handle($organization, $featureKey)) {
+                return false;
+            }
+
+            // Org-level override (inherit | enabled | disabled)
             $override = self::getOrgFeatureOverride($featureKey, $organization);
             if ($override === 'disabled') {
                 return false;
