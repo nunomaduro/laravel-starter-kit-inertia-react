@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\UpdateConversationRequest;
 use App\Models\AgentConversation;
 use App\Models\AgentConversationMessage;
 use Illuminate\Http\JsonResponse;
@@ -86,9 +87,8 @@ final class ConversationController extends Controller
     /**
      * Rename a conversation for the authenticated user.
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(UpdateConversationRequest $request, string $id): JsonResponse
     {
-        $request->validate(['title' => ['required', 'string', 'max:255']]);
         $user = $request->user();
 
         $conversation = AgentConversation::query()
@@ -100,7 +100,7 @@ final class ConversationController extends Controller
             return response()->json(['message' => 'Conversation not found.'], 404);
         }
 
-        $conversation->update(['title' => $request->input('title')]);
+        $conversation->update(['title' => $request->validated('title')]);
 
         return response()->json(['data' => ['id' => $id, 'title' => $conversation->title]]);
     }

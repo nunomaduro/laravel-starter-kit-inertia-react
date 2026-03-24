@@ -4,25 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchRequest;
 use App\Models\User;
 use App\Services\TenantContext;
 use App\Support\FeatureHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Modules\Blog\Models\Post;
 use Modules\Changelog\Models\ChangelogEntry;
 use Modules\Help\Models\HelpArticle;
 
 final class SearchController
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(SearchRequest $request): JsonResponse
     {
-        $request->validate([
-            'q' => ['nullable', 'string', 'max:255'],
-            'type' => ['nullable', 'string', 'in:users,posts,help_articles,changelog_entries'],
-        ]);
-
         $query = mb_trim((string) $request->query('q', ''));
         $type = $request->query('type');
 

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Hr;
 
 use App\Http\Requests\Hr\StoreLeaveRequestRequest;
+use App\Http\Requests\Hr\UpdateLeaveRequestRequest;
 use Cogneiss\ModuleHr\Actions\CreateLeaveRequest;
 use Cogneiss\ModuleHr\Models\Employee;
 use Cogneiss\ModuleHr\Models\LeaveRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -65,14 +65,9 @@ final readonly class LeaveRequestController
         ]);
     }
 
-    public function update(Request $request, LeaveRequest $leaveRequest): RedirectResponse
+    public function update(UpdateLeaveRequestRequest $request, LeaveRequest $leaveRequest): RedirectResponse
     {
-        $leaveRequest->update($request->validate([
-            'type' => ['required', 'string', 'max:50'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
-            'reason' => ['nullable', 'string', 'max:1000'],
-        ]));
+        $leaveRequest->update($request->validated());
 
         return to_route('hr.leave-requests.index')
             ->with('status', __('Leave request updated.'));

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Crm;
 
 use App\Http\Requests\Crm\StoreDealRequest;
+use App\Http\Requests\Crm\UpdateDealRequest;
 use Cogneiss\ModuleCrm\Models\Contact;
 use Cogneiss\ModuleCrm\Models\Deal;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -64,17 +64,9 @@ final readonly class DealController
         ]);
     }
 
-    public function update(Request $request, Deal $deal): RedirectResponse
+    public function update(UpdateDealRequest $request, Deal $deal): RedirectResponse
     {
-        $deal->update($request->validate([
-            'contact_id' => ['required', 'integer', 'exists:crm_contacts,id'],
-            'title' => ['required', 'string', 'max:255'],
-            'value' => ['required', 'numeric', 'min:0'],
-            'currency' => ['nullable', 'string', 'max:3'],
-            'stage' => ['required', 'string', 'max:50'],
-            'probability' => ['nullable', 'integer', 'min:0', 'max:100'],
-            'expected_close_date' => ['nullable', 'date'],
-        ]));
+        $deal->update($request->validated());
 
         return to_route('crm.deals.index')
             ->with('status', __('Deal updated.'));

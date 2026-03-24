@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreWizardStep1Request;
+use App\Http\Requests\StoreWizardStep2Request;
+use App\Http\Requests\StoreWizardStep3Request;
 use App\Services\WizardService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -41,13 +43,9 @@ final class WizardController extends Controller
     /**
      * Analyze a project description and recommend modules.
      */
-    public function analyze(Request $request): JsonResponse
+    public function analyze(StoreWizardStep1Request $request): JsonResponse
     {
-        $request->validate([
-            'description' => ['required', 'string', 'min:10', 'max:2000'],
-        ]);
-
-        $result = $this->wizardService->analyzeDescription($request->input('description'));
+        $result = $this->wizardService->analyzeDescription($request->validated('description'));
 
         return response()->json($result);
     }
@@ -55,14 +53,9 @@ final class WizardController extends Controller
     /**
      * Preview what will be generated for selected modules.
      */
-    public function preview(Request $request): JsonResponse
+    public function preview(StoreWizardStep2Request $request): JsonResponse
     {
-        $request->validate([
-            'modules' => ['required', 'array', 'min:1'],
-            'modules.*' => ['string'],
-        ]);
-
-        $preview = $this->wizardService->preview($request->input('modules'));
+        $preview = $this->wizardService->preview($request->validated('modules'));
 
         return response()->json($preview);
     }
@@ -70,18 +63,12 @@ final class WizardController extends Controller
     /**
      * Generate the project with selected configuration.
      */
-    public function generate(Request $request): JsonResponse
+    public function generate(StoreWizardStep3Request $request): JsonResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:2000'],
-            'modules' => ['required', 'array', 'min:1'],
-            'modules.*' => ['string'],
-        ]);
-
-        $name = $request->input('name');
-        $description = $request->input('description');
-        $modules = $request->input('modules');
+        $validated = $request->validated();
+        $name = $validated['name'];
+        $description = $validated['description'];
+        $modules = $validated['modules'];
 
         // Configure AI context
         $this->wizardService->configureAIContext($description, $modules);

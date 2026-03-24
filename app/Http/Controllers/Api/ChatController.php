@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Ai\Agents\AssistantAgent;
+use App\Http\Requests\Api\StoreChatMessageRequest;
 use App\Models\AgentConversation;
 use App\Services\PrismService;
-use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Laravel\Ai\Streaming\Events\ReasoningDelta;
 use Laravel\Ai\Streaming\Events\ReasoningStart;
@@ -35,28 +34,8 @@ final class ChatController
      * TEXT_MESSAGE_START, TEXT_MESSAGE_CONTENT, TEXT_MESSAGE_END, CONVERSATION_TITLE_UPDATED,
      * RUN_FINISHED, or RUN_ERROR.
      */
-    public function __invoke(Request $request): Response|StreamedResponse
+    public function __invoke(StoreChatMessageRequest $request): Response|StreamedResponse
     {
-        $request->validate([
-            'messages' => ['required', 'array'],
-            'messages.*.role' => ['required', 'string', 'in:user,assistant,system'],
-            'conversation_id' => ['nullable', 'string', 'uuid', function (string $attr, string $value, Closure $fail) use ($request): void {
-                $user = $request->user();
-                if ($user === null) {
-                    $fail('Unauthenticated.');
-
-                    return;
-                }
-
-                $exists = AgentConversation::query()
-                    ->where('id', $value)
-                    ->where('user_id', $user->id)
-                    ->exists();
-                if (! $exists) {
-                    $fail('The selected conversation is invalid.');
-                }
-            }],
-        ]);
 
         $user = $request->user();
         abort_if($user === null, 401);
