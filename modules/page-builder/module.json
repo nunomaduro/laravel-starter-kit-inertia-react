@@ -2,7 +2,7 @@
     "name": "page-builder",
     "label": "Page Builder",
     "description": "Visual page builder with Puck editor for creating custom pages.",
-    "provider": "Modules\\PageBuilder\\PageBuilderServiceProvider",
+    "provider": "Modules\\PageBuilder\\Providers\\PageBuilderModuleServiceProvider",
     "seeders": [
         "Modules\\PageBuilder\\Database\\Seeders\\PageSeeder",
         "Modules\\PageBuilder\\Database\\Seeders\\PageRevisionSeeder"

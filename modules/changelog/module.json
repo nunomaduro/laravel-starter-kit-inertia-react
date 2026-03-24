@@ -2,7 +2,7 @@
     "name": "changelog",
     "label": "Changelog",
     "description": "Changelog entries and release notes management.",
-    "provider": "Modules\\Changelog\\ChangelogServiceProvider",
+    "provider": "Modules\\Changelog\\Providers\\ChangelogModuleServiceProvider",
     "seeders": [
         "Modules\\Changelog\\Database\\Seeders\\ChangelogEntrySeeder"
     ]

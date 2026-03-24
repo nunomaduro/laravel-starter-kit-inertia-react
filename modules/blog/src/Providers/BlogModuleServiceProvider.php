@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Modules\Blog;
+namespace Modules\Blog\Providers;
 
-use App\Support\ModuleServiceProvider;
+use App\Modules\Support\ModuleManifest;
+use App\Modules\Support\ModuleProvider;
+use Illuminate\Support\Facades\Gate;
 use Machour\DataTable\Http\Controllers\DataTableExportController;
 use Machour\DataTable\Http\Controllers\DataTableReorderController;
 use Machour\DataTable\Http\Controllers\DataTableToggleController;
@@ -13,34 +15,34 @@ use Modules\Blog\Features\BlogFeature;
 use Modules\Blog\Models\Post;
 use Modules\Blog\Policies\PostPolicy;
 
-final class BlogServiceProvider extends ModuleServiceProvider
+final class BlogModuleServiceProvider extends ModuleProvider
 {
-    public function moduleName(): string
+    public function manifest(): ModuleManifest
     {
-        return 'blog';
+        return new ModuleManifest(
+            name: 'blog',
+            version: '1.0.0',
+            description: 'Blog posts with categories, tags, and SEO support.',
+            models: [Post::class],
+            navigation: [
+                ['label' => 'Blog', 'route' => 'blog.index', 'icon' => 'file-text', 'group' => 'Content'],
+            ],
+        );
     }
 
-    public function featureKey(): string
-    {
-        return 'blog';
-    }
-
-    /**
-     * @return class-string
-     */
-    public function featureClass(): string
+    protected function featureClass(): ?string
     {
         return BlogFeature::class;
     }
 
     protected function bootModule(): void
     {
-        \Illuminate\Support\Facades\Gate::policy(Post::class, PostPolicy::class);
+        Gate::policy(Post::class, PostPolicy::class);
 
         $this->registerDataTables();
     }
 
-    protected function registerDataTables(): void
+    private function registerDataTables(): void
     {
         foreach ([
             DataTableExportController::class,

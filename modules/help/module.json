@@ -2,7 +2,7 @@
     "name": "help",
     "label": "Help Center",
     "description": "Help center with articles, categories, and article ratings.",
-    "provider": "Modules\\Help\\HelpServiceProvider",
+    "provider": "Modules\\Help\\Providers\\HelpModuleServiceProvider",
     "seeders": [
         "Modules\\Help\\Database\\Seeders\\HelpArticleSeeder"
     ]

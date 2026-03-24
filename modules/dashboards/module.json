@@ -2,6 +2,6 @@
     "name": "dashboards",
     "label": "Dashboards",
     "description": "Custom drag-and-drop dashboards with live-refreshing widgets and KPI monitoring.",
-    "provider": "Modules\\Dashboards\\DashboardsServiceProvider",
+    "provider": "Modules\\Dashboards\\Providers\\DashboardsModuleServiceProvider",
     "seeders": []
 }

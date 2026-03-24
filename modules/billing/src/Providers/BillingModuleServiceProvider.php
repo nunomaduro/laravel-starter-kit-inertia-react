@@ -2,41 +2,60 @@
 
 declare(strict_types=1);
 
-namespace Modules\Billing;
+namespace Modules\Billing\Providers;
 
 use App\Events\OrganizationMemberAdded;
 use App\Events\OrganizationMemberRemoved;
-use App\Support\ModuleServiceProvider;
+use App\Modules\Support\ModuleManifest;
+use App\Modules\Support\ModuleProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use LemonSqueezy\Laravel\Events\OrderCreated;
 use Modules\Billing\Features\BillingFeature;
 use Modules\Billing\Listeners\AddCreditsFromLemonSqueezyOrder;
 use Modules\Billing\Listeners\SyncSubscriptionSeatsOnMemberChange;
+use Modules\Billing\Models\Credit;
 use Modules\Billing\Models\FailedPaymentAttempt;
 use Modules\Billing\Models\Invoice;
+use Modules\Billing\Models\Plan;
+use Modules\Billing\Models\RefundRequest;
 use Modules\Billing\Models\Subscription;
+use Modules\Billing\Models\WebhookLog;
 use Modules\Billing\Observers\FailedPaymentAttemptObserver;
 use Modules\Billing\Observers\InvoiceObserver;
 use Modules\Billing\Observers\SubscriptionObserver;
+use Modules\Billing\Policies\CreditPolicy;
+use Modules\Billing\Policies\InvoicePolicy;
+use Modules\Billing\Policies\PlanPolicy;
+use Modules\Billing\Policies\RefundRequestPolicy;
+use Modules\Billing\Policies\SubscriptionPolicy;
+use Modules\Billing\Policies\WebhookLogPolicy;
 use Modules\Billing\Services\PaymentGateway\PaymentGatewayManager;
 
-final class BillingServiceProvider extends ModuleServiceProvider
+final class BillingModuleServiceProvider extends ModuleProvider
 {
-    public function moduleName(): string
+    public function manifest(): ModuleManifest
     {
-        return 'billing';
+        return new ModuleManifest(
+            name: 'billing',
+            version: '1.0.0',
+            description: 'Billing system with selectable payment gateway providers (Stripe, Paddle, LemonSqueezy).',
+            models: [
+                Credit::class,
+                FailedPaymentAttempt::class,
+                Invoice::class,
+                Plan::class,
+                RefundRequest::class,
+                Subscription::class,
+                WebhookLog::class,
+            ],
+            navigation: [
+                ['label' => 'Billing', 'route' => 'billing.index', 'icon' => 'credit-card', 'group' => 'Organization'],
+            ],
+        );
     }
 
-    public function featureKey(): string
-    {
-        return 'billing';
-    }
-
-    /**
-     * @return class-string
-     */
-    public function featureClass(): string
+    protected function featureClass(): ?string
     {
         return BillingFeature::class;
     }
@@ -56,12 +75,12 @@ final class BillingServiceProvider extends ModuleServiceProvider
 
     private function registerPolicies(): void
     {
-        Gate::policy(Models\Credit::class, Policies\CreditPolicy::class);
-        Gate::policy(Invoice::class, Policies\InvoicePolicy::class);
-        Gate::policy(Models\Plan::class, Policies\PlanPolicy::class);
-        Gate::policy(Models\RefundRequest::class, Policies\RefundRequestPolicy::class);
-        Gate::policy(Subscription::class, Policies\SubscriptionPolicy::class);
-        Gate::policy(Models\WebhookLog::class, Policies\WebhookLogPolicy::class);
+        Gate::policy(Credit::class, CreditPolicy::class);
+        Gate::policy(Invoice::class, InvoicePolicy::class);
+        Gate::policy(Plan::class, PlanPolicy::class);
+        Gate::policy(RefundRequest::class, RefundRequestPolicy::class);
+        Gate::policy(Subscription::class, SubscriptionPolicy::class);
+        Gate::policy(WebhookLog::class, WebhookLogPolicy::class);
     }
 
     private function registerObservers(): void
@@ -85,7 +104,7 @@ final class BillingServiceProvider extends ModuleServiceProvider
     {
         $gateway = config('billing.default_gateway', 'stripe');
 
-        $gatewayRoutesPath = __DIR__.'/Gateways/'.$this->normalizeGatewayName($gateway).'/routes.php';
+        $gatewayRoutesPath = $this->moduleSourcePath('Gateways/'.$this->normalizeGatewayName($gateway).'/routes.php');
 
         if (file_exists($gatewayRoutesPath)) {
             $this->loadRoutesFrom($gatewayRoutesPath);

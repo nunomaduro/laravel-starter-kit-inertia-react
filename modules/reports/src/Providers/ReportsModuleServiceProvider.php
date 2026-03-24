@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Modules\Reports;
+namespace Modules\Reports\Providers;
 
-use App\Support\ModuleServiceProvider;
+use App\Modules\Support\ModuleManifest;
+use App\Modules\Support\ModuleProvider;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Modules\Reports\Console\Commands\DispatchScheduledReportsCommand;
@@ -15,22 +16,25 @@ use Modules\Reports\Policies\ReportOutputPolicy;
 use Modules\Reports\Policies\ReportPolicy;
 use Modules\Reports\Services\ReportDataSourceRegistry;
 
-final class ReportsServiceProvider extends ModuleServiceProvider
+final class ReportsModuleServiceProvider extends ModuleProvider
 {
-    public function moduleName(): string
+    public function manifest(): ModuleManifest
     {
-        return 'reports';
+        return new ModuleManifest(
+            name: 'reports',
+            version: '1.0.0',
+            description: 'Drag-and-drop report builder with charts, tables, KPIs, and scheduled exports.',
+            models: [
+                Report::class,
+                ReportOutput::class,
+            ],
+            navigation: [
+                ['label' => 'Reports', 'route' => 'reports.index', 'icon' => 'bar-chart-2', 'group' => 'Platform'],
+            ],
+        );
     }
 
-    public function featureKey(): string
-    {
-        return 'reports';
-    }
-
-    /**
-     * @return class-string
-     */
-    public function featureClass(): string
+    protected function featureClass(): ?string
     {
         return ReportsFeature::class;
     }

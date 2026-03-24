@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Modules\Announcements;
+namespace Modules\Announcements\Providers;
 
-use App\Support\ModuleServiceProvider;
+use App\Modules\Support\ModuleManifest;
+use App\Modules\Support\ModuleProvider;
+use Illuminate\Support\Facades\Gate;
 use Machour\DataTable\Http\Controllers\DataTableExportController;
 use Machour\DataTable\Http\Controllers\DataTableReorderController;
 use Machour\DataTable\Http\Controllers\DataTableToggleController;
@@ -13,34 +15,34 @@ use Modules\Announcements\Features\AnnouncementsFeature;
 use Modules\Announcements\Models\Announcement;
 use Modules\Announcements\Policies\AnnouncementPolicy;
 
-final class AnnouncementsServiceProvider extends ModuleServiceProvider
+final class AnnouncementsModuleServiceProvider extends ModuleProvider
 {
-    public function moduleName(): string
+    public function manifest(): ModuleManifest
     {
-        return 'announcements';
+        return new ModuleManifest(
+            name: 'announcements',
+            version: '1.0.0',
+            description: 'In-app announcement banners with audience targeting, scheduling, and DataTable management.',
+            models: [Announcement::class],
+            navigation: [
+                ['label' => 'Announcements', 'route' => 'announcements.table', 'icon' => 'megaphone', 'group' => 'Platform'],
+            ],
+        );
     }
 
-    public function featureKey(): string
-    {
-        return 'announcements';
-    }
-
-    /**
-     * @return class-string
-     */
-    public function featureClass(): string
+    protected function featureClass(): ?string
     {
         return AnnouncementsFeature::class;
     }
 
     protected function bootModule(): void
     {
-        \Illuminate\Support\Facades\Gate::policy(Announcement::class, AnnouncementPolicy::class);
+        Gate::policy(Announcement::class, AnnouncementPolicy::class);
 
         $this->registerDataTables();
     }
 
-    protected function registerDataTables(): void
+    private function registerDataTables(): void
     {
         foreach ([
             DataTableExportController::class,
