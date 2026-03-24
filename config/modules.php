@@ -24,4 +24,6 @@ return [
     'workflows' => true,
     'page-builder' => true,
     'billing' => true,
+    'crm' => true,
+    'hr' => true,
 ];

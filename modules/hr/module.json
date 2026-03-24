@@ -1,0 +1,6 @@
+{
+    "name": "hr",
+    "label": "HR",
+    "description": "Human resources with employee management, departments, and leave tracking.",
+    "provider": "Modules\\Hr\\Providers\\HrModuleServiceProvider"
+}

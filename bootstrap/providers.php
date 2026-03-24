@@ -15,7 +15,4 @@ return [
     App\Providers\PanServiceProvider::class,
     App\Providers\PermissionServiceProvider::class,
     App\Providers\SettingsOverlayServiceProvider::class,
-    // Modules
-    Modules\Hr\Providers\HrModuleServiceProvider::class,
-    Modules\Crm\Providers\CrmModuleServiceProvider::class,
 ];
