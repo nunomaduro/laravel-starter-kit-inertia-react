@@ -16,7 +16,6 @@ use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
@@ -42,9 +41,21 @@ final class AdminPanelProvider extends PanelProvider
             ->brandName(config('app.name'))
             ->brandLogo(asset('logo.svg'))
             ->favicon(asset('favicon.svg'))
-            ->font('Inter Variable', null, null, [])
+            ->font('IBM Plex Sans')
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => [
+                    50 => 'oklch(0.95 0.05 165)',
+                    100 => 'oklch(0.90 0.08 165)',
+                    200 => 'oklch(0.82 0.10 165)',
+                    300 => 'oklch(0.75 0.12 165)',
+                    400 => 'oklch(0.70 0.13 165)',
+                    500 => 'oklch(0.65 0.14 165)',
+                    600 => 'oklch(0.55 0.14 165)',
+                    700 => 'oklch(0.45 0.14 165)',
+                    800 => 'oklch(0.38 0.12 165)',
+                    900 => 'oklch(0.30 0.10 165)',
+                    950 => 'oklch(0.22 0.08 165)',
+                ],
             ])
             ->globalSearch()
             ->darkMode()

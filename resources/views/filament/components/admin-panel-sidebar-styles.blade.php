@@ -1,5 +1,36 @@
-{{-- Compact sidebar for admin panel: less spacing, more room for main content --}}
+{{-- Design system overrides for admin panel per DESIGN.md --}}
 <style>
+    /* Typography: JetBrains Mono for headings, IBM Plex Sans for body */
+    .fi-panel-admin h1,
+    .fi-panel-admin h2,
+    .fi-panel-admin h3,
+    .fi-panel-admin h4,
+    .fi-panel-admin .fi-header-heading {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        letter-spacing: -0.02em;
+    }
+    .fi-panel-admin h1,
+    .fi-panel-admin .fi-header-heading {
+        font-weight: 700;
+        letter-spacing: -0.03em;
+    }
+
+    /* Tabular numerals for data cells */
+    .fi-panel-admin .fi-ta-cell,
+    .fi-panel-admin td {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Touch targets: minimum 44px on interactive elements */
+    .fi-panel-admin .fi-icon-btn {
+        min-width: 2.75rem;
+        min-height: 2.75rem;
+    }
+    .fi-panel-admin .fi-input {
+        min-height: 2.75rem;
+    }
+
+    /* Compact sidebar: less spacing, more room for main content */
     .fi-panel-admin .fi-sidebar-header {
         height: 3rem;
         padding-left: 0.75rem;
@@ -39,5 +70,11 @@
     .fi-panel-admin .fi-sidebar-database-notifications-btn {
         padding: 0.375rem 0.5rem;
         gap: 0.5rem;
+    }
+
+    /* Sidebar collapsed: add tooltips via title attr (CSS fallback) */
+    .fi-panel-admin .fi-sidebar[data-collapsed] .fi-sidebar-item-btn {
+        min-width: 2.75rem;
+        min-height: 2.75rem;
     }
 </style>
