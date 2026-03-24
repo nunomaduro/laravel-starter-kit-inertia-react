@@ -7,11 +7,14 @@ export function ComparisonSection() {
             <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
                 {[
                     { feature: 'Multi-tenant auth + RBAC', scratch: '3-4 weeks', kit: 'Day 1' },
-                    { feature: 'Billing (Stripe + seats)', scratch: '2-3 weeks', kit: 'Day 1' },
-                    { feature: 'Admin panel', scratch: '2-4 weeks', kit: 'Day 1' },
+                    { feature: 'Billing (3 gateways + seats)', scratch: '2-3 weeks', kit: 'Day 1' },
+                    { feature: 'Admin panel (Filament v5)', scratch: '2-4 weeks', kit: 'Day 1' },
                     { feature: 'AI chat + MCP server', scratch: '2-3 weeks', kit: 'Day 1' },
-                    { feature: 'Real-time notifications', scratch: '1-2 weeks', kit: 'Day 1' },
-                    { feature: 'Full test suite', scratch: '2-3 weeks', kit: 'Day 1' },
+                    { feature: 'Real-time WebSockets', scratch: '1-2 weeks', kit: 'Day 1' },
+                    { feature: '13 domain modules', scratch: '3-6 months', kit: 'Day 1' },
+                    { feature: 'Full-text search (Typesense)', scratch: '1-2 weeks', kit: 'Day 1' },
+                    { feature: 'Monitoring (Horizon + Pulse)', scratch: '1-2 weeks', kit: 'Day 1' },
+                    { feature: '670+ tests with Pest', scratch: '2-3 weeks', kit: 'Day 1' },
                 ].map((row) => (
                     <div key={row.feature} className="flex items-center justify-between bg-card p-4">
                         <span className="text-sm">{row.feature}</span>

@@ -9,11 +9,14 @@ export function BuiltWithSection() {
                     { name: 'Laravel 13', detail: 'PHP 8.4, strict types' },
                     { name: 'React 19', detail: 'Inertia v2, TypeScript' },
                     { name: 'Filament v5', detail: 'Admin panel, SDUI' },
-                    { name: 'Tailwind v4', detail: '155+ shadcn components' },
+                    { name: 'Tailwind v4', detail: '286 shadcn components' },
                     { name: 'Laravel AI SDK', detail: 'Agents, tools, streaming' },
-                    { name: 'Pest 4', detail: '520+ tests, full coverage' },
+                    { name: 'Pest 4', detail: '670+ tests, full coverage' },
                     { name: 'Horizon + Pulse', detail: 'Queues, monitoring' },
                     { name: 'Scout + Typesense', detail: 'Full-text search' },
+                    { name: 'Reverb + Echo', detail: 'Real-time WebSockets' },
+                    { name: 'Sanctum + Socialite', detail: 'API tokens, OAuth' },
+                    { name: 'Spatie Suite', detail: 'Permissions, backup, health' },
                 ].map((tech) => (
                     <div key={tech.name} className="bg-card p-4">
                         <div className="font-mono text-sm font-semibold tracking-tight">{tech.name}</div>

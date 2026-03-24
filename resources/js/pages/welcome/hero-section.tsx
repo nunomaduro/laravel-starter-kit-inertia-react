@@ -12,7 +12,7 @@ export function HeroSection() {
                 <span className="text-primary">in minutes, not months</span>
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
-                Skip 3 months of infrastructure. Describe your app, select modules, ship to production — powered by 70+ packages and an AI assistant that knows your domain.
+                Skip 3 months of infrastructure. Describe your app, select from 13 modules, ship to production — powered by 100+ packages, 670+ tests, and an AI assistant that knows your domain.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
