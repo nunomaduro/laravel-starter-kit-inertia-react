@@ -13,6 +13,8 @@ interface FeatureEntry {
 
 interface PageProps extends Omit<SharedData, 'features'> {
     features: FeatureEntry[];
+    orgPlan: string | null;
+    planFeatures: Record<string, string[]>;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,6 +30,12 @@ const FEATURE_LABELS: Record<string, string> = {
     appearance_settings: 'Appearance Settings',
     gamification: 'Gamification',
     api_access: 'API Access',
+    crm: 'CRM',
+    reports: 'Reports',
+    dashboards: 'Dashboards',
+    workflows: 'Workflows',
+    announcements: 'Announcements',
+    billing: 'Billing',
 };
 
 const OVERRIDE_OPTIONS = [
@@ -36,10 +44,22 @@ const OVERRIDE_OPTIONS = [
     { value: 'disabled', label: 'Disabled' },
 ] as const;
 
-function FeatureRow({ feature }: { feature: FeatureEntry }) {
+function hasPlanAccess(
+    featureKey: string,
+    planRequired: string | null,
+    orgPlan: string | null,
+    planFeatures: Record<string, string[]>,
+): boolean {
+    if (!planRequired) return true;
+    if (!orgPlan) return false;
+    return (planFeatures[orgPlan] ?? []).includes(featureKey);
+}
+
+function FeatureRow({ feature, locked }: { feature: FeatureEntry; locked: boolean }) {
     const label = FEATURE_LABELS[feature.key] ?? feature.key;
 
     const handleChange = (override: string) => {
+        if (locked && override === 'enabled') return;
         router.post(
             '/settings/features',
             { key: feature.key, override },
@@ -48,7 +68,7 @@ function FeatureRow({ feature }: { feature: FeatureEntry }) {
     };
 
     return (
-        <div className="flex items-center justify-between gap-4 py-3">
+        <div className={`flex items-center justify-between gap-4 py-3 ${locked ? 'opacity-60' : ''}`}>
             <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">{label}</p>
                 <div className="mt-0.5 flex items-center gap-2">
@@ -61,6 +81,11 @@ function FeatureRow({ feature }: { feature: FeatureEntry }) {
                         {feature.key}
                     </span>
                 </div>
+                {locked && (
+                    <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                        Upgrade to <strong>{feature.plan_required}</strong> to enable this feature.
+                    </p>
+                )}
             </div>
             <div className="flex shrink-0 gap-1 rounded-lg border bg-muted/40 p-0.5">
                 {OVERRIDE_OPTIONS.map((opt) => (
@@ -68,11 +93,12 @@ function FeatureRow({ feature }: { feature: FeatureEntry }) {
                         key={opt.value}
                         type="button"
                         onClick={() => handleChange(opt.value)}
+                        disabled={locked && opt.value === 'enabled'}
                         className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                             feature.override === opt.value
                                 ? 'bg-background text-foreground shadow-sm'
                                 : 'text-muted-foreground hover:text-foreground'
-                        }`}
+                        } ${locked && opt.value === 'enabled' ? 'cursor-not-allowed opacity-40' : ''}`}
                     >
                         {opt.label}
                     </button>
@@ -83,7 +109,7 @@ function FeatureRow({ feature }: { feature: FeatureEntry }) {
 }
 
 export default function Features() {
-    const { features } = usePage<PageProps>().props;
+    const { features, orgPlan, planFeatures } = usePage<PageProps>().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -104,7 +130,10 @@ export default function Features() {
                         <div className="divide-y rounded-lg border">
                             {features.map((feature) => (
                                 <div key={feature.key} className="px-4">
-                                    <FeatureRow feature={feature} />
+                                    <FeatureRow
+                                        feature={feature}
+                                        locked={!hasPlanAccess(feature.key, feature.plan_required, orgPlan, planFeatures)}
+                                    />
                                 </div>
                             ))}
                         </div>
