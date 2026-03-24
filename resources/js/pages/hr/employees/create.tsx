@@ -1,5 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type Department } from '@/types/hr';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
@@ -11,11 +12,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Employees', href: '/hr/employees' },
     { title: 'Create', href: '/hr/employees/create' },
 ];
-
-interface Department {
-    id: number;
-    name: string;
-}
 
 interface Props {
     departments: Department[];

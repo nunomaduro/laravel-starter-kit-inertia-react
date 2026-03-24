@@ -1,23 +1,11 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type ContactEditable as Contact } from '@/types/crm';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-
-interface Contact {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string | null;
-    company: string | null;
-    position: string | null;
-    source: string | null;
-    status: string;
-    notes: string | null;
-}
 
 interface Props {
     contact: Contact;

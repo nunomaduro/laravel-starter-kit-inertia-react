@@ -2,22 +2,9 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as changelogIndex } from '@/routes/changelog';
 import { type BreadcrumbItem } from '@/types';
+import { type ChangelogEntry } from '@/types/content';
+import { type PaginatorLink } from '@/types/pagination';
 import { Head, Link } from '@inertiajs/react';
-
-interface ChangelogEntry {
-    id: number;
-    title: string;
-    description: string;
-    version: string | null;
-    type: string;
-    released_at: string | null;
-}
-
-interface PaginatorLink {
-    url: string | null;
-    label: string;
-    active: boolean;
-}
 
 interface Props {
     entries: {

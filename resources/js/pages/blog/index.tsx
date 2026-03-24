@@ -2,27 +2,9 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { index as blogIndex, show as blogShow } from '@/routes/blog';
 import { type BreadcrumbItem } from '@/types';
+import { type Post } from '@/types/content';
+import { type PaginatorLink } from '@/types/pagination';
 import { Head, Link } from '@inertiajs/react';
-
-interface Author {
-    id: number;
-    name: string;
-}
-
-interface Post {
-    id: number;
-    title: string;
-    slug: string;
-    excerpt: string | null;
-    published_at: string | null;
-    author?: Author;
-}
-
-interface PaginatorLink {
-    url: string | null;
-    label: string;
-    active: boolean;
-}
 
 interface Props {
     posts: {

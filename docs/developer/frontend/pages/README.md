@@ -92,5 +92,19 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [hr/employees/index](./hr/employees/index.md) | Yes |
 | [hr/leave-requests/index](./hr/leave-requests/index.md) | Yes |
 | [wizard/index](./wizard/index.md) | Yes |
+| [users/columns](./users/columns.md) | Yes |
+| [users/table-toolbar](./users/table-toolbar.md) | Yes |
+| [welcome/hero-section](./welcome/hero-section.md) | Yes |
+| [welcome/welcome-header](./welcome/welcome-header.md) | Yes |
+| [welcome/built-with-section](./welcome/built-with-section.md) | Yes |
+| [welcome/how-it-works-section](./welcome/how-it-works-section.md) | Yes |
+| [welcome/modules-section](./welcome/modules-section.md) | Yes |
+| [welcome/stats-section](./welcome/stats-section.md) | Yes |
+| [welcome/differentiators-section](./welcome/differentiators-section.md) | Yes |
+| [welcome/features-section](./welcome/features-section.md) | Yes |
+| [welcome/comparison-section](./welcome/comparison-section.md) | Yes |
+| [welcome/cta-section](./welcome/cta-section.md) | Yes |
+| [welcome/pricing-section](./welcome/pricing-section.md) | Yes |
+| [welcome/welcome-footer](./welcome/welcome-footer.md) | Yes |
 
 

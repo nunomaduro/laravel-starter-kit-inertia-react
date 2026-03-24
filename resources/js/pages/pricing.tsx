@@ -8,16 +8,8 @@ import {
 } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type Plan } from '@/types/billing';
 import { Head, Link, usePage } from '@inertiajs/react';
-
-interface Plan {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    currency: string;
-    interval: string;
-}
 
 interface Props {
     plans: Plan[];

@@ -1,5 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type Contact } from '@/types/crm';
+import { type PaginatedData } from '@/types/pagination';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 
@@ -9,27 +11,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'CRM', href: '/crm/contacts' },
     { title: 'Contacts', href: '/crm/contacts' },
 ];
-
-interface Contact {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string | null;
-    company: string | null;
-    position: string | null;
-    status: string;
-}
-
-interface PaginatedData<T> {
-    data: T[];
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-    next_page_url: string | null;
-    prev_page_url: string | null;
-}
 
 interface Props {
     contacts: PaginatedData<Contact>;

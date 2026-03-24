@@ -1,5 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type LeaveRequest } from '@/types/hr';
+import { type PaginatedData } from '@/types/pagination';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 
@@ -9,33 +11,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'HR', href: '/hr/employees' },
     { title: 'Leave Requests', href: '/hr/leave-requests' },
 ];
-
-interface Employee {
-    id: number;
-    first_name: string;
-    last_name: string;
-}
-
-interface LeaveRequest {
-    id: number;
-    employee_id: number;
-    type: string;
-    start_date: string;
-    end_date: string;
-    reason: string | null;
-    status: string;
-    employee: Employee | null;
-}
-
-interface PaginatedData<T> {
-    data: T[];
-    current_page: number;
-    last_page: number;
-    per_page: number;
-    total: number;
-    next_page_url: string | null;
-    prev_page_url: string | null;
-}
 
 interface Props {
     leaveRequests: PaginatedData<LeaveRequest>;

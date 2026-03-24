@@ -8,13 +8,7 @@ import { LayoutDashboard, Pencil, Plus, Star, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
-interface DashboardRecord {
-    id: number;
-    name: string;
-    is_default: boolean;
-    refresh_interval: number | null;
-    updated_at: string;
-}
+import { type DashboardRecord } from '@/types/content';
 
 interface Props {
     dashboards: DashboardRecord[];

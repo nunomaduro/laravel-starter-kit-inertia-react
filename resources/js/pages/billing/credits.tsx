@@ -1,5 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type CreditPack, type CreditTransaction } from '@/types/billing';
 import { Head, router, usePage } from '@inertiajs/react';
 import { Coins } from 'lucide-react';
 
@@ -16,23 +17,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Billing', href: '/billing' },
     { title: 'Credits', href: '/billing/credits' },
 ];
-
-interface CreditPack {
-    id: number;
-    name: string;
-    credits: number;
-    bonus_credits: number;
-    price: number;
-    currency: string;
-}
-
-interface CreditTransaction {
-    id: number;
-    amount: number;
-    type: string;
-    description: string | null;
-    created_at: string;
-}
 
 interface Props {
     creditBalance: number;

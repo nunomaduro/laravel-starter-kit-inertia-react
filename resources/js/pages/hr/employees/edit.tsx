@@ -1,29 +1,11 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type Department, type EmployeeEditable as Employee } from '@/types/hr';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-
-interface Department {
-    id: number;
-    name: string;
-}
-
-interface Employee {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string | null;
-    position: string | null;
-    hire_date: string;
-    salary: string | null;
-    status: string;
-    department_id: number | null;
-    department: Department | null;
-}
 
 interface Props {
     employee: Employee;

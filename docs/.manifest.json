@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastGenerated": "2026-03-23",
+    "lastGenerated": "2026-03-24",
     "actions": {
         "CreateUser": {
             "documented": true,
@@ -1112,7 +1112,9 @@
             "lastUpdated": "2026-03-02",
             "relationships": {
                 "usesActions": [],
-                "usesFormRequests": [],
+                "usesFormRequests": [
+                    "SearchRequest"
+                ],
                 "relatedRoutes": [
                     "search"
                 ],
@@ -1141,7 +1143,9 @@
                 "usesActions": [
                     "UpdateUserThemeMode"
                 ],
-                "usesFormRequests": [],
+                "usesFormRequests": [
+                    "UpdateUserPreferencesRequest"
+                ],
                 "relatedRoutes": [
                     "user.preferences.update"
                 ],
@@ -1359,7 +1363,11 @@
             "path": "./wizardcontroller.md",
             "relationships": {
                 "usesActions": [],
-                "usesFormRequests": [],
+                "usesFormRequests": [
+                    "StoreWizardStep1Request",
+                    "StoreWizardStep2Request",
+                    "StoreWizardStep3Request"
+                ],
                 "relatedRoutes": [
                     "wizard",
                     "wizard.analyze",
@@ -1638,6 +1646,11 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
+                    "debugbar.openhandler",
+                    "debugbar.cache.delete",
+                    "debugbar.queries.explain",
+                    "debugbar.clockwork",
+                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -1651,6 +1664,8 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
+                    "dev.components",
+                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -2126,6 +2141,11 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
+                    "debugbar.openhandler",
+                    "debugbar.cache.delete",
+                    "debugbar.queries.explain",
+                    "debugbar.clockwork",
+                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -2139,6 +2159,8 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
+                    "dev.components",
+                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -2520,6 +2542,11 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
+                    "debugbar.openhandler",
+                    "debugbar.cache.delete",
+                    "debugbar.queries.explain",
+                    "debugbar.clockwork",
+                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -2533,6 +2560,8 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
+                    "dev.components",
+                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -3087,6 +3116,11 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
+                    "debugbar.openhandler",
+                    "debugbar.cache.delete",
+                    "debugbar.queries.explain",
+                    "debugbar.clockwork",
+                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -3100,6 +3134,8 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
+                    "dev.components",
+                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -3494,7 +3530,9 @@
             "lastUpdated": "2026-03-07",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "dev.components"
+                ]
             }
         },
         "dev/pages": {
@@ -3503,7 +3541,9 @@
             "developerGuide": null,
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "dev.pages"
+                ]
             }
         },
         "error": {
@@ -3871,6 +3911,11 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
+                    "debugbar.openhandler",
+                    "debugbar.cache.delete",
+                    "debugbar.queries.explain",
+                    "debugbar.clockwork",
+                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
@@ -3884,6 +3929,8 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
+                    "dev.components",
+                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -4307,6 +4354,132 @@
                     "wizard.preview",
                     "wizard.generate"
                 ]
+            }
+        },
+        "users/columns": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./users/columns.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "users/table-toolbar": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./users/table-toolbar.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/hero-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/hero-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/welcome-header": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/welcome-header.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/built-with-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/built-with-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/how-it-works-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/how-it-works-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/modules-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/modules-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/stats-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/stats-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/differentiators-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/differentiators-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/features-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/features-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/comparison-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/comparison-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/cta-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/cta-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/pricing-section": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/pricing-section.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "welcome/welcome-footer": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./welcome/welcome-footer.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
             }
         }
     },

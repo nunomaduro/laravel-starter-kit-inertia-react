@@ -4,22 +4,8 @@ import { sanitizeHtml } from '@/lib/sanitize-html';
 import { dashboard } from '@/routes';
 import { index as blogIndex, show as blogShow } from '@/routes/blog';
 import { type BreadcrumbItem } from '@/types';
+import { type PostDetail as Post } from '@/types/content';
 import { Head } from '@inertiajs/react';
-
-interface Author {
-    id: number;
-    name: string;
-}
-
-interface Post {
-    id: number;
-    title: string;
-    slug: string;
-    excerpt: string | null;
-    content: string;
-    published_at: string | null;
-    author?: Author;
-}
 
 interface Props {
     post: Post;

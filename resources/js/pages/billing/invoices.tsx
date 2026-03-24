@@ -17,14 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Invoices', href: '/billing/invoices' },
 ];
 
-interface Invoice {
-    id: number;
-    number: string;
-    status: string;
-    total: number;
-    currency: string;
-    created_at: string;
-}
+import { type Invoice } from '@/types/billing';
 
 interface PaginatedInvoices {
     data: Invoice[];

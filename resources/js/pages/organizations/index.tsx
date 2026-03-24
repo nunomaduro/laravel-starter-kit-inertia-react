@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import organizations from '@/routes/organizations';
-import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type BreadcrumbItem, type OrganizationSummary, type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Building2, Plus } from 'lucide-react';
 
@@ -17,21 +17,9 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Organizations', href: organizations.index.url() },
 ];
 
-interface OrganizationSummary {
-    id: number;
-    name: string;
-    slug: string;
-}
-
-interface CurrentOrganization {
-    id: number;
-    name: string;
-    slug: string;
-}
-
 interface Props {
-    organizations: { id: number; name: string; slug: string }[];
-    currentOrganization: CurrentOrganization | null;
+    organizations: OrganizationSummary[];
+    currentOrganization: OrganizationSummary | null;
 }
 
 export default function OrganizationsIndex() {

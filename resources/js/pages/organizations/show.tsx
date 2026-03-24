@@ -16,12 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-interface Organization {
-    id: number;
-    name: string;
-    slug: string;
-    owner?: { id: number; name: string; email: string } | null;
-}
+import { type OrganizationDetail as Organization } from '@/types/organizations';
 
 interface Props {
     organization: Organization;

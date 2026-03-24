@@ -22,13 +22,7 @@ const PuckEditor = lazy(() =>
     }),
 );
 
-interface DashboardRecord {
-    id: number;
-    name: string;
-    puck_json: Record<string, unknown>;
-    is_default: boolean;
-    refresh_interval: number | null;
-}
+import { type DashboardRecordEditable as DashboardRecord } from '@/types/content';
 
 interface Props {
     dashboard: DashboardRecord | null;

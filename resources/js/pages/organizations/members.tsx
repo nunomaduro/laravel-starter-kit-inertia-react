@@ -1,7 +1,8 @@
 import OrganizationMemberController from '@/actions/App/Http/Controllers/OrganizationMemberController';
 import AppLayout from '@/layouts/app-layout';
 import organizations from '@/routes/organizations';
-import { type BreadcrumbItem, type SharedData } from '@/types';
+import { type BreadcrumbItem, type OrganizationSummary, type SharedData } from '@/types';
+import { type OrgMember, type PendingInvitation } from '@/types/organizations';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { UserPlus } from 'lucide-react';
 
@@ -10,31 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-interface Member {
-    id: number;
-    name: string;
-    email: string;
-    is_owner: boolean;
-    role: string;
-    joined_at: string | null;
-}
-
-interface PendingInvitation {
-    id: number;
-    email: string;
-    role: string;
-    expires_at: string;
-}
-
-interface Organization {
-    id: number;
-    name: string;
-    slug: string;
-}
-
 interface Props {
-    organization: Organization;
-    members: Member[];
+    organization: OrganizationSummary;
+    members: OrgMember[];
     pendingInvitations: PendingInvitation[];
 }
 
