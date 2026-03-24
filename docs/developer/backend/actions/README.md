@@ -49,5 +49,6 @@ All Actions:
 | [BuildLaravelDailyInvoice](./Billing/BuildLaravelDailyInvoice.md) | Yes |
 | [FindSimilarContent](./findsimilarcontent.md) | Yes |
 | [GenerateOgImage](./generateogimage.md) | Yes |
+| [CheckPlanFeatureAccess](./checkplanfeatureaccess.md) | Yes |
 
 
