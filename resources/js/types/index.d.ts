@@ -33,6 +33,16 @@ export interface NavGroup {
     items: NavItem[];
 }
 
+export interface ModuleNavItem {
+    label: string;
+    route: string;
+    /** Lucide icon name in kebab-case, e.g. 'file-text', 'credit-card'. */
+    icon: string;
+    module: string;
+    group: string;
+    permission?: string;
+}
+
 export interface NavItem {
     title: string;
     href: NonNullable<InertiaLinkProps['href']>;
@@ -151,6 +161,8 @@ export interface SharedData {
         percentageCompleted: number;
         nextStep: { title: string; link: string; cta: string } | null;
     };
+    /** Module nav items grouped by section, driven by ModuleNavigationRegistry. */
+    moduleNavItems: Record<string, ModuleNavItem[]>;
     [key: string]: unknown;
 }
 
