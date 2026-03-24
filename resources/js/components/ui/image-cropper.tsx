@@ -159,6 +159,7 @@ function ImageCropper({
           variant="outline"
           size="icon"
           onClick={() => setRotation((r) => r - 90)}
+          aria-label="Rotate image"
         >
           <RotateCcwIcon className="size-4" />
         </Button>

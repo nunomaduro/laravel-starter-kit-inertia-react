@@ -85,6 +85,7 @@ function CopyableKey({ value }: { value: string }) {
                 className="size-6"
                 onClick={() => setVisible((v) => !v)}
                 title={visible ? 'Hide key' : 'Show key'}
+                aria-label={visible ? 'Hide key' : 'Show key'}
             >
                 {visible ? (
                     <EyeOffIcon className="size-3" />
@@ -98,6 +99,7 @@ function CopyableKey({ value }: { value: string }) {
                 className="size-6"
                 onClick={handleCopy}
                 title="Copy key"
+                aria-label="Copy key"
             >
                 {copied ? (
                     <CheckIcon className="size-3 text-success" />

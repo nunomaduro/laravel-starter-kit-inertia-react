@@ -143,6 +143,7 @@ function FileManager({
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search files..."
                         className="h-8 w-40 text-sm"
+                        aria-label="Search files"
                     />
                     {onCreateFolder && (
                         <Button
@@ -392,6 +393,7 @@ function FileGridItem({
             }
             role="button"
             tabIndex={0}
+            aria-label={item.type === 'folder' ? `Open folder ${item.name}` : `Select file ${item.name}`}
             onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                     (item.type === 'folder' ? onNavigate : onSelect)?.(item);

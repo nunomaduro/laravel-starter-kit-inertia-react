@@ -776,7 +776,8 @@ function CopyableCell({ value, children, enabled, t }: { value: unknown; childre
             {children}
             <button type="button" onClick={handleCopy}
                 className="opacity-0 group-hover/copy:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
-                title={t.copyToClipboard}>
+                title={t.copyToClipboard}
+                aria-label={t.copyToClipboard}>
                 {copied ? <Check className="h-3 w-3 text-emerald-600" /> : <Clipboard className="h-3 w-3 text-muted-foreground" />}
             </button>
         </div>
@@ -806,7 +807,7 @@ function ColumnContextMenu({ columnId, sortable, isPinned, showPinning, onSort, 
             {children}
             {open && (
                 <>
-                    <div className="fixed inset-0 z-50" onClick={() => setOpen(false)} />
+                    <div className="fixed inset-0 z-50" onClick={() => setOpen(false)} role="presentation" />
                     <div className="fixed z-50 min-w-[160px] rounded-lg border bg-popover p-1 shadow-lg animate-in fade-in-0 zoom-in-95"
                         style={{ left: pos.x, top: pos.y }}>
                         {sortable && (
@@ -1651,10 +1652,11 @@ function LayoutSwitcher({ layout, onLayoutChange, showKanban, t }: {
     return (
         <div className="inline-flex items-center rounded-md border bg-muted/30 p-0.5">
             {modes.map(({ mode, icon, label }) => (
-                <button key={mode} type="button" title={label}
+                <button key={mode} type="button" title={label} aria-label={label}
                     className={cn("inline-flex items-center rounded-md px-1.5 py-1 text-xs font-medium transition-all",
                         layout === mode ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
-                    onClick={() => onLayoutChange(mode)}>
+                    onClick={() => onLayoutChange(mode)}
+                    aria-pressed={layout === mode}>
                     {icon}
                 </button>
             ))}
@@ -2123,7 +2125,7 @@ function ConditionalFormatDialog({ open, onOpenChange, columns, rules, onAddRule
                                 </label>
                             </div>
                             <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"
-                                onClick={() => onRemoveRule(rule.id)}>
+                                onClick={() => onRemoveRule(rule.id)} aria-label={t.removeRule}>
                                 <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                         </div>
@@ -2904,7 +2906,7 @@ function IntegratedChartPanel({ data, columns, chartState, onClose, onChangeColu
                             {availableTypes.map(type => <SelectItem key={type} value={type}>{chartTypeLabels[type]}</SelectItem>)}
                         </SelectContent>
                     </Select>
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}><X className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose} aria-label={t.close}><X className="h-3.5 w-3.5" /></Button>
                 </div>
             </div>
             <div className="bg-muted/20 rounded-md p-2">
@@ -3031,7 +3033,7 @@ function FindReplaceBar({ state, onReplace, onReplaceAll, onClose, t }: {
             <span className="text-xs text-muted-foreground tabular-nums">
                 {state.query ? (state.matches.length > 0 ? t.findMatchesCount(state.currentIndex + 1, state.matches.length) : t.findNoMatches) : ""}
             </span>
-            <Button variant="ghost" size="icon" className="h-7 w-7 ml-auto" onClick={onClose}><X className="h-3.5 w-3.5" /></Button>
+            <Button variant="ghost" size="icon" className="h-7 w-7 ml-auto" onClick={onClose} aria-label={t.close}><X className="h-3.5 w-3.5" /></Button>
         </div>
     );
 }
@@ -3258,7 +3260,7 @@ function AiAssistantPanel({ ai, t, onApplyAction, onClose, columns, selectedRowI
                         <span className="text-xs text-destructive">{ai.error}</span>
                     </div>
                 )}
-                <Button variant="ghost" size="icon" className="ml-auto h-7 w-7" onClick={onClose}>
+                <Button variant="ghost" size="icon" className="ml-auto h-7 w-7" onClick={onClose} aria-label={t.close}>
                     <X className="h-3.5 w-3.5" />
                 </Button>
             </div>
@@ -4962,7 +4964,7 @@ function DataTableInner<TData extends object>({
                         <>
                             <Popover>
                                 <PopoverTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 md:hidden"><EllipsisVertical className="h-4 w-4" /></Button>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 md:hidden" aria-label="Table options"><EllipsisVertical className="h-4 w-4" /></Button>
                                 </PopoverTrigger>
                                 <PopoverContent align="end" className="flex w-auto flex-col gap-2 p-2"><DataTableToolbar {...toolbarProps} /></PopoverContent>
                             </Popover>
@@ -5049,7 +5051,7 @@ function DataTableInner<TData extends object>({
                                 </Button>
                             );
                         })}
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearServerSelectAll}><X className="h-3.5 w-3.5" /></Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={clearServerSelectAll} aria-label={t.clearSelection}><X className="h-3.5 w-3.5" /></Button>
                     </div>
                 </div>
             )}

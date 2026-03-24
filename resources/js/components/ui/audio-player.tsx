@@ -164,10 +164,11 @@ function AudioPlayer({
             size="icon-sm"
             onClick={() => skipTo(currentIndex - 1)}
             disabled={currentIndex === 0}
+            aria-label="Previous track"
           >
             <SkipBackIcon className="size-4" />
           </Button>
-          <Button variant="default" size="icon" onClick={togglePlay}>
+          <Button variant="default" size="icon" onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>
             {isPlaying ? (
               <PauseIcon className="size-5" />
             ) : (
@@ -179,6 +180,7 @@ function AudioPlayer({
             size="icon-sm"
             onClick={() => skipTo(currentIndex + 1)}
             disabled={currentIndex >= allTracks.length - 1}
+            aria-label="Next track"
           >
             <SkipForwardIcon className="size-4" />
           </Button>

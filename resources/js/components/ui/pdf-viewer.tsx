@@ -54,6 +54,7 @@ function PdfViewer({
           className="size-7"
           onClick={goToPrev}
           disabled={currentPage <= 1}
+          aria-label="Previous page"
         >
           <ChevronLeftIcon className="size-4" />
         </Button>
@@ -66,15 +67,16 @@ function PdfViewer({
           className="size-7"
           onClick={goToNext}
           disabled={currentPage >= numPages}
+          aria-label="Next page"
         >
           <ChevronRightIcon className="size-4" />
         </Button>
         <div className="mx-1 h-4 w-px bg-border" />
-        <Button variant="ghost" size="icon" className="size-7" onClick={zoomOut}>
+        <Button variant="ghost" size="icon" className="size-7" onClick={zoomOut} aria-label="Zoom out">
           <ZoomOutIcon className="size-4" />
         </Button>
         <span className="text-xs text-muted-foreground">{Math.round(scale * 100)}%</span>
-        <Button variant="ghost" size="icon" className="size-7" onClick={zoomIn}>
+        <Button variant="ghost" size="icon" className="size-7" onClick={zoomIn} aria-label="Zoom in">
           <ZoomInIcon className="size-4" />
         </Button>
       </div>
