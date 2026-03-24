@@ -219,6 +219,45 @@ Update `phpunit.xml` / `Pest.php` to discover module tests. Add a Composer scrip
 - `composer test:modules` — module tests only (modules/*/tests/)
 - `composer test:all` — everything
 
+### A6. `make:module` Artisan Command
+
+Now that all 13 modules follow the same `ModuleProvider` pattern, create a scaffolding command:
+
+```bash
+php artisan make:module Inventory --no-interaction
+```
+
+**Generates:**
+```
+modules/inventory/
+├── module.json
+├── composer.json
+├── src/
+│   ├── Providers/InventoryModuleServiceProvider.php  (extends ModuleProvider)
+│   ├── Models/Inventory.php
+│   ├── Policies/InventoryPolicy.php
+│   ├── Actions/CreateInventory.php
+│   ├── Actions/UpdateInventory.php
+│   ├── Http/Controllers/InventoryController.php
+│   ├── DataTables/InventoryDataTable.php
+│   └── Features/InventoryFeature.php
+├── routes/
+│   └── web.php                                      (resource routes with feature middleware)
+├── database/
+│   ├── migrations/create_inventories_table.php
+│   ├── factories/InventoryFactory.php
+│   └── seeders/InventorySeeder.php
+└── tests/
+    ├── Feature/InventoryControllerTest.php
+    └── Unit/InventoryPolicyTest.php
+```
+
+**Also auto-updates:**
+- Adds `'inventory' => true` to `config/modules.php`
+- Runs `composer dump-autoload` for PSR-4 discovery
+
+**The welcome page claims "scaffolds 18 files in one command" — this command must actually deliver that.**
+
 ---
 
 ## Phase B: Build Out 7 Incomplete Modules (Inertia CRUD)
@@ -319,6 +358,58 @@ Each module gets the same treatment: DataTable list, create form, edit form, det
 - Manual trigger page (start a workflow with parameters)
 - Integration with Waterline UI (already at `/waterline` for super-admin)
 - Org-scoped workflow filtering
+
+### B8. API Token Management Page
+
+**Location:** `resources/js/pages/settings/api-tokens.tsx`
+
+Sanctum is installed but there's no user-facing UI to manage API tokens. Build:
+- API tokens list (name, last used, created, abilities)
+- Create token modal (name, select abilities/scopes)
+- Copy-once token display after creation (token only shown once)
+- Revoke button with confirmation
+- Link from settings sidebar
+
+This is a standard SaaS feature — Spark, Jetstream, and Wave all ship it.
+
+### B9. Real-time Notification Toasts
+
+**Enhancement to existing notification system.**
+
+Reverb + Echo are configured. The notification center exists. Add:
+- Echo listener in the Inertia app layout that subscribes to the user's private channel
+- When a broadcast notification arrives, show a toast (using existing toast/sonner component)
+- Auto-update the unread notification count badge in the header
+- Respect user's notification channel preferences (via_database toggle)
+
+### B10. Usage & Quota Tracking UI
+
+**Location:** `resources/js/pages/billing/usage.tsx`
+
+Credits and seat-based billing exist but there's no visual usage dashboard. Build:
+- Usage meters (progress bars) for: seats used/total, credits used/remaining, storage used (if applicable)
+- Plan limits comparison (what's included in current plan vs next tier)
+- "Approaching limit" warnings when usage > 80%
+- Link to upgrade from usage page
+- Historical usage chart (credits consumed per day/week)
+
+### B11. Welcome Page Refresh
+
+**After all modules are built, update the welcome page to reflect the complete product:**
+
+Updates to `resources/js/pages/welcome/`:
+- **Stats section:** Update counts (modules, tests, pages, components — re-count after build)
+- **Modules section:** Verify all 13 modules have accurate descriptions matching what was built
+- **Features grid (`feature-data.ts`):**
+  - Add: API Token Management
+  - Add: Real-time Notifications (upgrade existing entry to mention toasts)
+  - Add: Usage & Quota Tracking
+  - Add: `make:module` scaffolding command
+  - Update test count
+  - Update component/page counts
+- **Comparison section:** Add row for "Module scaffolding CLI" (scratch: N/A, kit: Day 1)
+- **Built-with section:** Verify all tech references are current
+- **Hero subtitle:** Update package/test/module counts
 
 ---
 
@@ -482,23 +573,33 @@ php artisan test --compact modules/*/tests/             # all modules
 | All 13 modules on ModuleProvider pattern | 13/13 |
 | All modules have Inertia CRUD pages | 13/13 |
 | All modules have DataTable list views | 13/13 |
+| `make:module` command scaffolds complete module | Verified |
 | Module tests per module | 15+ for full CRUD modules, 5+ for simple modules |
+| API token management page | Working (create, revoke, copy) |
+| Real-time notification toasts | Working (Echo → toast on broadcast) |
+| Usage/quota tracking page | Working (meters, limits, warnings) |
 | `/admin` panel removed | Yes |
 | Global resources in `/system` | 5 migrated |
-| Sidebar shows/hides based on config | All groups |
+| Sidebar shows/hides based on feature flags | All module groups |
+| Feature flag cascade works: config → global → per-org → Pennant | Verified |
 | `config('modules.X')` = false disables module completely | Verified |
 | Core tests pass without any modules enabled | Yes |
+| Welcome page reflects all features accurately | Verified |
+| Zero feature loss from `/admin` removal | Verified via C7 checklist |
 
 ---
 
 ## Out of Scope
 
+- Docker / CI/CD pipelines / infrastructure-as-code
+- Frontend i18n / translations
 - Mobile app / PWA
 - Module marketplace / dynamic installation
-- Cross-module data sharing UI (relationships exist but no unified view)
+- Email campaigns / drip sequences
+- Webhook management UI
+- GDPR consent management (beyond existing cookie consent + data export)
 - Filament v5 custom themes beyond current DESIGN.md alignment
 - New billing gateway integrations
-- i18n / translations
 
 ---
 
@@ -506,6 +607,6 @@ php artisan test --compact modules/*/tests/             # all modules
 
 | Phase | Scope | Size |
 |-------|-------|------|
-| Phase A | ModuleProvider extension + rename CRM/HR + migrate 11 legacy modules + sidebar + test isolation | Large |
-| Phase B | 7 module CRUD build-outs (~45 new pages) + move controllers/routes into modules | Large |
-| Phase C | Admin panel removal — move 5 resources to /system, delete 3, migrate categories, disable then delete AdminPanelProvider | Medium |
+| Phase A | ModuleProvider extension + rename CRM/HR + migrate 11 legacy modules + sidebar + test isolation + `make:module` command | Large |
+| Phase B | 7 module CRUD build-outs (~50 new pages) + API tokens + notifications + usage tracking + welcome page refresh | Large |
+| Phase C | Admin panel removal — move 5 resources to /system, build 4 Inertia replacements, migrate widgets, disable then delete AdminPanelProvider, verify zero feature loss | Large |
