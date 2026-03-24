@@ -16,6 +16,65 @@
 
 ---
 
+## Hierarchical Feature Flag Architecture
+
+The system has an existing 5-layer cascade. This spec extends it to fully integrate modules.
+
+### Current Cascade (Already Built)
+```
+Layer 1: config/modules.php             → Module ON/OFF at boot (kills service provider)
+Layer 2: FeatureFlagSettings             → Super-admin globally disables features (DB, runtime)
+Layer 3: organization_settings table     → Per-org override: enabled/disabled/inherit
+Layer 4: Pennant (features table)        → Per-user feature flags
+Layer 5: feature_metadata.plan_required  → Plan gating (pro/enterprise)
+```
+
+### Resolution (FeatureHelper::isActiveForKey)
+```
+1. Globally disabled (Layer 2)?           → OFF (absolute, no override)
+2. Org override = 'disabled' (Layer 3)?   → OFF for this org
+3. Org override = 'enabled' (Layer 3)?    → ON (skip Pennant)
+4. Org override = 'inherit'?              → Fall through to Pennant/default
+5. Plan required but org not on plan?     → OFF
+6. Pennant check (Layer 4)?              → User-level ON/OFF
+7. Default value from feature class       → Fallback
+```
+
+### What This Spec Adds
+
+**Problem:** Modules use `config/modules.php` (boot-time), which is separate from the runtime feature flag cascade. Super-admins can't enable/disable modules per-org — only globally via config file.
+
+**Solution:** Each module registers itself as a feature in the cascade during boot:
+
+1. **Module still uses `config/modules.php`** for boot — if `false`, the module's service provider never loads (zero overhead)
+2. **If module is enabled in config**, its service provider registers a corresponding Pennant feature with `delegate_to_orgs: true`
+3. **Super-admin can globally disable** an enabled module via `FeatureFlagSettings` (Layer 2) — module code is loaded but all routes/nav/UI hidden
+4. **Super-admin can per-org override** via `ManageOrganizationOverrides` — enable CRM for Org A but not Org B
+5. **Org admin can toggle** delegatable module features in `/settings/features` — if super-admin hasn't forced enable/disable
+6. **Sidebar nav** checks `usePage().props.features.{module_key}` before rendering module nav groups
+7. **Routes** use `feature:{module_key}` middleware to gate access
+
+**This means:**
+- `config/modules.php = false` → Module completely unloaded (for production deployments that don't need it)
+- `config/modules.php = true` + globally disabled → Module loaded but invisible to all orgs
+- `config/modules.php = true` + org override `disabled` → Module hidden for that specific org
+- `config/modules.php = true` + org override `enabled` → Module visible for that org regardless of Pennant default
+- `config/modules.php = true` + no overrides → Pennant default (typically ON)
+
+### Integration Points
+
+| Component | What It Does | File |
+|-----------|-------------|------|
+| Module boot | Registers feature in `ModuleFeatureRegistry` with `delegate_to_orgs: true` | Each module's service provider |
+| Global disable | Super-admin toggles modules in FeatureFlagSettings | `app/Filament/System/Pages/ManageFeatureFlags.php` |
+| Per-org override | Super-admin sets per-org module access | `app/Filament/System/Pages/ManageOrganizationOverrides.php` |
+| Org admin toggle | Org admin enables/disables delegated features | `app/Http/Controllers/Settings/OrgFeaturesController.php` |
+| Route gating | `feature:crm` middleware on module routes | Each module's `routes/web.php` |
+| Sidebar gating | `{features.crm && <CrmNavGroup />}` | `resources/js/components/app-sidebar.tsx` |
+| Inertia exposure | Feature state shared as props | `app/Http/Middleware/HandleInertiaRequests.php` |
+
+---
+
 ## Phase A: Module Foundation & Standardization
 
 ### A0. Extend ModuleProvider Base Class (PREREQUISITE)
@@ -27,13 +86,17 @@ The current `ModuleProvider` (`app/Modules/Support/ModuleProvider.php`) only han
 - Enabled/disabled toggle check
 
 **Before migrating any module, extend `ModuleProvider` to support:**
-1. `loadRoutes()` — load `routes/web.php` from the module directory (gated by `config('modules.{key}')`)
-2. `registerFeature()` — register with `ModuleFeatureRegistry::registerInertiaFeature()` and `registerRouteFeature()` so Inertia pages can check `usePage().props.features.{module}`
-3. `registerDataTable()` — register DataTable controllers if the module has a `DataTables/` directory
-4. `isEnabled(): bool` — check `config('modules.{key}')` and short-circuit boot if disabled
+1. `isEnabled(): bool` — check `config('modules.{key}')` and short-circuit boot if disabled
+2. `loadRoutes()` — load `routes/web.php` from the module directory, wrapped with `feature:{module_key}` middleware for runtime gating
+3. `registerFeature()` — register with `ModuleFeatureRegistry`:
+   - `registerInertiaFeature()` — expose to React via `usePage().props.features`
+   - `registerRouteFeature()` — enable `feature:{key}` middleware
+   - `registerFeatureMetadata()` — set `delegate_to_orgs: true` so org admins can toggle
+4. `registerDataTable()` — register DataTable controllers if the module has a `DataTables/` directory
 5. `registerFilamentResources()` — for `/system` panel discovery
+6. `registerNavigation()` — declare sidebar nav items (used by the Inertia sidebar to build module-aware groups)
 
-This unifies all capabilities of the legacy `ModuleServiceProvider` into `ModuleProvider`.
+This unifies all capabilities of the legacy `ModuleServiceProvider` into `ModuleProvider`, and integrates every module into the hierarchical feature flag cascade.
 
 ### A1. Rename and Register CRM/HR Modules
 
