@@ -162,6 +162,33 @@
     body {
         @apply bg-background text-foreground;
     }
+
+    /* DESIGN.md: All headings use JetBrains Mono (display font) */
+    h1, h2, h3, h4 {
+        font-family: var(--font-mono);
+        letter-spacing: -0.02em;
+    }
+    h1 {
+        font-weight: 700;
+        letter-spacing: -0.03em;
+    }
+    h2 {
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+    h3 {
+        font-weight: 600;
+        letter-spacing: -0.02em;
+    }
+    h4 {
+        font-weight: 600;
+        letter-spacing: -0.015em;
+    }
+
+    /* DESIGN.md: Tabular numerals for data tables */
+    td, th {
+        font-variant-numeric: tabular-nums;
+    }
     .maplibregl-popup-content {
         @apply rounded-none! bg-transparent! p-0! shadow-none!;
     }
