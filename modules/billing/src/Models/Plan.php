@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Billing\Models;
 
 use Laravelcm\Subscriptions\Models\Plan as BasePlan;
+use Modules\Billing\Database\Factories\PlanFactory;
 
 /**
  * @property-read bool $is_per_seat
@@ -38,6 +39,11 @@ final class Plan extends BasePlan
     public function isPerSeat(): bool
     {
         return (bool) $this->is_per_seat;
+    }
+
+    protected static function newFactory(): PlanFactory
+    {
+        return PlanFactory::new();
     }
 
     protected function casts(): array

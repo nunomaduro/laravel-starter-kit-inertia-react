@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Billing\Models;
 
 use Laravelcm\Subscriptions\Models\Subscription as BaseSubscription;
+use Modules\Billing\Database\Factories\SubscriptionFactory;
 
 /**
  * @property-read string|null $gateway_subscription_id
@@ -37,6 +38,11 @@ final class Subscription extends BaseSubscription
     public function seatCount(): int
     {
         return (int) ($this->quantity ?? 1);
+    }
+
+    protected static function newFactory(): SubscriptionFactory
+    {
+        return SubscriptionFactory::new();
     }
 
     protected function casts(): array
