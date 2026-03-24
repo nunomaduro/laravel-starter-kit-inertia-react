@@ -7,9 +7,12 @@ namespace App\Jobs;
 use Illuminate\Support\Facades\Log;
 use Spatie\RateLimitedMiddleware\RateLimited;
 use Spatie\WebhookClient\Jobs\ProcessWebhookJob as SpatieProcessWebhookJob;
+use Throwable;
 
 final class ProcessWebhookJob extends SpatieProcessWebhookJob
 {
+    public int $timeout = 60;
+
     public function middleware(): array
     {
         return [
@@ -29,11 +32,17 @@ final class ProcessWebhookJob extends SpatieProcessWebhookJob
             'payload_keys' => is_array($payload) ? array_keys($payload) : null,
         ]);
 
-        // Add your webhook processing logic here. To forward using laravel-webhook-server:
-        // WebhookCall::create()
-        //     ->url('https://example.com/webhooks/forward')
-        //     ->payload($payload)
-        //     ->useSecret(env('WEBHOOK_CLIENT_SECRET'))
-        //     ->dispatch();
+        // TODO: Add webhook processing logic here.
+        // Example: forward using laravel-webhook-server:
+        // WebhookCall::create()->url('...')->payload($payload)->useSecret('...')->dispatch();
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::error('ProcessWebhookJob failed', [
+            'webhook_name' => $this->webhookCall->name,
+            'webhook_id' => $this->webhookCall->getKey(),
+            'error' => $exception->getMessage(),
+        ]);
     }
 }

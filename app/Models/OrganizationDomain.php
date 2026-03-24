@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -31,6 +31,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 final class OrganizationDomain extends Model
 {
+    use BelongsToOrganization;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
     use LogsActivity;
     use SoftDeletes;
@@ -51,14 +52,6 @@ final class OrganizationDomain extends Model
         'ssl_issued_at',
         'ssl_expires_at',
     ];
-
-    /**
-     * @return BelongsTo<Organization, $this>
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     public function isActive(): bool
     {

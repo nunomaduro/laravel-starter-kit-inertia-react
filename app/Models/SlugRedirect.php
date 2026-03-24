@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 final class SlugRedirect extends Model
 {
+    use BelongsToOrganization;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     public $timestamps = false;
@@ -28,14 +29,6 @@ final class SlugRedirect extends Model
         'redirects_to_slug',
         'expires_at',
     ];
-
-    /**
-     * @return BelongsTo<Organization, $this>
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     protected function casts(): array
     {

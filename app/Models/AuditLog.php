@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 final class AuditLog extends Model
 {
+    use BelongsToOrganization;
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     public $timestamps = false;
@@ -26,12 +28,6 @@ final class AuditLog extends Model
         'ip_address',
         'created_at',
     ];
-
-    /** @return BelongsTo<Organization, $this> */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     /** @return BelongsTo<User, $this> */
     public function actor(): BelongsTo
