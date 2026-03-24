@@ -5,12 +5,12 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateGovernorPermissionsTable extends Migration
+final class CreateGovernorPermissionsTable extends Migration
 {
     public function __construct()
     {
         if (app()->bound("Hyn\Tenancy\Environment")) {
-            $this->connection = config("tenancy.db.tenant-connection-name");
+            $this->connection = config('tenancy.db.tenant-connection-name');
         }
     }
 
@@ -23,7 +23,7 @@ class CreateGovernorPermissionsTable extends Migration
             $table->string('entity_name');
             $table->string('action_name');
             $table->string('ownership_name');
-            $table->unsignedBigInteger("team_id")
+            $table->unsignedBigInteger('team_id')
                 ->nullable();
             $table->timestamps();
 

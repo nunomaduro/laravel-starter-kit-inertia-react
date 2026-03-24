@@ -5,12 +5,12 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateGovernorActionsTable extends Migration
+final class CreateGovernorActionsTable extends Migration
 {
     public function __construct()
     {
         if (app()->bound("Hyn\Tenancy\Environment")) {
-            $this->connection = config("tenancy.db.tenant-connection-name");
+            $this->connection = config('tenancy.db.tenant-connection-name');
         }
     }
 

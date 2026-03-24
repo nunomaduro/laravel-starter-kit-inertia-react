@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Checks whether inline package overrides in composer.json can be removed
  * because the original package now supports the target Laravel version.
@@ -7,16 +9,15 @@
  * Usage: php scripts/check-inline-overrides.php
  *        composer check:overrides
  */
-
 $targetFramework = '13.0.0';
-$composerJson = json_decode(file_get_contents(__DIR__ . '/../composer.json'), true);
+$composerJson = json_decode(file_get_contents(__DIR__.'/../composer.json'), true);
 
 // Collect all inline package overrides (type: package)
 $overrides = [];
 foreach ($composerJson['repositories'] ?? [] as $repo) {
     if (($repo['type'] ?? '') === 'package' && isset($repo['package']['name'])) {
         $overrides[] = [
-            'name'    => $repo['package']['name'],
+            'name' => $repo['package']['name'],
             'version' => $repo['package']['version'],
         ];
     }
@@ -27,7 +28,7 @@ if (empty($overrides)) {
     exit(0);
 }
 
-echo "Checking " . count($overrides) . " inline override(s) against Packagist...\n\n";
+echo 'Checking '.count($overrides)." inline override(s) against Packagist...\n\n";
 
 $canRemove = [];
 $stillNeeded = [];
@@ -42,6 +43,7 @@ foreach ($overrides as $pkg) {
 
     if ($json === false) {
         $errors[] = $name;
+
         continue;
     }
 
@@ -63,7 +65,7 @@ foreach ($overrides as $pkg) {
         // Check if any illuminate/* or laravel/framework constraint covers ^13
         $supportsL13 = false;
         foreach ($requires as $dep => $constraint) {
-            if (!str_starts_with($dep, 'illuminate/') && $dep !== 'laravel/framework') {
+            if (! str_starts_with($dep, 'illuminate/') && $dep !== 'laravel/framework') {
                 continue;
             }
             // Check for ^13, ~13, 13.*, >=13, or a range including 13
@@ -94,7 +96,7 @@ foreach ($overrides as $pkg) {
 }
 
 // Output results
-if (!empty($canRemove)) {
+if (! empty($canRemove)) {
     echo "\033[32m✓ Can remove override (upstream now supports Laravel 13):\033[0m\n";
     foreach ($canRemove as $pkg) {
         echo "  - {$pkg['name']} (pinned: {$pkg['pinned']} → latest L13: {$pkg['version']})\n";
@@ -102,7 +104,7 @@ if (!empty($canRemove)) {
     echo "\n";
 }
 
-if (!empty($stillNeeded)) {
+if (! empty($stillNeeded)) {
     echo "\033[33m⏳ Still needed (upstream does not yet support Laravel 13):\033[0m\n";
     foreach ($stillNeeded as $pkg) {
         echo "  - {$pkg['name']} (pinned: {$pkg['pinned']})\n";
@@ -110,7 +112,7 @@ if (!empty($stillNeeded)) {
     echo "\n";
 }
 
-if (!empty($errors)) {
+if (! empty($errors)) {
     echo "\033[31m✗ Could not check (network error):\033[0m\n";
     foreach ($errors as $name) {
         echo "  - {$name}\n";
@@ -118,7 +120,7 @@ if (!empty($errors)) {
     echo "\n";
 }
 
-if (!empty($canRemove)) {
+if (! empty($canRemove)) {
     echo "To remove an override: delete its \"type\": \"package\" block from the\n";
     echo "repositories section in composer.json, then run:\n";
     echo "  composer update <package-name>\n\n";

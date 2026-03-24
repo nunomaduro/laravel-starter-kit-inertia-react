@@ -6,14 +6,14 @@ use GeneaLabs\LaravelGovernor\Team;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateGovernorTeamsTable extends Migration
+final class CreateGovernorTeamsTable extends Migration
 {
     protected $userInstance;
 
     public function __construct()
     {
         if (app()->bound("Hyn\Tenancy\Environment")) {
-            $this->connection = config("tenancy.db.tenant-connection-name");
+            $this->connection = config('tenancy.db.tenant-connection-name');
         }
 
         $this->userInstance = app(config('genealabs-laravel-governor.models.auth'));
@@ -22,14 +22,14 @@ class CreateGovernorTeamsTable extends Migration
     public function up(): void
     {
         Schema::create('governor_teams', function (Blueprint $table): void {
-            $table->bigIncrements("id");
-            $table->unsignedBigInteger("governor_owned_by")
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('governor_owned_by')
                 ->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             $table->string('name');
-            $table->text("description")
+            $table->text('description')
                 ->nullable();
 
             $table->foreign('governor_owned_by')
@@ -40,7 +40,7 @@ class CreateGovernorTeamsTable extends Migration
         });
 
         Schema::table($this->userInstance->getTable(), function (Blueprint $table): void {
-            $table->foreignIdFor(Team::class, "current_team_id")
+            $table->foreignIdFor(Team::class, 'current_team_id')
                 ->nullable()
                 ->constrained()
                 ->cascadeOnDelete()

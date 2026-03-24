@@ -5,12 +5,12 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateGovernorEntitiesTable extends Migration
+final class CreateGovernorEntitiesTable extends Migration
 {
     public function __construct()
     {
         if (app()->bound("Hyn\Tenancy\Environment")) {
-            $this->connection = config("tenancy.db.tenant-connection-name");
+            $this->connection = config('tenancy.db.tenant-connection-name');
         }
     }
 
@@ -22,11 +22,11 @@ class CreateGovernorEntitiesTable extends Migration
                 ->primary();
             $table->string('group_name')->nullable();
             $table->timestamps();
-            $table->foreign("group_name")
-                ->references("name")
-                ->on("governor_groups")
-                ->onUpdate("CASCADE")
-                ->onDelete("SET NULL");
+            $table->foreign('group_name')
+                ->references('name')
+                ->on('governor_groups')
+                ->onUpdate('CASCADE')
+                ->onDelete('SET NULL');
         });
     }
 

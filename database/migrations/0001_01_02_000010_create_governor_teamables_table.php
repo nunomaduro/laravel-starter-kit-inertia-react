@@ -5,12 +5,12 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateGovernorTeamablesTable extends Migration
+final class CreateGovernorTeamablesTable extends Migration
 {
     public function __construct()
     {
         if (app()->bound("Hyn\Tenancy\Environment")) {
-            $this->connection = config("tenancy.db.tenant-connection-name");
+            $this->connection = config('tenancy.db.tenant-connection-name');
         }
     }
 
@@ -19,7 +19,7 @@ class CreateGovernorTeamablesTable extends Migration
         Schema::create('governor_teamables', function (Blueprint $table): void {
             $table->unsignedBigInteger('team_id');
             $table->unsignedBigInteger('teamable_id');
-            $table->string("teamable_type");
+            $table->string('teamable_type');
             $table->timestamps();
 
             $table->foreign('team_id')
