@@ -6,11 +6,10 @@ namespace App\Http\Controllers\Settings;
 
 use App\Actions\RecordAuditLog;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\UpdateOrgSlugRequest;
 use App\Models\SlugRedirect;
-use App\Rules\SlugAvailable;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -30,16 +29,13 @@ final class OrgSlugController extends Controller
         ]);
     }
 
-    public function update(Request $request, RecordAuditLog $auditLog): RedirectResponse
+    public function update(UpdateOrgSlugRequest $request, RecordAuditLog $auditLog): RedirectResponse
     {
         $organization = TenantContext::get();
 
         abort_unless($organization, 404);
 
-        $validated = $request->validate([
-            'slug' => ['required', 'string', new SlugAvailable($organization->id)],
-            'confirmed' => ['required', 'accepted'],
-        ]);
+        $validated = $request->validated();
 
         $oldSlug = $organization->slug;
         $newSlug = $validated['slug'];

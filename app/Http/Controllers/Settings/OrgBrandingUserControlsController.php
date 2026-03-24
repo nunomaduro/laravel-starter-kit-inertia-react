@@ -6,12 +6,12 @@ namespace App\Http\Controllers\Settings;
 
 use App\Actions\RecordAuditLog;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\UpdateOrgBrandingUserControlsRequest;
 use App\Models\Organization;
 use App\Services\OrganizationBrandingService;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 final class OrgBrandingUserControlsController extends Controller
 {
@@ -21,7 +21,7 @@ final class OrgBrandingUserControlsController extends Controller
         private readonly RecordAuditLog $auditLog,
     ) {}
 
-    public function __invoke(Request $request): RedirectResponse
+    public function __invoke(UpdateOrgBrandingUserControlsRequest $request): RedirectResponse
     {
         $organization = TenantContext::get();
 
@@ -29,14 +29,7 @@ final class OrgBrandingUserControlsController extends Controller
             return to_route('dashboard')->with('flash', ['status' => 'error', 'message' => 'No organization selected.']);
         }
 
-        abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);
-
-        $validated = $request->validate([
-            'user_can_change_colors' => ['required', 'boolean'],
-            'user_can_change_font' => ['required', 'boolean'],
-            'user_can_change_layout' => ['required', 'boolean'],
-            'user_can_change_logo' => ['required', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         $existing = $this->brandingService->getBrandingUserControls($organization);
 

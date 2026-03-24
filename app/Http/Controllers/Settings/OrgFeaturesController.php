@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Actions\RecordAuditLog;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\UpdateOrgFeaturesRequest;
 use App\Models\Organization;
 use App\Services\OrganizationSettingsService;
 use App\Services\TenantContext;
@@ -49,7 +50,7 @@ final class OrgFeaturesController extends Controller
         ]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateOrgFeaturesRequest $request): RedirectResponse
     {
         $organization = TenantContext::get();
 
@@ -57,12 +58,7 @@ final class OrgFeaturesController extends Controller
             return to_route('dashboard')->with('flash', ['status' => 'error', 'message' => 'No organization selected.']);
         }
 
-        abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);
-
-        $validated = $request->validate([
-            'key' => ['required', 'string'],
-            'override' => ['required', 'string', 'in:inherit,enabled,disabled'],
-        ]);
+        $validated = $request->validated();
 
         $key = $validated['key'];
         $override = $validated['override'];

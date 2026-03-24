@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\UpdateNotificationPreferencesRequest;
 use App\Models\NotificationPreference;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -47,20 +48,11 @@ final class NotificationPreferencesController extends Controller
         ]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateNotificationPreferencesRequest $request): RedirectResponse
     {
         $user = $request->user();
 
-        /** @var array<string, array{label: string, channels: list<string>}> $types */
-        $types = config('notification-types', []);
-        $typeKeys = array_keys($types);
-
-        $validated = $request->validate([
-            'preferences' => ['required', 'array'],
-            'preferences.*.key' => ['required', 'string', 'in:'.implode(',', $typeKeys)],
-            'preferences.*.via_database' => ['required', 'boolean'],
-            'preferences.*.via_email' => ['required', 'boolean'],
-        ]);
+        $validated = $request->validated();
 
         foreach ($validated['preferences'] as $pref) {
             NotificationPreference::query()->updateOrCreate(

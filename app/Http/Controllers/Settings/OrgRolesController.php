@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Actions\RecordAuditLog;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\StoreOrgRoleRequest;
 use App\Models\Organization;
 use App\Services\Organization\OrgCustomRoleService;
 use App\Services\TenantContext;
@@ -49,7 +50,7 @@ final class OrgRolesController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreOrgRoleRequest $request): RedirectResponse
     {
         $organization = TenantContext::get();
 
@@ -57,14 +58,7 @@ final class OrgRolesController extends Controller
             return to_route('dashboard')->with('flash', ['status' => 'error', 'message' => 'No organization selected.']);
         }
 
-        abort_unless($request->user()?->canInOrganization('org.settings.manage', $organization), 403);
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'alpha_dash', 'max:64'],
-            'label' => ['required', 'string', 'max:128'],
-            'permissions' => ['required', 'array'],
-            'permissions.*' => ['string'],
-        ]);
+        $validated = $request->validated();
 
         $role = $this->roleService->create(
             organization: $organization,

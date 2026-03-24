@@ -6,11 +6,11 @@ namespace App\Http\Controllers\Settings;
 
 use App\Actions\RecordAuditLog;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\StoreOrgDomainRequest;
 use App\Jobs\VerifyOrganizationDomain;
 use App\Models\OrganizationDomain;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -52,21 +52,13 @@ final class OrgDomainsController extends Controller
         ]);
     }
 
-    public function store(Request $request, RecordAuditLog $auditLog): RedirectResponse
+    public function store(StoreOrgDomainRequest $request, RecordAuditLog $auditLog): RedirectResponse
     {
         $organization = TenantContext::get();
 
         abort_unless($organization, 404);
 
-        $validated = $request->validate([
-            'domain' => [
-                'required',
-                'string',
-                'max:253',
-                'regex:/^([a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i',
-                'unique:organization_domains,domain',
-            ],
-        ]);
+        $validated = $request->validated();
 
         $cnameTarget = $organization->slug.'.'.config('tenancy.domain');
 
