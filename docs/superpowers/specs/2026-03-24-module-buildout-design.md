@@ -259,59 +259,131 @@ Each module gets the same treatment: DataTable list, create form, edit form, det
 
 ---
 
-## Phase C: Remove `/admin` Panel
+## Phase C: Remove `/admin` Panel (Zero Feature Loss)
 
-### C1. Move Global Resources to `/system`
+**Critical context from audit:** The `/admin` panel has 9 resources, 3 widgets, plugins (StateFusion, filament-excel), an org switcher, and global search. The `/system` panel (28 settings pages, 5 custom pages, 5 resources, 5 module resources) is NOT being removed — it stays for super-admins.
 
-| Resource | Current | Move To |
-|----------|---------|---------|
-| MailTemplateResource | `/admin` | `/system` |
-| EnterpriseInquiryResource | `/admin` | `/system` |
-| CreditPackResource | `/admin` | `/system` |
-| AffiliateResource | `/admin` | `/system` |
-| VoucherResource | `/admin` | `/system` |
+**Strategy:** Every `/admin` feature gets migrated to either `/system` (super-admin) or Inertia (org members) BEFORE the panel is disabled. Nothing is deleted without a replacement.
 
-Move the PHP files from `app/Filament/Resources/` to `app/Filament/System/Resources/`. Update namespaces. Register in SystemPanelProvider.
+### C1. Move Resources to `/system`
 
-### C2. Remove Redundant Resources
+These are global/system-level — super-admin manages them:
 
-These already have full Inertia equivalents:
-- UserResource — Inertia `/users` has full DataTable + CRUD
-- RoleResource — Inertia `/settings/roles` has CRUD
-- OrganizationInvitationResource — Inertia `/organizations/members` handles invitations
+| Resource | Current | Move To | Complexity |
+|----------|---------|---------|-----------|
+| MailTemplateResource | `/admin` | `/system` | Low — move files, update namespace |
+| EnterpriseInquiryResource | `/admin` | `/system` | Low |
+| CreditPackResource | `/admin` | `/system` | Low — includes reorderable + soft deletes |
+| VoucherResource | `/admin` | `/system` | Low |
+| AffiliateResource | `/admin` | `/system` | Already system-scoped |
 
-Delete these Filament resources entirely.
+Move PHP files from `app/Filament/Resources/` to `app/Filament/System/Resources/`. Update namespaces. Add `->discoverResources()` entries in SystemPanelProvider.
 
-### C3. Migrate Categories to Inertia
+### C2. Build Inertia Replacements for Org-Scoped Admin Features
 
-CategoryResource needs an Inertia equivalent:
-- Categories list page (DataTable)
-- Category create/edit forms
-- This is small — Category has: name, slug, organization_id
+These need NEW Inertia pages because org admins currently use them in `/admin`:
 
-### C4. Disable Then Delete AdminPanelProvider
+#### C2a. User Admin CRUD → Inertia
+Current Inertia `/users` has DataTable + show page. Missing:
+- User create page (admin creates users for their org)
+- User edit page (admin edits user details, assigns roles)
+- Verify existing pages cover: role assignment, tag management, categories relation
+- Add export button (replace `HasStandardExports` with DataTable's built-in export)
 
-**Rollback strategy:** First disable, then delete after verification.
+#### C2b. Categories → Inertia
+No Inertia equivalent exists. Build:
+- Categories list page (DataTable with inline edit, or simple list)
+- Category create/edit forms (name, slug, organization_id)
+- Small scope — Category is a simple model
 
-Step 1 — Disable (reversible):
-1. Comment out AdminPanelProvider registration (don't delete the file yet)
-2. Run full test suite — verify nothing depends on `/admin` routes
-3. Test all Inertia pages that replaced admin functionality
-4. Tag git commit: `git tag pre-admin-removal`
+#### C2c. Organization Invitations → Verify Inertia Coverage
+`/organizations/members` already handles invitations. Verify:
+- Pending invitation count badge in sidebar
+- Create invitation flow
+- Resend/cancel invitation actions
 
-Step 2 — Delete (after verification):
+#### C2d. Roles → Verify Inertia Coverage
+`/settings/roles` exists. Verify:
+- Full CRUD (create, edit, delete roles)
+- Permission assignment
+- Global search equivalent (command palette search)
+
+### C3. Migrate Admin Widgets to Inertia Dashboard
+
+| Widget | Current | Migrate To |
+|--------|---------|-----------|
+| StatsOverviewWidget (users) | Admin dashboard | Inertia dashboard stat cards (already extracted to `components/dashboard/`) |
+| InstallNextStepsWidget | Admin dashboard | Inertia dashboard (show post-install steps if needed) |
+
+### C4. Migrate Admin-Only Features
+
+| Feature | Current | Migrate To |
+|---------|---------|-----------|
+| Org Switcher | Admin sidebar render hook | Already in Inertia sidebar (`organization-switcher.tsx`) |
+| Global Search | Filament built-in | Inertia command palette (`command-dialog.tsx`) — verify it searches users, roles, etc. |
+| XLSX/CSV Export | `HasStandardExports` trait | DataTable component already has export — verify feature parity |
+| Back to App link | Render hook | Not needed (already in Inertia) |
+
+### C5. Preserve Module Filament Resources in `/system`
+
+These are already in `/system` and stay there unchanged:
+- Blog PostResource
+- Changelog ChangelogEntryResource
+- Help HelpArticleResource
+- Contact ContactSubmissionResource
+- Announcements AnnouncementResource
+
+New modules (CRM, HR, Dashboards, Reports, Gamification, Workflows) get Filament resources in `/system` too — for super-admin oversight of all orgs' data.
+
+### C6. Disable Then Delete AdminPanelProvider
+
+**Rollback strategy:** First disable, verify, then delete.
+
+**Step 1 — Pre-flight checks:**
+1. Create a checklist of every `/admin` route and verify each has a replacement
+2. Tag git commit: `git tag pre-admin-removal`
+
+**Step 2 — Disable (reversible):**
+1. Comment out AdminPanelProvider registration
+2. Run full test suite
+3. Manually test: user CRUD, categories, invitations, roles, exports, org switcher, search
+4. Verify no broken links/redirects pointing to `/admin`
+
+**Step 3 — Delete (after verification):**
 1. Remove `app/Providers/Filament/AdminPanelProvider.php`
-2. Remove admin panel middleware, render hooks, sidebar styles
-3. Remove `/admin` routes
-4. Update any links/redirects that point to `/admin`
-5. Remove admin-specific Filament widgets
-6. Delete `app/Filament/Resources/` directory (all moved to System or deleted)
+2. Remove admin panel render hook views (sidebar styles already shared with system)
+3. Remove `app/Filament/Resources/` directory (all moved to System or replaced by Inertia)
+4. Remove `app/Filament/Widgets/StatsOverviewWidget.php` and `InstallNextStepsWidget.php`
+5. Remove admin-specific middleware (`FlashOrganizationSwitchNotification` — verify if system panel needs it)
+6. Update any links/redirects that point to `/admin` → redirect to Inertia equivalent
+7. Remove `FilamentStateFusionPlugin` from admin if system panel already has it
+8. Update tests that reference `/admin` routes
 
-### C5. Move Module Filament Resources to `/system`
+### C7. Feature Loss Verification Checklist
 
-Blog, Changelog, Help, Contact, Announcements currently register Filament resources in the System panel via `->when(config('modules.X'))`. These stay as-is — they're already in `/system` for super-admin oversight.
+Before marking Phase C complete, verify EACH item:
 
-New modules (CRM, HR, etc.) that need super-admin oversight get Filament resources in `/system` too.
+- [ ] Super-admin can manage all users across orgs (via `/system` or Inertia)
+- [ ] Org admin can manage their org's users (Inertia `/users`)
+- [ ] Org admin can manage categories (Inertia — new page)
+- [ ] Org admin can manage invitations (Inertia `/organizations/members`)
+- [ ] Org admin can manage roles (Inertia `/settings/roles`)
+- [ ] Super-admin can manage mail templates (moved to `/system`)
+- [ ] Super-admin can manage credit packs (moved to `/system`)
+- [ ] Super-admin can manage vouchers (moved to `/system`)
+- [ ] Super-admin can manage affiliates (moved to `/system`)
+- [ ] Super-admin can manage enterprise inquiries (moved to `/system`)
+- [ ] XLSX/CSV export works on all list views
+- [ ] Org switcher works in Inertia sidebar
+- [ ] Search finds users, roles, content across the app
+- [ ] All 28 system settings pages still work in `/system`
+- [ ] All module Filament resources still work in `/system`
+- [ ] Revenue dashboard still works in `/system`
+- [ ] Product analytics still works in `/system`
+- [ ] Feature flag management still works in `/system`
+- [ ] Activity log viewer still works in `/system`
+- [ ] No console errors on any page
+- [ ] All tests pass
 
 ---
 
