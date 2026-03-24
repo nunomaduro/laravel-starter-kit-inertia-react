@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Settings;
 
+use App\Actions\CheckPlanFeatureAccess;
 use App\Actions\RecordAuditLog;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\UpdateOrgFeaturesRequest;
@@ -65,6 +66,14 @@ final class OrgFeaturesController extends Controller
 
         $delegatable = FeatureHelper::getDelegatableFeatures();
         abort_unless(isset($delegatable[$key]), 422, 'Feature not delegatable.');
+
+        // Only validate plan access when enabling — disabling or inheriting is always allowed.
+        if ($override === 'enabled') {
+            $planCheck = new CheckPlanFeatureAccess;
+            if (! $planCheck->handle($organization, $key)) {
+                abort(422, 'Your current plan does not include this feature. Please upgrade.');
+            }
+        }
 
         $old = FeatureHelper::getOrgFeatureOverride($key, $organization);
 
