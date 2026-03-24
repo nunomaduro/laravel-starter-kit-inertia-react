@@ -7,6 +7,7 @@ namespace App\Modules\Support;
 use App\Modules\Contracts\DeclaresModuleRelationships;
 use App\Modules\Contracts\ProvidesAIContext;
 use App\Support\ModuleFeatureRegistry;
+use App\Support\ModuleNavigationRegistry;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use ReflectionClass;
