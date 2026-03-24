@@ -45,4 +45,40 @@ return [
     'geo_blocked_countries' => [],
     'geo_allowed_countries' => [],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Plan → Feature Access Mapping
+    |--------------------------------------------------------------------------
+    |
+    | Each plan slug maps to an array of feature keys it includes.
+    | Features with plan_required = null are available to ALL plans (no gating).
+    | Features listed here are ONLY available to the plans that include them.
+    | Higher-tier plans should include all lower-tier features explicitly.
+    |
+    */
+    'plan_features' => [
+        'basic' => [],
+        'pro' => [
+            'api_access',
+        ],
+        'team' => [
+            'api_access',
+        ],
+        'platform-solo' => [
+            'api_access',
+        ],
+        'platform-agency' => [
+            'api_access',
+            'crm',
+            'reports',
+        ],
+        'platform-enterprise' => [
+            'api_access',
+            'crm',
+            'reports',
+            'dashboards',
+            'workflows',
+        ],
+    ],
+
 ];
