@@ -58,6 +58,12 @@ export interface DataTableTranslations {
     viewName: string;
     viewNamePlaceholder: string;
     filtersWillBeSavedLocally: string;
+    myViews: string;
+    teamViews: string;
+    systemViews: string;
+    shareWithTeam: string;
+    sharedBadge: string;
+    systemBadge: string;
     filtersLabel: string;
     none: string;
     sortLabel: string;
@@ -450,7 +456,13 @@ export const defaultTranslations: DataTableTranslations = {
     manageViews: "Manage views",
     viewName: "View name",
     viewNamePlaceholder: "e.g. Recent items without photos",
-    filtersWillBeSavedLocally: "Active filters will be saved locally.",
+    filtersWillBeSavedLocally: "Save the current view configuration for quick access.",
+    myViews: "My Views",
+    teamViews: "Team Views",
+    systemViews: "System Views",
+    shareWithTeam: "Share with team",
+    sharedBadge: "Shared",
+    systemBadge: "System",
     filtersLabel: "Filters:",
     none: "None",
     sortLabel: "Sort:",
@@ -825,7 +837,13 @@ export const frTranslations: DataTableTranslations = {
     manageViews: "Gérer les vues",
     viewName: "Nom de la vue",
     viewNamePlaceholder: "Ex: Occasions récentes sans photo",
-    filtersWillBeSavedLocally: "Les filtres actifs seront sauvegardés localement.",
+    filtersWillBeSavedLocally: "Sauvegarder la configuration de la vue pour un accès rapide.",
+    myViews: "Mes vues",
+    teamViews: "Vues d'équipe",
+    systemViews: "Vues système",
+    shareWithTeam: "Partager avec l'équipe",
+    sharedBadge: "Partagé",
+    systemBadge: "Système",
     filtersLabel: "Filtres :",
     none: "Aucun",
     sortLabel: "Tri :",

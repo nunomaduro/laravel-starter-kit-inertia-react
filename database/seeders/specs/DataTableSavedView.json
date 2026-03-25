@@ -1,0 +1,118 @@
+{
+    "model": "DataTableSavedView",
+    "table": "data_table_saved_views",
+    "fields": {
+        "id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "user_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "table_name": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "name": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "filters": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "sort": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "columns": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "column_order": {
+            "type": "text",
+            "nullable": true,
+            "default": null
+        },
+        "is_default": {
+            "type": "boolean",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "organization_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "is_shared": {
+            "type": "boolean",
+            "nullable": true,
+            "default": null
+        },
+        "is_system": {
+            "type": "boolean",
+            "nullable": true,
+            "default": null
+        },
+        "created_by": {
+            "type": "integer",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "user": {
+            "type": "belongsTo",
+            "model": "User"
+        },
+        "creator": {
+            "type": "belongsTo",
+            "model": "Creator"
+        },
+        "organization": {
+            "type": "belongsTo",
+            "model": "Organization"
+        }
+    },
+    "value_hints": {
+        "is_default": {
+            "type": "boolean",
+            "example": true
+        },
+        "is_shared": {
+            "type": "boolean",
+            "example": true
+        },
+        "is_system": {
+            "type": "boolean",
+            "example": true
+        },
+        "table_name": {
+            "type": "name",
+            "example": "John Doe"
+        },
+        "name": {
+            "type": "name",
+            "example": "John Doe"
+        }
+    },
+    "scenarios": []
+}

@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastGenerated": "2026-03-24",
+    "lastGenerated": "2026-03-25",
     "actions": {
         "CreateUser": {
             "documented": true,
@@ -624,7 +624,10 @@
                 "usesModels": [
                     "Organization"
                 ],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "settings.features.show",
+                    "settings.features.update"
+                ]
             }
         }
     },
@@ -1657,17 +1660,15 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
-                    "debugbar.openhandler",
-                    "debugbar.cache.delete",
-                    "debugbar.queries.explain",
-                    "debugbar.clockwork",
-                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
                     "conversations.show",
                     "conversations.update",
                     "conversations.destroy",
+                    "data-table-saved-views.index",
+                    "data-table-saved-views.store",
+                    "data-table-saved-views.destroy",
                     "api.v1.users.index",
                     "api.v1.users.batch",
                     "api.v1.users.search",
@@ -1675,8 +1676,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -2152,17 +2151,15 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
-                    "debugbar.openhandler",
-                    "debugbar.cache.delete",
-                    "debugbar.queries.explain",
-                    "debugbar.clockwork",
-                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
                     "conversations.show",
                     "conversations.update",
                     "conversations.destroy",
+                    "data-table-saved-views.index",
+                    "data-table-saved-views.store",
+                    "data-table-saved-views.destroy",
                     "api.v1.users.index",
                     "api.v1.users.batch",
                     "api.v1.users.search",
@@ -2170,8 +2167,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -2553,17 +2548,15 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
-                    "debugbar.openhandler",
-                    "debugbar.cache.delete",
-                    "debugbar.queries.explain",
-                    "debugbar.clockwork",
-                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
                     "conversations.show",
                     "conversations.update",
                     "conversations.destroy",
+                    "data-table-saved-views.index",
+                    "data-table-saved-views.store",
+                    "data-table-saved-views.destroy",
                     "api.v1.users.index",
                     "api.v1.users.batch",
                     "api.v1.users.search",
@@ -2571,8 +2564,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -3127,17 +3118,15 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
-                    "debugbar.openhandler",
-                    "debugbar.cache.delete",
-                    "debugbar.queries.explain",
-                    "debugbar.clockwork",
-                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
                     "conversations.show",
                     "conversations.update",
                     "conversations.destroy",
+                    "data-table-saved-views.index",
+                    "data-table-saved-views.store",
+                    "data-table-saved-views.destroy",
                     "api.v1.users.index",
                     "api.v1.users.batch",
                     "api.v1.users.search",
@@ -3145,8 +3134,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
@@ -3541,9 +3528,7 @@
             "lastUpdated": "2026-03-07",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": [
-                    "dev.components"
-                ]
+                "relatedRoutes": []
             }
         },
         "dev/pages": {
@@ -3552,9 +3537,7 @@
             "developerGuide": null,
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": [
-                    "dev.pages"
-                ]
+                "relatedRoutes": []
             }
         },
         "error": {
@@ -3922,17 +3905,15 @@
                     "filament.system.resources.help-articles.create",
                     "filament.system.resources.help-articles.view",
                     "filament.system.resources.help-articles.edit",
-                    "debugbar.openhandler",
-                    "debugbar.cache.delete",
-                    "debugbar.queries.explain",
-                    "debugbar.clockwork",
-                    "debugbar.assets",
                     "api.chat",
                     "chat.memories",
                     "conversations.index",
                     "conversations.show",
                     "conversations.update",
                     "conversations.destroy",
+                    "data-table-saved-views.index",
+                    "data-table-saved-views.store",
+                    "data-table-saved-views.destroy",
                     "api.v1.users.index",
                     "api.v1.users.batch",
                     "api.v1.users.search",
@@ -3940,8 +3921,6 @@
                     "api.v1.users.store",
                     "api.v1.users.update",
                     "api.v1.users.destroy",
-                    "dev.components",
-                    "dev.pages",
                     "up.ready",
                     "up",
                     "invitations.show",
