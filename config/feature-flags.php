@@ -56,6 +56,12 @@ return [
         'cookie_consent' => ['delegate_to_orgs' => false, 'plan_required' => null],
         'profile_pdf_export' => ['delegate_to_orgs' => false, 'plan_required' => null],
         'scramble_api_docs' => ['delegate_to_orgs' => false, 'plan_required' => null],
+        'bot_studio' => [
+            'label' => 'Bot Studio',
+            'description' => 'Create custom AI agents',
+            'delegate_to_orgs' => true,
+            'plan_required' => 'pro',
+        ],
     ],
 
     /*

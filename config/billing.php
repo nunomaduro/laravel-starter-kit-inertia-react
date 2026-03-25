@@ -60,20 +60,25 @@ return [
         'basic' => [],
         'pro' => [
             'api_access',
+            'bot_studio',
         ],
         'team' => [
             'api_access',
+            'bot_studio',
         ],
         'platform-solo' => [
             'api_access',
+            'bot_studio',
         ],
         'platform-agency' => [
             'api_access',
+            'bot_studio',
             'crm',
             'reports',
         ],
         'platform-enterprise' => [
             'api_access',
+            'bot_studio',
             'crm',
             'reports',
             'dashboards',

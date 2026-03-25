@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\BotStudio\Http\Controllers;
 
 use App\Services\TenantContext;
+use App\Settings\BotStudioSettings;
 use App\Support\ModuleToolRegistry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ final readonly class AgentDefinitionController
 {
     public function __construct(
         private ModuleToolRegistry $toolRegistry,
+        private BotStudioSettings $settings,
     ) {}
 
     public function index(Request $request): Response
@@ -63,6 +65,29 @@ final readonly class AgentDefinitionController
 
     public function store(StoreAgentDefinitionRequest $request): RedirectResponse
     {
+        $org = TenantContext::organization();
+        $activePlan = $org?->activePlan();
+        $planSlug = $activePlan?->slug ?? 'basic';
+        $planFeatures = config("billing.plan_features.{$planSlug}", []);
+        $isProOrHigher = in_array('bot_studio', $planFeatures, true);
+
+        $maxAgents = $isProOrHigher
+            ? $this->settings->max_agents_pro
+            : $this->settings->max_agents_basic;
+
+        if ($maxAgents > 0) {
+            $currentCount = AgentDefinition::query()
+                ->where('is_template', false)
+                ->where('organization_id', TenantContext::id())
+                ->count();
+
+            if ($currentCount >= $maxAgents) {
+                return back()->withErrors([
+                    'limit' => __("You've reached your agent limit. Upgrade your plan for more."),
+                ]);
+            }
+        }
+
         $definition = AgentDefinition::query()->create($request->validated());
 
         return to_route('bot-studio.edit', $definition)
