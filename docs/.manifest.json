@@ -4485,6 +4485,42 @@
                 "renderedBy": [],
                 "relatedRoutes": []
             }
+        },
+        "bot-studio/create": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./bot-studio/create.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "bot-studio/edit": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./bot-studio/edit.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "bot-studio/index": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./bot-studio/index.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "bot-studio/templates": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./bot-studio/templates.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
         }
     },
     "routes": {

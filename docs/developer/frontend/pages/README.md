@@ -106,5 +106,9 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [welcome/cta-section](./welcome/cta-section.md) | Yes |
 | [welcome/pricing-section](./welcome/pricing-section.md) | Yes |
 | [welcome/welcome-footer](./welcome/welcome-footer.md) | Yes |
+| [bot-studio/create](./bot-studio/create.md) | Yes |
+| [bot-studio/edit](./bot-studio/edit.md) | Yes |
+| [bot-studio/index](./bot-studio/index.md) | Yes |
+| [bot-studio/templates](./bot-studio/templates.md) | Yes |
 
 
