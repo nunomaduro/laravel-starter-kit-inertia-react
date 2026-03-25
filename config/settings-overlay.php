@@ -8,6 +8,7 @@ use App\Settings\AppSettings;
 use App\Settings\AuthSettings;
 use App\Settings\BackupSettings;
 use App\Settings\BillingSettings;
+use App\Settings\BotStudioSettings;
 use App\Settings\BroadcastingSettings;
 use App\Settings\CookieConsentSettings;
 use App\Settings\FeatureFlagSettings;
@@ -222,6 +223,18 @@ return [
             'jina_api_key' => 'ai.providers.jina.key',
             'thesys_api_key' => 'services.thesys.api_key',
             'thesys_model' => 'services.thesys.model',
+        ],
+        'orgOverridable' => true,
+    ],
+
+    BotStudioSettings::class => [
+        'map' => [
+            'max_agents_basic' => 'bot-studio.max_agents_basic',
+            'max_agents_pro' => 'bot-studio.max_agents_pro',
+            'max_knowledge_file_size_mb' => 'bot-studio.max_knowledge_file_size_mb',
+            'max_knowledge_total_mb' => 'bot-studio.max_knowledge_total_mb',
+            'default_model' => 'bot-studio.default_model',
+            'allowed_models' => 'bot-studio.allowed_models',
         ],
         'orgOverridable' => true,
     ],
