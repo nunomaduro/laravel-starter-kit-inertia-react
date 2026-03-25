@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Ai\Tools\SemanticSearchTool;
 use App\Events\User\UserCreated;
 use App\Listeners\CreatePersonalOrganizationOnUserCreated;
 use App\Listeners\LogImpersonationEvents;
@@ -21,6 +22,7 @@ use App\Services\PrismService;
 use App\Settings\AuthSettings;
 use App\Settings\SeoSettings;
 use App\Support\ModuleLoader;
+use App\Support\ModuleToolRegistry;
 use Carbon\CarbonImmutable;
 use Closure;
 use Illuminate\Contracts\Debug\ExceptionHandler;
@@ -59,6 +61,7 @@ final class AppServiceProvider extends ServiceProvider
         }
 
         $this->app->singleton(PrismService::class, fn (): PrismService => new PrismService);
+        $this->app->singleton(ModuleToolRegistry::class);
 
         if (class_exists(\Essa\APIToolKit\Exceptions\Handler::class)) {
             $this->app->singleton(ExceptionHandler::class, \Essa\APIToolKit\Exceptions\Handler::class);
@@ -134,6 +137,8 @@ final class AppServiceProvider extends ServiceProvider
         });
 
         User::observe(UserObserver::class);
+
+        $this->app->make(ModuleToolRegistry::class)->registerBaseTool(SemanticSearchTool::class);
     }
 
     private function userHasBypassPermissions(object $user): bool

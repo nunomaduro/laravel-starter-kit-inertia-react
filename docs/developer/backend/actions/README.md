@@ -50,5 +50,6 @@ All Actions:
 | [FindSimilarContent](./findsimilarcontent.md) | Yes |
 | [GenerateOgImage](./generateogimage.md) | Yes |
 | [CheckPlanFeatureAccess](./checkplanfeatureaccess.md) | Yes |
+| [GeneratePdf](./generatepdf.md) | Yes |
 
 

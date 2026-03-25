@@ -1590,6 +1590,43 @@
             "data_files": [
                 "activity_log_injected_models.json"
             ]
+        },
+        {
+            "name": "ActivityLogInjectedModelSeeder",
+            "category": "development",
+            "description": "Seeds ActivityLogInjectedModel data",
+            "dependencies": [],
+            "data_files": [
+                "activity_log_injected_models.json"
+            ]
+        },
+        {
+            "name": "ActivityLogInjectedModelSeeder",
+            "category": "development",
+            "description": "Seeds ActivityLogInjectedModel data",
+            "dependencies": [],
+            "data_files": [
+                "activity_log_injected_models.json"
+            ]
+        },
+        {
+            "name": "ModelEmbeddingSeeder",
+            "category": "development",
+            "description": "Seeds ModelEmbedding records for RAG pipeline demo",
+            "dependencies": [
+                "OrganizationSeeder",
+                "EmbeddingDemoSeeder"
+            ],
+            "data_files": []
+        },
+        {
+            "name": "MailTriggerScheduleSeeder",
+            "category": "development",
+            "description": "Seeds MailTriggerSchedule records for scheduled email triggers",
+            "dependencies": [
+                "OrganizationSeeder"
+            ],
+            "data_files": []
         }
     ],
     "categories": {

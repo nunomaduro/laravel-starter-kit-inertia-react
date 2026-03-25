@@ -21,6 +21,7 @@ final class AgentConversation extends Model
     protected $fillable = [
         'id',
         'user_id',
+        'organization_id',
         'title',
     ];
 

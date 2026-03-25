@@ -1,0 +1,13 @@
+{
+    "model": "ModelEmbedding",
+    "table": "model_embeddings",
+    "fields": [],
+    "relationships": {
+        "organization": {
+            "type": "belongsTo",
+            "model": "Organization"
+        }
+    },
+    "value_hints": [],
+    "scenarios": []
+}

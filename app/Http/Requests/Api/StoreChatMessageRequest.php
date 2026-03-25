@@ -23,6 +23,11 @@ final class StoreChatMessageRequest extends FormRequest
         return [
             'messages' => ['required', 'array'],
             'messages.*.role' => ['required', 'string', 'in:user,assistant,system'],
+            'context' => ['nullable', 'array'],
+            'context.page' => ['nullable', 'string'],
+            'context.entity_type' => ['nullable', 'string'],
+            'context.entity_id' => ['nullable', 'integer'],
+            'context.entity_name' => ['nullable', 'string'],
             'conversation_id' => ['nullable', 'string', 'uuid', function (string $attr, string $value, Closure $fail): void {
                 $user = $this->user();
                 if ($user === null) {
