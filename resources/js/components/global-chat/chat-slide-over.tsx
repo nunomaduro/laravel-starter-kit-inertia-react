@@ -2,6 +2,7 @@ import { useAgentContext } from '@/hooks/use-agent-context';
 import { Link } from '@inertiajs/react';
 import { Maximize2, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { ChatInput } from './chat-input';
 import { ChatPanel, type ChatMessage } from './chat-panel';
 import { ConversationList, type ConversationItem } from './conversation-list';
 
@@ -322,8 +323,7 @@ export function ChatSlideOver({ open, onClose, onUnreadChange: _onUnreadChange }
                             isStreaming={isStreaming}
                             streamingContent={streamingContent}
                         />
-                        {/* Chat input integrated here */}
-                        <ChatInputBar
+                        <ChatInput
                             onSend={handleSend}
                             onStop={handleStop}
                             isStreaming={isStreaming}
@@ -335,78 +335,3 @@ export function ChatSlideOver({ open, onClose, onUnreadChange: _onUnreadChange }
     );
 }
 
-function ChatInputBar({
-    onSend,
-    onStop,
-    isStreaming,
-}: {
-    onSend: (content: string) => void;
-    onStop: () => void;
-    isStreaming: boolean;
-}) {
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-    const adjustHeight = useCallback(() => {
-        const el = textareaRef.current;
-        if (!el) return;
-        el.style.height = 'auto';
-        el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
-    }, []);
-
-    const handleSubmit = useCallback(() => {
-        const el = textareaRef.current;
-        if (!el) return;
-        const content = el.value.trim();
-        if (!content || isStreaming) return;
-        onSend(content);
-        el.value = '';
-        el.style.height = 'auto';
-    }, [onSend, isStreaming]);
-
-    const handleKeyDown = useCallback(
-        (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit();
-            }
-        },
-        [handleSubmit],
-    );
-
-    return (
-        <div className="border-t px-3 py-2" data-pan="global-chat-input">
-            <div className="flex items-end gap-2">
-                <textarea
-                    ref={textareaRef}
-                    placeholder="Type a message..."
-                    rows={1}
-                    onInput={adjustHeight}
-                    onKeyDown={handleKeyDown}
-                    className="flex max-h-24 min-h-8 flex-1 resize-none rounded-lg border bg-transparent px-3 py-1.5 text-xs ring-offset-background placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-[oklch(0.65_0.14_165)] focus-visible:outline-none"
-                />
-                {isStreaming ? (
-                    <button
-                        type="button"
-                        onClick={onStop}
-                        className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-destructive text-white transition-colors duration-100"
-                    >
-                        <span className="size-3 rounded-sm bg-white" />
-                    </button>
-                ) : (
-                    <button
-                        type="button"
-                        onClick={handleSubmit}
-                        className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[oklch(0.65_0.14_165)] text-white transition-colors duration-100 hover:bg-[oklch(0.72_0.14_165)]"
-                    >
-                        <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 19V5M5 12l7-7 7 7" />
-                        </svg>
-                    </button>
-                )}
-            </div>
-            <p className="mt-1 text-center text-[10px] text-muted-foreground/50">
-                Enter to send, Shift+Enter for newline
-            </p>
-        </div>
-    );
-}

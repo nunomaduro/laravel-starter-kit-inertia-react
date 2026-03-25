@@ -14,6 +14,7 @@ import '@/components/chat/renderers/table-renderer';
 import '@/components/chat/renderers/card-renderer';
 import '@/components/chat/renderers/chart-renderer';
 import '@/components/chat/renderers/action-renderer';
+import { VoiceOutput } from './voice-output';
 
 export interface ChatMessage {
     id: string;
@@ -140,7 +141,10 @@ function AssistantMessage({
                 <Bot className="size-3 text-muted-foreground" />
             </div>
             <div className="relative max-w-[85%] rounded-xl rounded-tl-sm bg-muted px-3 py-2">
-                <CopyAction text={content} />
+                <div className="absolute -top-2 -right-1 flex gap-0.5">
+                    <VoiceOutput text={content} />
+                    <CopyAction text={content} />
+                </div>
                 <div className="prose prose-sm dark:prose-invert max-w-none text-xs [&_code]:rounded [&_code]:bg-background/50 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[10px] [&_p]:text-xs [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-background/50 [&_pre]:p-2 [&_pre_code]:bg-transparent [&_pre_code]:p-0">
                     <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
                     {isStreaming && (
