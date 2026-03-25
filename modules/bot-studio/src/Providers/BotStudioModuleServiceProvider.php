@@ -8,6 +8,7 @@ use App\Modules\Contracts\ProvidesAIContext;
 use App\Modules\Support\ModuleManifest;
 use App\Modules\Support\ModuleProvider;
 use Illuminate\Support\Facades\Gate;
+use Modules\BotStudio\Contracts\ProvidesAgentTemplates;
 use Modules\BotStudio\Features\BotStudioFeature;
 use Modules\BotStudio\Models\AgentDefinition;
 use Modules\BotStudio\Policies\AgentDefinitionPolicy;
@@ -67,5 +68,50 @@ final class BotStudioModuleServiceProvider extends ModuleProvider implements Pro
     protected function bootModule(): void
     {
         Gate::policy(AgentDefinition::class, AgentDefinitionPolicy::class);
+
+        $this->syncTemplatesFromProviders();
+    }
+
+    /**
+     * Collect templates from all loaded service providers that implement ProvidesAgentTemplates
+     * and create any missing AgentDefinition template rows.
+     */
+    private function syncTemplatesFromProviders(): void
+    {
+        $this->app->booted(function (): void {
+            /** @var array<int, \Illuminate\Support\ServiceProvider> $providers */
+            $providers = $this->app->getLoadedProviders();
+
+            foreach (array_keys($providers) as $providerClass) {
+                $provider = $this->app->getProvider($providerClass);
+
+                if (! $provider instanceof ProvidesAgentTemplates) {
+                    continue;
+                }
+
+                foreach ($provider->agentTemplates() as $template) {
+                    AgentDefinition::query()->firstOrCreate(
+                        [
+                            'is_template' => true,
+                            'name' => $template['name'],
+                        ],
+                        [
+                            'organization_id' => null,
+                            'description' => $template['description'],
+                            'system_prompt' => $template['system_prompt'],
+                            'model' => $template['model'],
+                            'temperature' => $template['temperature'],
+                            'max_tokens' => 2048,
+                            'enabled_tools' => $template['enabled_tools'],
+                            'conversation_starters' => $template['conversation_starters'],
+                            'wizard_answers' => $template['wizard_answers'],
+                            'is_template' => true,
+                            'is_published' => true,
+                            'is_featured' => false,
+                        ],
+                    );
+                }
+            }
+        });
     }
 }
