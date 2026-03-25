@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastGenerated": "2026-03-24",
+    "lastGenerated": "2026-03-25",
     "actions": {
         "CreateUser": {
             "documented": true,
@@ -624,7 +624,10 @@
                 "usesModels": [
                     "Organization"
                 ],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "settings.features.show",
+                    "settings.features.update"
+                ]
             }
         }
     },
