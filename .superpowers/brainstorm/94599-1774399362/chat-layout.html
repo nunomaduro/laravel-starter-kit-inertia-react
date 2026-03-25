@@ -1,0 +1,241 @@
+<h2>Global Chat Widget — Layout</h2>
+<p class="subtitle">Slide-over panel accessible from any page via floating button or Cmd+K</p>
+
+<div class="section">
+  <h3>Overall Layout</h3>
+  <p class="subtitle">The chat widget has 3 states: collapsed (floating button), expanded (slide-over), and full-page (/chat route)</p>
+</div>
+
+<!-- Collapsed State -->
+<div class="section">
+  <h3>1. Collapsed State — Floating Button</h3>
+  <div class="mockup">
+    <div class="mockup-header">Any Page (bottom-right corner)</div>
+    <div class="mockup-body" style="position:relative;min-height:300px;background:#0a0a0b;">
+      <!-- Simulated page content -->
+      <div style="padding:20px;opacity:0.3;">
+        <div style="height:16px;width:60%;background:#333;border-radius:4px;margin-bottom:12px;"></div>
+        <div style="height:12px;width:80%;background:#222;border-radius:3px;margin-bottom:8px;"></div>
+        <div style="height:12px;width:70%;background:#222;border-radius:3px;margin-bottom:8px;"></div>
+        <div style="height:12px;width:75%;background:#222;border-radius:3px;"></div>
+      </div>
+      <!-- Floating button -->
+      <div style="position:absolute;bottom:24px;right:24px;width:52px;height:52px;border-radius:14px;background:oklch(0.65 0.14 165);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </div>
+      <!-- Unread badge -->
+      <div style="position:absolute;bottom:64px;right:24px;width:18px;height:18px;border-radius:50%;background:#ef4444;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700;">2</div>
+      <!-- Kbd shortcut hint -->
+      <div style="position:absolute;bottom:24px;right:88px;display:flex;align-items:center;gap:4px;opacity:0.4;font-size:11px;color:#888;">
+        <span style="padding:2px 6px;background:#222;border-radius:4px;border:1px solid #333;font-family:monospace;">⌘K</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Expanded Slide-over -->
+<div class="section">
+  <h3>2. Expanded State — Slide-over Panel</h3>
+  <div class="mockup">
+    <div class="mockup-header">Slide-over (right side, 420px wide)</div>
+    <div class="mockup-body" style="display:flex;min-height:520px;background:#0a0a0b;">
+      <!-- Page content (dimmed) -->
+      <div style="flex:1;padding:20px;opacity:0.15;">
+        <div style="height:16px;width:60%;background:#333;border-radius:4px;margin-bottom:12px;"></div>
+        <div style="height:12px;width:80%;background:#222;border-radius:3px;margin-bottom:8px;"></div>
+        <div style="height:12px;width:70%;background:#222;border-radius:3px;"></div>
+      </div>
+      <!-- Slide-over panel -->
+      <div style="width:420px;background:#111113;border-left:1px solid #222;display:flex;flex-direction:column;">
+        <!-- Header -->
+        <div style="padding:16px 20px;border-bottom:1px solid #1a1a1e;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="oklch(0.65 0.14 165)" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:#e0e0e0;">AI Assistant</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span style="font-size:11px;color:#666;font-family:'IBM Plex Sans',sans-serif;">42 credits</span>
+            <div style="width:28px;height:28px;border-radius:6px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            </div>
+            <div style="width:28px;height:28px;border-radius:6px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conversation list toggle -->
+        <div style="padding:8px 20px;border-bottom:1px solid #1a1a1e;display:flex;gap:8px;">
+          <div style="padding:4px 10px;border-radius:6px;background:oklch(0.65 0.14 165 / 0.15);color:oklch(0.65 0.14 165);font-size:12px;font-weight:500;font-family:'IBM Plex Sans',sans-serif;">Chat</div>
+          <div style="padding:4px 10px;border-radius:6px;color:#555;font-size:12px;font-weight:500;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">History</div>
+          <div style="margin-left:auto;padding:4px 10px;border-radius:6px;background:#1a1a1e;color:#888;font-size:12px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">+ New</div>
+        </div>
+
+        <!-- Context bar -->
+        <div style="padding:8px 20px;background:#0d0d0f;border-bottom:1px solid #1a1a1e;display:flex;align-items:center;gap:6px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+          <span style="font-size:11px;color:#555;font-family:'IBM Plex Sans',sans-serif;">Context: <span style="color:oklch(0.65 0.14 165);">/crm/contacts/123</span> — John Smith</span>
+        </div>
+
+        <!-- Messages area -->
+        <div style="flex:1;padding:16px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;">
+          <!-- User message -->
+          <div style="display:flex;justify-content:flex-end;">
+            <div style="max-width:85%;padding:10px 14px;border-radius:12px 12px 2px 12px;background:#1a1a1e;font-size:13px;color:#ccc;font-family:'IBM Plex Sans',sans-serif;">Summarize this contact's recent activity</div>
+          </div>
+
+          <!-- Agent message with structured response -->
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:20px;height:20px;border-radius:6px;background:oklch(0.65 0.14 165 / 0.2);display:flex;align-items:center;justify-content:center;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="oklch(0.65 0.14 165)"><circle cx="12" cy="12" r="8"/></svg>
+              </div>
+              <span style="font-size:11px;color:#555;font-family:'IBM Plex Sans',sans-serif;">Assistant</span>
+              <!-- Voice playback button -->
+              <div style="width:22px;height:22px;border-radius:5px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="#666"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+            </div>
+            <!-- Text block -->
+            <div style="padding:10px 14px;border-radius:2px 12px 12px 12px;background:#161618;font-size:13px;color:#aaa;line-height:1.6;font-family:'IBM Plex Sans',sans-serif;">
+              <strong style="color:#ccc;">John Smith</strong> has had significant activity this month:
+            </div>
+            <!-- Structured: Table renderer -->
+            <div style="border:1px solid #1a1a1e;border-radius:8px;overflow:hidden;font-size:12px;">
+              <div style="display:grid;grid-template-columns:auto 1fr auto;background:#0d0d0f;font-family:'IBM Plex Sans',sans-serif;">
+                <div style="padding:8px 12px;color:#555;font-weight:600;border-bottom:1px solid #1a1a1e;">Date</div>
+                <div style="padding:8px 12px;color:#555;font-weight:600;border-bottom:1px solid #1a1a1e;">Activity</div>
+                <div style="padding:8px 12px;color:#555;font-weight:600;border-bottom:1px solid #1a1a1e;">Status</div>
+                <div style="padding:8px 12px;color:#888;border-bottom:1px solid #111;">Mar 22</div>
+                <div style="padding:8px 12px;color:#888;border-bottom:1px solid #111;">Site visit — Lot 42 Beveridge</div>
+                <div style="padding:8px 12px;border-bottom:1px solid #111;"><span style="padding:2px 8px;border-radius:4px;background:oklch(0.65 0.14 165 / 0.15);color:oklch(0.65 0.14 165);font-size:11px;">completed</span></div>
+                <div style="padding:8px 12px;color:#888;border-bottom:1px solid #111;">Mar 20</div>
+                <div style="padding:8px 12px;color:#888;border-bottom:1px solid #111;">Email: pricing request</div>
+                <div style="padding:8px 12px;border-bottom:1px solid #111;"><span style="padding:2px 8px;border-radius:4px;background:#f59e0b20;color:#f59e0b;font-size:11px;">pending</span></div>
+                <div style="padding:8px 12px;color:#888;">Mar 18</div>
+                <div style="padding:8px 12px;color:#888;">Contract signed — Lot 15</div>
+                <div style="padding:8px 12px;"><span style="padding:2px 8px;border-radius:4px;background:oklch(0.65 0.14 165 / 0.15);color:oklch(0.65 0.14 165);font-size:11px;">completed</span></div>
+              </div>
+            </div>
+            <!-- Structured: Action buttons -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <div style="padding:6px 12px;border-radius:6px;border:1px solid #222;color:#888;font-size:12px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">📧 Draft follow-up email</div>
+              <div style="padding:6px 12px;border-radius:6px;border:1px solid #222;color:#888;font-size:12px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">📋 View all activity</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input area -->
+        <div style="padding:12px 20px;border-top:1px solid #1a1a1e;background:#0d0d0f;">
+          <!-- Attachments preview -->
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <div style="padding:4px 10px;border-radius:6px;background:#1a1a1e;font-size:11px;color:#666;display:flex;align-items:center;gap:4px;font-family:'IBM Plex Sans',sans-serif;">
+              📎 contract.pdf
+              <span style="color:#444;cursor:pointer;">×</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:8px;">
+            <!-- File upload -->
+            <div style="width:32px;height:32px;border-radius:8px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+            </div>
+            <!-- Voice input -->
+            <div style="width:32px;height:32px;border-radius:8px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+            </div>
+            <!-- Text input -->
+            <div style="flex:1;padding:8px 14px;border-radius:10px;background:#1a1a1e;border:1px solid #222;font-size:13px;color:#555;font-family:'IBM Plex Sans',sans-serif;">Ask anything about this contact...</div>
+            <!-- Send -->
+            <div style="width:32px;height:32px;border-radius:8px;background:oklch(0.65 0.14 165);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Streaming indicator -->
+<div class="section">
+  <h3>3. Streaming & Voice States</h3>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">Streaming Response</div>
+      <div class="mockup-body" style="background:#111113;padding:16px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
+          <div style="width:20px;height:20px;border-radius:6px;background:oklch(0.65 0.14 165 / 0.2);display:flex;align-items:center;justify-content:center;">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="oklch(0.65 0.14 165)"><circle cx="12" cy="12" r="8"/></svg>
+          </div>
+          <span style="font-size:11px;color:#555;font-family:'IBM Plex Sans',sans-serif;">Assistant</span>
+          <div style="display:flex;gap:3px;margin-left:8px;">
+            <div style="width:4px;height:4px;border-radius:50%;background:oklch(0.65 0.14 165);animation:pulse 1s infinite;"></div>
+            <div style="width:4px;height:4px;border-radius:50%;background:oklch(0.65 0.14 165);animation:pulse 1s infinite 0.2s;"></div>
+            <div style="width:4px;height:4px;border-radius:50%;background:oklch(0.65 0.14 165);animation:pulse 1s infinite 0.4s;"></div>
+          </div>
+        </div>
+        <div style="padding:10px 14px;border-radius:2px 12px 12px 12px;background:#161618;font-size:13px;color:#aaa;line-height:1.6;font-family:'IBM Plex Sans',sans-serif;">
+          John Smith has been active this week with 3 site visits and<span style="display:inline-block;width:2px;height:14px;background:oklch(0.65 0.14 165);animation:blink 1s infinite;vertical-align:text-bottom;margin-left:1px;"></span>
+        </div>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">Voice Input Active</div>
+      <div class="mockup-body" style="background:#0d0d0f;padding:16px;">
+        <div style="display:flex;align-items:flex-end;gap:8px;">
+          <div style="width:32px;height:32px;border-radius:8px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+          </div>
+          <!-- Voice active state -->
+          <div style="width:32px;height:32px;border-radius:8px;background:#ef4444;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 0 12px rgba(239,68,68,0.3);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
+          </div>
+          <div style="flex:1;padding:8px 14px;border-radius:10px;background:#1a1a1e;border:1px solid #ef4444;font-size:13px;color:#aaa;font-family:'IBM Plex Sans',sans-serif;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <!-- Waveform -->
+              <div style="display:flex;align-items:center;gap:2px;height:20px;">
+                <div style="width:3px;height:8px;background:#ef4444;border-radius:2px;"></div>
+                <div style="width:3px;height:16px;background:#ef4444;border-radius:2px;"></div>
+                <div style="width:3px;height:10px;background:#ef4444;border-radius:2px;"></div>
+                <div style="width:3px;height:18px;background:#ef4444;border-radius:2px;"></div>
+                <div style="width:3px;height:6px;background:#ef4444;border-radius:2px;"></div>
+                <div style="width:3px;height:14px;background:#ef4444;border-radius:2px;"></div>
+                <div style="width:3px;height:8px;background:#ef4444;border-radius:2px;"></div>
+              </div>
+              <span style="color:#888;">Listening...</span>
+            </div>
+          </div>
+          <div style="width:32px;height:32px;border-radius:8px;background:oklch(0.65 0.14 165);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes pulse { 0%,100% { opacity:0.3; } 50% { opacity:1; } }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+</style>
+
+<div class="section" style="margin-top:24px;">
+  <h3>Key Layout Decisions</h3>
+  <div style="display:grid;gap:12px;font-size:13px;color:#888;font-family:'IBM Plex Sans',sans-serif;">
+    <div style="padding:12px 16px;background:#111113;border-radius:8px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">420px slide-over</strong> — wide enough for structured responses (tables, cards), narrow enough to keep page content visible
+    </div>
+    <div style="padding:12px 16px;background:#111113;border-radius:8px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">Context bar</strong> — always shows what page/entity the agent is aware of, builds trust
+    </div>
+    <div style="padding:12px 16px;background:#111113;border-radius:8px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">Chat / History tabs</strong> — keeps conversation list accessible without cluttering the chat view
+    </div>
+    <div style="padding:12px 16px;background:#111113;border-radius:8px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">Expand button</strong> — opens full /chat page for longer sessions, slide-over for quick queries
+    </div>
+    <div style="padding:12px 16px;background:#111113;border-radius:8px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">Input row</strong> — file attach, voice, text input, send — all at the bottom, familiar pattern
+    </div>
+  </div>
+</div>

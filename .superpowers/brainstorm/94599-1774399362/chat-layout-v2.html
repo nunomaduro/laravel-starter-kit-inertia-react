@@ -1,0 +1,235 @@
+<h2>Global Chat Widget — 2-Panel Layout</h2>
+<p class="subtitle">Conversation list + active chat side by side, Slack/Discord style</p>
+
+<!-- Slide-over with 2 panels -->
+<div class="section">
+  <h3>Expanded State — 2-Panel Slide-over (560px)</h3>
+  <div class="mockup">
+    <div class="mockup-header">Slide-over (right side, 560px wide)</div>
+    <div class="mockup-body" style="display:flex;min-height:580px;background:#0a0a0b;">
+      <!-- Page content (dimmed) -->
+      <div style="flex:1;padding:20px;opacity:0.12;">
+        <div style="height:16px;width:60%;background:#333;border-radius:4px;margin-bottom:12px;"></div>
+        <div style="height:12px;width:80%;background:#222;border-radius:3px;margin-bottom:8px;"></div>
+        <div style="height:12px;width:70%;background:#222;border-radius:3px;"></div>
+      </div>
+
+      <!-- Slide-over panel -->
+      <div style="width:560px;background:#111113;border-left:1px solid #222;display:flex;flex-direction:column;">
+        <!-- Header -->
+        <div style="padding:12px 16px;border-bottom:1px solid #1a1a1e;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="oklch(0.65 0.14 165)" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;color:#e0e0e0;">AI Assistant</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="font-size:11px;color:#555;font-family:'IBM Plex Sans',sans-serif;">42 credits</span>
+            <!-- Expand to full page -->
+            <div style="width:26px;height:26px;border-radius:6px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            </div>
+            <!-- Close -->
+            <div style="width:26px;height:26px;border-radius:6px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-panel body -->
+        <div style="flex:1;display:flex;overflow:hidden;">
+
+          <!-- LEFT: Conversation list (160px) -->
+          <div style="width:160px;background:#0d0d0f;border-right:1px solid #1a1a1e;display:flex;flex-direction:column;">
+            <!-- New chat button -->
+            <div style="padding:10px 12px;border-bottom:1px solid #1a1a1e;">
+              <div style="padding:6px 10px;border-radius:6px;background:oklch(0.65 0.14 165 / 0.12);color:oklch(0.65 0.14 165);font-size:11px;font-weight:600;text-align:center;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">+ New Chat</div>
+            </div>
+            <!-- Search -->
+            <div style="padding:8px 12px;border-bottom:1px solid #1a1a1e;">
+              <div style="padding:5px 8px;border-radius:5px;background:#111113;border:1px solid #1a1a1e;font-size:10px;color:#444;font-family:'IBM Plex Sans',sans-serif;">Search...</div>
+            </div>
+            <!-- Conversation items -->
+            <div style="flex:1;overflow-y:auto;">
+              <!-- Active conversation -->
+              <div style="padding:10px 12px;background:#161618;border-left:2px solid oklch(0.65 0.14 165);cursor:pointer;">
+                <div style="font-size:11px;font-weight:600;color:#ccc;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Contact summary</div>
+                <div style="font-size:10px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Summarize this contact's...</div>
+                <div style="font-size:9px;color:#333;margin-top:3px;font-family:'IBM Plex Sans',sans-serif;">2 min ago</div>
+              </div>
+              <!-- Other conversations -->
+              <div style="padding:10px 12px;border-bottom:1px solid #111;cursor:pointer;">
+                <div style="font-size:11px;font-weight:500;color:#888;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Lot pricing analysis</div>
+                <div style="font-size:10px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">What are available lots...</div>
+                <div style="font-size:9px;color:#333;margin-top:3px;font-family:'IBM Plex Sans',sans-serif;">1 hour ago</div>
+              </div>
+              <div style="padding:10px 12px;border-bottom:1px solid #111;cursor:pointer;">
+                <div style="font-size:11px;font-weight:500;color:#888;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Draft welcome email</div>
+                <div style="font-size:10px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Write a welcome email for...</div>
+                <div style="font-size:9px;color:#333;margin-top:3px;font-family:'IBM Plex Sans',sans-serif;">Yesterday</div>
+              </div>
+              <div style="padding:10px 12px;border-bottom:1px solid #111;cursor:pointer;">
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <div style="font-size:11px;font-weight:500;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Pipeline report</div>
+                  <!-- Unread dot -->
+                  <div style="width:6px;height:6px;border-radius:50%;background:oklch(0.65 0.14 165);flex-shrink:0;"></div>
+                </div>
+                <div style="font-size:10px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Generate a sales pipeline...</div>
+                <div style="font-size:9px;color:#333;margin-top:3px;font-family:'IBM Plex Sans',sans-serif;">2 days ago</div>
+              </div>
+              <div style="padding:10px 12px;border-bottom:1px solid #111;cursor:pointer;">
+                <div style="font-size:11px;font-weight:500;color:#888;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Meeting prep</div>
+                <div style="font-size:10px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Sans',sans-serif;">Prepare talking points...</div>
+                <div style="font-size:9px;color:#333;margin-top:3px;font-family:'IBM Plex Sans',sans-serif;">Mar 20</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Active chat (400px) -->
+          <div style="flex:1;display:flex;flex-direction:column;">
+            <!-- Context bar -->
+            <div style="padding:8px 16px;background:#0d0d0f;border-bottom:1px solid #1a1a1e;display:flex;align-items:center;gap:6px;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+              <span style="font-size:10px;color:#444;font-family:'IBM Plex Sans',sans-serif;">Context: <span style="color:oklch(0.65 0.14 165);">/crm/contacts/123</span> — John Smith</span>
+            </div>
+
+            <!-- Messages -->
+            <div style="flex:1;padding:14px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;">
+              <!-- User message -->
+              <div style="display:flex;justify-content:flex-end;">
+                <div style="max-width:88%;padding:9px 13px;border-radius:12px 12px 2px 12px;background:#1a1a1e;font-size:12.5px;color:#ccc;font-family:'IBM Plex Sans',sans-serif;">Summarize this contact's recent activity</div>
+              </div>
+
+              <!-- Agent message -->
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                  <div style="width:18px;height:18px;border-radius:5px;background:oklch(0.65 0.14 165 / 0.2);display:flex;align-items:center;justify-content:center;">
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="oklch(0.65 0.14 165)"><circle cx="12" cy="12" r="8"/></svg>
+                  </div>
+                  <span style="font-size:10px;color:#444;font-family:'IBM Plex Sans',sans-serif;">Assistant</span>
+                  <div style="width:20px;height:20px;border-radius:5px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto;">
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="#555"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  </div>
+                </div>
+                <!-- Text -->
+                <div style="padding:9px 13px;border-radius:2px 12px 12px 12px;background:#161618;font-size:12.5px;color:#999;line-height:1.6;font-family:'IBM Plex Sans',sans-serif;">
+                  <strong style="color:#ccc;">John Smith</strong> has had significant activity this month:
+                </div>
+                <!-- Table renderer -->
+                <div style="border:1px solid #1a1a1e;border-radius:7px;overflow:hidden;font-size:11px;">
+                  <div style="display:grid;grid-template-columns:62px 1fr 72px;background:#0d0d0f;font-family:'IBM Plex Sans',sans-serif;">
+                    <div style="padding:6px 10px;color:#444;font-weight:600;border-bottom:1px solid #1a1a1e;">Date</div>
+                    <div style="padding:6px 10px;color:#444;font-weight:600;border-bottom:1px solid #1a1a1e;">Activity</div>
+                    <div style="padding:6px 10px;color:#444;font-weight:600;border-bottom:1px solid #1a1a1e;">Status</div>
+                    <div style="padding:6px 10px;color:#777;border-bottom:1px solid #111;">Mar 22</div>
+                    <div style="padding:6px 10px;color:#777;border-bottom:1px solid #111;">Site visit — Lot 42</div>
+                    <div style="padding:6px 10px;border-bottom:1px solid #111;"><span style="padding:1px 6px;border-radius:3px;background:oklch(0.65 0.14 165 / 0.12);color:oklch(0.65 0.14 165);font-size:10px;">done</span></div>
+                    <div style="padding:6px 10px;color:#777;border-bottom:1px solid #111;">Mar 20</div>
+                    <div style="padding:6px 10px;color:#777;border-bottom:1px solid #111;">Email: pricing request</div>
+                    <div style="padding:6px 10px;border-bottom:1px solid #111;"><span style="padding:1px 6px;border-radius:3px;background:#f59e0b18;color:#f59e0b;font-size:10px;">pending</span></div>
+                    <div style="padding:6px 10px;color:#777;">Mar 18</div>
+                    <div style="padding:6px 10px;color:#777;">Contract signed — Lot 15</div>
+                    <div style="padding:6px 10px;"><span style="padding:1px 6px;border-radius:3px;background:oklch(0.65 0.14 165 / 0.12);color:oklch(0.65 0.14 165);font-size:10px;">done</span></div>
+                  </div>
+                </div>
+                <!-- Action buttons -->
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <div style="padding:5px 10px;border-radius:5px;border:1px solid #1a1a1e;color:#777;font-size:11px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">📧 Draft follow-up</div>
+                  <div style="padding:5px 10px;border-radius:5px;border:1px solid #1a1a1e;color:#777;font-size:11px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;">📋 All activity</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Input area -->
+            <div style="padding:10px 16px;border-top:1px solid #1a1a1e;background:#0d0d0f;">
+              <div style="display:flex;align-items:flex-end;gap:6px;">
+                <!-- File upload -->
+                <div style="width:30px;height:30px;border-radius:7px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                </div>
+                <!-- Voice -->
+                <div style="width:30px;height:30px;border-radius:7px;background:#1a1a1e;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
+                </div>
+                <!-- Input -->
+                <div style="flex:1;padding:7px 12px;border-radius:8px;background:#1a1a1e;border:1px solid #222;font-size:12px;color:#444;font-family:'IBM Plex Sans',sans-serif;">Ask anything...</div>
+                <!-- Send -->
+                <div style="width:30px;height:30px;border-radius:7px;background:oklch(0.65 0.14 165);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Collapsed state reminder -->
+<div class="section">
+  <h3>Collapsed & Transition States</h3>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">Collapsed — Floating Button</div>
+      <div class="mockup-body" style="position:relative;min-height:200px;background:#0a0a0b;">
+        <div style="padding:20px;opacity:0.2;">
+          <div style="height:14px;width:60%;background:#333;border-radius:4px;margin-bottom:10px;"></div>
+          <div style="height:10px;width:75%;background:#222;border-radius:3px;margin-bottom:6px;"></div>
+          <div style="height:10px;width:65%;background:#222;border-radius:3px;"></div>
+        </div>
+        <div style="position:absolute;bottom:20px;right:20px;width:48px;height:48px;border-radius:12px;background:oklch(0.65 0.14 165);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.4);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <div style="position:absolute;bottom:58px;right:20px;width:16px;height:16px;border-radius:50%;background:#ef4444;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;">2</div>
+        <div style="position:absolute;bottom:22px;right:78px;opacity:0.35;font-size:10px;color:#666;font-family:monospace;">
+          <span style="padding:2px 5px;background:#1a1a1e;border-radius:3px;border:1px solid #222;">⌘K</span>
+        </div>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">Full Page — /chat route</div>
+      <div class="mockup-body" style="min-height:200px;background:#0a0a0b;display:flex;">
+        <!-- Full-width 2-panel, same layout but more room -->
+        <div style="width:220px;background:#0d0d0f;border-right:1px solid #1a1a1e;padding:12px 0;">
+          <div style="padding:8px 14px;margin:0 10px 8px;border-radius:6px;background:oklch(0.65 0.14 165 / 0.12);color:oklch(0.65 0.14 165);font-size:11px;font-weight:600;text-align:center;font-family:'IBM Plex Sans',sans-serif;">+ New Chat</div>
+          <div style="padding:9px 14px;background:#161618;border-left:2px solid oklch(0.65 0.14 165);margin-bottom:1px;">
+            <div style="font-size:11px;font-weight:600;color:#ccc;font-family:'IBM Plex Sans',sans-serif;">Contact summary</div>
+            <div style="font-size:10px;color:#444;margin-top:2px;font-family:'IBM Plex Sans',sans-serif;">2 min ago</div>
+          </div>
+          <div style="padding:9px 14px;margin-bottom:1px;">
+            <div style="font-size:11px;color:#777;font-family:'IBM Plex Sans',sans-serif;">Lot pricing analysis</div>
+            <div style="font-size:10px;color:#333;margin-top:2px;font-family:'IBM Plex Sans',sans-serif;">1 hour ago</div>
+          </div>
+          <div style="padding:9px 14px;">
+            <div style="font-size:11px;color:#777;font-family:'IBM Plex Sans',sans-serif;">Draft welcome email</div>
+            <div style="font-size:10px;color:#333;margin-top:2px;font-family:'IBM Plex Sans',sans-serif;">Yesterday</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+          <div style="text-align:center;font-family:'IBM Plex Sans',sans-serif;">
+            <div style="font-size:13px;color:#555;">Same chat panel, full width</div>
+            <div style="font-size:11px;color:#333;margin-top:4px;">More room for structured responses</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:20px;">
+  <h3>Layout Summary</h3>
+  <div style="display:grid;gap:10px;font-size:12px;color:#888;font-family:'IBM Plex Sans',sans-serif;">
+    <div style="padding:10px 14px;background:#111113;border-radius:7px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">560px slide-over, 2 panels</strong> — 160px conversation list + 400px active chat. Wider than v1 but conversations are always visible.
+    </div>
+    <div style="padding:10px 14px;background:#111113;border-radius:7px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">3 states</strong> — Collapsed (floating button + ⌘K) → Slide-over (2-panel, quick queries) → Full page (/chat, longer sessions)
+    </div>
+    <div style="padding:10px 14px;background:#111113;border-radius:7px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">Consistent layout</strong> — Same 2-panel structure in both slide-over and full page, just more breathing room on /chat
+    </div>
+    <div style="padding:10px 14px;background:#111113;border-radius:7px;border-left:3px solid oklch(0.65 0.14 165);">
+      <strong style="color:#ccc;">Active conversation highlighted</strong> — Teal left border on selected conversation, unread dots on others
+    </div>
+  </div>
+</div>
