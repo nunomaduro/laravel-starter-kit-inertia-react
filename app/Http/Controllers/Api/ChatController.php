@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Ai\Agents\AssistantAgent;
+use App\Ai\Agents\OrgScopedAgent;
 use App\Http\Requests\Api\StoreChatMessageRequest;
 use App\Models\AgentConversation;
 use App\Services\PrismService;
+use App\Services\TenantContext;
 use Illuminate\Support\Str;
 use Laravel\Ai\Streaming\Events\ReasoningDelta;
 use Laravel\Ai\Streaming\Events\ReasoningStart;
@@ -68,16 +70,31 @@ final class ChatController
 
         if ($conversationId === null) {
             $newConversationId = (string) Str::uuid();
-            AgentConversation::create([
+            $conversationData = [
                 'id' => $newConversationId,
                 'user_id' => $user->id,
                 'title' => 'New chat',
-            ]);
+            ];
+
+            if (TenantContext::check()) {
+                $conversationData['organization_id'] = TenantContext::id();
+            }
+
+            AgentConversation::create($conversationData);
             $conversationId = $newConversationId;
         }
 
-        $agent = AssistantAgent::make(['user_id' => $user->id])
-            ->continue($conversationId, $user);
+        /** @var array{page?: string, entity_type?: string, entity_id?: int, entity_name?: string} $context */
+        $context = $request->input('context', []);
+
+        if (TenantContext::check()) {
+            $agent = OrgScopedAgent::make()
+                ->withContext($context)
+                ->continue($conversationId, $user);
+        } else {
+            $agent = AssistantAgent::make(['user_id' => $user->id])
+                ->continue($conversationId, $user);
+        }
 
         try {
             $stream = $agent->stream($prompt);

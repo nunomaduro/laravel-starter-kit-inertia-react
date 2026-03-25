@@ -1,3 +1,4 @@
+export { useAgentContext } from './use-agent-context';
 export { useKeyboardShortcut } from '@/lib/keyboard-shortcuts';
 export { useAppearance, useThemePreset } from './use-appearance';
 export { useCan } from './use-can';
