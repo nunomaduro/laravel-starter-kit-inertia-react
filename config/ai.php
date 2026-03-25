@@ -45,6 +45,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Embeddings
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for the RAG pipeline embedding generation. These values
+    | control the provider, model, and vector dimensions used when generating
+    | embeddings for the polymorphic model_embeddings table.
+    |
+    */
+
+    'embeddings' => [
+        'provider' => env('EMBEDDING_PROVIDER', 'openai'),
+        'model' => env('EMBEDDING_MODEL', 'text-embedding-3-small'),
+        'dimensions' => (int) env('EMBEDDING_DIMENSIONS', 1536),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | AI Providers
     |--------------------------------------------------------------------------
     |
