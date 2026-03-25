@@ -629,6 +629,15 @@
                     "settings.features.update"
                 ]
             }
+        },
+        "GeneratePdf": {
+            "documented": true,
+            "path": "./generatepdf.md",
+            "relationships": {
+                "usedBy": [],
+                "usesModels": [],
+                "relatedRoutes": []
+            }
         }
     },
     "controllers": {
