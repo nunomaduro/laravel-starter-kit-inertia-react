@@ -4,6 +4,7 @@ import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { CommandPalette } from '@/components/command-dialog';
+import { GlobalChatWidget } from '@/components/global-chat/global-chat-widget';
 import { ThemeCustomizer } from '@/components/ui/theme-customizer';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
@@ -41,6 +42,7 @@ export default function AppSidebarLayout({
                 <AnnouncementsBanner />
                 {children}
             </AppContent>
+            <GlobalChatWidget />
         </AppShell>
     );
 }
