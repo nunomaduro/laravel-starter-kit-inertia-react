@@ -65,11 +65,27 @@ final class DataTableSavedViewController extends Controller
 
     /**
      * Delete a saved view. Only the creator or an admin can delete.
+     *
+     * Enforces tenant isolation: shared/system views must belong to the
+     * current org, and private views must belong to the authenticated user.
      */
     public function destroy(Request $request, DataTableSavedView $dataTableSavedView): JsonResponse
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
+        $orgId = TenantContext::id();
+
+        // Tenant isolation: org-scoped views must belong to the current tenant
+        if ($dataTableSavedView->organization_id !== null) {
+            if ($dataTableSavedView->organization_id !== $orgId) {
+                return response()->json(['message' => 'Forbidden.'], 403);
+            }
+        } else {
+            // Private views (no org) must belong to the authenticated user
+            if ($dataTableSavedView->created_by !== $user->id) {
+                return response()->json(['message' => 'Forbidden.'], 403);
+            }
+        }
 
         $isCreator = $dataTableSavedView->created_by === $user->id;
         $isAdmin = $user->can('manage system views');

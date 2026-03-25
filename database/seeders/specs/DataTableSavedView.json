@@ -85,7 +85,7 @@
         },
         "creator": {
             "type": "belongsTo",
-            "model": "Creator"
+            "model": "User"
         },
         "organization": {
             "type": "belongsTo",

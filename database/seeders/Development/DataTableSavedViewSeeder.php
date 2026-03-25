@@ -23,13 +23,11 @@ final class DataTableSavedViewSeeder extends Seeder
             return;
         }
 
-        // Personal views
+        // Personal views (no organization_id — private to user)
         DataTableSavedView::factory()
             ->count(3)
             ->forUser($user)
-            ->create([
-                'organization_id' => $org->id,
-            ]);
+            ->create();
 
         // Shared views
         DataTableSavedView::factory()

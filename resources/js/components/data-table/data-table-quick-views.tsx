@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import type { DataTableTranslations } from "./i18n";
+import { toast } from "sonner";
 import type { LucideIcon } from "lucide-react";
 import {
     Bookmark,
@@ -164,9 +165,13 @@ export function DataTableQuickViews({
     const [activeViewId, setActiveViewId] = useState<number | null>(null);
 
     const loadViews = useCallback(async () => {
-        const views = await fetchGroupedViews(tableName);
-        setGroupedViews(views);
-    }, [tableName]);
+        try {
+            const views = await fetchGroupedViews(tableName);
+            setGroupedViews(views);
+        } catch {
+            toast.error(t.viewLoadError);
+        }
+    }, [tableName, t]);
 
     useEffect(() => {
         void loadViews();
@@ -221,16 +226,20 @@ export function DataTableQuickViews({
             setIsShared(false);
             setDialogOpen(false);
             void loadViews();
+        } else {
+            toast.error(t.viewSaveError);
         }
-    }, [newName, currentSearch, getVisibleColumnIds, columnOrder, tableName, isShared, loadViews]);
+    }, [newName, currentSearch, getVisibleColumnIds, columnOrder, tableName, isShared, loadViews, t]);
 
     const handleDeleteView = useCallback(async (id: number) => {
         const success = await deleteSavedView(id);
         if (success) {
             if (activeViewId === id) setActiveViewId(null);
             void loadViews();
+        } else {
+            toast.error(t.viewDeleteError);
         }
-    }, [activeViewId, loadViews]);
+    }, [activeViewId, loadViews, t]);
 
     const handleSelectSaved = useCallback((view: ApiSavedView) => {
         setActiveViewId(view.id);
@@ -426,7 +435,7 @@ export function DataTableQuickViews({
                     <DialogHeader>
                         <DialogTitle>{t.saveFilters}</DialogTitle>
                         <DialogDescription>
-                            {t.filtersWillBeSavedLocally}
+                            {t.viewWillBeSaved}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-3 py-2">

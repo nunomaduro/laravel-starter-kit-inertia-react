@@ -19,6 +19,9 @@ final class StoreDataTableSavedViewRequest extends FormRequest
             return $this->user()->can('manage system views');
         }
 
+        // Shared views are intentionally open to all authenticated users.
+        // Any team member can share views with their organization — no
+        // additional permission gate is required by design.
         return true;
     }
 

@@ -131,6 +131,57 @@ it('creates a shared view scoped to the org', function (): void {
     ]);
 });
 
+// ── Shared Views — Intentionally Open (Design Decision) ─────────────
+
+it('allows any authenticated user to create shared views without special permission', function (): void {
+    // By design, shared views are open to all authenticated team members.
+    // No additional permission gate is required — any user in the org
+    // can share views with their team.
+    $response = $this->actingAs($this->user)
+        ->postJson('/api/data-table-saved-views', [
+            'table_name' => 'products',
+            'name' => 'Shared By Regular User',
+            'is_shared' => true,
+        ]);
+
+    $response->assertCreated()
+        ->assertJsonPath('data.is_shared', true);
+});
+
+// ── Cross-Tenant Delete Protection ──────────────────────────────────
+
+it('prevents deleting a shared view from another organization', function (): void {
+    $otherOrg = Organization::factory()->create();
+    $otherUser = createTestUser();
+    $otherOrg->users()->attach($otherUser);
+
+    // Create a shared view in the other org
+    TenantContext::set($otherOrg);
+    $view = DataTableSavedView::factory()->shared($otherOrg, $otherUser)->forTable('products')->create();
+
+    // Switch back to original org context and try to delete
+    TenantContext::set($this->org);
+
+    $this->actingAs($this->user)
+        ->deleteJson("/api/data-table-saved-views/{$view->id}")
+        ->assertForbidden();
+
+    $this->assertDatabaseHas('data_table_saved_views', ['id' => $view->id]);
+});
+
+it('prevents deleting a private view belonging to another user', function (): void {
+    $otherUser = createTestUser();
+
+    // Private view with no org (belongs to otherUser)
+    $view = DataTableSavedView::factory()->forUser($otherUser)->forTable('products')->create();
+
+    $this->actingAs($this->user)
+        ->deleteJson("/api/data-table-saved-views/{$view->id}")
+        ->assertForbidden();
+
+    $this->assertDatabaseHas('data_table_saved_views', ['id' => $view->id]);
+});
+
 // ── Create System View (permission check) ────────────────────────────────
 
 it('rejects system view creation without permission', function (): void {

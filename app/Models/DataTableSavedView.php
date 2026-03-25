@@ -33,21 +33,41 @@ final class DataTableSavedView extends Model
     /**
      * Get views grouped into three tiers for a given table.
      *
+     * Uses a single query and partitions the results in PHP.
+     *
      * @return array{my_views: Collection<int, DataTableSavedView>, team_views: Collection<int, DataTableSavedView>, system_views: Collection<int, DataTableSavedView>}
      */
     public static function grouped(string $tableName, int $userId, ?int $orgId): array
     {
-        $base = self::query()->where('table_name', $tableName);
+        $all = self::query()
+            ->where('table_name', $tableName)
+            ->where(function ($query) use ($userId, $orgId): void {
+                // Private views for the current user
+                $query->where(function ($q) use ($userId): void {
+                    $q->where('user_id', $userId)
+                        ->where('is_shared', false)
+                        ->where('is_system', false);
+                });
 
-        $myViews = (clone $base)->forUser($userId)->orderBy('name')->get();
+                // Org-scoped views (shared + system)
+                if ($orgId !== null) {
+                    $query->orWhere(function ($q) use ($orgId): void {
+                        $q->where('organization_id', $orgId)
+                            ->where(function ($inner): void {
+                                $inner->where('is_shared', true)
+                                    ->orWhere('is_system', true);
+                            });
+                    });
+                }
+            })
+            ->orderBy('name')
+            ->get();
 
-        $teamViews = $orgId
-            ? (clone $base)->sharedInOrg($orgId)->orderBy('name')->get()
-            : new Collection;
+        $myViews = $all->filter(fn (self $v): bool => $v->user_id === $userId && ! $v->is_shared && ! $v->is_system)->values();
 
-        $systemViews = $orgId
-            ? (clone $base)->systemInOrg($orgId)->orderBy('name')->get()
-            : new Collection;
+        $teamViews = $all->filter(fn (self $v): bool => $v->is_shared && ! $v->is_system)->values();
+
+        $systemViews = $all->filter(fn (self $v): bool => $v->is_system)->values();
 
         return [
             'my_views' => $myViews,
