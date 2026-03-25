@@ -537,7 +537,9 @@
             "Modules\\Crm\\": "modules/crm/src/",
             "Modules\\Crm\\Database\\": "modules/crm/database/",
             "Modules\\Billing\\": "modules/billing/src/",
-            "Modules\\Billing\\Database\\": "modules/billing/database/"
+            "Modules\\Billing\\Database\\": "modules/billing/database/",
+            "Modules\\BotStudio\\": "modules/bot-studio/src/",
+            "Modules\\BotStudio\\Database\\": "modules/bot-studio/database/"
         },
         "files": [
             "bootstrap/helpers.php"

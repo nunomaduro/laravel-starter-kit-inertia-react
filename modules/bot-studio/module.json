@@ -1,0 +1,6 @@
+{
+    "name": "bot-studio",
+    "label": "Bot Studio",
+    "description": "Create, customize, and deploy custom AI agents",
+    "provider": "Modules\\BotStudio\\Providers\\BotStudioModuleServiceProvider"
+}

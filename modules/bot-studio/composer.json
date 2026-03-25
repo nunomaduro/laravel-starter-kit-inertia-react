@@ -1,0 +1,21 @@
+{
+    "name": "modules/bot-studio",
+    "description": "Bot Studio module: create, customize, and deploy custom AI agents",
+    "type": "library",
+    "require": {
+        "php": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\BotStudio\\": "src/",
+            "Modules\\BotStudio\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\BotStudio\\Providers\\BotStudioModuleServiceProvider"
+            ]
+        }
+    }
+}

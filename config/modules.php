@@ -16,4 +16,5 @@ return [
     'billing' => true,
     'crm' => true,
     'hr' => true,
+    'bot-studio' => true,
 ];
