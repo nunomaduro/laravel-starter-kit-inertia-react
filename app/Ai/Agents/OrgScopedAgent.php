@@ -31,6 +31,11 @@ final class OrgScopedAgent implements Agent, Conversational, HasMiddleware, HasT
     /** @var array{page?: string, entity_type?: string, entity_id?: int, entity_name?: string} */
     private array $pageContext = [];
 
+    private ?string $customPrompt = null;
+
+    /** @var array<int, object>|null */
+    private ?array $customTools = null;
+
     public function __construct(
         private Organization $organization,
         private User $user,
@@ -66,10 +71,36 @@ final class OrgScopedAgent implements Agent, Conversational, HasMiddleware, HasT
         return $this;
     }
 
+    /**
+     * Override the default instructions with a custom system prompt.
+     */
+    public function withCustomPrompt(string $prompt): self
+    {
+        $this->customPrompt = $prompt;
+
+        return $this;
+    }
+
+    /**
+     * Override the default tools with a custom set.
+     *
+     * @param  array<int, object>  $tools
+     */
+    public function withCustomTools(array $tools): self
+    {
+        $this->customTools = $tools;
+
+        return $this;
+    }
+
     public function instructions(): string
     {
-        $instructions = "You are an AI assistant for the organization \"{$this->organization->name}\". "
-            .'Help the user with their tasks using the available tools.';
+        if ($this->customPrompt !== null) {
+            $instructions = $this->customPrompt;
+        } else {
+            $instructions = "You are an AI assistant for the organization \"{$this->organization->name}\". "
+                .'Help the user with their tasks using the available tools.';
+        }
 
         if (isset($this->pageContext['page'])) {
             $instructions .= "\n\nThe user is currently on page: {$this->pageContext['page']}.";
@@ -85,7 +116,11 @@ final class OrgScopedAgent implements Agent, Conversational, HasMiddleware, HasT
 
     public function tools(): iterable
     {
-        $tools = $this->toolRegistry->getToolsForOrganization($this->organization);
+        if ($this->customTools !== null) {
+            $tools = $this->customTools;
+        } else {
+            $tools = $this->toolRegistry->getToolsForOrganization($this->organization);
+        }
 
         foreach ($tools as $tool) {
             if ($tool instanceof ContextAwareTool) {
