@@ -22,6 +22,7 @@ final class AgentConversation extends Model
         'id',
         'user_id',
         'organization_id',
+        'agent_definition_id',
         'title',
     ];
 
