@@ -6,6 +6,7 @@ namespace App\Modules\Support;
 
 use App\Modules\Contracts\DeclaresModuleRelationships;
 use App\Modules\Contracts\ProvidesAIContext;
+use App\Modules\Contracts\ProvidesAITools;
 use App\Support\ModuleFeatureRegistry;
 use App\Support\ModuleNavigationRegistry;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +66,7 @@ abstract class ModuleProvider extends ServiceProvider
         $this->loadMigrations();
         $this->loadRoutes();
         $this->registerAIContext();
+        $this->registerAITools();
         $this->registerRelationships();
         $this->registerNavigation();
         $this->bootModule();
@@ -200,6 +202,13 @@ abstract class ModuleProvider extends ServiceProvider
     {
         if ($this instanceof ProvidesAIContext) {
             $this->app->tag([$this::class], 'module.ai_context');
+        }
+    }
+
+    private function registerAITools(): void
+    {
+        if ($this instanceof ProvidesAITools) {
+            $this->app->tag([$this::class], 'module.ai_tools');
         }
     }
 
