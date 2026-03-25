@@ -16,12 +16,15 @@ import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import {
+    AlertCircle,
     Bot,
     Check,
     FileText,
+    Loader2,
     Lock,
     MessageCircle,
     Plus,
+    RefreshCw,
     Send,
     Settings2,
     Sparkles,
@@ -30,7 +33,7 @@ import {
     Wrench,
     X,
 } from 'lucide-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface Tool {
     class: string;
@@ -41,9 +44,13 @@ interface Tool {
 
 interface KnowledgeFile {
     id: number;
-    original_filename: string;
+    filename: string;
+    mime_type: string | null;
+    file_size: number | null;
     status: string;
     chunk_count: number;
+    error_message: string | null;
+    processed_at: string | null;
 }
 
 interface AgentDefinition {
@@ -202,6 +209,7 @@ export default function BotStudioEdit({
                             availableTools={availableTools}
                             allowedModels={allowedModels}
                             knowledgeFiles={definition.knowledge_files ?? []}
+                            definitionSlug={definition.slug}
                         />
                     </div>
 
@@ -226,6 +234,7 @@ function EditorPanel({
     availableTools,
     allowedModels,
     knowledgeFiles,
+    definitionSlug,
 }: {
     form: {
         system_prompt: string;
@@ -243,6 +252,7 @@ function EditorPanel({
     availableTools: Tool[];
     allowedModels: string[];
     knowledgeFiles: KnowledgeFile[];
+    definitionSlug: string;
 }) {
     const promptRef = useRef<HTMLTextAreaElement>(null);
 
@@ -455,53 +465,10 @@ function EditorPanel({
                 value="knowledge"
                 className="flex-1 overflow-y-auto p-4"
             >
-                <div className="flex flex-col gap-4">
-                    {knowledgeFiles.length > 0 && (
-                        <div className="flex flex-col gap-2">
-                            {knowledgeFiles.map((file) => (
-                                <div
-                                    key={file.id}
-                                    className="flex items-center justify-between rounded-lg border border-border px-4 py-2 text-sm"
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <FileText className="size-4 text-muted-foreground" />
-                                        <span>
-                                            {file.original_filename}
-                                        </span>
-                                        <Badge
-                                            variant="outline"
-                                            className="text-[10px]"
-                                        >
-                                            {file.status}
-                                        </Badge>
-                                    </div>
-                                    <span className="font-mono text-xs text-muted-foreground">
-                                        {file.chunk_count} chunks
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                    <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border px-6 py-12 text-center">
-                        <Upload className="size-8 text-muted-foreground/50" />
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">
-                                Upload knowledge files
-                            </p>
-                            <p className="mt-1 text-xs text-muted-foreground/70">
-                                Give your agent domain expertise with
-                                documents, PDFs, and more.
-                            </p>
-                        </div>
-                        <Button variant="outline" size="sm" disabled>
-                            <Upload className="mr-1.5 size-3.5" />
-                            Upload Files
-                        </Button>
-                        <p className="text-[11px] text-muted-foreground/50">
-                            Coming soon in a future update
-                        </p>
-                    </div>
-                </div>
+                <KnowledgeTab
+                    files={knowledgeFiles}
+                    definitionSlug={definitionSlug}
+                />
             </TabsContent>
 
             {/* Settings tab */}
@@ -618,6 +585,366 @@ function EditorPanel({
                 </div>
             </TabsContent>
         </Tabs>
+    );
+}
+
+/* ──────────────────── Knowledge Tab ──────────────────── */
+
+const ACCEPTED_EXTENSIONS = '.pdf,.docx,.txt,.csv,.md';
+const MAX_FILE_SIZE_MB = 10;
+
+function formatFileSize(bytes: number | null): string {
+    if (bytes === null || bytes === 0) return '0 B';
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return `${(bytes / Math.pow(1024, i)).toFixed(i > 0 ? 1 : 0)} ${units[i]}`;
+}
+
+function StatusBadge({ status }: { status: string }) {
+    const styles: Record<string, string> = {
+        pending: 'border-muted-foreground/30 text-muted-foreground',
+        processing: 'border-amber-500/30 text-amber-500',
+        indexed: 'border-teal-500/30 text-teal-500',
+        failed: 'border-destructive/30 text-destructive',
+    };
+
+    return (
+        <Badge
+            variant="outline"
+            className={`text-[10px] font-mono uppercase tracking-wider ${styles[status] ?? ''}`}
+        >
+            {status === 'processing' && (
+                <Loader2 className="mr-1 size-3 animate-spin" />
+            )}
+            {status}
+        </Badge>
+    );
+}
+
+function KnowledgeTab({
+    files: initialFiles,
+    definitionSlug,
+}: {
+    files: KnowledgeFile[];
+    definitionSlug: string;
+}) {
+    const [files, setFiles] = useState<KnowledgeFile[]>(initialFiles);
+    const [uploading, setUploading] = useState(false);
+    const [dragOver, setDragOver] = useState(false);
+    const [deleting, setDeleting] = useState<number | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const hasProcessing = files.some(
+        (f) => f.status === 'pending' || f.status === 'processing',
+    );
+
+    // Poll for status updates while files are processing
+    useEffect(() => {
+        if (!hasProcessing) return;
+
+        const interval = setInterval(() => {
+            router.reload({
+                only: ['definition'],
+                onSuccess: (page) => {
+                    const def = (page.props as { definition: AgentDefinition })
+                        .definition;
+                    if (def.knowledge_files) {
+                        setFiles(def.knowledge_files);
+                    }
+                },
+            });
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [hasProcessing]);
+
+    // Sync with props when they change
+    useEffect(() => {
+        setFiles(initialFiles);
+    }, [initialFiles]);
+
+    async function uploadFile(file: File) {
+        if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+            alert(`File exceeds maximum size of ${MAX_FILE_SIZE_MB} MB.`);
+            return;
+        }
+
+        setUploading(true);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const csrfMatch = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+            const csrfToken = csrfMatch
+                ? decodeURIComponent(csrfMatch[1])
+                : '';
+
+            const res = await fetch(
+                `/bot-studio/${definitionSlug}/knowledge`,
+                {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-XSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: formData,
+                },
+            );
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => null);
+                const msg =
+                    data?.errors?.file?.[0] ??
+                    data?.message ??
+                    'Upload failed.';
+                alert(msg);
+                return;
+            }
+
+            const data = (await res.json()) as {
+                knowledge_file: KnowledgeFile;
+            };
+            setFiles((prev) => [...prev, data.knowledge_file]);
+        } catch {
+            alert('Upload failed. Please try again.');
+        } finally {
+            setUploading(false);
+        }
+    }
+
+    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (file) {
+            uploadFile(file);
+        }
+        e.target.value = '';
+    }
+
+    function handleDrop(e: React.DragEvent) {
+        e.preventDefault();
+        setDragOver(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file) {
+            uploadFile(file);
+        }
+    }
+
+    async function handleDelete(fileId: number) {
+        if (!confirm('Delete this knowledge file? Its embeddings will also be removed.')) {
+            return;
+        }
+
+        setDeleting(fileId);
+
+        try {
+            const csrfMatch = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+            const csrfToken = csrfMatch
+                ? decodeURIComponent(csrfMatch[1])
+                : '';
+
+            await fetch(
+                `/bot-studio/${definitionSlug}/knowledge/${fileId}`,
+                {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-XSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                },
+            );
+
+            setFiles((prev) => prev.filter((f) => f.id !== fileId));
+        } catch {
+            alert('Failed to delete file.');
+        } finally {
+            setDeleting(null);
+        }
+    }
+
+    async function handleRetry(fileId: number) {
+        try {
+            const csrfMatch = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+            const csrfToken = csrfMatch
+                ? decodeURIComponent(csrfMatch[1])
+                : '';
+
+            const res = await fetch(
+                `/bot-studio/${definitionSlug}/knowledge/${fileId}/retry`,
+                {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-XSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                },
+            );
+
+            if (res.ok) {
+                const data = (await res.json()) as {
+                    knowledge_file: KnowledgeFile;
+                };
+                setFiles((prev) =>
+                    prev.map((f) =>
+                        f.id === fileId ? data.knowledge_file : f,
+                    ),
+                );
+            }
+        } catch {
+            alert('Retry failed.');
+        }
+    }
+
+    const totalSizeMb =
+        files.reduce((sum, f) => sum + (f.file_size ?? 0), 0) / 1024 / 1024;
+    const totalChunks = files.reduce((sum, f) => sum + f.chunk_count, 0);
+    const maxTotalMb = 100;
+
+    return (
+        <div className="flex flex-col gap-4">
+            {/* Storage usage */}
+            {files.length > 0 && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="font-mono">
+                        {files.length} file{files.length !== 1 ? 's' : ''}
+                    </span>
+                    <span>&middot;</span>
+                    <span className="font-mono">
+                        {totalSizeMb.toFixed(1)} MB of {maxTotalMb} MB
+                    </span>
+                    <span>&middot;</span>
+                    <span className="font-mono">
+                        {totalChunks} chunk{totalChunks !== 1 ? 's' : ''}{' '}
+                        indexed
+                    </span>
+                </div>
+            )}
+
+            {/* File list */}
+            {files.length > 0 && (
+                <div className="flex flex-col gap-2">
+                    {files.map((file) => (
+                        <div
+                            key={file.id}
+                            className="flex items-center justify-between rounded-lg border border-border px-4 py-2.5 text-sm"
+                        >
+                            <div className="flex min-w-0 flex-1 items-center gap-2">
+                                <FileText className="size-4 shrink-0 text-muted-foreground" />
+                                <span className="truncate">
+                                    {file.filename}
+                                </span>
+                                <StatusBadge status={file.status} />
+                            </div>
+                            <div className="flex shrink-0 items-center gap-2">
+                                {file.status === 'indexed' && (
+                                    <span className="font-mono text-xs text-muted-foreground">
+                                        {file.chunk_count} chunks
+                                    </span>
+                                )}
+                                {file.status === 'failed' && (
+                                    <>
+                                        {file.error_message && (
+                                            <span
+                                                className="max-w-[200px] truncate text-xs text-destructive"
+                                                title={file.error_message}
+                                            >
+                                                <AlertCircle className="mr-1 inline-block size-3" />
+                                                {file.error_message}
+                                            </span>
+                                        )}
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleRetry(file.id)
+                                            }
+                                            className="h-7 px-2 text-xs"
+                                        >
+                                            <RefreshCw className="mr-1 size-3" />
+                                            Retry
+                                        </Button>
+                                    </>
+                                )}
+                                {file.file_size && (
+                                    <span className="font-mono text-[11px] text-muted-foreground/60">
+                                        {formatFileSize(file.file_size)}
+                                    </span>
+                                )}
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-7 text-muted-foreground hover:text-destructive"
+                                    onClick={() => handleDelete(file.id)}
+                                    disabled={deleting === file.id}
+                                >
+                                    {deleting === file.id ? (
+                                        <Loader2 className="size-3.5 animate-spin" />
+                                    ) : (
+                                        <Trash2 className="size-3.5" />
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Upload zone */}
+            <div
+                onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragOver(true);
+                }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleDrop}
+                className={`flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed px-6 py-12 text-center transition-colors duration-100 ${
+                    dragOver
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border'
+                }`}
+            >
+                <Upload
+                    className={`size-8 ${dragOver ? 'text-primary' : 'text-muted-foreground/50'}`}
+                />
+                <div>
+                    <p className="text-sm font-medium text-muted-foreground">
+                        {dragOver
+                            ? 'Drop file to upload'
+                            : 'Upload knowledge files'}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground/70">
+                        PDF, DOCX, TXT, CSV, MD -- max {MAX_FILE_SIZE_MB} MB
+                        per file
+                    </p>
+                </div>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                >
+                    {uploading ? (
+                        <Loader2 className="mr-1.5 size-3.5 animate-spin" />
+                    ) : (
+                        <Upload className="mr-1.5 size-3.5" />
+                    )}
+                    {uploading ? 'Uploading...' : 'Choose File'}
+                </Button>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept={ACCEPTED_EXTENSIONS}
+                    onChange={handleFileSelect}
+                    className="hidden"
+                />
+            </div>
+        </div>
     );
 }
 

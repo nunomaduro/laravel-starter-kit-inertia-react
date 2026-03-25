@@ -7,23 +7,32 @@ namespace Modules\BotStudio\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\BotStudio\Jobs\ProcessKnowledgeFileJob;
 use Modules\BotStudio\Models\AgentDefinition;
 use Modules\BotStudio\Models\AgentKnowledgeFile;
+use Modules\BotStudio\Services\KnowledgeProcessor;
 
-final class KnowledgeFileController
+final readonly class KnowledgeFileController
 {
+    public function __construct(private KnowledgeProcessor $processor) {}
+
     /**
-     * Accept a file upload for knowledge processing (stub — full implementation in Task 8).
+     * Accept a file upload for knowledge processing.
      */
     public function store(Request $request, AgentDefinition $agentDefinition): JsonResponse
     {
         $request->validate([
-            'file' => ['required', 'file', 'max:10240', 'mimes:pdf,txt,md,csv,docx'],
+            'file' => ['required', 'file'],
         ]);
 
+        $knowledgeFile = $this->processor->upload(
+            $agentDefinition,
+            $request->file('file'),
+        );
+
         return response()->json([
-            'message' => 'Knowledge processing coming in next update.',
-        ], 501);
+            'knowledge_file' => $knowledgeFile,
+        ], 201);
     }
 
     /**
@@ -33,20 +42,27 @@ final class KnowledgeFileController
     {
         abort_if($knowledgeFile->agent_definition_id !== $agentDefinition->id, 404);
 
-        $knowledgeFile->delete();
+        $this->processor->delete($knowledgeFile);
 
         return response()->noContent();
     }
 
     /**
-     * Retry processing a knowledge file (stub — full implementation in Task 8).
+     * Retry processing a failed knowledge file.
      */
     public function retry(AgentDefinition $agentDefinition, AgentKnowledgeFile $knowledgeFile): JsonResponse
     {
         abort_if($knowledgeFile->agent_definition_id !== $agentDefinition->id, 404);
 
+        $knowledgeFile->update([
+            'status' => 'pending',
+            'error_message' => null,
+        ]);
+
+        ProcessKnowledgeFileJob::dispatch($knowledgeFile);
+
         return response()->json([
-            'message' => 'Knowledge processing coming in next update.',
-        ], 501);
+            'knowledge_file' => $knowledgeFile->fresh(),
+        ]);
     }
 }
