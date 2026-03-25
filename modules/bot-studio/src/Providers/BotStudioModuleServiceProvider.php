@@ -7,7 +7,10 @@ namespace Modules\BotStudio\Providers;
 use App\Modules\Contracts\ProvidesAIContext;
 use App\Modules\Support\ModuleManifest;
 use App\Modules\Support\ModuleProvider;
+use Illuminate\Support\Facades\Gate;
 use Modules\BotStudio\Features\BotStudioFeature;
+use Modules\BotStudio\Models\AgentDefinition;
+use Modules\BotStudio\Policies\AgentDefinitionPolicy;
 
 final class BotStudioModuleServiceProvider extends ModuleProvider implements ProvidesAIContext
 {
@@ -17,7 +20,9 @@ final class BotStudioModuleServiceProvider extends ModuleProvider implements Pro
             name: 'Bot Studio',
             version: '1.0.0',
             description: 'Create, customize, and deploy custom AI agents',
-            models: [],
+            models: [
+                AgentDefinition::class,
+            ],
             pages: [
                 'bot-studio.index' => 'bot-studio/index',
                 'bot-studio.create' => 'bot-studio/create',
@@ -61,6 +66,6 @@ final class BotStudioModuleServiceProvider extends ModuleProvider implements Pro
 
     protected function bootModule(): void
     {
-        //
+        Gate::policy(AgentDefinition::class, AgentDefinitionPolicy::class);
     }
 }
