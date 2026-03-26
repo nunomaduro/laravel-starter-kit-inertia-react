@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\BotStudio\Http\Controllers\AgentChatController;
 use Modules\BotStudio\Http\Controllers\AgentDefinitionController;
 use Modules\BotStudio\Http\Controllers\KnowledgeFileController;
+use Modules\BotStudio\Http\Controllers\MarketplaceController;
 
 Route::middleware(['auth', 'verified', 'tenant', 'feature:bot-studio'])->prefix('bot-studio')->name('bot-studio.')->group(function (): void {
 
@@ -28,4 +29,11 @@ Route::middleware(['auth', 'verified', 'tenant', 'feature:bot-studio'])->prefix(
     Route::post('/{agentDefinition:slug}/knowledge', [KnowledgeFileController::class, 'store'])->name('knowledge.store');
     Route::delete('/{agentDefinition:slug}/knowledge/{knowledgeFile}', [KnowledgeFileController::class, 'destroy'])->name('knowledge.destroy');
     Route::post('/{agentDefinition:slug}/knowledge/{knowledgeFile}/retry', [KnowledgeFileController::class, 'retry'])->name('knowledge.retry');
+
+    // Marketplace
+    Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index');
+    Route::get('/marketplace/{agentDefinition:slug}', [MarketplaceController::class, 'show'])->name('marketplace.show');
+    Route::post('/marketplace/{agentDefinition:slug}/install', [MarketplaceController::class, 'install'])->name('marketplace.install');
+    Route::post('/marketplace/{agentDefinition:slug}/review', [MarketplaceController::class, 'review'])->name('marketplace.review');
+    Route::delete('/marketplace/{agentDefinition:slug}/review', [MarketplaceController::class, 'deleteReview'])->name('marketplace.deleteReview');
 });
