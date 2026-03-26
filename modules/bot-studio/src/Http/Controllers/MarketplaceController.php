@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Laravel\Pennant\Feature;
 use Modules\BotStudio\Http\Requests\StoreAgentReviewRequest;
 use Modules\BotStudio\Models\AgentDefinition;
 use Modules\BotStudio\Models\AgentInstall;
@@ -103,6 +104,14 @@ final readonly class MarketplaceController
     public function install(AgentDefinition $agentDefinition): RedirectResponse
     {
         abort_unless($agentDefinition->is_published, 404);
+
+        $org = TenantContext::organization();
+
+        abort_unless(
+            $org !== null && Feature::for($org)->active('bot_studio'),
+            403,
+            __('Your plan does not include Bot Studio. Please upgrade to install agents.'),
+        );
 
         $orgId = TenantContext::id();
 

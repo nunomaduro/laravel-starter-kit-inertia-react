@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\BotStudio\Http\Controllers;
 
+use App\Services\TenantContext;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Laravel\Pennant\Feature;
 use Modules\BotStudio\Models\AgentDefinition;
 use Modules\BotStudio\Models\AgentEmbedToken;
 use Modules\BotStudio\Services\EmbedTokenService;
@@ -21,6 +23,14 @@ final readonly class EmbedTokenController
      */
     public function store(Request $request, AgentDefinition $agentDefinition): JsonResponse
     {
+        $org = TenantContext::organization();
+
+        abort_unless(
+            $org !== null && Feature::for($org)->active('bot_studio_embed'),
+            403,
+            __('Your plan does not include the embed widget feature. Please upgrade to create embed tokens.'),
+        );
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'allowed_domains' => ['nullable', 'array'],

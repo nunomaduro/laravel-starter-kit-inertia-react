@@ -62,6 +62,18 @@ return [
             'delegate_to_orgs' => true,
             'plan_required' => 'pro',
         ],
+        'bot_studio_pro' => [
+            'label' => 'Bot Studio Pro',
+            'description' => 'Publish AI agents to the marketplace and install from marketplace',
+            'delegate_to_orgs' => true,
+            'plan_required' => 'platform-agency',
+        ],
+        'bot_studio_embed' => [
+            'label' => 'Bot Studio Embed',
+            'description' => 'Embed AI agents on external websites',
+            'delegate_to_orgs' => true,
+            'plan_required' => 'platform-enterprise',
+        ],
     ],
 
     /*

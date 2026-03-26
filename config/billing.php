@@ -73,12 +73,15 @@ return [
         'platform-agency' => [
             'api_access',
             'bot_studio',
+            'bot_studio_pro',
             'crm',
             'reports',
         ],
         'platform-enterprise' => [
             'api_access',
             'bot_studio',
+            'bot_studio_pro',
+            'bot_studio_embed',
             'crm',
             'reports',
             'dashboards',

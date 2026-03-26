@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Laravel\Pennant\Feature;
 use Modules\BotStudio\Http\Requests\StoreAgentDefinitionRequest;
 use Modules\BotStudio\Http\Requests\UpdateAgentDefinitionRequest;
 use Modules\BotStudio\Models\AgentDefinition;
@@ -107,7 +108,19 @@ final readonly class AgentDefinitionController
 
     public function update(UpdateAgentDefinitionRequest $request, AgentDefinition $agentDefinition): RedirectResponse
     {
-        $agentDefinition->update($request->validated());
+        $validated = $request->validated();
+
+        if (($validated['is_published'] ?? false) === true && ! $agentDefinition->is_published) {
+            $org = TenantContext::organization();
+
+            abort_unless(
+                $org !== null && Feature::for($org)->active('bot_studio_pro'),
+                403,
+                __('Your plan does not include marketplace publishing. Please upgrade to publish agents.'),
+            );
+        }
+
+        $agentDefinition->update($validated);
 
         return to_route('bot-studio.edit', $agentDefinition)
             ->with('status', __('Agent updated.'));
