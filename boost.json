@@ -1,11 +1,8 @@
 {
     "agents": [
-        "claude_code",
-        "cursor",
-        "junie"
+        "claude_code"
     ],
     "guidelines": true,
-    "herd_mcp": false,
     "mcp": true,
     "nightwatch_mcp": false,
     "packages": [
@@ -13,6 +10,10 @@
     ],
     "sail": false,
     "skills": [
+        "laravel-best-practices",
+        "wayfinder-development",
+        "inertia-react-development",
+        "tailwindcss-development",
         "fortify-development"
     ]
 }
