@@ -93,12 +93,12 @@
             "default": null
         },
         "tags": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "position": {
-            "type": "integer",
+            "type": "bigint",
             "nullable": true,
             "default": null
         }

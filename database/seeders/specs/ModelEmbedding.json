@@ -1,7 +1,58 @@
 {
     "model": "ModelEmbedding",
     "table": "model_embeddings",
-    "fields": [],
+    "fields": {
+        "id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "organization_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "embeddable_type": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "embeddable_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "chunk_index": {
+            "type": "integer",
+            "nullable": true,
+            "default": null
+        },
+        "embedding": {
+            "type": "vector",
+            "nullable": true,
+            "default": null
+        },
+        "content_hash": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "metadata": {
+            "type": "json",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        }
+    },
     "relationships": {
         "organization": {
             "type": "belongsTo",

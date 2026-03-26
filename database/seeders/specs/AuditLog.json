@@ -38,17 +38,17 @@
             "default": null
         },
         "old_value": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "new_value": {
-            "type": "text",
+            "type": "json",
             "nullable": true,
             "default": null
         },
         "ip_address": {
-            "type": "string",
+            "type": "inet",
             "nullable": true,
             "default": null
         },
@@ -59,13 +59,13 @@
         }
     },
     "relationships": {
-        "organization": {
-            "type": "belongsTo",
-            "model": "Organization"
-        },
         "actor": {
             "type": "belongsTo",
             "model": "Actor"
+        },
+        "organization": {
+            "type": "belongsTo",
+            "model": "Organization"
         }
     },
     "value_hints": {

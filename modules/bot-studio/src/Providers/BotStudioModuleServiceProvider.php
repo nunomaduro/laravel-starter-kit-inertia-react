@@ -18,7 +18,7 @@ final class BotStudioModuleServiceProvider extends ModuleProvider implements Pro
     public function manifest(): ModuleManifest
     {
         return new ModuleManifest(
-            name: 'Bot Studio',
+            name: 'bot-studio',
             version: '1.0.0',
             description: 'Create, customize, and deploy custom AI agents',
             models: [
