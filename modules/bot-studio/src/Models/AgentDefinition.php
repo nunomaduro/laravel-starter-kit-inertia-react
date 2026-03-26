@@ -40,6 +40,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property bool $is_template
  * @property int $total_conversations
  * @property int $total_messages
+ * @property float $average_rating
+ * @property int $review_count
+ * @property int $install_count
+ * @property string|null $category
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon|null $deleted_at
@@ -47,6 +51,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read Organization|null $organization
  * @property-read \Illuminate\Database\Eloquent\Collection<int, AgentKnowledgeFile> $knowledgeFiles
  * @property-read \Illuminate\Database\Eloquent\Collection<int, AgentConversation> $conversations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, AgentInstall> $installs
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, AgentReview> $reviews
  */
 final class AgentDefinition extends Model implements HasMedia
 {
@@ -72,6 +78,10 @@ final class AgentDefinition extends Model implements HasMedia
         'is_featured',
         'is_template',
         'cloned_from',
+        'average_rating',
+        'review_count',
+        'install_count',
+        'category',
     ];
 
     /** @return BelongsTo<User, $this> */
@@ -90,6 +100,18 @@ final class AgentDefinition extends Model implements HasMedia
     public function conversations(): HasMany
     {
         return $this->hasMany(AgentConversation::class);
+    }
+
+    /** @return HasMany<AgentInstall, $this> */
+    public function installs(): HasMany
+    {
+        return $this->hasMany(AgentInstall::class);
+    }
+
+    /** @return HasMany<AgentReview, $this> */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(AgentReview::class);
     }
 
     public function getRouteKeyName(): string
@@ -137,6 +159,9 @@ final class AgentDefinition extends Model implements HasMedia
             'is_template' => 'boolean',
             'total_conversations' => 'integer',
             'total_messages' => 'integer',
+            'average_rating' => 'decimal:1',
+            'review_count' => 'integer',
+            'install_count' => 'integer',
         ];
     }
 }
