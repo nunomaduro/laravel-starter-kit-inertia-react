@@ -110,5 +110,7 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [bot-studio/edit](./bot-studio/edit.md) | Yes |
 | [bot-studio/index](./bot-studio/index.md) | Yes |
 | [bot-studio/templates](./bot-studio/templates.md) | Yes |
+| [bot-studio/marketplace/index](./bot-studio/marketplace/index.md) | Yes |
+| [bot-studio/marketplace/show](./bot-studio/marketplace/show.md) | Yes |
 
 

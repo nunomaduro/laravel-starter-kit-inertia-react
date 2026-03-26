@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastGenerated": "2026-03-25",
+    "lastGenerated": "2026-03-26",
     "actions": {
         "CreateUser": {
             "documented": true,
@@ -1610,6 +1610,7 @@
                     "filament.system.pages.manage-auth",
                     "filament.system.pages.manage-backup",
                     "filament.system.pages.manage-billing",
+                    "filament.system.pages.manage-bot-studio",
                     "filament.system.pages.manage-broadcasting",
                     "filament.system.pages.manage-cookie-consent",
                     "filament.system.pages.manage-feature-flags",
@@ -2102,6 +2103,7 @@
                     "filament.system.pages.manage-auth",
                     "filament.system.pages.manage-backup",
                     "filament.system.pages.manage-billing",
+                    "filament.system.pages.manage-bot-studio",
                     "filament.system.pages.manage-broadcasting",
                     "filament.system.pages.manage-cookie-consent",
                     "filament.system.pages.manage-feature-flags",
@@ -2500,6 +2502,7 @@
                     "filament.system.pages.manage-auth",
                     "filament.system.pages.manage-backup",
                     "filament.system.pages.manage-billing",
+                    "filament.system.pages.manage-bot-studio",
                     "filament.system.pages.manage-broadcasting",
                     "filament.system.pages.manage-cookie-consent",
                     "filament.system.pages.manage-feature-flags",
@@ -3071,6 +3074,7 @@
                     "filament.system.pages.manage-auth",
                     "filament.system.pages.manage-backup",
                     "filament.system.pages.manage-billing",
+                    "filament.system.pages.manage-bot-studio",
                     "filament.system.pages.manage-broadcasting",
                     "filament.system.pages.manage-cookie-consent",
                     "filament.system.pages.manage-feature-flags",
@@ -3859,6 +3863,7 @@
                     "filament.system.pages.manage-auth",
                     "filament.system.pages.manage-backup",
                     "filament.system.pages.manage-billing",
+                    "filament.system.pages.manage-bot-studio",
                     "filament.system.pages.manage-broadcasting",
                     "filament.system.pages.manage-cookie-consent",
                     "filament.system.pages.manage-feature-flags",
@@ -4517,6 +4522,24 @@
             "documented": true,
             "userGuide": null,
             "developerGuide": "./bot-studio/templates.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "bot-studio/marketplace/index": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./bot-studio/marketplace/index.md",
+            "relationships": {
+                "renderedBy": [],
+                "relatedRoutes": []
+            }
+        },
+        "bot-studio/marketplace/show": {
+            "documented": true,
+            "userGuide": null,
+            "developerGuide": "./bot-studio/marketplace/show.md",
             "relationships": {
                 "renderedBy": [],
                 "relatedRoutes": []

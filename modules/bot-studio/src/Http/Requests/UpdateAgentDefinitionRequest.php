@@ -33,6 +33,8 @@ final class UpdateAgentDefinitionRequest extends FormRequest
             'conversation_starters.*' => ['string', 'max:255'],
             'wizard_answers' => ['nullable', 'array'],
             'visibility' => ['nullable', Rule::enum(VisibilityEnum::class)],
+            'is_published' => ['nullable', 'boolean'],
+            'category' => ['nullable', 'string', Rule::in(['General', 'Customer Support', 'Sales', 'Data Analysis', 'Education', 'Other'])],
         ];
     }
 }

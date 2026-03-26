@@ -10,6 +10,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
@@ -20,6 +21,7 @@ import {
     Bot,
     Check,
     FileText,
+    Globe,
     Loader2,
     Lock,
     MessageCircle,
@@ -66,6 +68,8 @@ interface AgentDefinition {
     enabled_tools: string[];
     conversation_starters: string[];
     visibility: string;
+    is_published: boolean;
+    category: string | null;
     wizard_answers: Record<string, string> | null;
     knowledge_files?: KnowledgeFile[];
 }
@@ -104,6 +108,8 @@ export default function BotStudioEdit({
             ? definition.conversation_starters
             : [''],
         visibility: definition.visibility ?? 'private',
+        is_published: definition.is_published ?? false,
+        category: definition.category ?? '',
     });
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -244,6 +250,8 @@ function EditorPanel({
         enabled_tools: string[];
         conversation_starters: string[];
         visibility: string;
+        is_published: boolean;
+        category: string;
     };
     update: <K extends keyof typeof form>(
         key: K,
@@ -527,6 +535,62 @@ function EditorPanel({
                             Maximum number of tokens the agent can generate
                             per response.
                         </p>
+                    </div>
+
+                    {/* Marketplace publishing */}
+                    <div className="space-y-4 rounded-lg border border-border p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <Globe className="size-4 text-muted-foreground" />
+                                <Label htmlFor="publish_toggle">
+                                    Publish to Marketplace
+                                </Label>
+                            </div>
+                            <Switch
+                                id="publish_toggle"
+                                checked={form.is_published}
+                                onCheckedChange={(checked) =>
+                                    update('is_published', checked)
+                                }
+                            />
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            Publishing makes your agent visible to all
+                            organizations on the platform.
+                        </p>
+
+                        {form.is_published && (
+                            <div className="space-y-2">
+                                <Label>Category</Label>
+                                <Select
+                                    value={form.category || ''}
+                                    onValueChange={(v) =>
+                                        update('category', v)
+                                    }
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select a category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {[
+                                            'General',
+                                            'Customer Support',
+                                            'Sales',
+                                            'Data Analysis',
+                                            'Education',
+                                            'Other',
+                                        ].map((cat) => (
+                                            <SelectItem
+                                                key={cat}
+                                                value={cat}
+                                            >
+                                                {cat}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
                     </div>
                 </div>
             </TabsContent>
