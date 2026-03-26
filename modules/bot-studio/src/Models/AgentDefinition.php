@@ -44,6 +44,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property int $review_count
  * @property int $install_count
  * @property string|null $category
+ * @property bool $embed_enabled
+ * @property array<string, mixed> $embed_theme
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon|null $deleted_at
@@ -53,6 +55,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, AgentConversation> $conversations
  * @property-read \Illuminate\Database\Eloquent\Collection<int, AgentInstall> $installs
  * @property-read \Illuminate\Database\Eloquent\Collection<int, AgentReview> $reviews
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, AgentEmbedToken> $embedTokens
  */
 final class AgentDefinition extends Model implements HasMedia
 {
@@ -82,6 +85,8 @@ final class AgentDefinition extends Model implements HasMedia
         'review_count',
         'install_count',
         'category',
+        'embed_enabled',
+        'embed_theme',
     ];
 
     /** @return BelongsTo<User, $this> */
@@ -112,6 +117,12 @@ final class AgentDefinition extends Model implements HasMedia
     public function reviews(): HasMany
     {
         return $this->hasMany(AgentReview::class);
+    }
+
+    /** @return HasMany<AgentEmbedToken, $this> */
+    public function embedTokens(): HasMany
+    {
+        return $this->hasMany(AgentEmbedToken::class);
     }
 
     public function getRouteKeyName(): string
@@ -162,6 +173,8 @@ final class AgentDefinition extends Model implements HasMedia
             'average_rating' => 'decimal:1',
             'review_count' => 'integer',
             'install_count' => 'integer',
+            'embed_enabled' => 'boolean',
+            'embed_theme' => 'array',
         ];
     }
 }
