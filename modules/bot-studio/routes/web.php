@@ -5,8 +5,20 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\BotStudio\Http\Controllers\AgentChatController;
 use Modules\BotStudio\Http\Controllers\AgentDefinitionController;
+use Modules\BotStudio\Http\Controllers\EmbedApiController;
+use Modules\BotStudio\Http\Controllers\EmbedController;
+use Modules\BotStudio\Http\Controllers\EmbedTokenController;
 use Modules\BotStudio\Http\Controllers\KnowledgeFileController;
 use Modules\BotStudio\Http\Controllers\MarketplaceController;
+
+// Public embed API (token-based auth, no user session)
+Route::prefix('api/embed')->group(function (): void {
+    Route::get('/{token}/config', [EmbedApiController::class, 'config'])->name('embed.config');
+    Route::post('/{token}/chat', [EmbedApiController::class, 'chat'])->name('embed.chat');
+});
+
+// Standalone public chat page
+Route::get('/chat/{agentDefinition:slug}', [EmbedApiController::class, 'standalone'])->name('embed.standalone');
 
 Route::middleware(['auth', 'verified', 'tenant', 'feature:bot-studio'])->prefix('bot-studio')->name('bot-studio.')->group(function (): void {
 
@@ -29,6 +41,12 @@ Route::middleware(['auth', 'verified', 'tenant', 'feature:bot-studio'])->prefix(
     Route::post('/{agentDefinition:slug}/knowledge', [KnowledgeFileController::class, 'store'])->name('knowledge.store');
     Route::delete('/{agentDefinition:slug}/knowledge/{knowledgeFile}', [KnowledgeFileController::class, 'destroy'])->name('knowledge.destroy');
     Route::post('/{agentDefinition:slug}/knowledge/{knowledgeFile}/retry', [KnowledgeFileController::class, 'retry'])->name('knowledge.retry');
+
+    // Embed Token Management
+    Route::post('/{agentDefinition:slug}/embed-tokens', [EmbedTokenController::class, 'store'])->name('embed-tokens.store');
+    Route::put('/{agentDefinition:slug}/embed-tokens/{embedToken}', [EmbedTokenController::class, 'update'])->name('embed-tokens.update');
+    Route::delete('/{agentDefinition:slug}/embed-tokens/{embedToken}', [EmbedTokenController::class, 'destroy'])->name('embed-tokens.destroy');
+    Route::put('/{agentDefinition:slug}/embed', [EmbedController::class, 'updateTheme'])->name('embed.updateTheme');
 
     // Marketplace
     Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index');

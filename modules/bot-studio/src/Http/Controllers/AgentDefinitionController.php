@@ -96,7 +96,7 @@ final readonly class AgentDefinitionController
 
     public function edit(AgentDefinition $agentDefinition): Response
     {
-        $agentDefinition->load('knowledgeFiles', 'creator');
+        $agentDefinition->load('knowledgeFiles', 'creator', 'embedTokens');
 
         return Inertia::render('bot-studio/edit', [
             'definition' => $agentDefinition,
