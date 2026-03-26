@@ -52,19 +52,19 @@ export function ChatSlideOver({ open, onClose, onUnreadChange: _onUnreadChange }
         return () => window.removeEventListener('keydown', handleEsc);
     }, [open, onClose]);
 
-    // Ensure CSRF
-    useEffect(() => {
-        if (!open) return;
-        fetch('/sanctum/csrf-cookie', { credentials: 'include' }).catch(() => {});
-    }, [open]);
-
-    // Load conversations
+    // Load conversations (ensures CSRF cookie is set first)
     const loadConversations = useCallback(async () => {
         setConversationsLoading(true);
         try {
+            // Ensure CSRF cookie is present before API call
+            await fetch('/sanctum/csrf-cookie', { credentials: 'include' }).catch(() => {});
+            const token = getCsrfToken();
             const res = await fetch('/api/conversations', {
                 credentials: 'include',
-                headers: { Accept: 'application/json' },
+                headers: {
+                    Accept: 'application/json',
+                    ...(token ? { 'X-XSRF-TOKEN': token } : {}),
+                },
             });
             if (res.ok) {
                 const json = (await res.json()) as { data: ConversationItem[] };

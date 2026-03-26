@@ -33,7 +33,7 @@ final class StoreAgentDefinitionRequest extends FormRequest
             'conversation_starters' => ['nullable', 'array'],
             'conversation_starters.*' => ['string', 'max:255'],
             'wizard_answers' => ['nullable', 'array'],
-            'visibility' => ['nullable', Rule::enum(VisibilityEnum::class)],
+            'visibility' => ['nullable', 'string', Rule::enum(VisibilityEnum::class)],
         ];
     }
 

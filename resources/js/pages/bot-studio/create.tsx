@@ -152,7 +152,7 @@ export default function BotStudioCreate({
             {
                 name: state.name,
                 description: state.description,
-                visibility: state.visibility,
+                visibility: state.visibility === 'private' ? null : state.visibility,
                 system_prompt: effectivePrompt,
                 model: state.model,
                 temperature: state.temperature,

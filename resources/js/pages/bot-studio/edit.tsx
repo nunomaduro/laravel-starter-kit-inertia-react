@@ -162,6 +162,7 @@ export default function BotStudioEdit({
             `/bot-studio/${definition.slug}`,
             {
                 ...form,
+                visibility: form.visibility === 'private' ? null : form.visibility,
                 conversation_starters: form.conversation_starters.filter(
                     (s) => s.trim().length > 0,
                 ),
