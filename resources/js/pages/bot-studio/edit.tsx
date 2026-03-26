@@ -20,11 +20,15 @@ import {
     AlertCircle,
     Bot,
     Check,
+    ClipboardCopy,
+    Code2,
     FileText,
     Globe,
+    Key,
     Loader2,
     Lock,
     MessageCircle,
+    Palette,
     Plus,
     RefreshCw,
     Send,
@@ -55,6 +59,25 @@ interface KnowledgeFile {
     processed_at: string | null;
 }
 
+interface EmbedToken {
+    id: number;
+    name: string;
+    allowed_domains: string[];
+    is_active: boolean;
+    rate_limit_per_minute: number;
+    request_count: number;
+    last_used_at: string | null;
+    created_at: string;
+}
+
+interface EmbedTheme {
+    primary_color?: string;
+    position?: 'bottom-right' | 'bottom-left';
+    greeting?: string;
+    placeholder?: string;
+    show_powered_by?: boolean;
+}
+
 interface AgentDefinition {
     id: number;
     slug: string;
@@ -72,6 +95,9 @@ interface AgentDefinition {
     category: string | null;
     wizard_answers: Record<string, string> | null;
     knowledge_files?: KnowledgeFile[];
+    embed_enabled?: boolean;
+    embed_theme?: EmbedTheme;
+    embed_tokens?: EmbedToken[];
 }
 
 interface Props {
@@ -216,6 +242,7 @@ export default function BotStudioEdit({
                             allowedModels={allowedModels}
                             knowledgeFiles={definition.knowledge_files ?? []}
                             definitionSlug={definition.slug}
+                            definition={definition}
                         />
                     </div>
 
@@ -241,6 +268,7 @@ function EditorPanel({
     allowedModels,
     knowledgeFiles,
     definitionSlug,
+    definition,
 }: {
     form: {
         system_prompt: string;
@@ -261,6 +289,7 @@ function EditorPanel({
     allowedModels: string[];
     knowledgeFiles: KnowledgeFile[];
     definitionSlug: string;
+    definition: AgentDefinition;
 }) {
     const promptRef = useRef<HTMLTextAreaElement>(null);
 
@@ -336,6 +365,10 @@ function EditorPanel({
                 <TabsTrigger value="starters">
                     <MessageCircle className="mr-1.5 size-3.5" />
                     Starters
+                </TabsTrigger>
+                <TabsTrigger value="embed">
+                    <Code2 className="mr-1.5 size-3.5" />
+                    Embed
                 </TabsTrigger>
             </TabsList>
 
@@ -648,7 +681,535 @@ function EditorPanel({
                     </div>
                 </div>
             </TabsContent>
+
+            {/* Embed tab */}
+            <TabsContent
+                value="embed"
+                className="flex-1 overflow-y-auto p-4"
+            >
+                <EmbedTab
+                    definition={definition}
+                    definitionSlug={definitionSlug}
+                />
+            </TabsContent>
         </Tabs>
+    );
+}
+
+/* ──────────────────── Embed Tab ──────────────────── */
+
+function EmbedTab({
+    definition,
+    definitionSlug,
+}: {
+    definition: AgentDefinition;
+    definitionSlug: string;
+}) {
+    const [embedEnabled, setEmbedEnabled] = useState(
+        definition.embed_enabled ?? false,
+    );
+    const [theme, setTheme] = useState<EmbedTheme>(
+        definition.embed_theme ?? {},
+    );
+    const [tokens, setTokens] = useState<EmbedToken[]>(
+        definition.embed_tokens ?? [],
+    );
+    const [creatingToken, setCreatingToken] = useState(false);
+    const [newTokenName, setNewTokenName] = useState('');
+    const [newTokenDomains, setNewTokenDomains] = useState('');
+    const [plainToken, setPlainToken] = useState<string | null>(null);
+    const [savingTheme, setSavingTheme] = useState(false);
+    const [copied, setCopied] = useState<string | null>(null);
+
+    function getCsrfToken(): string {
+        const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+
+    async function saveEmbedSettings(
+        overrides?: Partial<{ embed_enabled: boolean; embed_theme: EmbedTheme }>,
+    ) {
+        setSavingTheme(true);
+        try {
+            await fetch(`/bot-studio/${definitionSlug}/embed`, {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-XSRF-TOKEN': getCsrfToken(),
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({
+                    embed_enabled: overrides?.embed_enabled ?? embedEnabled,
+                    embed_theme: overrides?.embed_theme ?? theme,
+                }),
+            });
+        } catch {
+            alert('Failed to save embed settings.');
+        } finally {
+            setSavingTheme(false);
+        }
+    }
+
+    function handleToggleEmbed(checked: boolean) {
+        setEmbedEnabled(checked);
+        saveEmbedSettings({ embed_enabled: checked });
+    }
+
+    function updateTheme<K extends keyof EmbedTheme>(
+        key: K,
+        value: EmbedTheme[K],
+    ) {
+        const next = { ...theme, [key]: value };
+        setTheme(next);
+    }
+
+    function handleSaveTheme() {
+        saveEmbedSettings({ embed_theme: theme });
+    }
+
+    async function createToken() {
+        if (!newTokenName.trim()) return;
+        setCreatingToken(true);
+
+        try {
+            const domains = newTokenDomains
+                .split(',')
+                .map((d) => d.trim())
+                .filter(Boolean);
+
+            const res = await fetch(
+                `/bot-studio/${definitionSlug}/embed-tokens`,
+                {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'X-XSRF-TOKEN': getCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        name: newTokenName.trim(),
+                        allowed_domains: domains,
+                    }),
+                },
+            );
+
+            if (!res.ok) {
+                const data = await res.json().catch(() => null);
+                alert(data?.message ?? 'Failed to create token.');
+                return;
+            }
+
+            const data = (await res.json()) as {
+                token: EmbedToken;
+                plain_token: string;
+            };
+            setTokens((prev) => [...prev, data.token]);
+            setPlainToken(data.plain_token);
+            setNewTokenName('');
+            setNewTokenDomains('');
+        } catch {
+            alert('Failed to create token.');
+        } finally {
+            setCreatingToken(false);
+        }
+    }
+
+    async function toggleToken(tokenId: number, isActive: boolean) {
+        try {
+            await fetch(
+                `/bot-studio/${definitionSlug}/embed-tokens/${tokenId}`,
+                {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        'X-XSRF-TOKEN': getCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({ is_active: isActive }),
+                },
+            );
+
+            setTokens((prev) =>
+                prev.map((t) =>
+                    t.id === tokenId ? { ...t, is_active: isActive } : t,
+                ),
+            );
+        } catch {
+            alert('Failed to update token.');
+        }
+    }
+
+    async function deleteToken(tokenId: number) {
+        if (!confirm('Delete this token? Any embed using it will stop working.')) return;
+
+        try {
+            await fetch(
+                `/bot-studio/${definitionSlug}/embed-tokens/${tokenId}`,
+                {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: {
+                        Accept: 'application/json',
+                        'X-XSRF-TOKEN': getCsrfToken(),
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                },
+            );
+            setTokens((prev) => prev.filter((t) => t.id !== tokenId));
+        } catch {
+            alert('Failed to delete token.');
+        }
+    }
+
+    function copyToClipboard(text: string, label: string) {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopied(label);
+            setTimeout(() => setCopied(null), 2000);
+        });
+    }
+
+    const embedSnippet = tokens.length > 0
+        ? `<script src="${window.location.origin}/build/js/bot-studio-embed.js" data-token="${plainToken || 'YOUR_TOKEN'}"></script>`
+        : '';
+
+    const standaloneUrl = `${window.location.origin}/chat/${definitionSlug}`;
+
+    return (
+        <div className="flex flex-col gap-6">
+            {/* Enable toggle */}
+            <div className="flex items-center justify-between rounded-lg border border-border p-4">
+                <div className="flex items-center gap-3">
+                    <Code2 className="size-5 text-muted-foreground" />
+                    <div>
+                        <Label htmlFor="embed_toggle" className="text-sm font-medium">
+                            Enable Embedding
+                        </Label>
+                        <p className="text-xs text-muted-foreground">
+                            Allow this agent to be embedded on external websites
+                        </p>
+                    </div>
+                </div>
+                <Switch
+                    id="embed_toggle"
+                    checked={embedEnabled}
+                    onCheckedChange={handleToggleEmbed}
+                />
+            </div>
+
+            {embedEnabled && (
+                <>
+                    {/* Token Management */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                            <Key className="size-4 text-muted-foreground" />
+                            <Label className="text-sm font-medium">
+                                Embed Tokens
+                            </Label>
+                        </div>
+
+                        {/* Existing tokens */}
+                        {tokens.length > 0 && (
+                            <div className="flex flex-col gap-2">
+                                {tokens.map((token) => (
+                                    <div
+                                        key={token.id}
+                                        className="flex items-center justify-between rounded-lg border border-border px-4 py-2.5 text-sm"
+                                    >
+                                        <div className="flex min-w-0 flex-1 items-center gap-3">
+                                            <span className="font-medium truncate">
+                                                {token.name}
+                                            </span>
+                                            {token.allowed_domains.length > 0 && (
+                                                <span className="text-[11px] font-mono text-muted-foreground truncate">
+                                                    {token.allowed_domains.join(', ')}
+                                                </span>
+                                            )}
+                                            <Badge
+                                                variant="outline"
+                                                className="text-[10px] font-mono"
+                                            >
+                                                {token.request_count} requests
+                                            </Badge>
+                                        </div>
+                                        <div className="flex shrink-0 items-center gap-2">
+                                            <Switch
+                                                checked={token.is_active}
+                                                onCheckedChange={(checked) =>
+                                                    toggleToken(token.id, checked)
+                                                }
+                                            />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="size-7 text-muted-foreground hover:text-destructive"
+                                                onClick={() => deleteToken(token.id)}
+                                            >
+                                                <Trash2 className="size-3.5" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Show plain token after creation */}
+                        {plainToken && (
+                            <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
+                                <p className="text-xs font-medium text-amber-400 mb-2">
+                                    Save this token -- you will not see it again
+                                </p>
+                                <div className="flex items-center gap-2">
+                                    <code className="flex-1 break-all rounded bg-muted px-2 py-1 font-mono text-xs text-foreground">
+                                        {plainToken}
+                                    </code>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                            copyToClipboard(plainToken, 'token')
+                                        }
+                                    >
+                                        {copied === 'token' ? (
+                                            <Check className="size-3.5" />
+                                        ) : (
+                                            <ClipboardCopy className="size-3.5" />
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Create token form */}
+                        <div className="flex flex-col gap-2 rounded-lg border border-dashed border-border p-4">
+                            <Input
+                                value={newTokenName}
+                                onChange={(e) => setNewTokenName(e.target.value)}
+                                placeholder="Token name (e.g. Production Website)"
+                                className="text-sm"
+                            />
+                            <Input
+                                value={newTokenDomains}
+                                onChange={(e) =>
+                                    setNewTokenDomains(e.target.value)
+                                }
+                                placeholder="Allowed domains (comma-separated, leave empty for all)"
+                                className="text-sm"
+                            />
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={createToken}
+                                disabled={creatingToken || !newTokenName.trim()}
+                                className="w-fit"
+                            >
+                                {creatingToken ? (
+                                    <Loader2 className="mr-1.5 size-3.5 animate-spin" />
+                                ) : (
+                                    <Plus className="mr-1.5 size-3.5" />
+                                )}
+                                Create Token
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Theme Customization */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                            <Palette className="size-4 text-muted-foreground" />
+                            <Label className="text-sm font-medium">
+                                Widget Theme
+                            </Label>
+                        </div>
+
+                        <div className="flex flex-col gap-3 rounded-lg border border-border p-4">
+                            <div className="space-y-1.5">
+                                <Label className="text-xs">Primary Color</Label>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="color"
+                                        value={theme.primary_color ?? '#0d9488'}
+                                        onChange={(e) =>
+                                            updateTheme(
+                                                'primary_color',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="size-8 cursor-pointer rounded border border-border bg-transparent"
+                                    />
+                                    <Input
+                                        value={theme.primary_color ?? '#0d9488'}
+                                        onChange={(e) =>
+                                            updateTheme(
+                                                'primary_color',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="flex-1 font-mono text-xs"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <Label className="text-xs">Position</Label>
+                                <Select
+                                    value={theme.position ?? 'bottom-right'}
+                                    onValueChange={(v) =>
+                                        updateTheme(
+                                            'position',
+                                            v as 'bottom-right' | 'bottom-left',
+                                        )
+                                    }
+                                >
+                                    <SelectTrigger className="w-full text-sm">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="bottom-right">
+                                            Bottom Right
+                                        </SelectItem>
+                                        <SelectItem value="bottom-left">
+                                            Bottom Left
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <Label className="text-xs">Greeting Message</Label>
+                                <Input
+                                    value={
+                                        theme.greeting ??
+                                        'Hi! How can I help you?'
+                                    }
+                                    onChange={(e) =>
+                                        updateTheme('greeting', e.target.value)
+                                    }
+                                    className="text-sm"
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <Label className="text-xs">Placeholder Text</Label>
+                                <Input
+                                    value={
+                                        theme.placeholder ??
+                                        'Type a message...'
+                                    }
+                                    onChange={(e) =>
+                                        updateTheme(
+                                            'placeholder',
+                                            e.target.value,
+                                        )
+                                    }
+                                    className="text-sm"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <Label className="text-xs">
+                                    Show "Powered by" link
+                                </Label>
+                                <Switch
+                                    checked={theme.show_powered_by ?? true}
+                                    onCheckedChange={(checked) =>
+                                        updateTheme('show_powered_by', checked)
+                                    }
+                                />
+                            </div>
+
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleSaveTheme}
+                                disabled={savingTheme}
+                                className="w-fit"
+                            >
+                                {savingTheme ? 'Saving...' : 'Save Theme'}
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Embed Code */}
+                    {tokens.length > 0 && (
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <Code2 className="size-4 text-muted-foreground" />
+                                <Label className="text-sm font-medium">
+                                    Embed Code
+                                </Label>
+                            </div>
+
+                            <div className="relative rounded-lg border border-border bg-muted/30 p-4">
+                                <pre className="overflow-x-auto whitespace-pre-wrap break-all font-mono text-xs text-foreground">
+                                    {embedSnippet}
+                                </pre>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-2 top-2"
+                                    onClick={() =>
+                                        copyToClipboard(
+                                            embedSnippet,
+                                            'snippet',
+                                        )
+                                    }
+                                >
+                                    {copied === 'snippet' ? (
+                                        <Check className="size-3.5" />
+                                    ) : (
+                                        <ClipboardCopy className="size-3.5" />
+                                    )}
+                                </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                Add this snippet to your website's HTML to embed
+                                the chat widget.
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Standalone URL */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                            <Globe className="size-4 text-muted-foreground" />
+                            <Label className="text-sm font-medium">
+                                Standalone Chat URL
+                            </Label>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <Input
+                                value={standaloneUrl}
+                                readOnly
+                                className="flex-1 font-mono text-xs"
+                            />
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                    copyToClipboard(standaloneUrl, 'url')
+                                }
+                            >
+                                {copied === 'url' ? (
+                                    <Check className="size-3.5" />
+                                ) : (
+                                    <ClipboardCopy className="size-3.5" />
+                                )}
+                            </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            Share this link for a full-page chat experience.
+                        </p>
+                    </div>
+                </>
+            )}
+        </div>
     );
 }
 
