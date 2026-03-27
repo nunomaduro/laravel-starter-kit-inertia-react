@@ -19,7 +19,7 @@ it('renders two factor authentication page', function (): void {
 });
 
 it('shows two factor disabled when not enabled', function (): void {
-    $user = User::factory()->withoutTwoFactor()->create();
+    $user = User::factory()->create();
 
     $this->actingAs($user)->session(['auth.password_confirmed_at' => time()]);
 

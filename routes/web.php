@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserEmailResetNotificationController;
@@ -13,10 +15,32 @@ use App\Http\Controllers\UserTwoFactorAuthenticationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', fn () => Inertia::render('welcome'))->name('home');
+Route::get('/', HomepageController::class)->name('home');
+Route::get('/search', [PropertyController::class, 'index'])->name('properties.search');
+Route::get('/properties/{property:slug}', [PropertyController::class, 'show'])->name('properties.show');
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::get('dashboard', fn () => Inertia::render('dashboard'))->name('dashboard');
+    Route::get('dashboard', function (Illuminate\Http\Request $request) {
+        /** @var App\Models\User $user */
+        $user = $request->user();
+
+        $bookingsQuery = $user->bookings();
+
+        return Inertia::render('dashboard', [
+            'role' => $user->role->value,
+            'stats' => [
+                'total_bookings' => (clone $bookingsQuery)->count(),
+                'pending_bookings' => (clone $bookingsQuery)->where('status', 'pending')->count(),
+                'completed_bookings' => (clone $bookingsQuery)->where('status', 'completed')->count(),
+                'wishlisted_properties' => $user->wishlists()->count(),
+            ],
+            'recentBookings' => $user->bookings()
+                ->with(['property.images', 'roomType'])
+                ->latest()
+                ->limit(5)
+                ->get(),
+        ]);
+    })->name('dashboard');
 });
 
 Route::middleware('auth')->group(function (): void {

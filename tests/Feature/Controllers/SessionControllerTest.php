@@ -19,7 +19,7 @@ it('renders login page', function (): void {
 });
 
 it('may create a session', function (): void {
-    $user = User::factory()->withoutTwoFactor()->create([
+    $user = User::factory()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
     ]);
@@ -36,7 +36,7 @@ it('may create a session', function (): void {
 });
 
 it('may create a session with remember me', function (): void {
-    $user = User::factory()->withoutTwoFactor()->create([
+    $user = User::factory()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
     ]);
@@ -163,7 +163,7 @@ it('throttles login attempts after too many failures', function (): void {
 });
 
 it('clears rate limit after successful login', function (): void {
-    $user = User::factory()->withoutTwoFactor()->create([
+    $user = User::factory()->create([
         'email' => 'test@example.com',
         'password' => Hash::make('password'),
     ]);

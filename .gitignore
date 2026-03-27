@@ -25,3 +25,4 @@ Homestead.yaml
 /.vscode
 /.zed
 /tmp/
+.claude/settings.local.json
