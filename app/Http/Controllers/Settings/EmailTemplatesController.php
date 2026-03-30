@@ -131,6 +131,7 @@ final class EmailTemplatesController extends Controller
                 'subject' => $request->validated('subject'),
                 'body' => $request->validated('body'),
                 'recipients' => $defaultTemplate->recipients,
+                'attachments' => $defaultTemplate->attachments ?? [],
                 'is_active' => true,
                 'is_default' => false,
             ]);
