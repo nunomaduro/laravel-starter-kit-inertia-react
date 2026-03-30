@@ -48,6 +48,12 @@
         {"name": "org.webhooks.view", "roles": ["owner", "admin"], "org_grantable": true},
         {"name": "org.webhooks.manage", "roles": ["owner", "admin"], "org_grantable": true}
       ]
+    },
+    "org_email_templates": {
+      "permissions": [
+        {"name": "org.email-templates.view", "roles": ["owner", "admin"], "org_grantable": true},
+        {"name": "org.email-templates.manage", "roles": ["owner", "admin"], "org_grantable": true}
+      ]
     }
   },
   "role_templates": [
