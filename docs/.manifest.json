@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "lastGenerated": "2026-03-26",
+    "lastGenerated": "2026-03-30",
     "actions": {
         "CreateUser": {
             "documented": true,
@@ -16,7 +16,6 @@
                     "User"
                 ],
                 "relatedRoutes": [
-                    "filament.admin.resources.users.create",
                     "api.v1.users.index",
                     "api.v1.users.batch",
                     "api.v1.users.search",
@@ -106,10 +105,15 @@
                     "api.v1.users.update",
                     "api.v1.users.destroy",
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete",
                     "user.destroy",
@@ -140,10 +144,15 @@
                     "api.v1.users.update",
                     "api.v1.users.destroy",
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete",
                     "password.reset",
@@ -327,6 +336,8 @@
                     "3": "OrganizationInvitation"
                 },
                 "relatedRoutes": [
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend"
@@ -443,10 +454,15 @@
                 ],
                 "relatedRoutes": [
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete"
                 ]
@@ -464,10 +480,15 @@
                 ],
                 "relatedRoutes": [
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete"
                 ]
@@ -576,10 +597,15 @@
                 ],
                 "relatedRoutes": [
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete"
                 ]
@@ -975,11 +1001,16 @@
                     "StoreInvitationRequest"
                 ],
                 "relatedRoutes": [
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend"
                 ],
-                "rendersPages": []
+                "rendersPages": [
+                    "invitations/index",
+                    "invitations/create"
+                ]
             }
         },
         "OrganizationMemberController": {
@@ -1112,20 +1143,29 @@
                 ],
                 "usesFormRequests": [
                     "BatchUpdateUsersRequest",
-                    "BulkSoftDeleteUsersRequest"
+                    "BulkSoftDeleteUsersRequest",
+                    "StoreUserRequest",
+                    "UpdateManagedUserRequest"
                 ],
                 "relatedRoutes": [
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete"
                 ],
                 "rendersPages": [
                     "users/table",
-                    "users/show"
+                    "users/show",
+                    "users/create",
+                    "users/edit"
                 ]
             }
         },
@@ -1344,12 +1384,22 @@
             "path": "./categoriestablecontroller.md",
             "relationships": {
                 "usesActions": [],
-                "usesFormRequests": [],
+                "usesFormRequests": [
+                    "StoreCategoryRequest",
+                    "UpdateCategoryRequest"
+                ],
                 "relatedRoutes": [
-                    "categories.table"
+                    "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy"
                 ],
                 "rendersPages": [
-                    "categories/table"
+                    "categories/table",
+                    "categories/create",
+                    "categories/edit"
                 ]
             }
         },
@@ -1575,7 +1625,6 @@
                     "filament.admin.auth.logout",
                     "filament.admin.pages.dashboard",
                     "filament.admin.resources.billing.affiliates.index",
-                    "filament.admin.resources.categories.index",
                     "filament.admin.resources.credit-packs.index",
                     "filament.admin.resources.credit-packs.create",
                     "filament.admin.resources.credit-packs.edit",
@@ -1584,17 +1633,10 @@
                     "filament.admin.resources.enterprise-inquiries.edit",
                     "filament.admin.resources.mail-templates.index",
                     "filament.admin.resources.mail-templates.edit",
-                    "filament.admin.resources.organization-invitations.index",
-                    "filament.admin.resources.organization-invitations.create",
-                    "filament.admin.resources.organization-invitations.edit",
                     "filament.admin.resources.roles.index",
                     "filament.admin.resources.roles.create",
                     "filament.admin.resources.roles.view",
                     "filament.admin.resources.roles.edit",
-                    "filament.admin.resources.users.index",
-                    "filament.admin.resources.users.create",
-                    "filament.admin.resources.users.view",
-                    "filament.admin.resources.users.edit",
                     "filament.admin.resources.vouchers.index",
                     "filament.admin.resources.vouchers.create",
                     "filament.admin.resources.vouchers.edit",
@@ -1650,9 +1692,6 @@
                     "filament.system.resources.terms-versions.index",
                     "filament.system.resources.terms-versions.create",
                     "filament.system.resources.terms-versions.edit",
-                    "filament.system.resources.visibility-demos.index",
-                    "filament.system.resources.visibility-demos.create",
-                    "filament.system.resources.visibility-demos.edit",
                     "filament.system.resources.announcements.index",
                     "filament.system.resources.announcements.create",
                     "filament.system.resources.announcements.edit",
@@ -1709,11 +1748,21 @@
                     "wizard.preview",
                     "wizard.generate",
                     "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy",
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete",
                     "organizations.switch",
@@ -1728,6 +1777,8 @@
                     "organizations.members.index",
                     "organizations.members.update",
                     "organizations.members.destroy",
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
@@ -1852,6 +1903,8 @@
                     "genealabs.laravel-governor.invitations.edit",
                     "genealabs.laravel-governor.invitations.update",
                     "genealabs.laravel-governor.invitations.destroy",
+                    "fuse.status",
+                    "fuse.status.data",
                     "referralLink",
                     "generateReferralCodes",
                     "waterline.stats.index",
@@ -1963,7 +2016,33 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
-                    "webhooks.stripe"
+                    "webhooks.stripe",
+                    "embed.config",
+                    "embed.chat",
+                    "embed.standalone",
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate",
+                    "bot-studio.chat",
+                    "bot-studio.preview",
+                    "bot-studio.conversations",
+                    "bot-studio.knowledge.store",
+                    "bot-studio.knowledge.destroy",
+                    "bot-studio.knowledge.retry",
+                    "bot-studio.embed-tokens.store",
+                    "bot-studio.embed-tokens.update",
+                    "bot-studio.embed-tokens.destroy",
+                    "bot-studio.embed.updateTheme",
+                    "bot-studio.marketplace.index",
+                    "bot-studio.marketplace.show",
+                    "bot-studio.marketplace.install",
+                    "bot-studio.marketplace.review",
+                    "bot-studio.marketplace.deleteReview"
                 ]
             }
         },
@@ -2075,7 +2154,6 @@
                     "filament.admin.auth.logout",
                     "filament.admin.pages.dashboard",
                     "filament.admin.resources.billing.affiliates.index",
-                    "filament.admin.resources.categories.index",
                     "filament.admin.resources.credit-packs.index",
                     "filament.admin.resources.credit-packs.create",
                     "filament.admin.resources.credit-packs.edit",
@@ -2084,17 +2162,10 @@
                     "filament.admin.resources.enterprise-inquiries.edit",
                     "filament.admin.resources.mail-templates.index",
                     "filament.admin.resources.mail-templates.edit",
-                    "filament.admin.resources.organization-invitations.index",
-                    "filament.admin.resources.organization-invitations.create",
-                    "filament.admin.resources.organization-invitations.edit",
                     "filament.admin.resources.roles.index",
                     "filament.admin.resources.roles.create",
                     "filament.admin.resources.roles.view",
                     "filament.admin.resources.roles.edit",
-                    "filament.admin.resources.users.index",
-                    "filament.admin.resources.users.create",
-                    "filament.admin.resources.users.view",
-                    "filament.admin.resources.users.edit",
                     "filament.admin.resources.vouchers.index",
                     "filament.admin.resources.vouchers.create",
                     "filament.admin.resources.vouchers.edit",
@@ -2150,9 +2221,6 @@
                     "filament.system.resources.terms-versions.index",
                     "filament.system.resources.terms-versions.create",
                     "filament.system.resources.terms-versions.edit",
-                    "filament.system.resources.visibility-demos.index",
-                    "filament.system.resources.visibility-demos.create",
-                    "filament.system.resources.visibility-demos.edit",
                     "filament.system.resources.announcements.index",
                     "filament.system.resources.announcements.create",
                     "filament.system.resources.announcements.edit",
@@ -2209,11 +2277,21 @@
                     "wizard.preview",
                     "wizard.generate",
                     "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy",
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete",
                     "organizations.switch",
@@ -2228,6 +2306,8 @@
                     "organizations.members.index",
                     "organizations.members.update",
                     "organizations.members.destroy",
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
@@ -2352,6 +2432,8 @@
                     "genealabs.laravel-governor.invitations.edit",
                     "genealabs.laravel-governor.invitations.update",
                     "genealabs.laravel-governor.invitations.destroy",
+                    "fuse.status",
+                    "fuse.status.data",
                     "referralLink",
                     "generateReferralCodes",
                     "waterline.stats.index",
@@ -2463,7 +2545,33 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
-                    "webhooks.stripe"
+                    "webhooks.stripe",
+                    "embed.config",
+                    "embed.chat",
+                    "embed.standalone",
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate",
+                    "bot-studio.chat",
+                    "bot-studio.preview",
+                    "bot-studio.conversations",
+                    "bot-studio.knowledge.store",
+                    "bot-studio.knowledge.destroy",
+                    "bot-studio.knowledge.retry",
+                    "bot-studio.embed-tokens.store",
+                    "bot-studio.embed-tokens.update",
+                    "bot-studio.embed-tokens.destroy",
+                    "bot-studio.embed.updateTheme",
+                    "bot-studio.marketplace.index",
+                    "bot-studio.marketplace.show",
+                    "bot-studio.marketplace.install",
+                    "bot-studio.marketplace.review",
+                    "bot-studio.marketplace.deleteReview"
                 ]
             }
         },
@@ -2481,7 +2589,6 @@
                     "filament.admin.auth.logout",
                     "filament.admin.pages.dashboard",
                     "filament.admin.resources.billing.affiliates.index",
-                    "filament.admin.resources.categories.index",
                     "filament.admin.resources.credit-packs.index",
                     "filament.admin.resources.credit-packs.create",
                     "filament.admin.resources.credit-packs.edit",
@@ -2490,17 +2597,10 @@
                     "filament.admin.resources.enterprise-inquiries.edit",
                     "filament.admin.resources.mail-templates.index",
                     "filament.admin.resources.mail-templates.edit",
-                    "filament.admin.resources.organization-invitations.index",
-                    "filament.admin.resources.organization-invitations.create",
-                    "filament.admin.resources.organization-invitations.edit",
                     "filament.admin.resources.roles.index",
                     "filament.admin.resources.roles.create",
                     "filament.admin.resources.roles.view",
                     "filament.admin.resources.roles.edit",
-                    "filament.admin.resources.users.index",
-                    "filament.admin.resources.users.create",
-                    "filament.admin.resources.users.view",
-                    "filament.admin.resources.users.edit",
                     "filament.admin.resources.vouchers.index",
                     "filament.admin.resources.vouchers.create",
                     "filament.admin.resources.vouchers.edit",
@@ -2556,9 +2656,6 @@
                     "filament.system.resources.terms-versions.index",
                     "filament.system.resources.terms-versions.create",
                     "filament.system.resources.terms-versions.edit",
-                    "filament.system.resources.visibility-demos.index",
-                    "filament.system.resources.visibility-demos.create",
-                    "filament.system.resources.visibility-demos.edit",
                     "filament.system.resources.announcements.index",
                     "filament.system.resources.announcements.create",
                     "filament.system.resources.announcements.edit",
@@ -2615,11 +2712,21 @@
                     "wizard.preview",
                     "wizard.generate",
                     "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy",
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete",
                     "organizations.switch",
@@ -2634,6 +2741,8 @@
                     "organizations.members.index",
                     "organizations.members.update",
                     "organizations.members.destroy",
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
@@ -2758,6 +2867,8 @@
                     "genealabs.laravel-governor.invitations.edit",
                     "genealabs.laravel-governor.invitations.update",
                     "genealabs.laravel-governor.invitations.destroy",
+                    "fuse.status",
+                    "fuse.status.data",
                     "referralLink",
                     "generateReferralCodes",
                     "waterline.stats.index",
@@ -2869,7 +2980,33 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
-                    "webhooks.stripe"
+                    "webhooks.stripe",
+                    "embed.config",
+                    "embed.chat",
+                    "embed.standalone",
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate",
+                    "bot-studio.chat",
+                    "bot-studio.preview",
+                    "bot-studio.conversations",
+                    "bot-studio.knowledge.store",
+                    "bot-studio.knowledge.destroy",
+                    "bot-studio.knowledge.retry",
+                    "bot-studio.embed-tokens.store",
+                    "bot-studio.embed-tokens.update",
+                    "bot-studio.embed-tokens.destroy",
+                    "bot-studio.embed.updateTheme",
+                    "bot-studio.marketplace.index",
+                    "bot-studio.marketplace.show",
+                    "bot-studio.marketplace.install",
+                    "bot-studio.marketplace.review",
+                    "bot-studio.marketplace.deleteReview"
                 ]
             }
         },
@@ -3060,7 +3197,6 @@
                     "filament.admin.auth.logout",
                     "filament.admin.pages.dashboard",
                     "filament.admin.resources.billing.affiliates.index",
-                    "filament.admin.resources.categories.index",
                     "filament.admin.resources.credit-packs.index",
                     "filament.admin.resources.credit-packs.create",
                     "filament.admin.resources.credit-packs.edit",
@@ -3069,17 +3205,10 @@
                     "filament.admin.resources.enterprise-inquiries.edit",
                     "filament.admin.resources.mail-templates.index",
                     "filament.admin.resources.mail-templates.edit",
-                    "filament.admin.resources.organization-invitations.index",
-                    "filament.admin.resources.organization-invitations.create",
-                    "filament.admin.resources.organization-invitations.edit",
                     "filament.admin.resources.roles.index",
                     "filament.admin.resources.roles.create",
                     "filament.admin.resources.roles.view",
                     "filament.admin.resources.roles.edit",
-                    "filament.admin.resources.users.index",
-                    "filament.admin.resources.users.create",
-                    "filament.admin.resources.users.view",
-                    "filament.admin.resources.users.edit",
                     "filament.admin.resources.vouchers.index",
                     "filament.admin.resources.vouchers.create",
                     "filament.admin.resources.vouchers.edit",
@@ -3135,9 +3264,6 @@
                     "filament.system.resources.terms-versions.index",
                     "filament.system.resources.terms-versions.create",
                     "filament.system.resources.terms-versions.edit",
-                    "filament.system.resources.visibility-demos.index",
-                    "filament.system.resources.visibility-demos.create",
-                    "filament.system.resources.visibility-demos.edit",
                     "filament.system.resources.announcements.index",
                     "filament.system.resources.announcements.create",
                     "filament.system.resources.announcements.edit",
@@ -3194,11 +3320,21 @@
                     "wizard.preview",
                     "wizard.generate",
                     "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy",
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete",
                     "organizations.switch",
@@ -3213,6 +3349,8 @@
                     "organizations.members.index",
                     "organizations.members.update",
                     "organizations.members.destroy",
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
@@ -3337,6 +3475,8 @@
                     "genealabs.laravel-governor.invitations.edit",
                     "genealabs.laravel-governor.invitations.update",
                     "genealabs.laravel-governor.invitations.destroy",
+                    "fuse.status",
+                    "fuse.status.data",
                     "referralLink",
                     "generateReferralCodes",
                     "waterline.stats.index",
@@ -3448,7 +3588,33 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
-                    "webhooks.stripe"
+                    "webhooks.stripe",
+                    "embed.config",
+                    "embed.chat",
+                    "embed.standalone",
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate",
+                    "bot-studio.chat",
+                    "bot-studio.preview",
+                    "bot-studio.conversations",
+                    "bot-studio.knowledge.store",
+                    "bot-studio.knowledge.destroy",
+                    "bot-studio.knowledge.retry",
+                    "bot-studio.embed-tokens.store",
+                    "bot-studio.embed-tokens.update",
+                    "bot-studio.embed-tokens.destroy",
+                    "bot-studio.embed.updateTheme",
+                    "bot-studio.marketplace.index",
+                    "bot-studio.marketplace.show",
+                    "bot-studio.marketplace.install",
+                    "bot-studio.marketplace.review",
+                    "bot-studio.marketplace.deleteReview"
                 ]
             }
         },
@@ -3471,10 +3637,15 @@
                 ],
                 "relatedRoutes": [
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete"
                 ]
@@ -3490,10 +3661,15 @@
                 ],
                 "relatedRoutes": [
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete"
                 ]
@@ -3707,7 +3883,12 @@
                     "CategoriesTableController"
                 ],
                 "relatedRoutes": [
-                    "categories.table"
+                    "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy"
                 ]
             }
         },
@@ -3860,7 +4041,6 @@
                     "filament.admin.auth.logout",
                     "filament.admin.pages.dashboard",
                     "filament.admin.resources.billing.affiliates.index",
-                    "filament.admin.resources.categories.index",
                     "filament.admin.resources.credit-packs.index",
                     "filament.admin.resources.credit-packs.create",
                     "filament.admin.resources.credit-packs.edit",
@@ -3869,17 +4049,10 @@
                     "filament.admin.resources.enterprise-inquiries.edit",
                     "filament.admin.resources.mail-templates.index",
                     "filament.admin.resources.mail-templates.edit",
-                    "filament.admin.resources.organization-invitations.index",
-                    "filament.admin.resources.organization-invitations.create",
-                    "filament.admin.resources.organization-invitations.edit",
                     "filament.admin.resources.roles.index",
                     "filament.admin.resources.roles.create",
                     "filament.admin.resources.roles.view",
                     "filament.admin.resources.roles.edit",
-                    "filament.admin.resources.users.index",
-                    "filament.admin.resources.users.create",
-                    "filament.admin.resources.users.view",
-                    "filament.admin.resources.users.edit",
                     "filament.admin.resources.vouchers.index",
                     "filament.admin.resources.vouchers.create",
                     "filament.admin.resources.vouchers.edit",
@@ -3935,9 +4108,6 @@
                     "filament.system.resources.terms-versions.index",
                     "filament.system.resources.terms-versions.create",
                     "filament.system.resources.terms-versions.edit",
-                    "filament.system.resources.visibility-demos.index",
-                    "filament.system.resources.visibility-demos.create",
-                    "filament.system.resources.visibility-demos.edit",
                     "filament.system.resources.announcements.index",
                     "filament.system.resources.announcements.create",
                     "filament.system.resources.announcements.edit",
@@ -3994,11 +4164,21 @@
                     "wizard.preview",
                     "wizard.generate",
                     "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy",
                     "users.table",
+                    "users.create",
+                    "users.store",
                     "users.bulk-soft-delete",
                     "users.batch-update",
                     "users.duplicate",
                     "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
                     "users.restore",
                     "users.force-delete",
                     "organizations.switch",
@@ -4013,6 +4193,8 @@
                     "organizations.members.index",
                     "organizations.members.update",
                     "organizations.members.destroy",
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
                     "organizations.invitations.store",
                     "organizations.invitations.destroy",
                     "organizations.invitations.resend",
@@ -4137,6 +4319,8 @@
                     "genealabs.laravel-governor.invitations.edit",
                     "genealabs.laravel-governor.invitations.update",
                     "genealabs.laravel-governor.invitations.destroy",
+                    "fuse.status",
+                    "fuse.status.data",
                     "referralLink",
                     "generateReferralCodes",
                     "waterline.stats.index",
@@ -4248,7 +4432,33 @@
                     "billing.credits.checkout.lemon-squeezy",
                     "billing.invoices.index",
                     "billing.invoices.download",
-                    "webhooks.stripe"
+                    "webhooks.stripe",
+                    "embed.config",
+                    "embed.chat",
+                    "embed.standalone",
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate",
+                    "bot-studio.chat",
+                    "bot-studio.preview",
+                    "bot-studio.conversations",
+                    "bot-studio.knowledge.store",
+                    "bot-studio.knowledge.destroy",
+                    "bot-studio.knowledge.retry",
+                    "bot-studio.embed-tokens.store",
+                    "bot-studio.embed-tokens.update",
+                    "bot-studio.embed-tokens.destroy",
+                    "bot-studio.embed.updateTheme",
+                    "bot-studio.marketplace.index",
+                    "bot-studio.marketplace.show",
+                    "bot-studio.marketplace.install",
+                    "bot-studio.marketplace.review",
+                    "bot-studio.marketplace.deleteReview"
                 ]
             }
         },
@@ -4536,7 +4746,16 @@
             "developerGuide": "./bot-studio/create.md",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate"
+                ]
             }
         },
         "bot-studio/edit": {
@@ -4545,7 +4764,16 @@
             "developerGuide": "./bot-studio/edit.md",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate"
+                ]
             }
         },
         "bot-studio/index": {
@@ -4554,7 +4782,16 @@
             "developerGuide": "./bot-studio/index.md",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate"
+                ]
             }
         },
         "bot-studio/templates": {
@@ -4563,7 +4800,16 @@
             "developerGuide": "./bot-studio/templates.md",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "bot-studio.index",
+                    "bot-studio.templates",
+                    "bot-studio.create",
+                    "bot-studio.store",
+                    "bot-studio.edit",
+                    "bot-studio.update",
+                    "bot-studio.destroy",
+                    "bot-studio.duplicate"
+                ]
             }
         },
         "bot-studio/marketplace/index": {
@@ -4572,7 +4818,13 @@
             "developerGuide": "./bot-studio/marketplace/index.md",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "bot-studio.marketplace.index",
+                    "bot-studio.marketplace.show",
+                    "bot-studio.marketplace.install",
+                    "bot-studio.marketplace.review",
+                    "bot-studio.marketplace.deleteReview"
+                ]
             }
         },
         "bot-studio/marketplace/show": {
@@ -4581,7 +4833,131 @@
             "developerGuide": "./bot-studio/marketplace/show.md",
             "relationships": {
                 "renderedBy": [],
-                "relatedRoutes": []
+                "relatedRoutes": [
+                    "bot-studio.marketplace.index",
+                    "bot-studio.marketplace.show",
+                    "bot-studio.marketplace.install",
+                    "bot-studio.marketplace.review",
+                    "bot-studio.marketplace.deleteReview"
+                ]
+            }
+        },
+        "categories/create": {
+            "documented": false,
+            "userGuide": null,
+            "developerGuide": null,
+            "relationships": {
+                "renderedBy": [
+                    "CategoriesTableController"
+                ],
+                "relatedRoutes": [
+                    "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy"
+                ]
+            }
+        },
+        "categories/edit": {
+            "documented": false,
+            "userGuide": null,
+            "developerGuide": null,
+            "relationships": {
+                "renderedBy": [
+                    "CategoriesTableController"
+                ],
+                "relatedRoutes": [
+                    "categories.table",
+                    "categories.create",
+                    "categories.store",
+                    "categories.edit",
+                    "categories.update",
+                    "categories.destroy"
+                ]
+            }
+        },
+        "invitations/create": {
+            "documented": false,
+            "userGuide": null,
+            "developerGuide": null,
+            "relationships": {
+                "renderedBy": [
+                    "OrganizationInvitationController"
+                ],
+                "relatedRoutes": [
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
+                    "organizations.invitations.store",
+                    "organizations.invitations.destroy",
+                    "organizations.invitations.resend"
+                ]
+            }
+        },
+        "invitations/index": {
+            "documented": false,
+            "userGuide": null,
+            "developerGuide": null,
+            "relationships": {
+                "renderedBy": [
+                    "OrganizationInvitationController"
+                ],
+                "relatedRoutes": [
+                    "organizations.invitations.index",
+                    "organizations.invitations.create",
+                    "organizations.invitations.store",
+                    "organizations.invitations.destroy",
+                    "organizations.invitations.resend"
+                ]
+            }
+        },
+        "users/create": {
+            "documented": false,
+            "userGuide": null,
+            "developerGuide": null,
+            "relationships": {
+                "renderedBy": [
+                    "UsersTableController"
+                ],
+                "relatedRoutes": [
+                    "users.table",
+                    "users.create",
+                    "users.store",
+                    "users.bulk-soft-delete",
+                    "users.batch-update",
+                    "users.duplicate",
+                    "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
+                    "users.restore",
+                    "users.force-delete"
+                ]
+            }
+        },
+        "users/edit": {
+            "documented": false,
+            "userGuide": null,
+            "developerGuide": null,
+            "relationships": {
+                "renderedBy": [
+                    "UsersTableController"
+                ],
+                "relatedRoutes": [
+                    "users.table",
+                    "users.create",
+                    "users.store",
+                    "users.bulk-soft-delete",
+                    "users.batch-update",
+                    "users.duplicate",
+                    "users.show",
+                    "users.edit",
+                    "users.update",
+                    "users.destroy",
+                    "users.restore",
+                    "users.force-delete"
+                ]
             }
         }
     },

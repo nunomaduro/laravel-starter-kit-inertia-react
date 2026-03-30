@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bec9b3cbcb947eb4e6048e1a0311304a",
+    "content-hash": "660d01305d114d2e16a49092c689f08a",
     "packages": [
         {
             "name": "a909m/filament-statefusion",
@@ -4662,6 +4662,66 @@
             "time": "2025-08-22T14:27:06+00:00"
         },
         {
+            "name": "harris21/laravel-fuse",
+            "version": "v0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/harris21/laravel-fuse",
+                "reference": "64655fa26528b3124e9ad0203898c6a940980dff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/harris21/laravel-fuse/zipball/64655fa26528b3124e9ad0203898c6a940980dff",
+                "reference": "64655fa26528b3124e9ad0203898c6a940980dff",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/cache": "^11.0|^12.0|^13.0",
+                "illuminate/contracts": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "php": "^8.3",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.27",
+                "orchestra/testbench": "^9.0|^10.0|^11.0",
+                "pestphp/pest": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Harris21\\Fuse\\FuseServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Harris21\\Fuse\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Harris Raftopoulos",
+                    "homepage": "https://x.com/harrisrafto"
+                }
+            ],
+            "description": "Circuit breaker for Laravel queue jobs. Protect your workers from cascading failures.",
+            "keywords": [
+                "circuit-breaker",
+                "fuse",
+                "jobs",
+                "laravel",
+                "queue",
+                "resilience"
+            ],
+            "time": "2026-02-27T19:14:06+00:00"
+        },
+        {
             "name": "hashids/hashids",
             "version": "5.0.2",
             "source": {
@@ -7664,7 +7724,7 @@
             "dist": {
                 "type": "path",
                 "url": "../laravel-data-table",
-                "reference": "2321c2104d749970f069cdc6900e15601bb77021"
+                "reference": "feb80376e8945d32e07dd8ea8f7e88c1c9acc9b0"
             },
             "require": {
                 "illuminate/database": "^12.0 || ^13.0",

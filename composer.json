@@ -417,6 +417,7 @@
         "filament/filament": "^5.4.1",
         "filament/spatie-laravel-settings-plugin": "^5.4.1",
         "genealabs/laravel-governor": ">=0.22",
+        "harris21/laravel-fuse": ">=0.3",
         "inertiajs/inertia-laravel": "^2.0.22",
         "jijunair/laravel-referral": "^1.0.4",
         "kalnoy/nestedset": "^6.0.6",

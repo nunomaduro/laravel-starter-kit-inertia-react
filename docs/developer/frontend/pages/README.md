@@ -112,5 +112,11 @@ Examples: dashboard, blog (index/show), changelog, help (index/show), billing, o
 | [bot-studio/templates](./bot-studio/templates.md) | Yes |
 | [bot-studio/marketplace/index](./bot-studio/marketplace/index.md) | Yes |
 | [bot-studio/marketplace/show](./bot-studio/marketplace/show.md) | Yes |
+| categories/create | No |
+| categories/edit | No |
+| invitations/create | No |
+| invitations/index | No |
+| users/create | No |
+| users/edit | No |
 
 
