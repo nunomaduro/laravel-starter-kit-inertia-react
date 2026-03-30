@@ -166,7 +166,11 @@ final class User extends Authenticatable implements ExportsPersonalData, Filamen
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->can('access admin panel');
+        return match ($panel->getId()) {
+            'system' => $this->isSuperAdmin(),
+            'admin' => $this->isSuperAdmin() || $this->isAdminInAnyOrganization(),
+            default => false,
+        };
     }
 
     /**

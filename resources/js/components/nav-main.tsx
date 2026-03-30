@@ -134,6 +134,11 @@ function ExpandedGroup({
                                             : {})}
                                     >
                                         <span>{item.title}</span>
+                                        {item.badge != null && item.badge > 0 && (
+                                            <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/10 px-1.5 text-[10px] font-medium text-primary">
+                                                {item.badge}
+                                            </span>
+                                        )}
                                     </Link>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>

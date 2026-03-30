@@ -172,10 +172,9 @@ final class AppInstallCommand extends Command
         ],
         'developer' => [
             'label' => 'Developer Samples',
-            'description' => 'Model flags, visibility demos, shareables, webhooks, embeddings',
+            'description' => 'Model flags, shareables, webhooks, embeddings',
             'seeders' => [
                 \Database\Seeders\Development\ModelFlagSeeder::class,
-                \Database\Seeders\Development\VisibilityDemoSeeder::class,
                 \Database\Seeders\Development\ShareableSeeder::class,
                 \Database\Seeders\Development\CategorizableSeeder::class,
                 \Database\Seeders\Development\WebhookLogSeeder::class,

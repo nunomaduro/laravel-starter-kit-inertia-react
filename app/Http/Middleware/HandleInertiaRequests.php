@@ -93,6 +93,12 @@ final class HandleInertiaRequests extends Middleware
             'notifications' => [
                 'unread_count' => $user?->unreadNotifications()->count() ?? 0,
             ],
+            'pending_invitations_count' => fn () => $currentOrganization
+                ? \App\Models\OrganizationInvitation::query()
+                    ->where('organization_id', $currentOrganization->id)
+                    ->whereState('status', \App\States\OrganizationInvitation\Pending::class)
+                    ->count()
+                : 0,
             'announcements' => $this->resolveAnnouncements($user),
             'onboarding' => $this->resolveOnboarding($user, $features),
             'moduleNavItems' => fn () => ModuleNavigationRegistry::groupedBySection(),

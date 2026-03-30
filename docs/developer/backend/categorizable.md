@@ -9,12 +9,12 @@ Models can be attached to a **tree of categories** using **kalnoy/nestedset** an
 
 ## User
 
-The **User** model uses the **Categorizable** trait, so users can be assigned to categories (e.g. segments or groups). Assign categories in Filament (e.g. relation manager on User) or in code via `$user->attachCategory($category)` / `$user->syncCategories([...])`.
+The **User** model uses the **Categorizable** trait, so users can be assigned to categories (e.g. segments or groups). Assign categories in code via `$user->attachCategory($category)` / `$user->syncCategories([...])`.
 
-## Filament
+## Category Management
 
-- **Category resource**: `App\Filament\Resources\Categories\CategoryResource` — manage categories (name, slug, type, parent) at `/admin/categories` (or the configured path). Create/edit categories and set parent for tree structure.
-- **User categories**: On the User resource (edit/view), the **Categories** relation manager lets admins attach and detach categories for that user (no create/delete from here — manage the tree in the Category resource).
+- **Categories page**: Manage categories (name, slug, type, parent) at `/categories` via `CategoriesTableController`. Create/edit categories and set parent for tree structure.
+- **User categories**: Users can have categories attached via the Categorizable relationship — manage the category tree at `/categories`.
 
 ## Coexistence with Spatie Tags
 

@@ -519,7 +519,7 @@ final class UserDataTable extends AbstractDataTable
      */
     public static function showProps(User $user): array
     {
-        $user->loadMissing('organizations:id,name');
+        $user->loadMissing(['organizations:id,name', 'roles:id,name', 'tags']);
 
         $status = match (true) {
             $user->trashed() => 'deleted',
@@ -533,10 +533,14 @@ final class UserDataTable extends AbstractDataTable
                 'hash_id' => $user->hashId,
                 'name' => $user->name,
                 'email' => $user->email,
+                'phone' => $user->phone,
                 'avatar' => $user->avatar,
                 'status' => $status,
                 'onboarding_completed' => $user->onboarding_completed,
                 'email_verified_at' => $user->email_verified_at?->format('Y-m-d H:i'),
+                'two_factor_confirmed_at' => $user->two_factor_confirmed_at?->format('Y-m-d H:i'),
+                'roles' => $user->roles->pluck('name')->values()->all(),
+                'tags' => $user->tags->pluck('name')->values()->all(),
                 'organizations' => $user->organizations->map(fn ($org): array => ['id' => $org->id, 'name' => $org->name])->values()->all(),
                 'created_at' => $user->created_at?->toIso8601String(),
             ],

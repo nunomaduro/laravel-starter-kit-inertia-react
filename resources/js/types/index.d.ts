@@ -58,6 +58,8 @@ export interface NavItem {
     dataPan?: string;
     /** When true, item is only visible to super-admin users. */
     superAdminOnly?: boolean;
+    /** Optional numeric badge shown next to the nav item (e.g. pending count). */
+    badge?: number;
     /** Sidebar group label for organizing nav items into sections. */
     group?: string;
 }
@@ -145,6 +147,8 @@ export interface SharedData {
     notifications?: {
         unread_count: number;
     };
+    /** Pending organization invitation count for current org. */
+    pending_invitations_count?: number;
     /** Whether the setup wizard has been completed (super-admin flow). */
     setup_complete: boolean;
     /** Active site-wide and org announcements (authenticated users only). */

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\Widgets;
 
-use App\Filament\Resources\Users\UserResource;
 use App\Models\User;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget as BaseStatsOverviewWidget;
@@ -26,7 +25,7 @@ final class StatsOverviewWidget extends BaseStatsOverviewWidget
                 ->description('All registered users')
                 ->descriptionIcon(Heroicon::OutlinedUsers)
                 ->color('primary')
-                ->url(UserResource::getUrl('index')),
+                ->url('/users'),
 
             Stat::make('New This Month', (string) $newThisMonth)
                 ->description('Joined since '.now()->startOfMonth()->format('M 1'))

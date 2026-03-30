@@ -9,8 +9,12 @@ import {
     Building2,
     CheckCircle2,
     Clock,
+    KeyRound,
     Mail,
+    Phone,
+    Shield,
     ShieldCheck,
+    Tag,
     User,
 } from 'lucide-react';
 
@@ -24,10 +28,14 @@ interface UserShape {
     hash_id: string;
     name: string;
     email: string;
+    phone: string | null;
     avatar: string | null;
     status: string;
     onboarding_completed: boolean;
     email_verified_at: string | null;
+    two_factor_confirmed_at: string | null;
+    roles: string[];
+    tags: string[];
     organizations: Organization[];
     created_at: string | null;
 }
@@ -119,6 +127,51 @@ export default function UserShowPage({ user }: Props) {
                         </dd>
                     </dl>
 
+                    {user.phone && (
+                        <dl className="space-y-1">
+                            <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                                <Phone className="h-3.5 w-3.5" />
+                                Phone
+                            </dt>
+                            <dd className="text-sm">{user.phone}</dd>
+                        </dl>
+                    )}
+
+                    {user.roles.length > 0 && (
+                        <dl className="space-y-1">
+                            <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                                <Shield className="h-3.5 w-3.5" />
+                                Roles
+                            </dt>
+                            <dd className="flex flex-wrap gap-1.5 text-sm">
+                                {user.roles.map((role) => (
+                                    <Badge key={role} variant="soft" color="neutral">
+                                        {role}
+                                    </Badge>
+                                ))}
+                            </dd>
+                        </dl>
+                    )}
+
+                    {user.tags.length > 0 && (
+                        <dl className="space-y-1">
+                            <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                                <Tag className="h-3.5 w-3.5" />
+                                Tags
+                            </dt>
+                            <dd className="flex flex-wrap gap-1.5 text-sm">
+                                {user.tags.map((tag) => (
+                                    <span
+                                        key={tag}
+                                        className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium"
+                                    >
+                                        {tag}
+                                    </span>
+                                ))}
+                            </dd>
+                        </dl>
+                    )}
+
                     <dl className="space-y-1">
                         <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                             <ShieldCheck className="h-3.5 w-3.5" />
@@ -132,6 +185,24 @@ export default function UserShowPage({ user }: Props) {
                             ) : (
                                 <span className="text-muted-foreground">
                                     Not verified
+                                </span>
+                            )}
+                        </dd>
+                    </dl>
+
+                    <dl className="space-y-1">
+                        <dt className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                            <KeyRound className="h-3.5 w-3.5" />
+                            Two-factor auth
+                        </dt>
+                        <dd className="text-sm">
+                            {user.two_factor_confirmed_at ? (
+                                <span className="text-emerald-600 dark:text-emerald-400">
+                                    Enabled
+                                </span>
+                            ) : (
+                                <span className="text-muted-foreground">
+                                    Not enabled
                                 </span>
                             )}
                         </dd>

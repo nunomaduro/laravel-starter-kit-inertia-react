@@ -36,7 +36,7 @@ export default function CategoriesTablePage({
             label: 'Add category',
             icon: Plus,
             variant: 'default',
-            onClick: () => router.visit('/admin/categories/create'),
+            onClick: () => router.visit('/categories/create'),
         },
     ];
 

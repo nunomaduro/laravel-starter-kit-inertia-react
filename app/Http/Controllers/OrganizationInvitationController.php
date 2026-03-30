@@ -11,10 +11,38 @@ use App\Models\Organization;
 use App\Models\OrganizationInvitation;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 final readonly class OrganizationInvitationController
 {
     use AuthorizesRequests;
+
+    public function index(Organization $organization): Response
+    {
+        $this->authorize('view', $organization);
+
+        $invitations = $organization->invitations()
+            ->with(['inviter:id,name'])
+            ->orderByDesc('created_at')
+            ->paginate(15);
+
+        return Inertia::render('invitations/index', [
+            'organization' => $organization->only('id', 'name', 'slug'),
+            'invitations' => $invitations,
+            'assignableRoles' => Organization::ASSIGNABLE_ORG_ROLES,
+        ]);
+    }
+
+    public function create(Organization $organization): Response
+    {
+        $this->authorize('addMember', $organization);
+
+        return Inertia::render('invitations/create', [
+            'organization' => $organization->only('id', 'name', 'slug'),
+            'assignableRoles' => Organization::ASSIGNABLE_ORG_ROLES,
+        ]);
+    }
 
     public function store(StoreInvitationRequest $request, Organization $organization, InviteToOrganizationAction $action): RedirectResponse
     {

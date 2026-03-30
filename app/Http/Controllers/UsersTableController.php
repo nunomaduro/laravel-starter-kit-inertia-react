@@ -10,12 +10,18 @@ use App\Actions\DuplicateUser;
 use App\DataTables\UserDataTable;
 use App\Http\Requests\BatchUpdateUsersRequest;
 use App\Http\Requests\BulkSoftDeleteUsersRequest;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateManagedUserRequest;
 use App\Models\User;
+use App\Services\ActivityLogRbac;
 use App\Services\TenantContext;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
+use Spatie\Tags\Tag;
 
 final class UsersTableController extends Controller
 {
@@ -61,6 +67,114 @@ final class UsersTableController extends Controller
         $this->ensureCanViewUser($user, $request);
 
         return Inertia::render('users/show', UserDataTable::showProps($user));
+    }
+
+    public function create(Request $request): Response
+    {
+        $this->authorizeManageUsers($request);
+
+        return Inertia::render('users/create', [
+            'roles' => Role::query()->orderBy('name')->get(['id', 'name'])->toArray(),
+            'tagSuggestions' => Tag::query()->pluck('name')->unique()->values()->all(),
+        ]);
+    }
+
+    public function store(StoreUserRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $user = User::query()->create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+            'password' => Hash::make($data['password']),
+        ]);
+
+        if (! empty($data['roles'])) {
+            $user->syncRoles(Role::query()->whereIn('id', $data['roles'])->get());
+            $user->load('roles');
+            resolve(ActivityLogRbac::class)->logRolesAssigned(
+                $user,
+                ActivityLogRbac::roleNamesFrom($user),
+            );
+        }
+
+        $tagNames = array_filter($data['tag_names'] ?? [], fn ($v): bool => is_string($v) && $v !== '');
+        if ($tagNames !== []) {
+            $user->syncTags($tagNames);
+        }
+
+        return to_route('users.show', $user)->with('status', __('User created.'));
+    }
+
+    public function edit(User $user, Request $request): Response
+    {
+        $this->authorizeManageUsers($request);
+
+        return Inertia::render('users/edit', [
+            'user' => [
+                'id' => $user->id,
+                'hash_id' => $user->hash_id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'role_ids' => $user->roles->pluck('id')->all(),
+                'tag_names' => $user->tags->pluck('name')->values()->all(),
+            ],
+            'roles' => Role::query()->orderBy('name')->get(['id', 'name'])->toArray(),
+            'tagSuggestions' => Tag::query()->pluck('name')->unique()->values()->all(),
+        ]);
+    }
+
+    public function update(User $user, UpdateManagedUserRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $fields = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+        ];
+
+        if (filled($data['password'] ?? null)) {
+            $fields['password'] = Hash::make($data['password']);
+        }
+
+        $user->update($fields);
+
+        if (array_key_exists('roles', $data)) {
+            $previousRoleNames = ActivityLogRbac::roleNamesFrom($user);
+            $newRoleIds = $data['roles'] ?? [];
+            $superAdminRole = Role::query()->where('name', 'super-admin')->first();
+
+            if ($user->isLastSuperAdmin() && $superAdminRole && ! in_array($superAdminRole->getKey(), $newRoleIds, true)) {
+                abort(403, 'Cannot remove the super-admin role from the last super-admin user.');
+            }
+
+            $user->syncRoles(Role::query()->whereIn('id', $newRoleIds)->get());
+            $user->load('roles');
+            resolve(ActivityLogRbac::class)->logRolesUpdated(
+                $user,
+                $previousRoleNames,
+                ActivityLogRbac::roleNamesFrom($user),
+            );
+        }
+
+        $tagNames = array_filter($data['tag_names'] ?? [], fn ($v): bool => is_string($v) && $v !== '');
+        $user->syncTags($tagNames);
+
+        return to_route('users.show', $user)->with('status', __('User updated.'));
+    }
+
+    public function destroy(User $user, Request $request): RedirectResponse
+    {
+        $this->ensureCanViewUser($user, $request);
+        abort_if($user->id === $request->user()?->id, 403, 'Cannot delete yourself.');
+        abort_if($user->isLastSuperAdmin(), 403, 'Cannot delete the last super-admin.');
+
+        $user->delete();
+
+        return to_route('users.table')->with('status', __('User deleted.'));
     }
 
     public function restore(string $id, Request $request): RedirectResponse
@@ -111,6 +225,17 @@ final class UsersTableController extends Controller
             $u?->isSuperAdmin()
             || $u?->can('bypass-permissions')
             || (config('tenancy.enabled', true) && $u?->canInOrganization('org.members.view')),
+            403,
+        );
+    }
+
+    private function authorizeManageUsers(Request $request): void
+    {
+        $u = $request->user();
+        abort_unless(
+            $u?->isSuperAdmin()
+            || $u?->can('bypass-permissions')
+            || (config('tenancy.enabled', true) && $u?->canInOrganization('org.members.manage')),
             403,
         );
     }

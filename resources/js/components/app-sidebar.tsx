@@ -26,6 +26,7 @@ import {
     Folder,
     FolderTree,
     LayoutGrid,
+    MailPlus,
     MessageCircle,
     ShieldCheck,
     Users,
@@ -180,12 +181,14 @@ function moduleNavItemToNavItem(item: ModuleNavItem): NavItem {
 }
 
 export function AppSidebar() {
-    const { auth, features, moduleNavItems = {} } = usePage<SharedData>().props;
+    const { auth, features, moduleNavItems = {}, pending_invitations_count = 0 } = usePage<SharedData>().props;
     const permissions = auth.permissions ?? [];
     const canBypass = auth.can_bypass ?? false;
     const resolvedFeatures = features ?? {};
     const tenancyEnabled = auth.tenancy_enabled ?? true;
     const isSuperAdmin = auth.roles?.includes('super-admin') ?? false;
+
+    const currentOrg = auth.current_organization;
 
     const dynamicNavItems = useMemo<NavItem[]>(() => {
         return Object.values(moduleNavItems)
@@ -193,9 +196,25 @@ export function AppSidebar() {
             .map(moduleNavItemToNavItem);
     }, [moduleNavItems]);
 
+    const orgNavItems = useMemo<NavItem[]>(() => {
+        if (!currentOrg) return [];
+        return [
+            {
+                title: 'Invitations',
+                href: `/organizations/${currentOrg.id}/invitations`,
+                icon: MailPlus,
+                group: 'Organization',
+                tenancyRequired: true,
+                permission: 'org.members.invite',
+                dataPan: 'nav-invitations',
+                badge: pending_invitations_count,
+            },
+        ];
+    }, [currentOrg, pending_invitations_count]);
+
     const allMainNavItems = useMemo<NavItem[]>(
-        () => [...coreNavItems, ...dynamicNavItems],
-        [dynamicNavItems],
+        () => [...coreNavItems, ...orgNavItems, ...dynamicNavItems],
+        [orgNavItems, dynamicNavItems],
     );
 
     const visibleMainNavItems = useMemo(

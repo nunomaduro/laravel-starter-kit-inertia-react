@@ -104,11 +104,21 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('chat', fn () => Inertia::render('chat/index'))->name('chat');
 
     Route::get('categories', [CategoriesTableController::class, 'index'])->name('categories.table');
+    Route::get('categories/create', [CategoriesTableController::class, 'create'])->name('categories.create');
+    Route::post('categories', [CategoriesTableController::class, 'store'])->name('categories.store');
+    Route::get('categories/{category}/edit', [CategoriesTableController::class, 'edit'])->name('categories.edit');
+    Route::put('categories/{category}', [CategoriesTableController::class, 'update'])->name('categories.update');
+    Route::delete('categories/{category}', [CategoriesTableController::class, 'destroy'])->name('categories.destroy');
     Route::get('users', [UsersTableController::class, 'index'])->name('users.table');
+    Route::get('users/create', [UsersTableController::class, 'create'])->name('users.create');
+    Route::post('users', [UsersTableController::class, 'store'])->name('users.store');
     Route::post('users/bulk-soft-delete', [UsersTableController::class, 'bulkSoftDelete'])->name('users.bulk-soft-delete');
     Route::patch('users/batch-update', [UsersTableController::class, 'batchUpdate'])->name('users.batch-update');
     Route::post('users/{user}/duplicate', [UsersTableController::class, 'duplicate'])->name('users.duplicate');
     Route::get('users/{user}', [UsersTableController::class, 'show'])->name('users.show');
+    Route::get('users/{user}/edit', [UsersTableController::class, 'edit'])->name('users.edit');
+    Route::put('users/{user}', [UsersTableController::class, 'update'])->name('users.update');
+    Route::delete('users/{user}', [UsersTableController::class, 'destroy'])->name('users.destroy');
     Route::post('users/{id}/restore', [UsersTableController::class, 'restore'])->name('users.restore');
     Route::delete('users/{id}/force-delete', [UsersTableController::class, 'forceDelete'])->name('users.force-delete');
 
@@ -122,6 +132,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::get('organizations/{organization}/members', [OrganizationMemberController::class, 'index'])->name('organizations.members.index');
         Route::put('organizations/{organization}/members/{member}', [OrganizationMemberController::class, 'update'])->name('organizations.members.update')->scopeBindings();
         Route::delete('organizations/{organization}/members/{member}', [OrganizationMemberController::class, 'destroy'])->name('organizations.members.destroy')->scopeBindings();
+        Route::get('organizations/{organization}/invitations', [OrganizationInvitationController::class, 'index'])->name('organizations.invitations.index');
+        Route::get('organizations/{organization}/invitations/create', [OrganizationInvitationController::class, 'create'])->name('organizations.invitations.create');
         Route::post('organizations/{organization}/invitations', [OrganizationInvitationController::class, 'store'])->name('organizations.invitations.store');
         Route::delete('organizations/{organization}/invitations/{invitation}', [OrganizationInvitationController::class, 'destroy'])->name('organizations.invitations.destroy')->scopeBindings();
         Route::put('organizations/{organization}/invitations/{invitation}/resend', [OrganizationInvitationController::class, 'update'])->name('organizations.invitations.resend')->scopeBindings();
