@@ -153,6 +153,11 @@ final class PanServiceProvider extends ServiceProvider
             'webhooks-save',
             'webhooks-update',
             'webhooks-regenerate-secret',
+            'settings-nav-email-templates',
+            'email-templates-edit',
+            'email-templates-preview',
+            'email-templates-save',
+            'email-templates-reset',
         ]);
     }
 }
