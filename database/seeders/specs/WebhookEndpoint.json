@@ -1,0 +1,87 @@
+{
+    "model": "WebhookEndpoint",
+    "table": "webhook_endpoints",
+    "fields": {
+        "id": {
+            "type": "bigint",
+            "nullable": false,
+            "default": null
+        },
+        "organization_id": {
+            "type": "bigint",
+            "nullable": false,
+            "default": null
+        },
+        "url": {
+            "type": "string",
+            "nullable": false,
+            "default": null
+        },
+        "events": {
+            "type": "json",
+            "nullable": false,
+            "default": "[]"
+        },
+        "secret": {
+            "type": "text",
+            "nullable": false,
+            "default": null
+        },
+        "is_active": {
+            "type": "boolean",
+            "nullable": false,
+            "default": true
+        },
+        "description": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "last_called_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "created_by": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "deleted_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "organization": {
+            "type": "belongsTo",
+            "model": "Organization"
+        },
+        "creator": {
+            "type": "belongsTo",
+            "model": "User"
+        }
+    },
+    "value_hints": {
+        "url": {
+            "type": "url",
+            "example": "https://example.com/webhooks"
+        },
+        "secret": {
+            "type": "string",
+            "example": "whsec_randomstring32chars"
+        }
+    },
+    "scenarios": []
+}
