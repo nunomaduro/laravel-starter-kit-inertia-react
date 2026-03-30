@@ -11,6 +11,7 @@ use App\Http\Controllers\OrgThemeController;
 use App\Http\Controllers\PersonalDataExportController;
 use App\Http\Controllers\Settings\AuditLogController;
 use App\Http\Controllers\Settings\BrandingController;
+use App\Http\Controllers\Settings\EmailTemplatesController;
 use App\Http\Controllers\Settings\NotificationPreferencesController;
 use App\Http\Controllers\Settings\OrgBrandingUserControlsController;
 use App\Http\Controllers\Settings\OrgDomainsController;
@@ -103,4 +104,10 @@ Route::middleware(['auth', 'verified', 'tenant', 'permission:org.settings.manage
     Route::post('settings/webhooks/{webhook}/test', [WebhooksController::class, 'testPing'])->name('settings.webhooks.test');
     Route::post('settings/webhooks/{webhook}/reset-circuit', [WebhooksController::class, 'resetCircuit'])->name('settings.webhooks.reset-circuit');
     Route::post('settings/webhooks/{webhook}/regenerate-secret', [WebhooksController::class, 'regenerateSecret'])->name('settings.webhooks.regenerate-secret');
+
+    Route::get('settings/email-templates', [EmailTemplatesController::class, 'index'])->name('settings.email-templates.index');
+    Route::get('settings/email-templates/{event}/edit', [EmailTemplatesController::class, 'edit'])->name('settings.email-templates.edit');
+    Route::put('settings/email-templates/{event}', [EmailTemplatesController::class, 'update'])->name('settings.email-templates.update');
+    Route::post('settings/email-templates/{event}/preview', [EmailTemplatesController::class, 'preview'])->name('settings.email-templates.preview');
+    Route::delete('settings/email-templates/{event}', [EmailTemplatesController::class, 'reset'])->name('settings.email-templates.reset');
 });

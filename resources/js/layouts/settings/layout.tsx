@@ -13,6 +13,7 @@ import { show as showFeatures } from '@/routes/settings/features';
 import { show as showGeneral } from '@/routes/settings/general';
 import { show as showNotifications } from '@/routes/settings/notifications';
 import { index as indexRoles } from '@/routes/settings/roles';
+import { index as indexEmailTemplates } from '@/routes/settings/email-templates';
 import { index as indexWebhooks } from '@/routes/settings/webhooks';
 import { show } from '@/routes/two-factor';
 import { edit } from '@/routes/user-profile';
@@ -33,6 +34,7 @@ import {
     ToggleLeft,
     UserCircle,
     Users,
+    Mail,
     Webhook,
 } from 'lucide-react';
 import { type PropsWithChildren, useMemo } from 'react';
@@ -108,6 +110,13 @@ const sidebarNavItems: (NavItem & {
         href: indexWebhooks(),
         icon: Webhook,
         dataPan: 'settings-nav-webhooks',
+        requiresOrgAdmin: true,
+    },
+    {
+        title: 'Email Templates',
+        href: indexEmailTemplates(),
+        icon: Mail,
+        dataPan: 'settings-nav-email-templates',
         requiresOrgAdmin: true,
     },
     {
