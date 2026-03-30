@@ -42,6 +42,12 @@
       "permissions": [
         {"name": "org.dashboards.manage", "roles": ["owner", "admin"], "org_grantable": true}
       ]
+    },
+    "org_webhooks": {
+      "permissions": [
+        {"name": "org.webhooks.view", "roles": ["owner", "admin"], "org_grantable": true},
+        {"name": "org.webhooks.manage", "roles": ["owner", "admin"], "org_grantable": true}
+      ]
     }
   },
   "role_templates": [
