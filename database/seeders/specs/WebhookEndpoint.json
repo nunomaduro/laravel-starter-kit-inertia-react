@@ -4,33 +4,33 @@
     "fields": {
         "id": {
             "type": "bigint",
-            "nullable": false,
+            "nullable": true,
             "default": null
         },
         "organization_id": {
             "type": "bigint",
-            "nullable": false,
+            "nullable": true,
             "default": null
         },
         "url": {
             "type": "string",
-            "nullable": false,
+            "nullable": true,
             "default": null
         },
         "events": {
-            "type": "json",
-            "nullable": false,
-            "default": "[]"
+            "type": "text",
+            "nullable": true,
+            "default": null
         },
         "secret": {
             "type": "text",
-            "nullable": false,
+            "nullable": true,
             "default": null
         },
         "is_active": {
             "type": "boolean",
-            "nullable": false,
-            "default": true
+            "nullable": true,
+            "default": null
         },
         "description": {
             "type": "string",
@@ -43,7 +43,7 @@
             "default": null
         },
         "created_by": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -64,23 +64,31 @@
         }
     },
     "relationships": {
+        "creator": {
+            "type": "belongsTo",
+            "model": "Creator"
+        },
         "organization": {
             "type": "belongsTo",
             "model": "Organization"
-        },
-        "creator": {
-            "type": "belongsTo",
-            "model": "User"
         }
     },
     "value_hints": {
         "url": {
             "type": "url",
-            "example": "https://example.com/webhooks"
+            "example": "https://example.com"
         },
         "secret": {
             "type": "string",
             "example": "whsec_randomstring32chars"
+        },
+        "is_active": {
+            "type": "boolean",
+            "example": true
+        },
+        "last_called_at": {
+            "type": "datetime",
+            "example": "2024-01-01 00:00:00"
         }
     },
     "scenarios": []

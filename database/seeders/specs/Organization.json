@@ -18,7 +18,7 @@
             "default": null
         },
         "settings": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
@@ -38,12 +38,12 @@
             "default": null
         },
         "created_by": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
         "updated_by": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -53,7 +53,7 @@
             "default": null
         },
         "deleted_by": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
@@ -68,7 +68,7 @@
             "default": null
         },
         "billing_address": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         },
@@ -83,7 +83,7 @@
             "default": null
         },
         "extra_attributes": {
-            "type": "json",
+            "type": "text",
             "nullable": true,
             "default": null
         }

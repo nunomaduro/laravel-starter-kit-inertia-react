@@ -1,0 +1,49 @@
+{
+    "model": "VisibilityDemo",
+    "table": "visibility_demos",
+    "fields": {
+        "id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "created_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "updated_at": {
+            "type": "timestamp",
+            "nullable": true,
+            "default": null
+        },
+        "organization_id": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "visibility": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        },
+        "cloned_from": {
+            "type": "bigint",
+            "nullable": true,
+            "default": null
+        },
+        "title": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+        }
+    },
+    "relationships": {
+        "organization": {
+            "type": "belongsTo",
+            "model": "Organization"
+        }
+    },
+    "value_hints": [],
+    "scenarios": []
+}

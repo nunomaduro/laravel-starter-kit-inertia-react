@@ -38,7 +38,7 @@
             "default": null
         },
         "created_by": {
-            "type": "bigint",
+            "type": "integer",
             "nullable": true,
             "default": null
         },
