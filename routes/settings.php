@@ -17,6 +17,7 @@ use App\Http\Controllers\Settings\OrgDomainsController;
 use App\Http\Controllers\Settings\OrgFeaturesController;
 use App\Http\Controllers\Settings\OrgRolesController;
 use App\Http\Controllers\Settings\OrgSlugController;
+use App\Http\Controllers\Settings\WebhooksController;
 use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserPreferencesController;
 use App\Http\Controllers\UserProfileController;
@@ -92,4 +93,14 @@ Route::middleware(['auth', 'verified', 'tenant', 'permission:org.settings.manage
     Route::post('settings/domains', [OrgDomainsController::class, 'store'])->name('settings.domains.store');
     Route::delete('settings/domains/{domain}', [OrgDomainsController::class, 'destroy'])->name('settings.domains.destroy');
     Route::post('settings/domains/{domain}/verify', [OrgDomainsController::class, 'verify'])->name('settings.domains.verify');
+
+    Route::get('settings/webhooks', [WebhooksController::class, 'index'])->name('settings.webhooks.index');
+    Route::get('settings/webhooks/create', [WebhooksController::class, 'create'])->name('settings.webhooks.create');
+    Route::post('settings/webhooks', [WebhooksController::class, 'store'])->name('settings.webhooks.store');
+    Route::get('settings/webhooks/{webhook}/edit', [WebhooksController::class, 'edit'])->name('settings.webhooks.edit');
+    Route::put('settings/webhooks/{webhook}', [WebhooksController::class, 'update'])->name('settings.webhooks.update');
+    Route::delete('settings/webhooks/{webhook}', [WebhooksController::class, 'destroy'])->name('settings.webhooks.destroy');
+    Route::post('settings/webhooks/{webhook}/test', [WebhooksController::class, 'testPing'])->name('settings.webhooks.test');
+    Route::post('settings/webhooks/{webhook}/reset-circuit', [WebhooksController::class, 'resetCircuit'])->name('settings.webhooks.reset-circuit');
+    Route::post('settings/webhooks/{webhook}/regenerate-secret', [WebhooksController::class, 'regenerateSecret'])->name('settings.webhooks.regenerate-secret');
 });
