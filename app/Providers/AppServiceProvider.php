@@ -9,6 +9,8 @@ use App\Events\User\UserCreated;
 use App\Listeners\CreatePersonalOrganizationOnUserCreated;
 use App\Listeners\LogImpersonationEvents;
 use App\Listeners\MigrationListener;
+use App\Listeners\RecordWebhookFailure;
+use App\Listeners\RecordWebhookSuccess;
 use App\Listeners\ScheduleOnboardingReminderOnUserCreated;
 use App\Listeners\SendSlackAlertOnJobFailed;
 use App\Models\Shareable;
@@ -43,6 +45,8 @@ use Spatie\Activitylog\ActivitylogServiceProvider;
 use Spatie\Activitylog\CauserResolver as ActivitylogCauserResolver;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
+use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 use STS\FilamentImpersonate\Events\EnterImpersonation;
 use STS\FilamentImpersonate\Events\LeaveImpersonation;
 use Throwable;
@@ -130,6 +134,8 @@ final class AppServiceProvider extends ServiceProvider
         Event::listen(JobFailed::class, SendSlackAlertOnJobFailed::class);
         Event::listen(UserCreated::class, CreatePersonalOrganizationOnUserCreated::class);
         Event::listen(UserCreated::class, ScheduleOnboardingReminderOnUserCreated::class);
+        Event::listen(WebhookCallSucceededEvent::class, RecordWebhookSuccess::class);
+        Event::listen(WebhookCallFailedEvent::class, RecordWebhookFailure::class);
 
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event): void {
             $event->extendSocialite('google', \SocialiteProviders\Google\Provider::class);
