@@ -50,16 +50,16 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.5.2
+- php - 8.5.4
 - inertiajs/inertia-laravel (INERTIA) - v3
 - laravel/fortify (FORTIFY) - v1
-- laravel/framework (LARAVEL) - v12
+- laravel/framework (LARAVEL) - v13
 - laravel/prompts (PROMPTS) - v0
 - laravel/wayfinder (WAYFINDER) - v0
 - larastan/larastan (LARASTAN) - v3
 - laravel/mcp (MCP) - v0
 - laravel/pint (PINT) - v1
-- pestphp/pest (PEST) - v4
+- pestphp/pest (PEST) - v5
 - phpunit/phpunit (PHPUNIT) - v12
 - rector/rector (RECTOR) - v2
 - @inertiajs/vue3 (INERTIA) - v3
@@ -67,7 +67,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - vue (VUE) - v3
 - @laravel/vite-plugin-wayfinder (WAYFINDER) - v0
 - oxlint (Oxlint) - v1
-- prettier (PRETTIER) - v3
+- oxfmt (Oxfmt) - v1
 
 ## Skills Activation
 
