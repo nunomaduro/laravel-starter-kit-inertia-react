@@ -2,10 +2,14 @@
     "agents": [
         "claude_code",
         "cursor",
-        "junie"
+        "junie",
+        "amp",
+        "codex",
+        "gemini",
+        "copilot",
+        "opencode"
     ],
     "guidelines": true,
-    "herd_mcp": false,
     "mcp": true,
     "nightwatch_mcp": false,
     "packages": [
@@ -13,6 +17,8 @@
     ],
     "sail": false,
     "skills": [
+        "laravel-best-practices",
+        "wayfinder-development",
         "fortify-development"
     ]
 }

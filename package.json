@@ -12,16 +12,16 @@
     "devDependencies": {
         "@laravel/vite-plugin-wayfinder": "^0.1.7",
         "@types/node": "^25.5.0",
-        "npm-check-updates": "^19.6.6",
-        "playwright": "^1.58.2",
+        "npm-check-updates": "^20.0.0",
+        "playwright": "^1.59.1",
         "tw-animate-css": "^1.4.0",
         "vite": "npm:@voidzero-dev/vite-plus-core@latest",
         "vite-plus": "latest"
     },
     "dependencies": {
         "@headlessui/react": "^2.2.9",
-        "@inertiajs/react": "^3.0.0",
-        "@inertiajs/vite": "^3.0.0",
+        "@inertiajs/react": "^3.0.1",
+        "@inertiajs/vite": "^3.0.1",
         "@radix-ui/react-avatar": "^1.1.11",
         "@radix-ui/react-checkbox": "^1.3.3",
         "@radix-ui/react-collapsible": "^1.1.12",
@@ -44,7 +44,7 @@
         "clsx": "^2.1.1",
         "concurrently": "^9.2.1",
         "input-otp": "^1.4.2",
-        "laravel-vite-plugin": "^3.0.0",
+        "laravel-vite-plugin": "^3.0.1",
         "lucide-react": "^1.7.0",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
@@ -54,7 +54,7 @@
         "typescript": "^6.0.2"
     },
     "optionalDependencies": {
-        "@rollup/rollup-linux-x64-gnu": "4.60.0",
+        "@rollup/rollup-linux-x64-gnu": "4.60.1",
         "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
         "lightningcss-linux-x64-gnu": "^1.32.0"
     }
