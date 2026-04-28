@@ -1,4 +1,4 @@
-import type { Auth } from '@/types/auth';
+import type { Auth } from './auth';
 
 declare module '@inertiajs/core' {
     export interface InertiaConfig {
@@ -10,3 +10,5 @@ declare module '@inertiajs/core' {
         };
     }
 }
+
+export {};
