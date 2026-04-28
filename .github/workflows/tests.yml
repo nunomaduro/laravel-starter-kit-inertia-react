@@ -27,6 +27,7 @@ jobs:
           php-version: 8.5
           tools: composer:v2
           coverage: xdebug
+          ini-values: zend.assertions=1
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
