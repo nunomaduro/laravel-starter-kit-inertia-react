@@ -10,10 +10,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.5.0",
-        "inertiajs/inertia-laravel": "^3.0.0-beta",
-        "laravel/fortify": "^1.37.2",
-        "laravel/framework": "^13.18.0",
-        "laravel/wayfinder": "^0.1.20",
+        "inertiajs/inertia-laravel": "v3.0.6",
+        "laravel/fortify": "^1.36.2",
+        "laravel/framework": "^13.5.0",
+        "laravel/wayfinder": "^0.1.16",
         "nunomaduro/essentials": "^1.2.0"
     },
     "require-dev": {
