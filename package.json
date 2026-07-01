@@ -11,6 +11,7 @@
     },
     "devDependencies": {
         "@laravel/vite-plugin-wayfinder": "^0.1.7",
+        "@rolldown/plugin-babel": "^0.2.2",
         "@types/node": "^26.1.0",
         "npm-check-updates": "^22.2.9",
         "playwright": "^1.61.1",
