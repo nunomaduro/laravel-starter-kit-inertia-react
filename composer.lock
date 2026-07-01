@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ea46e6e4133839b12711616e09cb4c36",
+    "content-hash": "b5075bf401abd84b1eda7b53513b27f3",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1212,16 +1212,16 @@
         },
         {
             "name": "inertiajs/inertia-laravel",
-            "version": "v3.1.0",
+            "version": "v3.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/inertiajs/inertia-laravel.git",
-                "reference": "f588ce4a5beb25d166f4e372bac0c7f46a4f52ac"
+                "reference": "c255b1ea050cf563b240542a76f7f756ccdb2d67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/f588ce4a5beb25d166f4e372bac0c7f46a4f52ac",
-                "reference": "f588ce4a5beb25d166f4e372bac0c7f46a4f52ac",
+                "url": "https://api.github.com/repos/inertiajs/inertia-laravel/zipball/c255b1ea050cf563b240542a76f7f756ccdb2d67",
+                "reference": "c255b1ea050cf563b240542a76f7f756ccdb2d67",
                 "shasum": ""
             },
             "require": {
@@ -1279,9 +1279,9 @@
             ],
             "support": {
                 "issues": "https://github.com/inertiajs/inertia-laravel/issues",
-                "source": "https://github.com/inertiajs/inertia-laravel/tree/v3.1.0"
+                "source": "https://github.com/inertiajs/inertia-laravel/tree/v3.0.6"
             },
-            "time": "2026-04-30T15:30:29+00:00"
+            "time": "2026-04-10T14:29:45+00:00"
         },
         {
             "name": "laravel/fortify",
