@@ -26,7 +26,7 @@ jobs:
         with:
           php-version: 8.5
           tools: composer:v2
-          coverage: xdebug
+          coverage: pcov
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
