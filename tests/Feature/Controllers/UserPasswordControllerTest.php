@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Inertia\Support\SessionKey;
 
 it('renders reset password page', function (): void {
     $response = $this->fromRoute('home')
@@ -146,7 +147,13 @@ it('may update password', function (): void {
             'password_confirmation' => 'new-password',
         ]);
 
-    $response->assertRedirectToRoute('password.edit');
+    $response->assertRedirectToRoute('password.edit')
+        ->assertSessionHas(SessionKey::FLASH_DATA, [
+            'toast' => [
+                'type' => 'success',
+                'message' => __('Password updated.'),
+            ],
+        ]);
 
     expect(Hash::check('new-password', $user->refresh()->password))->toBeTrue();
 });
