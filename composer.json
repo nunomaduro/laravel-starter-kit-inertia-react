@@ -22,11 +22,11 @@
         "larastan/larastan": "^3.12.2",
         "laravel/boost": "^2.10.0",
         "laravel/pail": "^1.2.7",
+        "laravel/pao": "^1.1.5",
         "laravel/pint": "^1.32.1",
         "laravel/tinker": "^3.0.2",
         "mockery/mockery": "^1.6.15",
         "nunomaduro/collision": "^8.9.5",
-        "laravel/pao": "^1.1.5",
         "pestphp/pest": "^5.2.1",
         "pestphp/pest-plugin-browser": "^5.0.1",
         "pestphp/pest-plugin-laravel": "^5.0.1",
@@ -57,7 +57,7 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "bunx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"bun run dev\" --names=server,queue,logs,vite --kill-others"
+            "@php artisan dev"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
@@ -100,10 +100,10 @@
             "bun run test:types"
         ],
         "test": [
-            "@test:lint",
             "@test:type-coverage",
-            "@test:types",
-            "@test:unit"
+            "@test:unit",
+            "@test:lint",
+            "@test:types"
         ]
     },
     "extra": {
@@ -120,6 +120,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

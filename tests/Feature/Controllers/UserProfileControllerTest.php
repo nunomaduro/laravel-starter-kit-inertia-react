@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Models\User;
-use Inertia\Support\SessionKey;
 
 it('renders profile edit page', function (): void {
     $user = User::factory()->create();
@@ -32,12 +31,7 @@ it('may update profile information', function (): void {
         ]);
 
     $response->assertRedirectToRoute('user-profile.edit')
-        ->assertSessionHas(SessionKey::FLASH_DATA, [
-            'toast' => [
-                'type' => 'success',
-                'message' => __('Profile updated.'),
-            ],
-        ]);
+        ->assertInertiaFlash('toast', ['type' => 'success', 'message' => __('Profile updated.')]);
 
     expect($user->refresh()->name)->toBe('New Name')
         ->and($user->email)->toBe('new@example.com');
