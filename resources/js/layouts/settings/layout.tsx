@@ -8,6 +8,7 @@ import { cn, toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
 import { show as showTwoFactor } from '@/routes/two-factor';
+import { index as indexPasskeys } from '@/routes/user-passkey';
 import { edit } from '@/routes/user-profile';
 import type { NavItem } from '@/types';
 
@@ -25,6 +26,11 @@ const sidebarNavItems: NavItem[] = [
     {
         title: 'Two-Factor Auth',
         href: showTwoFactor(),
+        icon: null,
+    },
+    {
+        title: 'Passkeys',
+        href: indexPasskeys(),
         icon: null,
     },
     {

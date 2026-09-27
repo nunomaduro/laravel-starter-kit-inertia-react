@@ -7,6 +7,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Inertia\Support\SessionKey;
 
 it('renders reset password page', function (): void {
@@ -17,7 +18,8 @@ it('renders reset password page', function (): void {
         ->assertInertia(fn ($page) => $page
             ->component('user-password/create')
             ->has('email')
-            ->has('token'));
+            ->has('token')
+            ->where('passwordRules', PasswordRule::defaults()->toPasswordRulesString()));
 });
 
 it('may reset password', function (): void {
@@ -131,7 +133,19 @@ it('renders edit password page', function (): void {
         ->get(route('password.edit'));
 
     $response->assertOk()
-        ->assertInertia(fn ($page) => $page->component('user-password/edit'));
+        ->assertInertia(fn ($page) => $page
+            ->component('user-password/edit')
+            ->where('passwordRules', PasswordRule::defaults()->toPasswordRulesString()));
+});
+
+it('requires verified email to edit password', function (): void {
+    $user = User::factory()->unverified()->create();
+
+    $response = $this->actingAs($user)
+        ->fromRoute('dashboard')
+        ->get(route('password.edit'));
+
+    $response->assertRedirectToRoute('verification.notice');
 });
 
 it('may update password', function (): void {

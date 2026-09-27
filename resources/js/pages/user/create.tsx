@@ -10,7 +10,11 @@ import AuthLayout from '@/layouts/auth-layout';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
-export default function Register() {
+type Props = {
+    passwordRules: string;
+};
+
+export default function Register({ passwordRules }: Props) {
     return (
         <AuthLayout
             title="Create an account"
@@ -66,6 +70,7 @@ export default function Register() {
                                     tabIndex={3}
                                     autoComplete="new-password"
                                     name="password"
+                                    passwordrules={passwordRules}
                                     placeholder="Password"
                                 />
                                 <InputError message={errors.password} />
@@ -81,6 +86,7 @@ export default function Register() {
                                     tabIndex={4}
                                     autoComplete="new-password"
                                     name="password_confirmation"
+                                    passwordrules={passwordRules}
                                     placeholder="Confirm password"
                                 />
                                 <InputError

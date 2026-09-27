@@ -6,13 +6,16 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 it('renders registration page', function (): void {
     $response = $this->fromRoute('home')
         ->get(route('register'));
 
     $response->assertOk()
-        ->assertInertia(fn ($page) => $page->component('user/create'));
+        ->assertInertia(fn ($page) => $page
+            ->component('user/create')
+            ->where('passwordRules', Password::defaults()->toPasswordRulesString()));
 });
 
 it('may register a new user', function (): void {
@@ -184,4 +187,20 @@ it('redirects authenticated users away from registration', function (): void {
         ->get(route('register'));
 
     $response->assertRedirectToRoute('dashboard');
+});
+
+it('requires verified email to delete account', function (): void {
+    $user = User::factory()->unverified()->create([
+        'password' => Hash::make('password'),
+    ]);
+
+    $response = $this->actingAs($user)
+        ->fromRoute('user-profile.edit')
+        ->delete(route('user.destroy'), [
+            'password' => 'password',
+        ]);
+
+    $response->assertRedirectToRoute('verification.notice');
+
+    expect($user->fresh())->not->toBeNull();
 });

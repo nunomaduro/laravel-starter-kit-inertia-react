@@ -13,6 +13,7 @@ use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -24,6 +25,7 @@ final readonly class UserPasswordController
         return Inertia::render('user-password/create', [
             'email' => $request->email,
             'token' => $request->route('token'),
+            'passwordRules' => PasswordRule::defaults()->toPasswordRulesString(),
         ]);
     }
 
@@ -46,7 +48,9 @@ final readonly class UserPasswordController
 
     public function edit(): Response
     {
-        return Inertia::render('user-password/edit');
+        return Inertia::render('user-password/edit', [
+            'passwordRules' => PasswordRule::defaults()->toPasswordRulesString(),
+        ]);
     }
 
     public function update(UpdateUserPasswordRequest $request, #[CurrentUser] User $user, UpdateUserPassword $action): RedirectResponse

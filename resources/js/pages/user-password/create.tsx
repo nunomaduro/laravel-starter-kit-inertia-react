@@ -11,9 +11,10 @@ import { update } from '@/routes/password';
 type Props = {
     token: string;
     email: string;
+    passwordRules: string;
 };
 
-export default function ResetPassword({ token, email }: Props) {
+export default function ResetPassword({ token, email, passwordRules }: Props) {
     return (
         <AuthLayout
             title="Reset password"
@@ -50,6 +51,7 @@ export default function ResetPassword({ token, email }: Props) {
                             <PasswordInput
                                 id="password"
                                 name="password"
+                                passwordrules={passwordRules}
                                 autoComplete="new-password"
                                 className="mt-1 block w-full"
                                 autoFocus
@@ -65,6 +67,7 @@ export default function ResetPassword({ token, email }: Props) {
                             <PasswordInput
                                 id="password_confirmation"
                                 name="password_confirmation"
+                                passwordrules={passwordRules}
                                 autoComplete="new-password"
                                 className="mt-1 block w-full"
                                 placeholder="Confirm password"
