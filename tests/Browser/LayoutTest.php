@@ -46,3 +46,32 @@ it('renders passkeys page', function (): void {
         ->assertSee('Add passkey')
         ->assertNoJavaScriptErrors();
 });
+
+it('shows a toast after updating the profile', function (): void {
+    $user = User::factory()->withoutTwoFactor()->create();
+
+    $this->actingAs($user);
+
+    $page = visit(route('user-profile.edit'));
+
+    $page->fill('name', 'Taylor Otwell')
+        ->click('Save')
+        ->assertSee('Profile updated.')
+        ->assertNoJavaScriptErrors();
+});
+
+it('may delete the account from the profile settings', function (): void {
+    $user = User::factory()->withoutTwoFactor()->create();
+
+    $this->actingAs($user);
+
+    $page = visit(route('user-profile.edit'));
+
+    $page->click('@delete-user-button')
+        ->fill('password', 'password')
+        ->click('@confirm-delete-user-button')
+        ->assertPathIs('/')
+        ->assertNoJavaScriptErrors();
+
+    expect($user->fresh())->toBeNull();
+});
