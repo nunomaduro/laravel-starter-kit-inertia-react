@@ -15,21 +15,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Update() {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title="Appearance settings" />
 
             <h1 className="sr-only">Appearance settings</h1>
 
-            <SettingsLayout>
-                <div className="space-y-6">
-                    <Heading
-                        variant="small"
-                        title="Appearance settings"
-                        description="Update your account's appearance settings"
-                    />
-                    <AppearanceTabs />
-                </div>
-            </SettingsLayout>
-        </AppLayout>
+            <div className="space-y-6">
+                <Heading
+                    variant="small"
+                    title="Appearance settings"
+                    description="Update your account's appearance settings"
+                />
+                <AppearanceTabs />
+            </div>
+        </>
     );
 }
+
+Update.layout = [[AppLayout, { breadcrumbs }], SettingsLayout];

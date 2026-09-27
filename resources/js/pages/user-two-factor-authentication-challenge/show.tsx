@@ -1,6 +1,6 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, setLayoutProps } from '@inertiajs/react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,6 +39,13 @@ export default function Show() {
         };
     }, [showRecoveryInput]);
 
+    useEffect(() => {
+        setLayoutProps({
+            title: authConfigContent.title,
+            description: authConfigContent.description,
+        });
+    }, [authConfigContent]);
+
     const toggleRecoveryMode = (clearErrors: () => void): void => {
         setShowRecoveryInput(!showRecoveryInput);
         clearErrors();
@@ -46,10 +53,7 @@ export default function Show() {
     };
 
     return (
-        <AuthLayout
-            title={authConfigContent.title}
-            description={authConfigContent.description}
-        >
+        <>
             <Head title="Two-factor authentication" />
 
             <div className="space-y-6">
@@ -126,6 +130,15 @@ export default function Show() {
                     )}
                 </Form>
             </div>
-        </AuthLayout>
+        </>
     );
 }
+
+Show.layout = [
+    AuthLayout,
+    {
+        title: 'Authentication code',
+        description:
+            'Enter the authentication code provided by your authenticator application.',
+    },
+];

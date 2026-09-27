@@ -18,15 +18,15 @@ export default function Index({
     passkeys,
 }: ManagePasskeysProps) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <>
             <Head title="Passkeys" />
 
-            <SettingsLayout>
-                <ManagePasskeys
-                    canManagePasskeys={canManagePasskeys}
-                    passkeys={passkeys}
-                />
-            </SettingsLayout>
-        </AppLayout>
+            <ManagePasskeys
+                canManagePasskeys={canManagePasskeys}
+                passkeys={passkeys}
+            />
+        </>
     );
 }
+
+Index.layout = [[AppLayout, { breadcrumbs }], SettingsLayout];

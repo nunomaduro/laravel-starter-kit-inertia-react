@@ -16,10 +16,7 @@ type Props = {
 
 export default function Register({ passwordRules }: Props) {
     return (
-        <AuthLayout
-            title="Create an account"
-            description="Enter your details below to create your account"
-        >
+        <>
             <Head title="Register" />
             <Form
                 {...store.form()}
@@ -114,6 +111,14 @@ export default function Register({ passwordRules }: Props) {
                     </>
                 )}
             </Form>
-        </AuthLayout>
+        </>
     );
 }
+
+Register.layout = [
+    AuthLayout,
+    {
+        title: 'Create an account',
+        description: 'Enter your details below to create your account',
+    },
+];

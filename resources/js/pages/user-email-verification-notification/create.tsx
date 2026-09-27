@@ -9,10 +9,7 @@ import { send } from '@/routes/verification';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     return (
-        <AuthLayout
-            title="Verify email"
-            description="Please verify your email address by clicking on the link we just emailed to you."
-        >
+        <>
             <Head title="Email verification" />
 
             {status === 'verification-link-sent' && (
@@ -39,6 +36,15 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     </>
                 )}
             </Form>
-        </AuthLayout>
+        </>
     );
 }
+
+VerifyEmail.layout = [
+    AuthLayout,
+    {
+        title: 'Verify email',
+        description:
+            'Please verify your email address by clicking on the link we just emailed to you.',
+    },
+];

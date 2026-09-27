@@ -16,10 +16,7 @@ type Props = {
 
 export default function ResetPassword({ token, email, passwordRules }: Props) {
     return (
-        <AuthLayout
-            title="Reset password"
-            description="Please enter your new password below"
-        >
+        <>
             <Head title="Reset password" />
 
             <Form
@@ -90,6 +87,14 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                     </div>
                 )}
             </Form>
-        </AuthLayout>
+        </>
     );
 }
+
+ResetPassword.layout = [
+    AuthLayout,
+    {
+        title: 'Reset password',
+        description: 'Please enter your new password below',
+    },
+];

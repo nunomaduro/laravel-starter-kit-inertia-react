@@ -25,10 +25,7 @@ export default function Login({
     canRegister,
 }: Props) {
     return (
-        <AuthLayout
-            title="Log in to your account"
-            description="Enter your email and password below to log in"
-        >
+        <>
             <Head title="Log in" />
 
             <PasskeyVerify />
@@ -118,6 +115,14 @@ export default function Login({
                     {status}
                 </div>
             )}
-        </AuthLayout>
+        </>
     );
 }
+
+Login.layout = [
+    AuthLayout,
+    {
+        title: 'Log in to your account',
+        description: 'Enter your email and password below to log in',
+    },
+];

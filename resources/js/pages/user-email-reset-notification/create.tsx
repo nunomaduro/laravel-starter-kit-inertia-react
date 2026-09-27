@@ -12,10 +12,7 @@ import { email } from '@/routes/password';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     return (
-        <AuthLayout
-            title="Forgot password"
-            description="Enter your email to receive a password reset link"
-        >
+        <>
             <Head title="Forgot password" />
 
             {status && (
@@ -63,6 +60,14 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     <TextLink href={login()}>log in</TextLink>
                 </div>
             </div>
-        </AuthLayout>
+        </>
     );
 }
+
+ForgotPassword.layout = [
+    AuthLayout,
+    {
+        title: 'Forgot password',
+        description: 'Enter your email to receive a password reset link',
+    },
+];
