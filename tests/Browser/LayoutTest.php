@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 
 it('renders auth pages inside the auth layout', function (): void {
     $page = visit(route('login'));
@@ -75,4 +77,20 @@ it('may delete the account from the profile settings', function (): void {
         ->assertNoJavaScriptErrors();
 
     expect($user->fresh())->toBeNull();
+});
+
+it('may reset the password from the reset link', function (): void {
+    $user = User::factory()->withoutTwoFactor()->create();
+
+    $token = Password::createToken($user);
+
+    $page = visit(route('password.reset', ['token' => $token, 'email' => $user->email]));
+
+    $page->fill('password', 'new-Password-123!')
+        ->fill('password_confirmation', 'new-Password-123!')
+        ->click('@reset-password-button')
+        ->assertPathIs('/login')
+        ->assertNoJavaScriptErrors();
+
+    expect(Hash::check('new-Password-123!', $user->fresh()->password))->toBeTrue();
 });
