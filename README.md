@@ -55,9 +55,6 @@ cd example-app
 # Setup the project
 composer setup
 
-# Record the packages you trust with Laravel Vet
-./vendor/bin/vet --init
-
 # Start the development server
 composer dev
 ```
